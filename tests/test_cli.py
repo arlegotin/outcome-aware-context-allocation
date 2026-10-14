@@ -41,3 +41,15 @@ def test_serving_command_does_not_offer_gold_argument():
     completed = subprocess.run([sys.executable, "-m", "outcome_poc", "run", "--help"],
                                capture_output=True, text=True, check=True)
     assert "--gold" not in completed.stdout
+
+
+
+def test_index_cli_does_not_advertise_or_accept_unscheduled_protected_population(tmp_path):
+    help_result = subprocess.run([sys.executable, '-m', 'outcome_poc', 'index', '--help'],
+                                 text=True, capture_output=True, check=True)
+    assert 'protected' not in help_result.stdout
+    result = subprocess.run([sys.executable, '-m', 'outcome_poc', 'index', '--config',
+                             str(tmp_path / 'missing.json'), '--split', 'protected'],
+                            text=True, capture_output=True)
+    assert result.returncode == 2
+    assert 'invalid choice' in result.stderr

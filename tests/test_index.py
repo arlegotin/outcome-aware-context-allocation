@@ -57,7 +57,8 @@ def test_index_cli_requires_config_and_active_split_and_has_no_gold_option():
     assert '--gold' not in result.stdout
 
 
-def test_index_cli_embeds_only_active_pilot_candidates_and_records_provenance(tmp_path, monkeypatch):
+@pytest.fixture
+def cli_index_fixture(tmp_path, monkeypatch):
     from outcome_poc.__main__ import main
     from outcome_poc.assets import file_identity
     from outcome_poc.schemas import Task
@@ -69,7 +70,9 @@ def test_index_cli_embeds_only_active_pilot_candidates_and_records_provenance(tm
     (prepared / 'documents.jsonl').write_bytes(b''.join(canonical_bytes(d) + b'\n' for d in active + reserve))
     tasks = [Task('active', 'pilot', 'Active question', [d.doc_id for d in active]),
              Task('reserve', 'pilot_reservation', 'Reserve question', [d.doc_id for d in reserve]),
-             Task('fit', 'fit', 'Fit question', [d.doc_id for d in reserve])]
+             Task('fit', 'fit', 'Fit question', [d.doc_id for d in reserve]),
+             Task('unsampled-protected-a', 'protected', 'Protected question A', [d.doc_id for d in reserve]),
+             Task('unsampled-protected-b', 'protected', 'Protected question B', [d.doc_id for d in reserve])]
     (prepared / 'tasks.jsonl').write_bytes(b''.join(canonical_bytes(t) + b'\n' for t in tasks))
     snapshot = tmp_path / ('b' * 40)
     snapshot.mkdir()
@@ -89,6 +92,13 @@ def test_index_cli_embeds_only_active_pilot_candidates_and_records_provenance(tm
     encoder = Encoder()
     encoder.identity = {'revision': asset['revision'], 'snapshot_hash': asset['snapshot_hash']}
     monkeypatch.setattr(retrieval, 'EncoderBackend', lambda path: encoder)
+    return config_path, encoder, active
+
+
+def test_index_cli_embeds_only_active_pilot_candidates_and_records_provenance(tmp_path, cli_index_fixture):
+    from outcome_poc.__main__ import main
+    from outcome_poc.storage import content_hash
+    config_path, encoder, active = cli_index_fixture
     assert main(['index', '--config', str(config_path), '--split', 'pilot']) == 0
     manifest = json.loads((tmp_path / 'indexes/pilot/manifest.json').read_text())
     assert manifest['scheduled_task_count'] == 1
@@ -99,5 +109,134 @@ def test_index_cli_embeds_only_active_pilot_candidates_and_records_provenance(tm
     assert manifest['offline']['network_attempts'] == 0
     assert manifest['offline']['model_load_seconds'] >= 0
     assert manifest['offline']['setup_seconds'] >= manifest['offline']['model_load_seconds']
-    assert manifest['offline']['total_command_seconds'] >= manifest['offline']['seconds'] + manifest['offline']['setup_seconds']
+    attempt = list(retrieval.read_jsonl(tmp_path / 'provenance/index-attempts.jsonl'))[-1]
+    assert attempt['status'] == 'ok'
+    assert attempt['elapsed_seconds'] >= manifest['offline']['seconds'] + manifest['offline']['setup_seconds']
+    assert attempt['manifest_hash'] == content_hash(manifest)
+    assert manifest == json.loads((tmp_path / 'provenance/wp1-index-pilot.json').read_text())
+    assert set(attempt['excluded_after_boundary']) == {'attempt_telemetry_publication', 'console_summary'}
     assert (tmp_path / 'provenance/wp1-index-pilot.json').exists()
+
+
+
+def test_protected_dispatch_refuses_unsampled_population_before_encoder_work(cli_index_fixture, monkeypatch):
+    from argparse import Namespace
+    config_path, encoder, active = cli_index_fixture
+    def forbidden(*args):
+        pytest.fail('protected dispatch reached encoder work')
+    monkeypatch.setattr(retrieval, 'EncoderBackend', forbidden)
+    with pytest.raises(ValueError, match='protected'):
+        retrieval.main(Namespace(config=str(config_path), split='protected'))
+
+
+@pytest.mark.parametrize('failure_stage', ['document_validation', 'windows', 'calibration', 'encoding'])
+def test_build_failure_retains_structured_elapsed_stage_and_partial_bytes(tmp_path, monkeypatch, failure_stage):
+    from dataclasses import replace
+    from outcome_poc.storage import read_jsonl
+    doc = document('Title', ['body'])
+    encoder = Encoder()
+    if failure_stage == 'document_validation':
+        doc = replace(doc, doc_id='bad')
+    elif failure_stage == 'windows':
+        doc = document(' '.join(['title'] * 478), ['body'])
+    else:
+        def broken(*args):
+            raise RuntimeError('injected encoder failure')
+        monkeypatch.setattr(encoder, 'select_batch_size' if failure_stage == 'calibration' else 'encode', broken, raising=False)
+    with pytest.raises((ValueError, RuntimeError)):
+        retrieval.build_index([doc], encoder, tmp_path / 'index')
+    attempt = list(read_jsonl(tmp_path / 'index-attempts.jsonl'))[-1]
+    assert attempt['status'] == 'failed'
+    assert attempt['terminal_stage'] == failure_stage
+    assert attempt['elapsed_seconds'] > 0
+    assert attempt['partial_bytes']['index_total'] > 0
+    assert not (tmp_path / 'index/manifest.json').exists()
+
+
+@pytest.mark.parametrize('failure_stage', ['source_fingerprints', 'provenance_publication', 'manifest_publication'])
+def test_cli_finalization_failure_is_chargeable_and_never_completed(tmp_path, cli_index_fixture, monkeypatch, failure_stage):
+    from argparse import Namespace
+    from outcome_poc.storage import read_jsonl
+    config_path, encoder, active = cli_index_fixture
+    original_identity, original_atomic = retrieval.file_identity, retrieval.atomic_json
+    def fingerprint(path):
+        if failure_stage == 'source_fingerprints' and path == tmp_path / 'prepared/tasks.jsonl':
+            raise OSError('injected source fingerprint failure')
+        return original_identity(path)
+    def publication(path, value):
+        target = tmp_path / ('provenance/wp1-index-pilot.json' if failure_stage == 'provenance_publication' else 'indexes/pilot/manifest.json')
+        if failure_stage != 'source_fingerprints' and path == target:
+            # Raise after rename too: acceptance must require the successful attempt.
+            original_atomic(path, value)
+            raise OSError('injected publication failure after rename')
+        return original_atomic(path, value)
+    monkeypatch.setattr(retrieval, 'file_identity', fingerprint)
+    monkeypatch.setattr(retrieval, 'atomic_json', publication)
+    with pytest.raises(OSError):
+        retrieval.main(Namespace(config=str(config_path), split='pilot'))
+    attempt = list(read_jsonl(tmp_path / 'provenance/index-attempts.jsonl'))[-1]
+    assert attempt['status'] == 'failed'
+    assert attempt['terminal_stage'] == failure_stage
+    assert attempt['elapsed_seconds'] > 0
+    assert attempt['partial_bytes']['index_total'] >= 15360
+    from outcome_poc.data_runtime import DocumentStore
+    with pytest.raises(ValueError, match='complet'):
+        retrieval.Retrieval(tmp_path / 'indexes/pilot', DocumentStore(tmp_path / 'prepared/documents.jsonl'), encoder)
+
+
+def test_full_offline_clock_boundary_includes_required_publications(tmp_path, cli_index_fixture, monkeypatch):
+    from argparse import Namespace
+    from outcome_poc.storage import read_jsonl
+    config_path, encoder, active = cli_index_fixture
+    clock = [0.]
+    original = retrieval.atomic_json
+    def publication(path, value):
+        if path.name == 'manifest.json' or path.name == 'wp1-index-pilot.json':
+            clock[0] += 7.
+        return original(path, value)
+    monkeypatch.setattr(retrieval.time, 'perf_counter', lambda: clock[0])
+    monkeypatch.setattr(retrieval, 'atomic_json', publication)
+    retrieval.main(Namespace(config=str(config_path), split='pilot'))
+    attempt = list(read_jsonl(tmp_path / 'provenance/index-attempts.jsonl'))[-1]
+    assert attempt['elapsed_seconds'] == 14.
+    assert attempt['status'] == 'ok'
+
+
+def test_attempt_telemetry_failure_after_write_cannot_leave_accepted_completion(tmp_path, monkeypatch):
+    from outcome_poc.storage import read_jsonl
+    from retrieval_helpers import store
+    doc = document('Title', ['body'])
+    encoder = Encoder()
+    original = retrieval.append_jsonl
+    def failing_after_write(path, value):
+        original(path, value)
+        raise OSError('injected attempt telemetry fsync failure')
+    monkeypatch.setattr(retrieval, 'append_jsonl', failing_after_write)
+    with pytest.raises(OSError, match='telemetry'):
+        retrieval.build_index([doc], encoder, tmp_path / 'index')
+    with pytest.raises(ValueError, match='complet'):
+        retrieval.Retrieval(tmp_path / 'index', store(tmp_path, [doc]), encoder)
+    attempt = list(read_jsonl(tmp_path / 'index-attempts.jsonl'))[-1]
+    assert attempt['status'] == 'failed'
+    assert sum(attempt['stage_seconds'].values()) == pytest.approx(attempt['elapsed_seconds'], abs=1e-8)
+
+
+def test_failed_attempt_retains_cost_record_when_partial_byte_snapshot_is_unavailable(tmp_path, monkeypatch):
+    from pathlib import Path
+    from outcome_poc.storage import read_jsonl
+    encoder = Encoder()
+    def broken(texts):
+        raise RuntimeError('injected encoding failure')
+    monkeypatch.setattr(encoder, 'encode', broken)
+    original = Path.rglob
+    def denied(path, pattern):
+        if path == tmp_path / 'index':
+            raise OSError('injected byte snapshot access failure')
+        return original(path, pattern)
+    monkeypatch.setattr(Path, 'rglob', denied)
+    with pytest.raises(RuntimeError, match='encoding'):
+        retrieval.build_index([document('Title', ['body'])], encoder, tmp_path / 'index')
+    attempt = list(read_jsonl(tmp_path / 'index-attempts.jsonl'))[-1]
+    assert attempt['status'] == 'failed'
+    assert attempt['elapsed_seconds'] > 0
+    assert attempt['partial_bytes']['measurement_errors']

@@ -3,6 +3,7 @@ import numpy as np
 import pytest
 from outcome_poc import retrieval
 from retrieval_helpers import Encoder, document, store
+from test_index import cli_index_fixture
 
 
 def test_max_window_score_and_hash_ties_are_invariant_to_candidate_order(tmp_path):
@@ -72,3 +73,32 @@ def test_failed_rank_exposes_partial_costs_instead_of_previous_success_timings(t
     with pytest.raises(ValueError, match='candidate'):
         ranker.rank('question', ['missing'])
     assert set(ranker.last_timings) == {'query_encoding_seconds'}
+
+
+
+def test_ranker_requires_successful_completion_attempt_and_matching_cli_provenance(tmp_path, monkeypatch):
+    from outcome_poc.storage import atomic_json
+    doc = document('Title', ['body'])
+    encoder = Encoder()
+    manifest = retrieval.build_index([doc], encoder, tmp_path / 'index')
+    # A success-shaped legacy/payload-only manifest must not establish completion.
+    manifest.pop('completion', None)
+    atomic_json(tmp_path / 'index/manifest.json', manifest)
+    with pytest.raises(ValueError, match='complet'):
+        retrieval.Retrieval(tmp_path / 'index', store(tmp_path, [doc]), encoder)
+
+
+def test_ranker_rejects_changed_required_provenance_after_completed_cli(tmp_path, cli_index_fixture):
+    from argparse import Namespace
+    from outcome_poc.data_runtime import DocumentStore
+    from outcome_poc.storage import atomic_json
+    config_path, encoder, active = cli_index_fixture
+    retrieval.main(Namespace(config=str(config_path), split='pilot'))
+    documents = DocumentStore(tmp_path / 'prepared/documents.jsonl')
+    retrieval.Retrieval(tmp_path / 'indexes/pilot', documents, encoder)
+    path = tmp_path / 'provenance/wp1-index-pilot.json'
+    provenance = json.loads(path.read_text())
+    provenance['scheduled_task_count'] = 99
+    atomic_json(path, provenance)
+    with pytest.raises(ValueError, match='provenance'):
+        retrieval.Retrieval(tmp_path / 'indexes/pilot', documents, encoder)

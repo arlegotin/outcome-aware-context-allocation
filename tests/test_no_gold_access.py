@@ -97,3 +97,28 @@ def test_ranking_and_indexing_work_with_all_gold_file_access_denied(tmp_path, mo
     assert ranker.documents.get(doc.doc_id).sentences == ['A violet lamp glows.']
     with pytest.raises(PermissionError):
         (tmp_path / 'gold/gold.jsonl').open()
+
+
+def test_failed_offline_attempt_persists_costs_with_gold_file_access_denied(tmp_path, monkeypatch):
+    from outcome_poc.retrieval import build_index
+    from outcome_poc.storage import read_jsonl
+    from retrieval_helpers import Encoder, document
+    def guard(function):
+        def access(file, *args, **kwargs):
+            if isinstance(file, (str, Path)) and 'gold' in Path(file).parts:
+                raise PermissionError('gold access denied')
+            return function(file, *args, **kwargs)
+        return access
+    monkeypatch.setattr(builtins, 'open', guard(builtins.open))
+    monkeypatch.setattr(io, 'open', guard(io.open))
+    monkeypatch.setattr(os, 'open', guard(os.open))
+    encoder = Encoder()
+    def broken(texts):
+        raise RuntimeError('injected offline failure')
+    monkeypatch.setattr(encoder, 'encode', broken)
+    with pytest.raises(RuntimeError):
+        build_index([document('Invented lamp', ['A lamp glows.'])], encoder, tmp_path / 'index')
+    attempt = list(read_jsonl(tmp_path / 'index-attempts.jsonl'))[-1]
+    assert attempt['status'] == 'failed'
+    assert attempt['terminal_stage'] == 'encoding'
+    assert attempt['elapsed_seconds'] > 0

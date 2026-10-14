@@ -1,5 +1,6 @@
 """Shared annotation-free CPU paragraph indexing and deterministic ranking."""
 from collections.abc import Iterable
+from datetime import datetime, timezone
 import hashlib
 import json
 import logging
@@ -7,6 +8,7 @@ from pathlib import Path
 import sqlite3
 import threading
 import time
+import uuid
 
 import numpy as np
 
@@ -14,7 +16,7 @@ from .assets import file_identity, verify_assets
 from .data_runtime import DocumentStore, load_tasks
 from .environment import resource_gate
 from .schemas import Document, RankedDocument, validate_record
-from .storage import atomic_json, canonical_bytes, content_hash
+from .storage import append_jsonl, atomic_json, canonical_bytes, content_hash, read_jsonl
 
 QUERY_PREFIX = 'Represent this sentence for searching relevant passages: '
 QUERY_LIMIT = 512
@@ -171,8 +173,124 @@ def _query_convention(encoder) -> dict:
             'special_tokens': encoder.tokenizer('', add_special_tokens=True)['input_ids']}
 
 
+class _IndexAttempt:
+    """Keep payload completion separate from append-only, post-boundary cost telemetry."""
+
+    def __init__(self, output_dir: Path, ledger: Path, scope: str, split=None):
+        self.started = self.stage_started = time.perf_counter()
+        self.started_utc = datetime.now(timezone.utc).isoformat()
+        self.attempt_id = uuid.uuid4().hex
+        self.output_dir, self.ledger = Path(output_dir), Path(ledger)
+        self.scope, self.split = scope, split
+        self.stage, self.stage_seconds = 'setup', {}
+        self.manifest, self.provenance = None, None
+        self.record = None
+
+    def mark(self, stage):
+        now = time.perf_counter()
+        self.stage_seconds[self.stage] = self.stage_seconds.get(self.stage, 0.) + now - self.stage_started
+        self.stage, self.stage_started = stage, now
+
+    def __enter__(self):
+        return self
+
+    def publish(self, manifest: dict, provenance: Path | None = None):
+        self.manifest, self.provenance = manifest, provenance
+        manifest['completion'] = {'status': 'complete', 'scope': self.scope,
+                                  'attempt_id': self.attempt_id, 'attempt_ledger': str(self.ledger.resolve())}
+        if provenance is not None:
+            manifest['completion']['provenance_path'] = str(provenance.resolve())
+            self.mark('provenance_publication')
+            atomic_json(provenance, manifest)
+        self.mark('manifest_publication')
+        atomic_json(self.output_dir / 'manifest.json', manifest)
+
+    def _revoke_completion(self):
+        path = self.output_dir / 'manifest.json'
+        try:
+            if json.loads(path.read_text()).get('completion', {}).get('attempt_id') == self.attempt_id:
+                path.unlink()
+        except FileNotFoundError:
+            pass
+        except (OSError, ValueError) as error:
+            LOGGER.error('could not revoke failed index completion: %s', error)
+
+    def _partial_bytes(self):
+        partial, errors, provenance_bytes = {}, [], 0
+        try:
+            for path in self.output_dir.rglob('*'):
+                if path.is_file():
+                    try:
+                        partial[str(path.relative_to(self.output_dir))] = path.stat().st_size
+                    except OSError as error:
+                        errors.append(str(error))
+        except OSError as error:
+            errors.append(str(error))
+        if self.provenance is not None:
+            try:
+                provenance_bytes = self.provenance.stat().st_size
+            except FileNotFoundError:
+                pass
+            except OSError as error:
+                provenance_bytes = None
+                errors.append(str(error))
+        return {'index_files': partial, 'index_total': sum(partial.values()),
+                'required_provenance': provenance_bytes, 'measurement_errors': errors}
+
+    def __exit__(self, error_type, error, traceback):
+        if error_type:
+            self._revoke_completion()
+        # Stop after required publication (or failure/rollback); byte snapshots,
+        # cost-ledger telemetry and console presentation are separate afterward.
+        stopped = time.perf_counter()
+        self.stage_seconds[self.stage] = self.stage_seconds.get(self.stage, 0.) + stopped - self.stage_started
+        self.record = {'attempt_id': self.attempt_id, 'scope': self.scope, 'split': self.split,
+                       'started_utc': self.started_utc, 'status': 'failed' if error_type else 'ok',
+                       'terminal_stage': self.stage, 'elapsed_seconds': stopped - self.started,
+                       'stage_seconds': self.stage_seconds, 'partial_bytes': self._partial_bytes(),
+                       'excluded_after_boundary': ['attempt_telemetry_publication', 'console_summary']}
+        if error_type:
+            self.record['error_type'] = error_type.__name__
+            self.record['error'] = str(error)
+        elif self.manifest is not None:
+            self.record['manifest_hash'] = content_hash(self.manifest)
+        try:
+            append_jsonl(self.ledger, self.record)
+        except Exception as telemetry_error:
+            # A write may have reached disk before fsync failed. Revoke the owned
+            # manifest and append a failed record so that such a row cannot pass
+            # constructor checks. Include the failed telemetry/rollback work.
+            self._revoke_completion()
+            self.record.update(status='failed', elapsed_seconds=time.perf_counter() - self.started,
+                               telemetry_error=str(telemetry_error), partial_bytes=self._partial_bytes(),
+                               excluded_after_boundary=['attempt_telemetry_retry_publication', 'console_summary'])
+            self.stage_seconds['attempt_telemetry'] = self.record['elapsed_seconds'] - (stopped - self.started)
+            self.record.pop('manifest_hash', None)
+            if error_type is None:
+                self.record.update(terminal_stage='attempt_telemetry', error_type=type(telemetry_error).__name__,
+                                   error=str(telemetry_error))
+            try:
+                append_jsonl(self.ledger, self.record)
+            except Exception as retry_error:
+                LOGGER.error('index attempt telemetry persistence failed: %s; record=%s', retry_error,
+                             canonical_bytes(self.record).decode())
+            if error_type is None:
+                raise
+        return False
+
+
 def build_index(documents: Iterable[Document], encoder: EncoderBackend, output_dir: Path) -> dict:
+    """Build selected documents; publish completion and preserve every attempt cost."""
+    output_dir = Path(output_dir)
+    with _IndexAttempt(output_dir, output_dir.parent / 'index-attempts.jsonl', 'selected_documents') as attempt:
+        manifest = _build_index_payload(documents, encoder, output_dir, attempt)
+        attempt.publish(manifest)
+    return manifest
+
+
+def _build_index_payload(documents, encoder, output_dir, attempt) -> dict:
     """Deduplicate once on disk; bounded encoding calls write rows into a memmap."""
+    attempt.mark("output_validation")
     output_dir = Path(output_dir)
     if output_dir.exists() and any(output_dir.iterdir()):
         raise ValueError('index directory already exists and is nonempty')
@@ -187,6 +305,7 @@ def build_index(documents: Iterable[Document], encoder: EncoderBackend, output_d
         db.execute('CREATE TABLE pending_texts (vector_offset INTEGER PRIMARY KEY, text TEXT)')
         db.execute('PRAGMA cache_size=-8192')
         for document in documents:
+            attempt.mark('document_validation')
             validate_record(document)
             if document.doc_id != content_hash([document.title, document.sentences]):
                 raise ValueError('document content hash mismatch')
@@ -194,6 +313,7 @@ def build_index(documents: Iterable[Document], encoder: EncoderBackend, output_d
                 raise ValueError('document character count mismatch')
             if db.execute('SELECT 1 FROM documents WHERE doc_id=?', (document.doc_id,)).fetchone():
                 continue
+            attempt.mark('windows')
             try:
                 windows = embedding_windows(document, encoder.tokenizer)
             except ValueError as error:
@@ -213,10 +333,12 @@ def build_index(documents: Iterable[Document], encoder: EncoderBackend, output_d
             raise ValueError('cannot build empty index')
         for (doc_id,) in db.execute('SELECT doc_id FROM documents ORDER BY doc_id'):
             document_digest.update(canonical_bytes(doc_id) + b'\n')
+        attempt.mark('calibration')
         selector = getattr(encoder, 'select_batch_size', None)
         if selector:
             longest = db.execute('SELECT p.text FROM pending_texts p JOIN windows w USING(vector_offset) ORDER BY w.token_count DESC LIMIT 1').fetchone()[0]
             selector(longest)
+        attempt.mark('encoding')
         vectors = np.memmap(output_dir / 'vectors.f32', dtype=np.float32, mode='w+', shape=(rows, 384))
         batch_size = encoder.batch_size
         if type(batch_size) is not int or batch_size < 1:
@@ -225,14 +347,16 @@ def build_index(documents: Iterable[Document], encoder: EncoderBackend, output_d
             texts = [row[0] for row in db.execute('SELECT text FROM pending_texts WHERE vector_offset>=? AND vector_offset<? ORDER BY vector_offset', (offset, offset + batch_size))]
             values = validate_vectors(encoder.encode(texts), len(texts))
             vectors[offset:offset + len(texts)] = values
+        attempt.mark('metadata_finalization')
         vectors.flush()
         del vectors
         db.execute('DROP TABLE pending_texts')
         db.commit()
         db.execute('VACUUM')
         document_count = db.execute('SELECT count(*) FROM documents').fetchone()[0]
+    attempt.mark('payload_fingerprints')
     files = {name: file_identity(output_dir / name) for name in ('metadata.sqlite3', 'vectors.f32')}
-    manifest = {'format_version': 1, 'encoder': dict(encoder.identity, dimensions=384, device='cpu', precision='float32', normalized=True),
+    manifest = {'format_version': 2, 'encoder': dict(encoder.identity, dimensions=384, device='cpu', precision='float32', normalized=True),
                 'document_count': document_count, 'window_count': rows,
                 'document_ids_digest': document_digest.hexdigest(), 'files': files,
                 'query_convention': _query_convention(encoder),
@@ -240,7 +364,6 @@ def build_index(documents: Iterable[Document], encoder: EncoderBackend, output_d
                             'metadata_bytes': files['metadata.sqlite3']['bytes'],
                             'bytes': sum(f['bytes'] for f in files.values()),
                             'batch_size': batch_size, 'batch_measurements': encoder.batch_measurements}}
-    atomic_json(output_dir / 'manifest.json', manifest)
     return manifest
 
 
@@ -248,7 +371,24 @@ class Retrieval:
     def __init__(self, index_dir: Path, documents: DocumentStore, encoder: EncoderBackend):
         self.index_dir = Path(index_dir)
         self.documents, self.encoder = documents, encoder
-        self.manifest = json.loads((self.index_dir / 'manifest.json').read_text())
+        try:
+            self.manifest = json.loads((self.index_dir / 'manifest.json').read_text())
+            completion = self.manifest.get('completion', {})
+            if self.manifest.get('format_version') != 2 or completion.get('status') != 'complete':
+                raise ValueError('index completion is missing')
+            attempts = list(read_jsonl(Path(completion['attempt_ledger'])))
+            matching = [row for row in attempts if row['attempt_id'] == completion['attempt_id']]
+            if (len(matching) != 1 or matching[0]['status'] != 'ok' or
+                    matching[0].get('manifest_hash') != content_hash(self.manifest)):
+                raise ValueError('index completion attempt is not successful')
+            if completion['scope'] == 'cli':
+                provenance = json.loads(Path(completion['provenance_path']).read_text())
+                if provenance != self.manifest:
+                    raise ValueError('index completion provenance mismatch')
+            elif completion['scope'] != 'selected_documents':
+                raise ValueError('index completion scope is unsupported')
+        except (OSError, KeyError, ValueError) as error:
+            raise ValueError(f'index completion unavailable: {error}') from error
         if any(self.manifest['encoder'].get(k) != v for k, v in encoder.identity.items()):
             raise ValueError('index encoder identity mismatch')
         if self.manifest['query_convention'] != _query_convention(encoder):
@@ -314,46 +454,53 @@ class Retrieval:
 
 
 def main(args) -> int:
-    """Index exactly the scheduled active partition using only local CPU assets."""
-    command_started = time.perf_counter()
-    from .generation import offline_network
-    config = json.loads(Path(args.config).read_text())
-    settings = config.get('retrieval', {})
-    allowed = {'pilot', 'fit', 'tune', 'protected'}
-    if args.split not in allowed:
-        raise ValueError('index requires an active split')
-    prepared = Path(config['preparation']['output_dir'])
-    tasks = load_tasks(prepared / 'tasks.jsonl', args.split)
-    ids = sorted({doc_id for task in tasks for doc_id in task.candidate_ids})
-    if not ids:
-        raise ValueError('scheduled split has no tasks')
-    documents = DocumentStore(prepared / 'documents.jsonl')
-    assets = json.loads(Path(config['preparation']['asset_manifest']).read_text())
-    asset = assets['assets']['encoder']
-    expected = config['encoder']
-    if (expected['repo_id'], expected['revision'], expected['dimensions'], expected['device'], expected['precision']) != (
-            'BAAI/bge-small-en-v1.5', asset['revision'], 384, 'cpu', 'float32') or asset['repo_id'] != expected['repo_id']:
-        raise ValueError('encoder configuration disagrees with pinned CPU asset')
-    verify_assets({'required': ['encoder'], 'assets': {'encoder': asset}})
-    with offline_network() as attempts:
-        model_started = time.perf_counter()
-        encoder = EncoderBackend(Path(asset['local_path']))
-        model_load_seconds = time.perf_counter() - model_started
-        if encoder.identity != {'revision': asset['revision'], 'snapshot_hash': asset['snapshot_hash']}:
-            raise ValueError('encoder snapshot identity mismatch')
-        index_dir = Path(settings.get('output_dir', 'data/index')) / args.split
-        setup_seconds = time.perf_counter() - command_started
-        manifest = build_index((documents.get(doc_id) for doc_id in ids), encoder, index_dir)
-        manifest['scheduled_split'] = args.split
-        manifest['scheduled_task_count'] = len(tasks)
-        manifest['scheduled_task_ids_hash'] = content_hash(sorted(t.task_id for t in tasks))
-        manifest['prepared_inputs'] = {name: file_identity(prepared / name) for name in ('tasks.jsonl', 'documents.jsonl')}
-        manifest['offline']['network_attempts'] = len(attempts)
-        manifest['offline']['model_load_seconds'] = model_load_seconds
-        manifest['offline']['setup_seconds'] = setup_seconds
-        manifest['offline']['total_command_seconds'] = time.perf_counter() - command_started
-        atomic_json(index_dir / 'manifest.json', manifest)
-    atomic_json(Path(config['output_dir']) / f'wp1-index-{args.split}.json', manifest)
+    """Index development partitions; protected scheduling belongs to later protocol work."""
+    attempt = _IndexAttempt(Path('data/index') / args.split, Path('data/index/index-attempts.jsonl'), 'cli', args.split)
+    with attempt:
+        from .generation import offline_network
+        config = json.loads(Path(args.config).read_text())
+        settings = config.get('retrieval', {})
+        attempt.output_dir = Path(settings.get('output_dir', 'data/index')) / args.split
+        attempt.ledger = Path(config['output_dir']) / 'index-attempts.jsonl'
+        attempt.mark('split_validation')
+        if args.split == 'protected':
+            raise ValueError('protected indexing unavailable until verified scheduled-sample integration exists')
+        if args.split not in {'pilot', 'fit', 'tune'}:
+            raise ValueError('index requires an active development split')
+        attempt.mark('setup')
+        prepared = Path(config['preparation']['output_dir'])
+        tasks = load_tasks(prepared / 'tasks.jsonl', args.split)
+        ids = sorted({doc_id for task in tasks for doc_id in task.candidate_ids})
+        if not ids:
+            raise ValueError('scheduled split has no tasks')
+        documents = DocumentStore(prepared / 'documents.jsonl')
+        assets = json.loads(Path(config['preparation']['asset_manifest']).read_text())
+        asset = assets['assets']['encoder']
+        expected = config['encoder']
+        if (expected['repo_id'], expected['revision'], expected['dimensions'], expected['device'], expected['precision']) != (
+                'BAAI/bge-small-en-v1.5', asset['revision'], 384, 'cpu', 'float32') or asset['repo_id'] != expected['repo_id']:
+            raise ValueError('encoder configuration disagrees with pinned CPU asset')
+        verify_assets({'required': ['encoder'], 'assets': {'encoder': asset}})
+        with offline_network() as network_attempts:
+            attempt.mark('model_load')
+            model_started = time.perf_counter()
+            encoder = EncoderBackend(Path(asset['local_path']))
+            model_load_seconds = time.perf_counter() - model_started
+            if encoder.identity != {'revision': asset['revision'], 'snapshot_hash': asset['snapshot_hash']}:
+                raise ValueError('encoder snapshot identity mismatch')
+            setup_seconds = time.perf_counter() - attempt.started
+            manifest = _build_index_payload((documents.get(doc_id) for doc_id in ids), encoder, attempt.output_dir, attempt)
+            attempt.mark('source_fingerprints')
+            manifest['scheduled_split'] = args.split
+            manifest['scheduled_task_count'] = len(tasks)
+            manifest['scheduled_task_ids_hash'] = content_hash(sorted(t.task_id for t in tasks))
+            manifest['prepared_inputs'] = {name: file_identity(prepared / name) for name in ('tasks.jsonl', 'documents.jsonl')}
+            manifest['offline']['network_attempts'] = len(network_attempts)
+            manifest['offline']['model_load_seconds'] = model_load_seconds
+            manifest['offline']['setup_seconds'] = setup_seconds
+            attempt.publish(manifest, Path(config['output_dir']) / f'wp1-index-{args.split}.json')
+    # Presentation is explicitly outside the payload publication cost boundary.
     print(json.dumps({'split': args.split, 'tasks': len(tasks), 'documents': manifest['document_count'],
-                      'windows': manifest['window_count'], 'offline': manifest['offline']}, indent=2))
+                      'windows': manifest['window_count'], 'offline': manifest['offline'],
+                      'attempt': attempt.record}, indent=2))
     return 0
