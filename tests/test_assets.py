@@ -191,3 +191,56 @@ def test_archive_fallback_requires_explicit_source_amendment(tmp_path, monkeypat
     config['data'] = [source]
     manifest = assets.resolve_assets(config, tmp_path)
     assert 'amendment' in manifest['assets']['train']['error']
+
+
+def test_configuration_verification_accepts_matching_local_manifest(matching_assets):
+    config, manifest = matching_assets
+    assets.verify_configured_assets(config, manifest)
+
+
+@pytest.mark.parametrize('role', ['reader', 'encoder', 'original_reader'])
+@pytest.mark.parametrize('field,value', [('revision', 'd'*40), ('repo_id', 'different-repo')])
+def test_configuration_verification_rejects_changed_model_identity(matching_assets, role, field, value):
+    config, manifest = matching_assets
+    config[role][field] = value
+    with pytest.raises(ValueError, match=role):
+        assets.verify_configured_assets(config, manifest)
+
+
+@pytest.mark.parametrize('field,value', [('device', 'mps'), ('precision', 'float16'), ('dimensions', 383)])
+def test_configuration_verification_rejects_changed_encoder_convention(matching_assets, field, value):
+    config, manifest = matching_assets
+    config['encoder'][field] = value
+    with pytest.raises(ValueError, match='encoder'):
+        assets.verify_configured_assets(config, manifest)
+
+
+@pytest.mark.parametrize('field,value', [('asset_source_amendment', None), ('asset_source_amendment', 'A02'),
+                                        ('asset_source_policy', None), ('asset_source_policy', 'direct_author_host_only')])
+def test_configuration_verification_requires_current_archive_permission(matching_assets, field, value):
+    config, manifest = matching_assets
+    if value is None:
+        config.pop(field)
+    else:
+        config[field] = value
+    with pytest.raises(ValueError, match='A01|policy|permission'):
+        assets.verify_configured_assets(config, manifest)
+
+
+@pytest.mark.parametrize('where,field,value', [
+    ('source', 'url', 'http://curtis.ml.cmu.edu/datasets/hotpot/hotpot_train_v1.1.json'),
+    ('source', 'provenance_url', 'https://example.com/'),
+    ('source', 'license', 'mit'),
+    ('archive', 'capture', '20250512032702'),
+    ('archive', 'url', 'https://web.archive.org/web/20250512032702id_/wrong'),
+    ('entry', 'requested_url', 'https://example.com/'),
+    ('entry', 'final_url', 'https://example.com/'),
+    ('entry', 'archive_capture', '20250512032702'),
+])
+def test_configuration_verification_rejects_data_source_disagreement(matching_assets, where, field, value):
+    config, manifest = matching_assets
+    target = {'source': config['data'][0], 'archive': config['data'][0]['archive'],
+              'entry': manifest['assets']['dev']}[where]
+    target[field] = value
+    with pytest.raises(ValueError, match='dev|archive|source'):
+        assets.verify_configured_assets(config, manifest)

@@ -266,6 +266,77 @@ def verify_assets(manifest: dict) -> None:
                 raise ValueError(f'{name}: hash/bytes mismatch for {relative}')
 
 
+
+def verify_asset_configuration(config: dict, manifest: dict) -> None:
+    """Reject disagreement with the current request before any native loading.
+
+    Blocked entries have no accepted identity; byte/status verification is separate
+    so matching, available models can still characterize a blocked data prerequisite.
+    """
+    roles = [role for role in ('reader', 'encoder', 'original_reader') if role in config]
+    sources = config.get('data', [])
+    requested = set(roles) | {source['name'] for source in sources}
+    missing = requested - set(manifest.get('required', []))
+    if missing:
+        raise ValueError(f'configured indispensable assets omitted from manifest: {sorted(missing)}')
+    extra = set(manifest.get('required', [])) - requested
+    if extra:
+        raise ValueError(f'unconfigured required asset identities in manifest: {sorted(extra)}')
+    entries = manifest.get('assets', {})
+    for role in roles:
+        expected = config[role]
+        revision = expected.get('revision')
+        if not expected.get('repo_id') or not isinstance(revision, str) or not re.fullmatch('[0-9a-f]{40}', revision):
+            raise ValueError(f'{role}: configuration requires repository and immutable revision')
+        entry = entries.get(role, {})
+        if entry.get('status') == 'ok' and (entry.get('kind') != 'model' or
+                any(entry.get(field) != expected[field] for field in ('repo_id', 'revision'))):
+            raise ValueError(f'{role}: configured repository/revision differs from accepted asset')
+    if 'encoder' in config:
+        encoder = config['encoder']
+        if (encoder.get('device') != 'cpu' or encoder.get('precision') != 'float32' or
+                type(encoder.get('dimensions')) is not int or encoder['dimensions'] != 384):
+            raise ValueError('encoder: configuration must use CPU float32 with 384 dimensions')
+    for source in sources:
+        name = source['name']
+        entry = entries.get(name, {})
+        if source.get('archive') and (config.get('asset_source_amendment') != 'A01' or
+                config.get('asset_source_policy') != 'direct_author_or_pinned_raw_author_archive'):
+            raise ValueError(f'{name}: archive permission requires current A01/source policy')
+        if entry.get('status') != 'ok':
+            continue
+        if (entry.get('kind') != 'data' or entry.get('source_url') != source.get('url') or
+                entry.get('provenance_url') != source.get('provenance_url') or
+                entry.get('license') != source.get('license') or entry.get('rows') != source.get('expected_rows')):
+            raise ValueError(f'{name}: configured native data source/provenance differs from accepted asset')
+        if entry.get('archive_capture'):
+            archive = source.get('archive', {})
+            replay = f"https://web.archive.org/web/20250512032701id_/{source['url']}"
+            headers = entry.get('archive_headers', {})
+            if (config.get('asset_source_amendment') != 'A01' or
+                    config.get('asset_source_policy') != 'direct_author_or_pinned_raw_author_archive' or
+                    entry.get('source_amendment') != 'A01' or
+                    entry.get('source_policy') != config['asset_source_policy']):
+                raise ValueError(f'{name}: accepted archive requires current A01/source permission')
+            if (archive.get('capture') != '20250512032701' or entry['archive_capture'] != archive.get('capture') or
+                    archive.get('url') != replay or entry.get('requested_url') != replay or entry.get('final_url') != replay or
+                    headers.get('memento-datetime') != 'Mon, 12 May 2025 03:27:01 GMT' or not headers.get('x-archive-src') or
+                    f"<{source['url']}>; rel=\"original\"" not in headers.get('link', '')):
+                raise ValueError(f'{name}: configured archive capture/replay/author-origin metadata mismatch')
+            filename = Path(source['url']).name
+            if (archive.get('expected_rows') != source['expected_rows'] or
+                    entry.get('files', {}).get(filename, {}).get('bytes') != archive.get('expected_bytes')):
+                raise ValueError(f'{name}: configured archive size/row count mismatch')
+            if archive.get('sha1_base32') and (entry.get('sha1_base32') != archive['sha1_base32'] or
+                                             entry.get('archive_digest_verified') is not True):
+                raise ValueError(f'{name}: configured archive payload digest mismatch')
+
+
+def verify_configured_assets(config: dict, manifest: dict) -> None:
+    """Validate current requested identities/permission and every accepted byte."""
+    verify_asset_configuration(config, manifest)
+    verify_assets(manifest)
+
 def main(args) -> int:
     config = json.loads(Path(args.config).read_text())
     manifest = resolve_assets(config, Path(config['cache_dir']))

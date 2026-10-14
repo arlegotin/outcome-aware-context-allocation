@@ -69,14 +69,15 @@ def test_reader_context_guard_reserves_output_and_checks_identity():
         backend.generate('invented', wrong)
 
 
-def test_successful_native_characterization_does_not_override_missing_data(tmp_path, monkeypatch):
+def test_successful_native_characterization_does_not_override_missing_data(tmp_path, monkeypatch, matching_assets):
     import outcome_poc.generation as generation
     def native(config, manifest, result):
         result['reader_encoder_passed'] = True
     monkeypatch.setattr(generation, '_native_smoke', native)
-    result = generation.smoke({'output_dir': str(tmp_path), 'reader': {}},
-                              {'required': ['hotpot_train'], 'assets': {
-                                  'hotpot_train': {'status': 'blocked', 'error': 'author origin timeout'}}})
+    config, manifest = matching_assets
+    config['output_dir'] = str(tmp_path)
+    manifest['assets']['dev'] = {'status': 'blocked', 'error': 'author origin timeout'}
+    result = generation.smoke(config, manifest)
     assert result['reader_encoder_passed'] is True
     assert result['wp0_passed'] is False
     assert result['status'] == 'blocked by prerequisites'
@@ -108,3 +109,77 @@ def test_wp0_artifact_binds_configuration_and_asset_manifest(tmp_path):
     assert result['config_hash'] == expected_config
     assert result['asset_manifest_hash'] == expected_manifest
     assert result['source_amendment'] == 'A01'
+
+
+@pytest.mark.parametrize('role', ['reader', 'encoder', 'original_reader'])
+def test_smoke_rejects_changed_pin_before_native_load(matching_assets, tmp_path, monkeypatch, role):
+    import outcome_poc.generation as generation
+    config, manifest = matching_assets
+    config['output_dir'] = str(tmp_path)
+    config[role]['revision'] = 'd'*40
+    def native(*args):
+        pytest.fail('configuration disagreement reached native load')
+    monkeypatch.setattr(generation, '_native_smoke', native)
+    result = generation.smoke(config, manifest)
+    assert result['asset_gate_passed'] is False
+    assert result['wp0_passed'] is False
+    assert role in ' '.join(result['errors'])
+
+
+@pytest.mark.parametrize('field,value', [('asset_source_amendment', None), ('asset_source_amendment', 'A02'),
+                                        ('asset_source_policy', None), ('asset_source_policy', 'direct_author_host_only')])
+def test_smoke_rejects_archive_permission_change_before_native_load(matching_assets, tmp_path, monkeypatch, field, value):
+    import outcome_poc.generation as generation
+    config, manifest = matching_assets
+    config['output_dir'] = str(tmp_path)
+    if value is None:
+        config.pop(field)
+    else:
+        config[field] = value
+    def native(*args):
+        pytest.fail('unpermitted archive reached native load')
+    monkeypatch.setattr(generation, '_native_smoke', native)
+    result = generation.smoke(config, manifest)
+    assert result['asset_gate_passed'] is False
+    assert result['wp0_passed'] is False
+
+
+def test_matching_configuration_with_blocked_data_can_characterize_native(matching_assets, tmp_path, monkeypatch):
+    import outcome_poc.generation as generation
+    config, manifest = matching_assets
+    config['output_dir'] = str(tmp_path)
+    manifest['assets']['dev'] = {'status': 'blocked', 'error': 'origin unavailable'}
+    def native(config, manifest, result):
+        result['reader_encoder_passed'] = True
+    monkeypatch.setattr(generation, '_native_smoke', native)
+    result = generation.smoke(config, manifest)
+    assert result['reader_encoder_passed'] is True
+    assert result['wp0_passed'] is False
+
+
+def test_smoke_rejects_data_manifest_not_declared_by_current_config(matching_assets, tmp_path, monkeypatch):
+    import outcome_poc.generation as generation
+    config, manifest = matching_assets
+    config['output_dir'] = str(tmp_path)
+    config['data'] = []
+    def native(*args):
+        pytest.fail('unconfigured archived source reached native load')
+    monkeypatch.setattr(generation, '_native_smoke', native)
+    result = generation.smoke(config, manifest)
+    assert result['wp0_passed'] is False
+    assert 'dev' in ' '.join(result['errors'])
+
+
+@pytest.mark.parametrize('field,value', [('capture', '20250512032702'),
+                                        ('url', 'https://web.archive.org/web/20250512032702id_/wrong')])
+def test_smoke_rejects_data_capture_or_replay_change_before_native_load(matching_assets, tmp_path, monkeypatch, field, value):
+    import outcome_poc.generation as generation
+    config, manifest = matching_assets
+    config['output_dir'] = str(tmp_path)
+    config['data'][0]['archive'][field] = value
+    def native(*args):
+        pytest.fail('source configuration disagreement reached native load')
+    monkeypatch.setattr(generation, '_native_smoke', native)
+    result = generation.smoke(config, manifest)
+    assert result['asset_gate_passed'] is False
+    assert result['wp0_passed'] is False

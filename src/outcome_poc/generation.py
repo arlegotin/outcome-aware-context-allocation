@@ -10,7 +10,7 @@ import socket
 import threading
 import time
 
-from .assets import verify_assets, file_identity
+from .assets import verify_assets, verify_asset_configuration, verify_configured_assets, file_identity
 from .environment import discover, resource_gate
 from .schemas import GenerationRequest, ReaderResult, validate_record
 from .storage import atomic_json, content_hash
@@ -144,8 +144,9 @@ class ReaderBackend:
 def _native_smoke(config: dict, assets: dict, result: dict) -> None:
     output = Path(config['output_dir'])
     # Model-only verification cannot discharge an indispensable corpus prerequisite.
-    roles = [role for role in ('reader', 'encoder', 'original_reader') if role in assets['assets']]
-    verify_assets({'required': roles, 'assets': assets['assets']})
+    roles = [role for role in ('reader', 'encoder', 'original_reader') if role in config]
+    verify_configured_assets({role: config[role] for role in roles},
+                             {'required': roles, 'assets': assets['assets']})
     environment = discover(output)
     result['environment'] = environment
     if not environment['native_supported'] or not environment['resource_gate']['passed']:
@@ -240,20 +241,21 @@ def smoke(config: dict, assets: dict) -> dict:
               'limits': {key: config['reader'].get(key) for key in
                          ('max_context_tokens', 'max_new_tokens', 'timeout_seconds', 'prefill_step_size')}}
     start = time.perf_counter()
+    configuration_passed = False
     try:
-        requested = {role for role in ('reader', 'encoder', 'original_reader') if role in config}
-        requested.update(source['name'] for source in config.get('data', []))
-        missing = requested - set(assets.get('required', []))
-        if missing:
-            raise ValueError(f'configured indispensable assets omitted from manifest: {sorted(missing)}')
+        verify_asset_configuration(config, assets)
+        configuration_passed = True
         verify_assets(assets)
         result['asset_gate_passed'] = True
     except ValueError as error:
         result['errors'].append(str(error))
-    try:
-        _native_smoke(config, assets, result)
-    except Exception as error:
-        result['errors'].append(f'{type(error).__name__}: {error}')
+    # A failed asset download can still yield a separate native characterization.
+    # A configuration/manifest disagreement cannot reach native model loading.
+    if configuration_passed:
+        try:
+            _native_smoke(config, assets, result)
+        except Exception as error:
+            result['errors'].append(f'{type(error).__name__}: {error}')
     result['elapsed_seconds'] = time.perf_counter() - start
     result['wp0_passed'] = result['reader_encoder_passed'] and result['asset_gate_passed']
     if result['wp0_passed']:
