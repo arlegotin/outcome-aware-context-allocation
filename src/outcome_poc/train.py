@@ -404,3 +404,29 @@ def fit_post_from_closed(config, output_dir: Path):
         'paid_draft_features_sha256':_digest(original/'paid-draft-features.json')}
     atomic_json(Path(output_dir)/'fit-origin.json',origin)
     return origin
+
+
+def fit_candidate_diagnostic(rows, output_dir):
+    """One unchanged GBM on a nested fit prefix; no proxy labels or new outcomes."""
+    target=outcome_targets(rows);values=feature_matrix(rows)
+    root=Path(output_dir).resolve();root.mkdir(parents=True,exist_ok=True)
+    if (root/'fit-origin.json').exists(): raise ValueError('diagnostic origin already exists')
+    started=time.perf_counter()
+    model=GradientBoostingRegressor(**GBM_PARAMS).fit(values,target)
+    predictions=np.clip(model.predict(values),-1,1)
+    artifact=root/'PRE-OUTCOME-GBM.pkl';artifact.write_bytes(pickle.dumps(model,protocol=5))
+    ids=[r.task_id for r in rows];rows_hash=content_hash([asdict(r) for r in rows])
+    manifest={'family':'PRE-OUTCOME-GBM','artifact_file':artifact.name,'artifact_root':str(root),
+        'artifact_sha256':_digest(artifact),'artifact_bytes':artifact.stat().st_size,
+        'feature_schema_hash':feature_schema()['hash'],'fit_ids':ids,'training_rows_hash':rows_hash,
+        'parameters':model.get_params(),'schema_version':'local_gate_v1','sklearn_version':sklearn.__version__,
+        'numpy_version':np.__version__,'input_feature_names':FEATURE_NAMES,'feature_count':42,
+        'target_definition':'full_joint_em-small_joint_em','clipping':[-1,1],
+        'training_predictions':predictions.tolist(),'thresholds':training_thresholds(predictions),
+        'training_seconds':time.perf_counter()-started,'origin':'locally_created_fit_only'}
+    result={'kind':'locally_created_fit_only','fit_ids':ids,'rows_hash':rows_hash,
+        'feature_schema_hash':feature_schema()['hash'],'models':{'PRE-OUTCOME-GBM':manifest},
+        'training_seconds':manifest['training_seconds'],
+        'evaluation_scope':'exploratory_nested_fit_prefix_only_primary_unchanged'}
+    atomic_json(root/'fit-origin.json',result)
+    return result

@@ -503,6 +503,20 @@ def native_sandbox_profile(cwd, prepared):
     return profile
 
 
+def compact_selection_summary(result):
+    """Keep every configuration/metric; store duplicated task/event rows privately."""
+    def compact(value):
+        if isinstance(value,dict):
+            return {k:compact(v) for k,v in value.items()
+                    if k not in {'per_task','source_event_ids','deterministic_paid_action_checks'}}
+        if isinstance(value,list): return [compact(v) for v in value]
+        return value
+    public=compact(result)
+    public['private_selection_path']='artifacts/runs/task12-tune128-retry/selection.json'
+    public['interpretation']='development selection only; no protected sample/generation/freeze'
+    return public
+
+
 def finish_closed_tuning(config, config_path, *, native_seconds=None):
     """Bind current analysis source, validate/seal receipts, then separately score."""
     from pathlib import Path
@@ -573,10 +587,7 @@ def finish_closed_tuning(config, config_path, *, native_seconds=None):
     result['native_summary']=json.loads((root/'native-summary.json').read_text())
     atomic_json(root/'selection.json',result)
     # Provenance/table contains IDs, metrics and hashes, never question/document/answer text.
-    public={k:v for k,v in result.items() if k not in {'configurations','post_optimistic_bounds','deterministic_paid_action_checks'}}
-    public['configurations']=[{k:v for k,v in r.items() if k!='per_task'} for r in result['configurations']]
-    public['post_optimistic_bounds']=result['post_optimistic_bounds']
-    public['interpretation']='development selection only; no protected sample/generation/freeze'
+    public=compact_selection_summary(result)
     atomic_json(Path(config['output_dir'])/'task12-selection.json',public)
     print(json.dumps({'A*':result['A*']['config_id'],'B*':result['B*']['config_id'],
                       'configurations':len(result['configurations']),'assigned_tune_tasks':len(launch['plan']['task_ids'])}),flush=True)

@@ -217,3 +217,21 @@ def test_scored_merge_binds_exact_question_even_when_feature_values_match(tmp_pa
     scoring.main(SimpleNamespace(predictions=str(root/'predictions.jsonl'),run_dir=str(root),gold=str(gold_path),documents=str(documents),output=str(root/'scores.jsonl')))
     with pytest.raises(ValueError,match='bound task'):
         training().collect_pairs([replace(job['task'],question='Color!')],None,{'run_dir':str(root),'scores_path':str(root/'scores.jsonl')})
+
+
+def test_exploratory_candidate_fit_has_separate_origin_without_mutating_primary(tmp_path):
+    module=training()
+    fit=getattr(module,'fit_candidate_diagnostic',None)
+    assert callable(fit), 'separate fit-only candidate diagnostic origin missing'
+    values=rows()
+    primary=module.fit_gates(values,gold(values),tmp_path/'primary')
+    original=(tmp_path/'primary/fit-origin.json').read_bytes()
+    diagnostic=fit(values[:16],tmp_path/'diagnostic')
+    assert set(diagnostic['models'])=={'PRE-OUTCOME-GBM'}
+    manifest=diagnostic['models']['PRE-OUTCOME-GBM']
+    model=module.load_gate(manifest)
+    assert manifest['fit_ids']==[r.task_id for r in values[:16]]
+    assert model.get_params()==module.load_gate(primary['models']['PRE-OUTCOME-GBM']).get_params()
+    assert (tmp_path/'primary/fit-origin.json').read_bytes()==original
+    assert diagnostic['evaluation_scope']=='exploratory_nested_fit_prefix_only_primary_unchanged'
+    with pytest.raises(ValueError): fit(values[:16],tmp_path/'diagnostic')

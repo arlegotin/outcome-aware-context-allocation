@@ -177,3 +177,18 @@ def test_no_diagnostic_can_become_the_competitive_comparator(family):
     result=select.select_configuration([anchor,row('gbm','PRE-OUTCOME-GBM'),
         row('diagnostic',family,q=1.,answer=1.,seconds=.01,ratio=.01)],anchor)
     assert result['B*']['config_id']=='FIXED-10'
+
+
+def test_public_summary_retains_losing_rows_without_duplicating_private_events():
+    result={'A*':{'config_id':'a','per_task':[{'task_id':'x'}],'source_event_ids':['paid']},
+            'configurations':[{'config_id':'losing','eligible':False,'per_task':[],'source_event_ids':['paid']}],
+            'families':{'candidate':{'representative':{'config_id':'a','per_task':[{}],'source_event_ids':['paid']}}},
+            'deterministic_paid_action_checks':[{'task_id':'x'}]}
+    helper=getattr(select,'compact_selection_summary',None)
+    assert callable(helper), 'compact public selection summary missing'
+    summary=helper(result)
+    assert summary['configurations']==[{'config_id':'losing','eligible':False}]
+    assert summary['A*']=={'config_id':'a'}
+    assert summary['families']['candidate']['representative']=={'config_id':'a'}
+    assert summary['private_selection_path'].endswith('/selection.json')
+    assert result['A*']['source_event_ids']==['paid']
