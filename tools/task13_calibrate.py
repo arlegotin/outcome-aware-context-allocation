@@ -48,6 +48,18 @@ def force_max_output(module,eos_ids):
     finally: module.stream_generate=original
 
 
+def pad_to_tokens(base, count_tokens, target):
+    if count_tokens(base)>target: raise ValueError('base prompt exceeds capacity target')
+    padding=max(0,target-count_tokens(base))
+    for _ in range(16):
+        value=base+' a'*padding
+        actual=count_tokens(value)
+        if actual==target:return value
+        padding+=target-actual
+        if padding<0:break
+    raise ValueError('synthetic rendered prompt construction failed')
+
+
 class CalibrationFactory:
     def __init__(self,path,settings):self.path,self.settings=path,settings
     def __call__(self):
@@ -182,10 +194,7 @@ def run(plan_path):
             synthetic=[]
             for number in range(plan['synthetic_cases']):
                 question=MARKER+f' case {number}. Continue writing numbered words without stopping.'
-                base=len(backend.tokenizer.encode(render_prompt(question,[],{},backend.tokenizer),add_special_tokens=False))
-                question+=' a'*(7936-base)
-                if len(backend.tokenizer.encode(render_prompt(question,[],{},backend.tokenizer),add_special_tokens=False))!=7936:
-                    raise ValueError('synthetic rendered prompt construction failed')
+                question=pad_to_tokens(question,lambda text:len(backend.tokenizer.encode(render_prompt(text,[],{},backend.tokenizer),add_special_tokens=False)),7936)
                 synthetic.append(Task(f'synthetic-capacity-{number}','pilot',question,tasks[0].candidate_ids))
             def decorate(row,phase):
                 return {**row,'phase':phase,'job_id':content_hash([plan['binding_hash'],phase,row])}
@@ -239,5 +248,11 @@ def run(plan_path):
 
 if __name__=='__main__':
     if sys.argv[1]=='prepare': print(json.dumps(prepare(Path(sys.argv[2])),allow_nan=False))
-    elif sys.argv[1]=='run': run(Path(sys.argv[2]))
+    elif sys.argv[1]=='run':
+        outer_start=time.perf_counter_ns()
+        try: run(Path(sys.argv[2]))
+        except BaseException as error:
+            failed_plan=json.loads(Path(sys.argv[2]).read_text())
+            atomic_json(Path(failed_plan['run_dir'])/'failed-native-envelope.json',{'elapsed_seconds':(time.perf_counter_ns()-outer_start)/1e9,'error':f'{type(error).__name__}:{error}','source_binding_hash':failed_plan['binding_hash']})
+            raise
     else: raise ValueError('prepare or run required')

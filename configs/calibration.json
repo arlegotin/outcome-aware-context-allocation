@@ -29,6 +29,6 @@
   "post_training_dir": "artifacts/runs/task11-post-training",
   "index_dir": "data/index/tune",
   "per_stratum": 4,
-  "prelaunch_dir": "artifacts/runs/task13-calibration-prelaunch",
-  "run_dir": "artifacts/runs/task13-calibration"
+  "prelaunch_dir": "artifacts/runs/task13-calibration-prelaunch-retry",
+  "run_dir": "artifacts/runs/task13-calibration-retry"
 }

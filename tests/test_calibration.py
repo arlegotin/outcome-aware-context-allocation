@@ -33,3 +33,11 @@ def test_forced_output_modification_is_scoped_and_restored():
     with pytest.raises(RuntimeError):
         with tool().force_max_output(fake,[0]): raise RuntimeError('failure')
     assert fake.stream_generate is original
+
+
+def test_maximum_prompt_accounts_for_token_merging_at_padding_boundary():
+    # Adding the first padding token changes the tokenization of the prior suffix.
+    def count(text): return 11 if text=='base' else 10+text.count(' a')
+    value=tool().pad_to_tokens('base',count,100)
+    assert count(value)==100
+    with pytest.raises(ValueError):tool().pad_to_tokens('base',count,5)
