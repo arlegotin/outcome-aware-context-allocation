@@ -9,13 +9,19 @@ import os
 from pathlib import Path
 import tempfile
 
-from .schemas import validate_record
+from .schemas import Prediction, validate_record
 
 
 def _json_value(value: object) -> object:
     if is_dataclass(value) and not isinstance(value, type):
         validate_record(value)
-        return {field.name: _json_value(getattr(value, field.name)) for field in fields(value)}
+        result = {field.name: _json_value(getattr(value, field.name)) for field in fields(value)}
+        if isinstance(value, Prediction):
+            result["citations"] = [
+                {"doc_id": doc_id, "sentence_index": sentence_index}
+                for doc_id, sentence_index in value.citations
+            ]
+        return result
     if value is None or type(value) in (str, bool, int):
         return value
     if type(value) is float:

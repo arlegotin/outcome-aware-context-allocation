@@ -127,9 +127,9 @@ class CostEvent:
     output_tokens: int
     cache_mode: str
     source_event_id: str | None
-    peak_mlx_bytes: int
-    rss_bytes: int
-    swap_used_bytes: int
+    peak_mlx_bytes: int | None
+    rss_bytes: int | None
+    swap_used_bytes: int | None
     attempt: int
     status: str
 
@@ -273,6 +273,8 @@ def validate_record(record: object) -> None:
             raise ValueError("action_k: must be positive")
         if learned and record.action_k not in {2, 10}:
             raise ValueError("learned action_k: expected two or ten")
+        if not learned and (mode is not None or threshold is not None):
+            raise ValueError("non-threshold policies require null threshold mode and threshold")
         if mode is None:
             if threshold is not None or learned:
                 raise ValueError("learned policies require a threshold mode; null mode requires null threshold")

@@ -78,6 +78,18 @@ def test_cost_event_rejects_invalid_accounting(changes):
         validate_record(replace(event(), **changes))
 
 
+@pytest.mark.parametrize("field", ["peak_mlx_bytes", "rss_bytes", "swap_used_bytes"])
+def test_cost_event_accepts_unavailable_memory_measurement(field):
+    validate_record(replace(event(), **{field: None}))
+
+
+@pytest.mark.parametrize("field", ["peak_mlx_bytes", "rss_bytes", "swap_used_bytes"])
+@pytest.mark.parametrize("invalid", [True, -1])
+def test_cost_event_rejects_invalid_optional_memory_measurement(field, invalid):
+    with pytest.raises(ValueError):
+        validate_record(replace(event(), **{field: invalid}))
+
+
 @pytest.mark.parametrize("mode,threshold,action", [
     ("numeric", 0.25, 2), ("always_two", None, 2),
     ("always_ten", None, 10),
@@ -101,6 +113,14 @@ def test_learned_threshold_modes_reject_invalid_combinations(mode, threshold, ac
 def test_non_threshold_policy_requires_null_threshold():
     with pytest.raises(ValueError):
         validate_record(Decision("fixed-two", 2, None, None, 0.5, "fixed", "features"))
+
+
+@pytest.mark.parametrize("policy", ["fixed-two", "ADAPTIVE-k", "LLM-SUFFICIENCY",
+                                   "random-mixture", "oracle"])
+@pytest.mark.parametrize("mode,threshold", [("numeric", 0.25), ("always_two", None)])
+def test_non_threshold_policies_reject_threshold_modes(policy, mode, threshold):
+    with pytest.raises(ValueError):
+        validate_record(Decision(policy, 2, None, mode, threshold, "rule", "features"))
 
 
 def test_negative_integer_score_delta_and_threshold_are_finite_numbers():

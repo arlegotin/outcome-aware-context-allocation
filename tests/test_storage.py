@@ -5,7 +5,7 @@ import sys
 
 import pytest
 
-from outcome_poc.schemas import Task
+from outcome_poc.schemas import CostEvent, Prediction, Task
 from outcome_poc.storage import (
     append_jsonl, atomic_json, canonical_bytes, content_hash, read_jsonl,
 )
@@ -109,3 +109,48 @@ def test_jsonl_refuses_append_to_incomplete_last_record(tmp_path):
     with pytest.raises(ValueError):
         append_jsonl(path, {"attempt": 2})
     assert path.read_bytes() == b'{"attempt":1}'
+
+
+def test_cost_event_persists_unavailable_memory_as_null(tmp_path):
+    record = CostEvent(
+        event_id="event", run_id="run", task_id="invented", policy_id="fixed-two",
+        role="answer", start_ns=100, stop_ns=200, elapsed_seconds=0.0000001,
+        prompt_tokens=12, output_tokens=3, cache_mode="none", source_event_id=None,
+        peak_mlx_bytes=None, rss_bytes=None, swap_used_bytes=None, attempt=1, status="ok",
+    )
+    path = tmp_path / "events.jsonl"
+    append_jsonl(path, record)
+    persisted = next(read_jsonl(path))
+    assert persisted["peak_mlx_bytes"] is None
+    assert persisted["rss_bytes"] is None
+    assert persisted["swap_used_bytes"] is None
+    assert b'"peak_mlx_bytes":null' in path.read_bytes()
+    assert b'"rss_bytes":null' in path.read_bytes()
+    assert b'"swap_used_bytes":null' in path.read_bytes()
+
+
+def test_prediction_citations_persist_as_canonical_objects(tmp_path):
+    record = Prediction(
+        run_id="run", task_id="invented", policy_id="fixed-two",
+        protocol_hash="protocol", job_id="job", attempt=1, repetition_id=0,
+        evidence_ids=["doc"], raw_output="raw", answer="invented",
+        citations=[("doc", 0)], status="ok", model_revision="revision",
+        prompt_hash="prompt", decoding_hash="decode", elapsed_seconds=1.25,
+        prompt_tokens=12, generated_tokens=3, generation_calls=1, event_ids=["event"],
+    )
+    expected = (
+        b'{"answer":"invented","attempt":1,"citations":[{"doc_id":"doc",'
+        b'"sentence_index":0}],"decoding_hash":"decode","elapsed_seconds":1.25,'
+        b'"event_ids":["event"],"evidence_ids":["doc"],"generated_tokens":3,'
+        b'"generation_calls":1,"job_id":"job","model_revision":"revision",'
+        b'"policy_id":"fixed-two","prompt_hash":"prompt","prompt_tokens":12,'
+        b'"protocol_hash":"protocol","raw_output":"raw","repetition_id":0,'
+        b'"run_id":"run","status":"ok","task_id":"invented"}'
+    )
+    assert canonical_bytes(record) == expected
+    assert content_hash(record) == hashlib.sha256(expected).hexdigest()
+    path = tmp_path / "predictions.jsonl"
+    append_jsonl(path, record)
+    assert path.read_bytes() == expected + b"\n"
+    assert next(read_jsonl(path))["citations"] == [{"doc_id": "doc", "sentence_index": 0}]
+    assert record.citations == [("doc", 0)]
