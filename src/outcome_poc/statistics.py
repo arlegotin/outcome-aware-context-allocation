@@ -306,3 +306,127 @@ def compare_primary(times_a: np.ndarray, times_b: np.ndarray, success_a: np.ndar
                             'effect_sign_sensitive': effect_sign_sensitive,
                             'interval_sign_sensitive': interval_sign_sensitive,
                             'timing_noise_source': noise_source}}
+
+
+def analyze_run(protocol: dict, scored_rows: list, events: list, *, validity_assessment: dict | None = None) -> dict:
+    """Closed-run consumer: exact jobs, raw paired repetitions and evidence flags.
+
+    This never trains/selects, changes the sample, or treats repetitions as tasks.
+    Unknown stationarity and influence assessments explicitly withhold a claim.
+    """
+    import json
+    from pathlib import Path
+    from .protocol import file_hash
+    from .protected import validate_run
+    from .storage import content_hash, read_jsonl
+    from .runner import load_events
+    root=Path(protocol['run_dir'])
+    validate_run(protocol,root)
+    marker=json.loads((root/'scores.jsonl.closed.json').read_text())
+    if marker['protocol_hash']!=protocol['protocol_hash'] or any(file_hash(root/name)!=h for name,h in marker['hashes'].items()):
+        raise ValueError('analysis score closure checksum mismatch')
+    jobs=protocol['schedule']['jobs']; expected=[j['job_id'] for j in jobs]
+    if [s.job_id for s in scored_rows]!=expected: raise ValueError('analysis requires full assigned schedule')
+    if [content_hash(s) for s in scored_rows]!=[content_hash(r) for r in read_jsonl(root/'scores.jsonl')]:
+        raise ValueError('analysis score values differ from closed scores')
+    actual_events=load_events(root)
+    if sorted(content_hash(e) for e in events)!=sorted(content_hash(e) for e in actual_events):
+        raise ValueError('analysis events differ from complete accounted attempts')
+    evidence=json.loads((root/'job-evidence.json').read_text())
+    byjob={s.job_id:s for s in scored_rows}; info={j['job_id']:j for j in evidence['jobs']}
+    if set(info)!=set(expected) or any(info[s.job_id]['score_hash']!=content_hash(s) for s in scored_rows):
+        raise ValueError('analysis job evidence mapping mismatch')
+    ids=protocol['sample']['task_ids']; reps=protocol['methods']['repetitions']; N=protocol['sample']['N']
+    lookup={(j['task_id'],j['scope'],j['arm'],j['repetition_id']):j for j in jobs if j['scope'] in ('primary','anchor')}
+    ta=[];tb=[];sa=[];sb=[];quality=[];raw=[];mismatches=[]
+    position={j['job_id']:i for i,j in enumerate(jobs)}
+    for tid in ids:
+        arms={}
+        for arm in ('A','B'):
+            selected=[lookup[(tid,'primary',arm,r)] for r in range(1,reps+1)]
+            rows=[byjob[j['job_id']] for j in selected]
+            signatures=[info[j['job_id']]['output_parity_hash'] for j in selected]
+            if len(set(signatures))!=1 or len({(s.joint_em,s.answer_em) for s in rows})!=1:
+                mismatches.append({'task_id':tid,'arm':arm,'job_ids':[j['job_id'] for j in selected]})
+            arms[arm]=(selected,rows)
+        aa=[s.total_serving_seconds for s in arms['A'][1]];bb=[s.total_serving_seconds for s in arms['B'][1]]
+        ta.append(aa);tb.append(bb)
+        a,b=arms['A'][1][0],arms['B'][1][0]
+        sa.append(a.joint_em);sb.append(b.joint_em)
+        anchor=byjob[lookup[(tid,'anchor',None,0)]['job_id']]
+        quality.append({'candidate_joint_em':a.joint_em,'comparator_joint_em':b.joint_em,'fixed_ten_joint_em':anchor.joint_em,
+            'candidate_answer_em':a.answer_em,'comparator_answer_em':b.answer_em,'fixed_ten_answer_em':anchor.answer_em})
+        raw.append({'task_id':tid,'A_seconds':aa,'B_seconds':bb,'A_joint_em':a.joint_em,'B_joint_em':b.joint_em,
+            'pair_order':['AB' if position[x['job_id']]<position[y['job_id']] else 'BA'
+                          for x,y in zip(arms['A'][0],arms['B'][0])],
+            'pair_positions':[[position[x['job_id']],position[y['job_id']]] for x,y in zip(arms['A'][0],arms['B'][0])],
+            'prompt_tokens':[info[j['job_id']]['prompt_tokens'] for arm in ('A','B') for j in arms[arm][0]],
+            'first_serving_start_ns':min(info[j['job_id']]['final_serving_start_ns'] for arm in ('A','B') for j in arms[arm][0]),
+            'paired_covariance_seconds_squared':np.cov(np.array([aa,bb]),ddof=1).tolist()})
+    ta=np.array(ta);tb=np.array(tb);sa=np.array(sa);sb=np.array(sb)
+    deterministic=not mismatches
+    primary=compare_primary(ta,tb,sa,sb,N,deterministic_outputs=deterministic,
+                            timing_stationary=None,single_dominant=None)
+    centered=(ta-tb)-(ta-tb).mean(axis=1,keepdims=True)
+    order={order:[float(centered[i,r]) for i,row in enumerate(raw) for r,o in enumerate(row['pair_order']) if o==order]
+           for order in ('AB','BA')}
+    families={}
+    for scope in ('representative','anchor','random','oracle-source'):
+        configs=sorted({j['method']['config_id'] for j in jobs if j['scope']==scope})
+        for config in configs:
+            assigned=[j for j in jobs if j['scope']==scope and j['method']['config_id']==config]
+            if {j['task_id'] for j in assigned}!=set(ids) or len(assigned)!=len(ids):
+                raise ValueError('family assigned denominator incomplete')
+            rows=[byjob[j['job_id']] for j in assigned]
+            families[scope+':'+config]={**efficiency(np.array([[s.total_serving_seconds] for s in rows]),np.array([s.joint_em for s in rows])),
+                'answer_em':sum(s.answer_em for s in rows)/len(rows),'scope':scope,'config_id':config,
+                'job_ids':[j['job_id'] for j in assigned]}
+    # Descriptive partitions are fixed rank partitions, not post-outcome tests or cutoffs.
+    def partitions(key,count):
+        ordered=sorted(range(len(raw)),key=lambda i:(key(raw[i]),raw[i]['task_id']))
+        output=[]
+        for group in range(count):
+            members=ordered[len(ordered)*group//count:len(ordered)*(group+1)//count]
+            if not members: continue
+            differences=[float(ta[i,r]-tb[i,r]) for i in members for r in range(reps)]
+            output.append({'group':group,'task_ids':[raw[i]['task_id'] for i in members],
+                'paired_difference_seconds':differences,'mean_paired_difference_seconds':float(np.mean(differences))})
+        return output
+    timing={'question_centered_by_order':order,'question_centered_by_repetition':centered.T.tolist(),
+        'chronological_blocks':partitions(lambda r:r['first_serving_start_ns'],4),
+        'length_strata':partitions(lambda r:max(r['prompt_tokens']),3),
+        'assessment_rule':protocol['methods']['statistics']['actual_run_assessment'],
+        'operational_state_hashes':{name:file_hash(root/name) for name in ('resources.jsonl','system-state.jsonl','power.jsonl') if (root/name).exists()}}
+    binding={'protocol_hash':protocol['protocol_hash'],
+        'prediction_closure_hash':file_hash(root/'predictions.closed.json'),
+        'score_closure_hash':file_hash(root/'scores.jsonl.closed.json'),
+        'timing_evidence_hash':content_hash({'raw_pairs':raw,'diagnostics':timing}),
+        'influence_evidence_hash':content_hash(primary['sensitivity']),
+        'assessment_rule_hash':content_hash(protocol['methods']['statistics']['actual_run_assessment'])}
+    if validity_assessment is not None:
+        if not isinstance(validity_assessment,dict) or any(validity_assessment.get(k)!=v for k,v in binding.items()):
+            raise ValueError('validity assessment evidence binding mismatch')
+        for field in ('reviewer','timing_rationale','influence_rationale'):
+            if not isinstance(validity_assessment.get(field),str) or not validity_assessment[field].strip():
+                raise ValueError('validity assessment requires reviewer and rationale')
+        for field in ('timing_stationary','single_dominant'):
+            if field not in validity_assessment or (validity_assessment[field] is not None and type(validity_assessment[field]) is not bool):
+                raise ValueError('invalid assessment flag')
+        primary=compare_primary(ta,tb,sa,sb,N,deterministic_outputs=deterministic,
+            timing_stationary=validity_assessment['timing_stationary'],single_dominant=validity_assessment['single_dominant'])
+    guards=quality_guards(quality,N)
+    quality_valid=deterministic and all(g['preserved'] for g in guards)
+    return {'protocol_hash':protocol['protocol_hash'],'assigned_unique_tasks':len(ids),'population':N,
+        'primary':primary,'quality_guards':guards,'quality_claim_valid':quality_valid,'quality_outcomes_valid':deterministic,
+        'repeated_output_mismatches':mismatches,'raw_paired_rows':raw,'families':families,
+        'assessment_binding':binding,'validity_assessment':validity_assessment,
+        'validity_assessment_hash':content_hash(validity_assessment) if validity_assessment else None,
+        'flag_evidence':{'deterministic_outputs':'Exact same-arm raw/parsed/status/evidence/action/prompt/token parity and binary scores across all assigned fresh repetitions',
+            'timing_stationary':validity_assessment['timing_rationale'] if validity_assessment else 'Unverified; retain centered paired contrasts/order/repetition/block/resource evidence for documented review',
+            'single_dominant':validity_assessment['influence_rationale'] if validity_assessment else 'Unverified; all leave-one-out effects and intervals retained for documented review'},
+        'timing_diagnostics':timing,
+        'nondeterministic_qualification':None if deterministic else 'Primary invalid; first scheduled repetition binary values are descriptive only, never averaged',
+        'total_physical_serving_seconds':sum(s.total_serving_seconds for s in scored_rows),
+        'total_physical_experiment_seconds':sum(s.total_experiment_seconds for s in scored_rows),
+        'all_family_superiority':'not prespecified',
+        'outcome':'qualified positive' if primary['efficiency_advantage'] and quality_valid else 'inconclusive'}

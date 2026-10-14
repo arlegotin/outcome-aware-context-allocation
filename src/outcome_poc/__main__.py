@@ -45,9 +45,10 @@ def main(argv: list[str] | None = None) -> int:
         if command == 'reproduce':
             stage_parser.add_argument('--scores-only', action='store_true')
         if command == "score":
+            stage_parser.add_argument('--protocol', help='closed frozen confirmation protocol')
             stage_parser.add_argument('--run-dir', help='complete durable run ledger for experimental accounting')
             for argument in ('predictions', 'gold', 'documents', 'output'):
-                stage_parser.add_argument(f'--{argument}', required=True)
+                stage_parser.add_argument(f'--{argument}')
     args = parser.parse_args(argv)
     module_name = f"outcome_poc.{COMMAND_MODULES[args.command]}"
     try:

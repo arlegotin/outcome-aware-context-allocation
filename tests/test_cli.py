@@ -100,3 +100,11 @@ def test_freeze_and_plan_cli_expose_protocol_and_source_only_hooks():
         result=subprocess.run([sys.executable,'-m','outcome_poc',command,'--help'],capture_output=True,text=True)
         assert result.returncode==0
         assert all(flag in result.stdout for flag in expected)
+
+
+def test_protected_score_cli_accepts_protocol_without_exposing_gold_to_run(tmp_path):
+    result=subprocess.run([sys.executable,'-m','outcome_poc','score','--protocol',str(tmp_path/'missing.json')],
+                          text=True,capture_output=True)
+    assert 'unrecognized arguments' not in result.stderr
+    assert 'arguments are required' not in result.stderr
+    assert 'missing.json' in result.stderr

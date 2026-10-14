@@ -1,7 +1,7 @@
 """Annotation-free serving, durable per-job attempts and a development harness.
 
 Single-writer run directories. Nested events explain cost; only enclosing serving
-intervals enter serving totals. No protected scheduler is enabled here.
+intervals enter serving totals. Protected execution requires a verified durable schedule.
 """
 from dataclasses import dataclass, field, fields, replace
 import hashlib
@@ -93,7 +93,8 @@ def serve(task: Task, policy: object, runtime: object, job: dict) -> Prediction:
     """
     validate_record(task)
     if task.split not in {'pilot','fit','tune'}:
-        raise ValueError('protected serving blocked until protocol/sample verification')
+        from .protected import authorize_job
+        authorize_job(task,policy,runtime,job)
     if job.get('cache_mode','none') not in {'none','within_query_prefix','development_replay'}:
         raise ValueError('native serving supports fresh generation or explicit development replay only')
     if job.get('mode','direct') not in {'direct','replay'}:
@@ -550,6 +551,12 @@ def close_run(run_dir: Path, expected_jobs: list[dict]) -> dict:
     if not ids or len(ids) != len(set(ids)): raise ValueError('assigned jobs must be nonempty and unique')
     actual={path.name for path in (run_dir / 'jobs').iterdir() if path.is_dir()}
     if actual != set(ids): raise ValueError('assigned job set is incomplete or contains extras')
+    shared=run_dir / 'shared-costs.jsonl'
+    rows=list(read_jsonl(shared)) if shared.exists() else []
+    _validate_shared_costs(rows)
+    if any(not set(row['assigned_job_ids'])<=set(ids) for row in rows):
+        raise ValueError('shared cost allocation includes unassigned job')
+    allocations=_shared_allocations(rows)
     predictions=[]
     for job in expected_jobs:
         directory=run_dir / 'jobs' / job['job_id']
@@ -558,7 +565,7 @@ def close_run(run_dir: Path, expected_jobs: list[dict]) -> dict:
         if result.status == 'infra_error': raise ValueError('unresolved infrastructure failure')
         for attempt_dir in directory.glob('attempt-*'):
             _check_recovery_settled(attempt_dir)
-        accounting(run_dir,result)
+        _accounting_local(run_dir,result,allocations.get(result.job_id,()))
         predictions.append(result)
     closed=run_dir/'predictions.closed.json'
     if closed.exists():
@@ -657,6 +664,9 @@ print(json.dumps(checks))
 
 
 def main(args) -> int:
+    if args.command == 'run' and getattr(args,'protocol',None):
+        from .protected import launch
+        return launch(Path(args.protocol))
     if args.command != 'validate-harness':
         import sys
         print(f"stage unavailable: '{args.command}' blocked until protocol/sample verification",file=sys.stderr)
@@ -1235,3 +1245,8 @@ def seal_legacy_paid_receipts(run_dir, predictions, *, documents=None, source_bi
             'limitation':'Original v1 closure did not hash successful ancillary paid receipts. This seals extant bytes after core/content checks; it does not prove their historical completion-time bytes.'}
     atomic_json(path,result)
     return result
+
+
+def run(protocol: dict, runtime: object) -> dict:
+    from .protected import run as protected_run
+    return protected_run(protocol, runtime)

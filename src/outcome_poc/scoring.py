@@ -97,6 +97,25 @@ class Scorer:
 
 
 def main(args) -> int:
+    if getattr(args, 'protocol', None):
+        from .protocol import _read
+        from .runner import load_events
+        from .statistics import analyze_run
+        from .protected import immutable_json
+        protocol=_read(Path(args.protocol))
+        if any(getattr(args,name,None) for name in ('predictions','gold','documents','output','run_dir')):
+            raise ValueError('protocol scoring uses its frozen assigned paths only')
+        root=Path(protocol['run_dir'])
+        gold=Path(protocol['methods']['retrieval']['prepared_dir'])/'gold/gold.jsonl'
+        scores=score_run(protocol,root,gold)
+        result=analyze_run(protocol,scores,load_events(root))
+        immutable_json(root/'analysis.json',result)
+        print(json.dumps({'status':'scored_closed_run','assigned_jobs':len(scores),
+            'assigned_unique_tasks':result['assigned_unique_tasks'],'primary_status':result['primary']['status'],
+            'outcome':result['outcome']}))
+        return 0
+    if any(not getattr(args,name,None) for name in ('predictions','gold','documents','output')):
+        raise ValueError('development scoring requires predictions, gold, documents and output')
     started = time.perf_counter()
     predictions_path = Path(args.predictions)
     closure_path = predictions_path.with_suffix('.closed.json')
@@ -160,3 +179,62 @@ def main(args) -> int:
         'paid_receipt_coverage':accounting_context.receipt_coverage if accounting_context else None,
         'scorer_source_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest()}))
     return 0
+
+
+def score_run(protocol: dict, run_dir: Path, gold_path: Path, *, documents_path=None) -> list[ScoredTask]:
+    """Validate the entire frozen run before opening the assigned gold projection."""
+    from .protocol import verify_protocol, file_hash
+    from .protected import validate_run, job_evidence, immutable_json
+    from .storage import canonical_bytes, content_hash
+    root=Path(run_dir)
+    if verify_protocol(Path(protocol['output_dir'])/'protocol.json') != protocol:
+        raise ValueError('scorer protocol mismatch')
+    predictions,context=validate_run(protocol,root)
+    closure=root/'scores.jsonl.closed.json'
+    if closure.exists():
+        marker=json.loads(closure.read_text())
+        if marker['protocol_hash']!=protocol['protocol_hash'] or any(file_hash(root/p)!=h for p,h in marker['hashes'].items()):
+            raise ValueError('score closure checksum changed')
+        return [ScoredTask(**r) for r in read_jsonl(root/'scores.jsonl')]
+    assigned=set(protocol['sample']['task_ids'])
+    records={}
+    if not protocol['fixture']:
+        prepared=Path(protocol['methods']['retrieval']['prepared_dir'])
+        if Path(gold_path).resolve()!=(prepared/'gold/gold.jsonl').resolve():
+            raise ValueError('protected scorer requires frozen prepared gold source')
+        manifest=json.loads((prepared/'manifest.json').read_text())
+        if file_hash(gold_path)!=manifest['files']['gold/gold.jsonl']['sha256']:
+            raise ValueError('prepared gold source checksum changed')
+    # Gold is opened only after every prediction, attempt and receipt has closed.
+    for row in read_jsonl(Path(gold_path)):
+        if row['task_id'] not in assigned: continue
+        row['supporting_facts']=[tuple(v) for v in row['supporting_facts']]
+        gold=GoldRecord(**row);validate_record(gold)
+        if gold.task_id in records: raise ValueError('duplicate assigned gold task')
+        records[gold.task_id]=gold
+    if set(records)!=assigned: raise ValueError('assigned gold records incomplete')
+    documents=DocumentStore(Path(documents_path) if documents_path else root/'selected-documents.jsonl')
+    expected_documents={d for task in protocol['sample']['tasks'] for d in task['candidate_ids']}
+    if set(documents.offsets)!=expected_documents: raise ValueError('scorer requires exact selected documents')
+    started=time.perf_counter()
+    scores=[Scorer().score(p,records[p.task_id],documents,run_dir=root,accounting_context=context) for p in predictions]
+    context.verify_unchanged()
+    def publish_jsonl(path, rows):
+        import os
+        import tempfile
+        payload=b''.join(canonical_bytes(r)+b'\n' for r in rows)
+        if path.exists():
+            if path.read_bytes()!=payload: raise ValueError('immutable scoring output differs')
+            return
+        with tempfile.NamedTemporaryFile(dir=root,prefix='score-staging-',delete=False) as stream:
+            temporary=Path(stream.name);stream.write(payload);stream.flush();os.fsync(stream.fileno())
+        os.replace(temporary,path)
+    publish_jsonl(root/'scores.gold.jsonl',[records[i] for i in protocol['sample']['task_ids']])
+    publish_jsonl(root/'scores.jsonl',scores)
+    immutable_json(root/'job-evidence.json',job_evidence(protocol,root,predictions,scores))
+    immutable_json(closure,{'kind':'protected_complete_schedule_scorer','protocol_hash':protocol['protocol_hash'],
+        'record_count':len(scores),'assigned_unique_tasks':len(assigned),'paid_receipt_coverage':context.receipt_coverage,
+        'scorer_source_sha256':file_hash(Path(__file__)),'scoring_seconds':time.perf_counter()-started,
+        'hashes':{name:file_hash(root/name) for name in ('scores.jsonl','scores.gold.jsonl','job-evidence.json',
+                    'predictions.closed.json','protected-run.closed.json')}})
+    return scores
