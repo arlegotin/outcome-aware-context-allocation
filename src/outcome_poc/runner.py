@@ -871,10 +871,16 @@ def _consume_worker_lifecycle(runtime,job,ledger,*,serving_window=None):
         if owner:
             if (Path(owner['run_dir'])/'predictions.closed.json').exists():
                 raise ValueError('closed origin run cannot receive worker recovery costs')
-            identity=content_hash({'owner':owner,'load':record})
             inline=serving_window is not None and serving_window[0]<=record['start_ns']<=record['stop_ns']<=serving_window[1]
             same_owner=owner==_worker_owner(job,ledger.policy_id)
-            role='worker_reload_in_serving' if inline and same_owner else 'worker_reload'
+            # Allocation is an observation of the original boundary, not a property
+            # of whichever job eventually succeeds in publishing its receipt.
+            # Retain it before fallible I/O, so an unadvanced cursor cannot relabel
+            # an already-enclosed load when the next job consumes the record.
+            if 'cost_role' not in record:
+                record['cost_role']='worker_reload_in_serving' if inline and same_owner else 'worker_reload'
+            role=record['cost_role']
+            identity=content_hash({'owner':owner,'load':record})
             if inline and not same_owner:
                 ledger.event('worker_reload_transfer',record['start_ns'],record['stop_ns'])
             event=CostEvent(identity,owner['run_id'],owner['task_id'],owner['policy_id'],

@@ -165,3 +165,47 @@ def test_closed_supplement_checksum_cannot_change_primary_cost(tmp_path):
     runner.atomic_json(tmp_path/'jobs/job/attempt-1/recovery-pending.json',{'owner':'late'})
     with pytest.raises(ValueError,match='supplement'):
         runner.accounting(tmp_path,result)
+
+
+def test_inline_reload_receipt_retry_preserves_original_enclosure(tmp_path,monkeypatch):
+    from outcome_poc import runner
+    from serving_helpers import fixture_runtime
+    runtime,job,clock=fixture_runtime(tmp_path)
+    original=runtime.reader.backend
+    class Backend:
+        tokenizer=original.tokenizer
+        lifecycle=[{'kind':'load','start_ns':0,'stop_ns':0}]
+        def synchronize(self): pass
+        def generate(self,*args,**kwargs):
+            start=clock();clock.advance(7)
+            self.lifecycle.append({'kind':'load','start_ns':start,'stop_ns':clock(),
+                                   'owner':getattr(self,'job_owner',None)})
+            return original.generate(*args,**kwargs)
+    runtime.reader.backend=Backend()
+    atomic=runner.atomic_json
+    injected=[False]
+    def write(path,value):
+        if path.parent.name=='reloads' and not injected[0]:
+            injected[0]=True
+            raise OSError('one-shot inline reload receipt publication failure')
+        return atomic(path,value)
+    monkeypatch.setattr(runner,'atomic_json',write)
+    ajob={**job,'arm':'A*'}
+    a=runner.execute_job(ajob,runtime,tmp_path)
+    assert a.status=='infra_error' and a.elapsed_seconds==18.
+    assert runner.accounting(tmp_path,a)=={'total_serving_seconds':18.,'total_experiment_seconds':18.}
+    completion=tmp_path/'jobs/job/completion.json'
+    completed_bytes=completion.read_bytes()
+    bjob={**job,'job_id':'B','arm':'B*'}
+    b=runner.execute_job(bjob,runtime,tmp_path)
+    assert b.status=='ok' and b.elapsed_seconds==18.
+    assert runner.accounting(tmp_path,a)=={'total_serving_seconds':18.,'total_experiment_seconds':18.}
+    assert runner.accounting(tmp_path,b)=={'total_serving_seconds':18.,'total_experiment_seconds':18.}
+    assert completion.read_bytes()==completed_bytes
+    retry=runner.execute_job({**ajob,'retry_infrastructure':True},runtime,tmp_path)
+    assert retry.status=='ok' and retry.attempt==2 and retry.elapsed_seconds==18.
+    assert runner.accounting(tmp_path,retry)=={'total_serving_seconds':36.,'total_experiment_seconds':36.}
+    assert runner.close_run(tmp_path,[ajob,bjob])['record_count']==2
+    # Closure and ordinary resume cannot trigger another publication or paid call.
+    assert runner.execute_job(ajob,runtime,tmp_path)==retry
+    assert original.calls==3
