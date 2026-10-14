@@ -60,6 +60,33 @@ def test_runtime_denied_gold_access_still_loads_documents_and_tasks(tmp_path, ra
     assert {field.name for field in fields(Document)} == {'doc_id', 'title', 'sentences', 'character_count'}
 
 
+def test_reader_answer_operates_with_gold_denied(tmp_path, monkeypatch):
+    from types import SimpleNamespace
+    from outcome_poc.generation import Reader, render_prompt, prompt_identity
+    from outcome_poc.schemas import GenerationRequest, ReaderResult
+    from retrieval_helpers import document
+    from test_prompt import Tokenizer
+    def guard(function):
+        def access(file, *args, **kwargs):
+            if isinstance(file, (str, Path)) and 'gold' in Path(file).parts:
+                raise PermissionError('gold access denied')
+            return function(file, *args, **kwargs)
+        return access
+    monkeypatch.setattr(builtins, 'open', guard(builtins.open))
+    monkeypatch.setattr(io, 'open', guard(io.open))
+    monkeypatch.setattr(os, 'open', guard(os.open))
+    doc, tokenizer = document('Invented lamp', ['A blue lamp.']), Tokenizer()
+    aliases = {'D0': doc.doc_id}
+    prompt = render_prompt('Color?', [doc], aliases, tokenizer)
+    request = GenerationRequest('r', 'h', prompt_identity(prompt, tokenizer), 'd', 'answer', 8192, 256, 120., 'none')
+    backend = SimpleNamespace(tokenizer=tokenizer, generate=lambda *args, **kwargs:
+        ReaderResult('{"answer":"blue","citations":[{"doc_id":"D0","sentence_index":0}]}',
+                     None, [], 'ok', 12, 8, [1]*12, [2]*8, 'stop'))
+    assert Reader(backend).answer('Color?', [doc], aliases, request).status == 'ok'
+    with pytest.raises(PermissionError):
+        (tmp_path / 'gold/gold.jsonl').open()
+
+
 def test_actual_serving_import_closure_in_fresh_process():
     script = '''
 import importlib, importlib.util, json, sys

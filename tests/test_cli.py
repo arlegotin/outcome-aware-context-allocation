@@ -53,3 +53,33 @@ def test_index_cli_does_not_advertise_or_accept_unscheduled_protected_population
                             text=True, capture_output=True)
     assert result.returncode == 2
     assert 'invalid choice' in result.stderr
+
+
+def test_reader_cli_has_pilot_only_inputs_and_no_gold_argument():
+    result = subprocess.run([sys.executable, '-m', 'outcome_poc', 'reader', '--help'],
+                            text=True, capture_output=True)
+    assert result.returncode == 0 and '--evidence-budget' in result.stdout
+    assert '--gold' not in result.stdout and '--split' not in result.stdout
+
+
+def test_score_cli_requires_closed_predictions_before_reading_gold(tmp_path):
+    from outcome_poc.storage import append_jsonl, atomic_json
+    from outcome_poc.schemas import Prediction, GoldRecord
+    from retrieval_helpers import document, store
+    import hashlib
+    doc = document('Original lamp', ['A blue lamp.'])
+    documents = store(tmp_path, [doc])
+    predictions, gold, output = tmp_path / 'predictions.jsonl', tmp_path / 'gold.jsonl', tmp_path / 'scores.jsonl'
+    append_jsonl(predictions, Prediction('run', 'task', 'fixed-ten', 'protocol', 'job', 1, 0,
+                 [doc.doc_id], 'raw', 'blue', [(doc.doc_id, 0)], 'ok', 'r', 'p', 'd', 1., 10, 10, 1, ['event']))
+    args = [sys.executable, '-m', 'outcome_poc', 'score', '--predictions', str(predictions),
+            '--gold', str(gold), '--documents', str(documents.path), '--output', str(output)]
+    unclosed = subprocess.run(args, text=True, capture_output=True)
+    assert unclosed.returncode != 0 and 'closed prediction' in unclosed.stderr
+    append_jsonl(gold, GoldRecord('task', 'blue', [('Original lamp', 0)]))
+    atomic_json(predictions.with_suffix('.closed.json'), {'prediction_sha256': hashlib.sha256(predictions.read_bytes()).hexdigest(),
+                                                       'record_count': 1})
+    closed = subprocess.run(args, text=True, capture_output=True)
+    assert closed.returncode == 0, closed.stderr
+    result = json.loads(output.read_text())
+    assert result['joint_em'] == 1 and result['answer_f1'] == 1
