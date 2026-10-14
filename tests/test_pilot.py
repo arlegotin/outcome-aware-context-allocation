@@ -11,6 +11,7 @@ def test_forecast_charges_whole_observed_pipeline_and_reserves_reporting():
     assert result['conservative_seconds_per_job'] == 7.5
     assert result['forecast_seconds'] == 75.
     assert result['reserved_reporting_seconds'] == 3600.
+    assert result['maximum_affordable_jobs'] == 53
     assert result['feasible']
     assert not capacity_forecast([], 5000.)['feasible']
     with pytest.raises(ValueError): capacity_forecast([{'serving_seconds': -1}], 5000.)
@@ -63,7 +64,7 @@ def test_closed_pilot_analysis_keeps_all_metrics_and_denominators(tmp_path):
     from serving_helpers import fixture_runtime
     runtime, job, _ = fixture_runtime(tmp_path)
     root = tmp_path/'pilot'
-    result = run_pilot({'tasks': [job['task']], 'assigned_ids': ['task'], 'all_k_size': 0,
+    result = run_pilot({'tasks': [job['task']], 'assigned_ids': ['task'], 'all_k_size': 1,
                         'run_dir': str(root), 'warmups': False, 'determinism': True}, runtime)
     for observation in result['observations']:
         append_jsonl(root/'scores.jsonl', {'job_id': observation['job_id'], 'task_id': 'task',
@@ -75,6 +76,8 @@ def test_closed_pilot_analysis_keeps_all_metrics_and_denominators(tmp_path):
     assert summary['metrics']['2']['assigned'] == 1
     assert summary['metrics']['10']['joint_em'] == 1.
     assert summary['metrics']['0']['joint_em'] == 0.
+    assert summary['all_k_slice_metrics']['2']['assigned'] == 1
+    assert summary['all_k_slice_metrics']['1']['assigned'] == 1
     assert summary['gate']['next_stage'] == 'extend_reserved_pilot_to_64'
     assert (tmp_path/'summary/headroom.csv').exists()
     assert (tmp_path/'summary/reader_failures.jsonl').exists()
@@ -103,3 +106,37 @@ def test_shared_setup_encloses_initial_load_without_double_charge(tmp_path):
                         'setup_interval': [0, 9000000000]}, runtime)
     assert not any('setup' in row['components'] for row in result['observations'])
     assert sum(row['experiment_seconds']-row['serving_seconds'] for row in result['observations']) < 10.
+
+
+def test_historical_index_attempts_keep_failures_in_experiment_only(tmp_path):
+    from outcome_poc.pilot import run_pilot
+    from outcome_poc.storage import append_jsonl
+    from serving_helpers import fixture_runtime
+    runtime, job, _ = fixture_runtime(tmp_path)
+    ledger = tmp_path/'index-attempts.jsonl'
+    for status, duration in [('failed', 7.), ('ok', 3.)]:
+        append_jsonl(ledger, {'attempt_id': status, 'split': 'pilot', 'started_utc': '2026-10-14T12:30:00+00:00',
+                            'elapsed_seconds': duration, 'status': status})
+    result = run_pilot({'tasks': [job['task']], 'assigned_ids': ['task'], 'all_k_size': 0,
+                        'run_dir': str(tmp_path/'pilot'), 'warmups': False, 'determinism': False,
+                        'offline_attempts_path': str(ledger)}, runtime)
+    assert sum(row['serving_seconds'] for row in result['observations']) == 36.
+    assert 10. <= sum(row['experiment_seconds']-row['serving_seconds'] for row in result['observations']) < 11.
+
+
+def test_extension_inputs_use_declared_reservation_and_explicit_runtime_relabel(tmp_path):
+    from outcome_poc.pilot import load_pilot_inputs
+    from outcome_poc.storage import atomic_json, append_jsonl
+    from serving_helpers import fixture_runtime
+    runtime, job, _ = fixture_runtime(tmp_path)
+    active = replace(job['task'], task_id='active')
+    reserved = replace(job['task'], task_id='reserved', split='pilot_reservation')
+    append_jsonl(tmp_path/'tasks.jsonl', active)
+    append_jsonl(tmp_path/'tasks.jsonl', reserved)
+    atomic_json(tmp_path/'manifest.json', {'reservations': {'active_pilot': ['active'], 'pilot': ['active', 'reserved']}})
+    tasks, ids = load_pilot_inputs({'inputs': {'prepared_dir': str(tmp_path)},
+                                  'pilot': {'active_tasks': 1, 'reservation_slice': 'extension'}})
+    assert ids == ['reserved']
+    assert tasks[0].split == 'pilot'
+    assert tasks[0].task_id == reserved.task_id
+    assert tasks[0].candidate_ids == reserved.candidate_ids

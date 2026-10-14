@@ -56,7 +56,7 @@ def headroom(rows: list[PairedActionRow]) -> dict:
             'scope': 'clairvoyant development diagnostic; future outcomes and zero gate overhead'}
 
 
-def analyze_pilot(run_dir, scores_path, output_dir, remaining_seconds, *, planned_jobs=12000):
+def analyze_pilot(run_dir, scores_path, output_dir, remaining_seconds, *, planned_jobs=1920, setup_allowance_seconds=1800):
     """Analyze a closed ledger and separate scorer output, with no corpus text."""
     import csv
     from collections import Counter
@@ -101,7 +101,30 @@ def analyze_pilot(run_dir, scores_path, output_dir, remaining_seconds, *, planne
                           'prompt_tokens': [row['prompt_tokens'] for row in rows],
                           'output_tokens': [row['output_tokens'] for row in rows]}
     primary = [dict(row, planned_jobs=planned_jobs) for row in obs if row['kind'] == 'primary']
-    forecast = capacity_forecast(primary, remaining_seconds)
+    all_k_metrics = {}
+    for k in range(1, 11):
+        rows = [row for row in obs if row['k'] == k and row['task_id'] in schedule['all_k_ids']
+                and row['kind'] in ('primary', 'all_k')]
+        if rows:
+            all_k_metrics[str(k)] = {'assigned': len(rows),
+                                    **{metric: sum(scores[row['job_id']][metric] for row in rows)/len(rows)
+                                       for metric in ('joint_em', 'answer_em', 'support_em', 'joint_f1', 'answer_f1', 'support_f1')},
+                                    'valid_citation_rate': sum(row['status'] == 'ok' for row in rows)/len(rows),
+                                    'total_serving_seconds': sum(row['serving_seconds'] for row in rows)}
+    forecast = capacity_forecast(primary, max(0., remaining_seconds-setup_allowance_seconds))
+    forecast['actual_remaining_seconds'] = remaining_seconds
+    forecast['setup_training_diagnostics_allowance_seconds'] = setup_allowance_seconds
+    forecast['known_stage_jobs'] = {'initial_fit_two_ten': 512, 'tune_all_k': 1280, 'tune_judge': 128}
+    forecast['confirmation_envelopes'] = [{'tasks': n, 'arms': 2, 'repetitions': repetitions,
+                                         'jobs': n*2*repetitions,
+                                         'forecast_seconds': n*2*repetitions*forecast['conservative_seconds_per_job'],
+                                         'fits_after_known_development': (n*2*repetitions+planned_jobs) <= forecast['maximum_affordable_jobs']}
+                                        for n in (128, 256, 512, 1024) for repetitions in (1, 2, 3)]
+    for envelope in forecast['confirmation_envelopes']:
+        envelope['scope'] = 'two direct arms only; excludes anchor, representative action/judge jobs and their setup'
+        envelope['primary_repetition_eligible'] = envelope['repetitions'] >= 2
+    forecast['protected_sample_frozen'] = False
+    forecast['scope'] = 'known initial development path; confirmation envelopes are planning only, Task13 selects n and repetitions'
     target = report['fixed_ten']['successes']
     matching = next((point for point in report['oracle_frontier'] if point['successes'] >= target), None)
     savings = report['fixed_ten']['total_seconds']-matching['total_seconds'] if matching else 0.
@@ -151,7 +174,8 @@ def analyze_pilot(run_dir, scores_path, output_dir, remaining_seconds, *, planne
             append_jsonl(failure_path, {'task_id': row['task_id'], 'job_id': row['job_id'], 'k': row['k'],
                          'kind': row['kind'], 'status': row['status'], **{m: score[m] for m in
                           ('answer_em', 'support_em', 'joint_em', 'answer_f1', 'support_f1', 'joint_f1')}})
-    summary = {'headroom': report, 'metrics': metrics, 'gate': gate, 'capacity_forecast': forecast,
+    summary = {'headroom': report, 'metrics': metrics, 'all_k_slice_metrics': all_k_metrics,
+               'gate': gate, 'capacity_forecast': forecast,
                'oracle_overhead_comparison': overhead_comparison, 'oracle_savings_at_fixed_ten_quality_seconds': savings,
                'closed_ledger': costs['closure'], 'score_hash': content_hash(scores_list), 'private_run_dir': str(root),
                'interpretation': 'inconclusive', 'protected_generation': False}

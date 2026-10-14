@@ -320,16 +320,16 @@ class _IndexAttempt:
         return False
 
 
-def build_index(documents: Iterable[Document], encoder: EncoderBackend, output_dir: Path) -> dict:
+def build_index(documents: Iterable[Document], encoder: EncoderBackend, output_dir: Path, *, reuse_indexes=()) -> dict:
     """Build selected documents; publish completion and preserve every attempt cost."""
     output_dir = Path(output_dir)
     with _IndexAttempt(output_dir, output_dir.parent / 'index-attempts.jsonl', 'selected_documents') as attempt:
-        manifest = _build_index_payload(documents, encoder, output_dir, attempt)
+        manifest = _build_index_payload(documents, encoder, output_dir, attempt, reuse_indexes=reuse_indexes)
         attempt.publish(manifest)
     return manifest
 
 
-def _build_index_payload(documents, encoder, output_dir, attempt) -> dict:
+def _build_index_payload(documents, encoder, output_dir, attempt, *, reuse_indexes=()) -> dict:
     """Deduplicate once on disk; bounded encoding calls write rows into a memmap."""
     attempt.mark("output_validation")
     output_dir = Path(output_dir)
@@ -339,6 +339,23 @@ def _build_index_payload(documents, encoder, output_dir, attempt) -> dict:
     started = time.perf_counter()
     database = output_dir / 'metadata.sqlite3'
     rows = 0
+    reused, reuse_sources = {}, []
+    # Source completion, exact encoder and tokenizer/window conventions are
+    # prerequisites. Keys bind document identity and every stored window field.
+    for source_path in reuse_indexes:
+        source_path = Path(source_path)
+        source = _completed_manifest(source_path)
+        expected_encoder = dict(encoder.identity, dimensions=384, device='cpu', precision='float32', normalized=True)
+        if source['encoder'] != expected_encoder or source['query_convention'] != _query_convention(encoder):
+            raise ValueError('cross-index encoder/tokenizer identity mismatch')
+        source_vectors = np.memmap(source_path/'vectors.f32', dtype=np.float32, mode='r', shape=(source['window_count'], 384))
+        with sqlite3.connect(source_path/'metadata.sqlite3') as source_db:
+            for offset, doc_id, spans, tokens, text_hash in source_db.execute('SELECT vector_offset,doc_id,spans,token_count,text_hash FROM windows'):
+                key = (doc_id, spans, tokens, text_hash)
+                reused.setdefault(key, (source_vectors, offset))
+        reuse_sources.append({'path': str(source_path), 'manifest_hash': content_hash(source),
+                              'attempt_id': source['completion']['attempt_id'], 'vector_sha256': source['files']['vectors.f32']['sha256']})
+    reused_offsets = {}
     document_digest = hashlib.sha256()
     with sqlite3.connect(database) as db:
         db.execute('CREATE TABLE documents (doc_id TEXT PRIMARY KEY, title TEXT, character_count INTEGER, sentence_count INTEGER, vector_start INTEGER, window_count INTEGER)')
@@ -365,10 +382,15 @@ def _build_index_payload(documents, encoder, output_dir, attempt) -> dict:
                        (document.doc_id, document.title, len(document.title) + document.character_count,
                         len(document.sentences), rows, len(windows)))
             for window in windows:
+                spans = canonical_bytes(window['spans']).decode()
+                text_hash = content_hash(window['text'])
                 db.execute('INSERT INTO windows VALUES (?,?,?,?,?)',
-                           (rows, document.doc_id, canonical_bytes(window['spans']).decode(),
-                            window['token_count'], content_hash(window['text'])))
-                db.execute('INSERT INTO pending_texts VALUES (?,?)', (rows, window['text']))
+                           (rows, document.doc_id, spans, window['token_count'], text_hash))
+                key = (document.doc_id, spans, window['token_count'], text_hash)
+                if key in reused:
+                    reused_offsets[rows] = reused[key]
+                else:
+                    db.execute('INSERT INTO pending_texts VALUES (?,?)', (rows, window['text']))
                 rows += 1
         if not rows:
             raise ValueError('cannot build empty index')
@@ -377,17 +399,25 @@ def _build_index_payload(documents, encoder, output_dir, attempt) -> dict:
         attempt.mark('calibration')
         selector = getattr(encoder, 'select_batch_size', None)
         if selector:
-            longest = db.execute('SELECT p.text FROM pending_texts p JOIN windows w USING(vector_offset) ORDER BY w.token_count DESC LIMIT 1').fetchone()[0]
-            selector(longest)
+            longest = db.execute('SELECT p.text FROM pending_texts p JOIN windows w USING(vector_offset) ORDER BY w.token_count DESC LIMIT 1').fetchone()
+            if longest:
+                selector(longest[0])
         attempt.mark('encoding')
         vectors = np.memmap(output_dir / 'vectors.f32', dtype=np.float32, mode='w+', shape=(rows, 384))
         batch_size = encoder.batch_size
         if type(batch_size) is not int or batch_size < 1:
             raise ValueError('invalid measured encoder batch size')
-        for offset in range(0, rows, batch_size):
-            texts = [row[0] for row in db.execute('SELECT text FROM pending_texts WHERE vector_offset>=? AND vector_offset<? ORDER BY vector_offset', (offset, offset + batch_size))]
+        for offset, (source_vectors, source_offset) in reused_offsets.items():
+            vectors[offset] = validate_vectors(np.asarray(source_vectors[source_offset:source_offset+1]), 1)[0]
+        pending = db.execute('SELECT vector_offset,text FROM pending_texts ORDER BY vector_offset')
+        while True:
+            batch = pending.fetchmany(batch_size)
+            if not batch:
+                break
+            texts = [item[1] for item in batch]
             values = validate_vectors(encoder.encode(texts), len(texts))
-            vectors[offset:offset + len(texts)] = values
+            for (offset, _), value in zip(batch, values):
+                vectors[offset] = value
         attempt.mark('metadata_finalization')
         vectors.flush()
         del vectors
@@ -404,6 +434,8 @@ def _build_index_payload(documents, encoder, output_dir, attempt) -> dict:
                 'offline': {'seconds': time.perf_counter() - started, 'vector_bytes': files['vectors.f32']['bytes'],
                             'metadata_bytes': files['metadata.sqlite3']['bytes'],
                             'bytes': sum(f['bytes'] for f in files.values()),
+                            'reused_window_count': len(reused_offsets), 'encoded_window_count': rows-len(reused_offsets),
+                            'reuse_sources': reuse_sources,
                             'batch_size': batch_size, 'batch_measurements': encoder.batch_measurements}}
     return manifest
 

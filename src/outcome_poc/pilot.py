@@ -1,6 +1,7 @@
 """Annotation-free, development-only pilot serving and measured capacity forecast."""
 
 from datetime import datetime, timezone
+from dataclasses import replace
 import json
 import math
 from pathlib import Path
@@ -11,7 +12,7 @@ from .generation import Reader, ranking_aliases, render_prompt
 from .policies import FixedPolicy
 from .runner import Runtime, action_signature, job_id, execute_job, close_run, accounting, load_events
 from .schemas import Decision, Task
-from .storage import atomic_json, content_hash, append_jsonl
+from .storage import atomic_json, content_hash, append_jsonl, read_jsonl
 
 
 class NoContextDiagnostic:
@@ -19,6 +20,28 @@ class NoContextDiagnostic:
 
     def choose(self, question, ranked, paid_draft=None, *, caller_cap=10):
         return Decision(self.policy_id, 0, None, None, None, 'diagnostic', 'no-context', 0, 0)
+
+
+def load_pilot_inputs(config):
+    """Project manifest reservation membership into annotation-free runtime tasks."""
+    prepared = Path(config['inputs']['prepared_dir'])
+    reservation = json.loads((prepared/'manifest.json').read_text())['reservations']
+    mode = config['pilot'].get('reservation_slice', 'active')
+    if mode not in ('active', 'extension'):
+        raise ValueError('unknown pilot reservation slice')
+    active = reservation['active_pilot']
+    if mode == 'extension':
+        if reservation['pilot'][:len(active)] != active:
+            raise ValueError('pilot reservation prefix mismatch')
+        identities = reservation['pilot'][len(active):]
+        split = 'pilot_reservation'
+    else:
+        identities, split = active, 'pilot'
+    tasks = load_tasks(prepared/'tasks.jsonl', split)
+    by_id = {task.task_id: task for task in tasks}
+    if set(by_id) != set(identities) or len(identities) != config['pilot']['active_tasks']:
+        raise ValueError('pilot count/membership does not match frozen reservation')
+    return [replace(by_id[identity], split='pilot') for identity in identities], identities
 
 
 def capacity_forecast(observations: list[dict], remaining_seconds: float) -> dict:
@@ -42,6 +65,7 @@ def capacity_forecast(observations: list[dict], remaining_seconds: float) -> dic
             'observations': len(observations), 'planned_jobs': jobs,
             'conservative_seconds_per_job': per_job, 'forecast_seconds': seconds,
             'remaining_seconds': remaining_seconds, 'reserved_reporting_seconds': reserve,
+            'maximum_affordable_jobs': math.floor(max(0., remaining_seconds-reserve)/per_job) if per_job > 0 else 0,
             'feasible': jobs > 0 and seconds <= max(0., remaining_seconds-reserve),
             'component_means': {name: sum(row.get('components', {}).get(name, 0.) for row in observations)/len(observations)
                                 for name in sorted({name for row in observations for name in row.get('components', {})})},
@@ -126,6 +150,23 @@ def run_pilot(config: dict, runtime: object) -> dict:
     assigned = [job['job_id'] for job in jobs]
     record_shared_cost(root, 'cold_setup', preparation_start, preparation_stop, assigned,
                        source_id='task9-structural-shape-preparation')
+    if config.get('offline_attempts_path'):
+        prior = []
+        for row in read_jsonl(Path(config['offline_attempts_path'])):
+            if row.get('split') != 'pilot':
+                continue
+            duration = row['elapsed_seconds']
+            if not math.isfinite(duration) or duration < 0:
+                raise ValueError('invalid historical index duration')
+            start = round(datetime.fromisoformat(row['started_utc']).timestamp()*1e9)
+            stop = start+round(duration*1e9)
+            source = 'pilot-index-attempt:'+row['attempt_id']
+            record_shared_cost(root, 'offline', start, stop, assigned, source_id=source)
+            prior.append({'source_id': source, 'status': row['status'], 'elapsed_seconds': duration,
+                          'start_ns': start, 'stop_ns': stop,
+                          'clock_kind': 'historical UTC anchor plus observed monotonic elapsed duration; not serving clock'})
+        atomic_json(root/'prior-offline-costs.json', {'records': prior, 'total_seconds': sum(row['elapsed_seconds'] for row in prior),
+                                                    'scope': 'persisted pilot indexing attempts; project source identities count once'})
     if config.get('setup_interval'):
         record_shared_cost(root, 'cold_setup', *config['setup_interval'], assigned, source_id='task9-native-runtime-setup')
         lifecycle = getattr(runtime.reader.backend, 'lifecycle', [])
@@ -235,12 +276,7 @@ def main(args) -> int:
         with offline_network() as attempts:
             start = main_start
             prepared = Path(config['inputs']['prepared_dir'])
-            reservation = json.loads((prepared/'manifest.json').read_text())['reservations']['active_pilot']
-            tasks = load_tasks(prepared/'tasks.jsonl', 'pilot')
-            if len(tasks) != config['pilot']['active_tasks'] or len(reservation) != len(tasks):
-                raise ValueError('pilot count does not match frozen active reservation')
-            by_id = {task.task_id: task for task in tasks}
-            tasks = [by_id[identity] for identity in reservation]
+            tasks, reservation = load_pilot_inputs(config)
             documents = DocumentStore(prepared/'documents.jsonl')
             encoder = EncoderBackend(Path(manifest['assets']['encoder']['local_path']))
             retrieval = Retrieval(Path(config['inputs']['index_dir']), documents, encoder)
@@ -254,6 +290,7 @@ def main(args) -> int:
                 runtime = Runtime(retrieval, documents, Reader(backend), settings)
                 result = run_pilot({**config['pilot'], 'tasks': tasks, 'assigned_ids': reservation,
                                     'deadline_utc': window['deadline_utc'],
+                                    'offline_attempts_path': config['inputs'].get('offline_attempts_path', 'artifacts/provenance/index-attempts.jsonl'),
                                     'setup_interval': [start, time.perf_counter_ns()]}, runtime)
                 result['peak_mlx_bytes'] = backend.peak_mlx_bytes
                 result['worker_lifecycle'] = backend.lifecycle

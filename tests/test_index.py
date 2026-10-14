@@ -6,6 +6,37 @@ from outcome_poc import retrieval
 from retrieval_helpers import Encoder, document
 
 
+def test_cross_index_reuses_only_exact_identity_vectors_and_keeps_source_immutable(tmp_path):
+    old = document('Old', ['one'])
+    new = document('New', ['two'])
+    source = tmp_path/'source'
+    retrieval.build_index([old], Encoder(), source)
+    before = {p.name: p.read_bytes() for p in source.iterdir() if p.is_file()}
+    encoder = Encoder()
+    manifest = retrieval.build_index([old, new], encoder, tmp_path/'extended', reuse_indexes=[source])
+    assert encoder.texts == ['New\ntwo']
+    assert manifest['offline']['reused_window_count'] == 1
+    assert manifest['offline']['encoded_window_count'] == 1
+    assert before == {p.name: p.read_bytes() for p in source.iterdir() if p.is_file()}
+    a = np.memmap(source/'vectors.f32', dtype=np.float32, mode='r', shape=(1,384))
+    b = np.memmap(tmp_path/'extended/vectors.f32', dtype=np.float32, mode='r', shape=(2,384))
+    assert a[0].tobytes() == b[0].tobytes()
+    assert retrieval._completed_manifest(tmp_path/'extended') == manifest
+
+
+def test_cross_index_reuse_rejects_encoder_drift_and_corrupt_completion(tmp_path):
+    doc = document('Old', ['one'])
+    source = tmp_path/'source'
+    retrieval.build_index([doc], Encoder(), source)
+    encoder = Encoder()
+    encoder.identity = {'revision': 'different', 'snapshot_hash': 'fixture'}
+    with pytest.raises(ValueError, match='identity'):
+        retrieval.build_index([doc], encoder, tmp_path/'wrong', reuse_indexes=[source])
+    (source/'vectors.f32').write_bytes(b'corrupt')
+    with pytest.raises(ValueError, match='completion'):
+        retrieval.build_index([doc], Encoder(), tmp_path/'corrupt', reuse_indexes=[source])
+
+
 def test_index_deduplicates_and_persists_original_mapping_with_float32_vectors(tmp_path):
     doc = document('Title', ['one', 'two'])
     encoder = Encoder()
