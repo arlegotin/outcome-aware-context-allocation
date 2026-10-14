@@ -165,7 +165,15 @@ def test_native_profile_denies_all_scorer_projection_suffixes(tmp_path):
     profile=tmp_path/'test.sb';profile.write_text(profile_builder(tmp_path,tmp_path/'prepared'))
     probe="import json,sys\nr=[]\nfor p in sys.argv[1:]:\n try: open(p).read()\n except PermissionError:r.append('denied')\n else:r.append('allowed')\nprint(json.dumps(r))"
     result=subprocess.run(['/usr/bin/sandbox-exec','-f',str(profile),sys.executable,'-c',probe,str(gold),str(other)],capture_output=True,text=True)
-    if 'sandbox_init: Operation not permitted' in result.stderr:
+    if 'Operation not permitted' in result.stderr and 'sandbox' in result.stderr:
         pytest.skip('outer sandbox disallows nested sandbox; run this test with authorized escalation')
     assert result.returncode==0,result.stderr
     assert json.loads(result.stdout)==['denied','allowed']
+
+
+@pytest.mark.parametrize('family',['RANDOM-MIXTURE','CLAIRVOYANT-ORACLE','NO-CONTEXT-DIAGNOSTIC','ALWAYS-ABSTAIN','A/A'])
+def test_no_diagnostic_can_become_the_competitive_comparator(family):
+    anchor=row('FIXED-10','FIXED')
+    result=select.select_configuration([anchor,row('gbm','PRE-OUTCOME-GBM'),
+        row('diagnostic',family,q=1.,answer=1.,seconds=.01,ratio=.01)],anchor)
+    assert result['B*']['config_id']=='FIXED-10'

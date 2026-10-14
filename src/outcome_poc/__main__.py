@@ -24,6 +24,8 @@ def main(argv: list[str] | None = None) -> int:
             stage_parser.add_argument("--config", required=True, help="local JSON setup configuration")
         if command in {"index", "collect"}:
             stage_parser.add_argument("--split", required=True, choices=["pilot", "fit", "tune"], help="scheduled active partition")
+        if command == "tune":
+            stage_parser.add_argument("--analyze-closed", action="store_true", help="validate and score an already closed native tuning acquisition")
         if command == "reader":
             stage_parser.add_argument('--task-id', help='pilot task ID; default is first pilot task')
             stage_parser.add_argument('--evidence-budget', type=int, choices=[2, 10], default=10)

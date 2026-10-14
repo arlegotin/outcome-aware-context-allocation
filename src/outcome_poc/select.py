@@ -3,7 +3,8 @@ import math
 
 from .schemas import validate_record
 
-DIAGNOSTICS={'SHUFFLED-LABEL-GBM','RANDOM-MIXTURE'}
+COMPARATORS={'FIXED','ADAPTIVE-k-tuned','ADAPTIVE-k-published','PRE-LINEAR','PRE-RF',
+             'POST-OUTCOME','LLM-SUFFICIENCY','QUERY-ONLY','PROXY-LABEL'}
 
 
 def configuration_metrics(predictions, scores, events):
@@ -44,7 +45,7 @@ def select_configuration(config_rows, anchor):
         if row['Q']>1 or row['answer_em']>1 or (row['R'] is not None and (not math.isfinite(row['R']) or row['R']<0)):
             raise ValueError('invalid tuning ratio/quality')
         eligible=row['Q']>=anchor['Q'] and row['answer_em']>=anchor['answer_em']
-        rows.append({**row,'eligible':eligible,'selection_pool':row['family'] not in DIAGNOSTICS,
+        rows.append({**row,'eligible':eligible,'selection_pool':row['family']=='PRE-OUTCOME-GBM' or row['family'] in COMPARATORS,
                      'ineligible_reason':None if eligible else 'below_fixed_ten_joint_or_answer_em'})
     allowed=[r for r in rows if r['eligible'] and r['selection_pool']]
     candidates=[r for r in allowed if r['family']=='PRE-OUTCOME-GBM']
@@ -238,6 +239,7 @@ def analyze_tuning(run_dir, assigned_ids, *, require_roster=True):
     if schedule['assigned_ids']!=assigned_ids: raise ValueError('tune schedule assignment mismatch')
     predictions=[_prediction(r) for r in read_jsonl(root/'predictions.jsonl')]
     context=validate_closed_accounting(root,predictions)
+    if context.receipt_coverage=='legacy_unsealed': raise ValueError('tuning selection requires paid receipt coverage')
     score_receipt=_read(root/'scores.jsonl.closed.json')
     if (score_receipt['scores_sha256']!=_digest(root/'scores.jsonl') or
             score_receipt['prediction_sha256']!=_digest(root/'predictions.jsonl') or
@@ -397,7 +399,7 @@ def capture_launch(config_path, stage='tune'):
     import subprocess
     from .runner import _digest
     from .storage import atomic_json, content_hash
-    if stage not in {'tune','index'}: raise ValueError('unknown native launch stage')
+    if stage not in {'tune','index','analysis'}: raise ValueError('unknown native launch stage')
     config_path=Path(config_path)
     config=json.loads(config_path.read_text())
     relevant=['src','tests','tools','configs','requirements.lock']
@@ -407,7 +409,7 @@ def capture_launch(config_path, stage='tune'):
     window=json.loads(Path('artifacts/provenance/execution-window.json').read_text())
     if (datetime.fromisoformat(window['deadline_utc'])-datetime.now(timezone.utc)).total_seconds()<=3600:
         raise TimeoutError('deadline reporting reserve exhausted')
-    prelaunch=Path(config['tuning']['prelaunch_dir']+('-index' if stage=='index' else ''))
+    prelaunch=Path(config['tuning']['prelaunch_dir']+('' if stage=='tune' else '-'+stage))
     prelaunch.mkdir(parents=True,exist_ok=False)
     snapshot=prelaunch/'source';snapshot.mkdir()
     copied=[*Path('src/outcome_poc').glob('*.py'),Path('tools/task12_native.py'),config_path,
@@ -433,6 +435,10 @@ def capture_launch(config_path, stage='tune'):
              'execution_environment':{'HF_HUB_OFFLINE':'1','TRANSFORMERS_OFFLINE':'1','TOKENIZERS_PARALLELISM':'false'},
              'candidate_actions':[2,10],'all_fixed_budgets':list(range(1,11)),
              'post_cache_mode':'none','optimized_post_status':'numerical_parity_unresolved_bound_sensitivity_only'}
+    if stage=='analysis':
+        root=Path(config['tuning']['run_dir'])
+        binding['native_source_binding_hash']=json.loads((root/'native-summary.json').read_text())['source_binding_hash']
+        binding['closed_native_inputs']={name:_digest(root/name) for name in ('predictions.closed.json','tuning-acquisition.closed.json','schedule.json')}
     atomic_json(prelaunch/'binding.json',binding)
     prepared=Path(config['inputs']['prepared_dir'])
     ids=json.loads((prepared/'manifest.json').read_text())['reservations']['tune']
@@ -466,6 +472,7 @@ def main(args):
     from .storage import atomic_json, read_jsonl
     config=json.loads(Path(args.config).read_text())
     root=Path(config['tuning']['run_dir'])
+    if getattr(args,'analyze_closed',False): return finish_closed_tuning(config,args.config)
     if root.exists(): raise ValueError('tune run already exists; preserve original acquisition')
     if not (Path(config['tuning']['index_dir'])/'manifest.json').exists():
         raise ValueError('completed tune index prerequisite; run index --split tune first')
@@ -483,6 +490,62 @@ def main(args):
     native_seconds=time.perf_counter()-before
     if process.returncode: raise RuntimeError('native tune failed; original work retained in '+str(prelaunch/'native.log'))
     print(json.dumps({'stage':'native-tune-closed','seconds':native_seconds}),flush=True)
+    return finish_closed_tuning(config,args.config,native_seconds=native_seconds)
+
+
+def native_sandbox_profile(cwd, prepared):
+    from pathlib import Path
+    import json
+    profile='(version 1)\n(allow default)\n(deny network*)\n'
+    for blocked in (prepared/'gold',Path('data/gold'),Path('models/pinned/data')):
+        profile+='(deny file-read* (subpath '+json.dumps(str((cwd/blocked).resolve()))+'))\n'
+    profile+='(deny file-read* (regex #".*[.]gold[.]jsonl$"))\n'
+    return profile
+
+
+def finish_closed_tuning(config, config_path, *, native_seconds=None):
+    """Bind current analysis source, validate/seal receipts, then separately score."""
+    from pathlib import Path
+    import cProfile
+    import io
+    import json
+    import os
+    import pstats
+    import subprocess
+    import time
+    from .data_runtime import DocumentStore
+    from .runner import _prediction, validate_closed_accounting, seal_legacy_paid_receipts, _read
+    from .storage import atomic_json, read_jsonl
+    root=Path(config['tuning']['run_dir'])
+    if not all((root/n).is_file() for n in ('native-summary.json','predictions.closed.json','tuning-acquisition.closed.json')):
+        raise ValueError('analyze-closed requires complete native closure')
+    if (root/'scores.jsonl').exists() or (root/'selection.json').exists():
+        raise ValueError('closed tuning already scored; preserve original outputs')
+    native_summary=_read(root/'native-summary.json')
+    marker=_read(root/'predictions.closed.json')
+    reservations=_read(Path(config['inputs']['prepared_dir'])/'manifest.json')['reservations']['tune']
+    if len(reservations)!=128 or native_summary['assigned_tasks']!=128 or native_summary['assigned_jobs']!=marker['record_count']:
+        raise ValueError('complete tune128 assigned native denominator required')
+    launch=capture_launch(config_path,'analysis')
+    if launch['plan']['task_ids']!=reservations: raise ValueError('tune128 reservation changed')
+    prelaunch=Path(launch['prelaunch']);snapshot=Path(launch['snapshot'])
+    environment={**os.environ,'PYTHONPATH':str((snapshot/'src').resolve()),
+                 'HF_HUB_OFFLINE':'1','TRANSFORMERS_OFFLINE':'1','TOKENIZERS_PARALLELISM':'false'}
+    interpreter=str(Path('.venv/bin/python3.12').absolute())
+    predictions=[_prediction(r) for r in read_jsonl(root/'predictions.jsonl')]
+    context=validate_closed_accounting(root,predictions)
+    seal_seconds=0.
+    if context.receipt_coverage=='legacy_unsealed':
+        before=time.perf_counter()
+        documents=DocumentStore(Path(config['inputs']['prepared_dir'])/'documents.jsonl')
+        seal=seal_legacy_paid_receipts(root,predictions,documents=documents,
+                                      source_binding_hash=launch['plan']['source_binding_hash'])
+        seal_seconds=time.perf_counter()-before
+        atomic_json(root/'paid-receipt-seal-cost.json',{'seconds':seal_seconds,'timing_kind':'complete legacy core/content validation and retrospective paid-receipt seal including document-store setup'})
+        print(json.dumps({'stage':'legacy-receipts-sealed-before-gold','finished_receipts':seal['finished_receipts_checked'],
+                          'crosschecks':len(seal['development_crosschecks']),'seconds':seal_seconds}),flush=True)
+    atomic_json(prelaunch/'analysis-started.json',{'native_source_binding_hash':native_summary['source_binding_hash'],
+                'analysis_source_binding_hash':launch['plan']['source_binding_hash'],'gold_opened':False})
     # The scoring process has gold permission only after the native run has exited and closed.
     scoring_command=[interpreter,'-m','outcome_poc','score','--run-dir',str(root),
         '--predictions',str(root/'predictions.jsonl'),'--gold',str(Path(config['inputs']['prepared_dir'])/'gold/gold.jsonl'),
@@ -499,7 +562,13 @@ def main(args):
     (root/'accounting-profile.txt').write_text(stream.getvalue())
     result=analyze_tuning(root,launch['plan']['task_ids'],require_roster=config['tuning']['complete_roster_required'])
     result['native_launch_wall_seconds']=native_seconds
-    result['source_binding_hash']=launch['plan']['source_binding_hash']
+    result['unknown_outer_native_wall_reason']=None if native_seconds is not None else 'outer orchestrator intentionally paused/terminated after native exit; native self envelope separately measured'
+    result['legacy_receipt_seal_seconds']=seal_seconds
+    result['source_binding_hash']=native_summary['source_binding_hash']
+    result['analysis_source_binding_hash']=launch['plan']['source_binding_hash']
+    result['paid_receipt_coverage']=context.receipt_coverage
+    if (root/'paid-receipts.sealed.json').exists():
+        result['legacy_receipt_seal']=json.loads((root/'paid-receipts.sealed.json').read_text())
     result['scorer_receipt']=json.loads((root/'scores.jsonl.closed.json').read_text())
     result['native_summary']=json.loads((root/'native-summary.json').read_text())
     atomic_json(root/'selection.json',result)
@@ -512,13 +581,3 @@ def main(args):
     print(json.dumps({'A*':result['A*']['config_id'],'B*':result['B*']['config_id'],
                       'configurations':len(result['configurations']),'assigned_tune_tasks':len(launch['plan']['task_ids'])}),flush=True)
     return 0
-
-
-def native_sandbox_profile(cwd, prepared):
-    from pathlib import Path
-    import json
-    profile='(version 1)\n(allow default)\n(deny network*)\n'
-    for blocked in (prepared/'gold',Path('data/gold'),Path('models/pinned/data')):
-        profile+='(deny file-read* (subpath '+json.dumps(str((cwd/blocked).resolve()))+'))\n'
-    profile+='(deny file-read* (regex #".*[.]gold[.]jsonl$"))\n'
-    return profile

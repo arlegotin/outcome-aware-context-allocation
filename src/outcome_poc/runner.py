@@ -8,6 +8,7 @@ import hashlib
 import json
 from pathlib import Path
 import random
+import re
 import time
 from types import MappingProxyType
 
@@ -568,7 +569,8 @@ def close_run(run_dir: Path, expected_jobs: list[dict]) -> dict:
         rows=list(read_jsonl(shared));_validate_shared_costs(rows)
         if any(not set(row['assigned_job_ids'])<=set(ids) for row in rows):
             raise ValueError('shared cost allocation includes unassigned job')
-    marker={'prediction_sha256':_digest(path),'record_count':len(predictions),
+    marker={'closure_version':2,'paid_receipt_hashes':_paid_receipt_hashes(run_dir),
+            'prediction_sha256':_digest(path),'record_count':len(predictions),
             'shared_costs_sha256':_digest(shared) if shared.exists() else None,
             'supplement_hashes':_supplement_hashes(run_dir),
             'assigned_job_ids':ids,'completion_hashes':{identity:_digest(run_dir / 'jobs' / identity / 'completion.json') for identity in ids}}
@@ -671,7 +673,7 @@ def _timeout_factory(): return _TimeoutBackend()
 
 
 def _ledger_bindings(run_dir):
-    paths=[Path(run_dir)/name for name in ('predictions.jsonl','predictions.closed.json','shared-costs.jsonl')]
+    paths=[Path(run_dir)/name for name in ('predictions.jsonl','predictions.closed.json','shared-costs.jsonl','paid-receipts.sealed.json')]
     paths += list((Path(run_dir)/'jobs').rglob('*'))
     return {str(p.relative_to(run_dir)):_digest(p) if p.is_file() else 'directory' for p in paths if p.exists()}
 
@@ -682,6 +684,7 @@ class ClosedAccounting:
     run_dir: Path
     bindings: tuple
     index: object
+    receipt_coverage: str = 'legacy_unsealed'
 
     def costs(self, prediction):
         key=content_hash(prediction)
@@ -700,6 +703,7 @@ def validate_closed_accounting(run_dir: Path,predictions: list[Prediction]) -> C
     run_dir=Path(run_dir)
     bindings=_ledger_bindings(run_dir)
     marker=_read(run_dir / 'predictions.closed.json')
+    coverage=_paid_receipt_coverage(run_dir,marker,predictions)
     if _digest(run_dir / 'predictions.jsonl') != marker['prediction_sha256']:
         raise ValueError('closed accounting prediction checksum mismatch')
     if _supplement_hashes(run_dir)!=marker.get('supplement_hashes',{}):
@@ -726,7 +730,7 @@ def validate_closed_accounting(run_dir: Path,predictions: list[Prediction]) -> C
         for attempt_dir in completion.parent.glob('attempt-*'):
             _check_recovery_settled(attempt_dir)
         costs[content_hash(prediction)]=tuple(_accounting_local(run_dir,prediction,allocated.get(prediction.job_id,())).values())
-    snapshot=ClosedAccounting(run_dir,tuple(sorted(bindings.items())),MappingProxyType(costs))
+    snapshot=ClosedAccounting(run_dir,tuple(sorted(bindings.items())),MappingProxyType(costs),coverage)
     snapshot.verify_unchanged()
     return snapshot
 
@@ -1070,3 +1074,124 @@ def optimistic_post_cost(events: list[CostEvent], reusable_prefill_seconds: floa
             'removed_full_prefill_seconds':reusable_prefill_seconds,
             'kind':'optimistic_all_measured_full_clean_prefill',
             'limitation':'last prompt token and sampling excluded; common-prefix partition unresolved'}
+
+
+def _paid_receipt_hashes(run_dir):
+    paths=sorted(Path(run_dir).glob('jobs/*/attempt-*/paid-*'))
+    if any(not p.is_file() or not re.fullmatch(r'paid-[1-9][0-9]*\.(started|partial|finished)\.json',p.name) for p in paths):
+        raise ValueError('unexpected paid receipt file')
+    return {str(p.relative_to(run_dir)):_digest(p) for p in paths}
+
+
+def _paid_receipt_coverage(run_dir, marker, predictions):
+    version=marker.get('closure_version',1)
+    if type(version) is not int or version not in (1,2): raise ValueError('unsupported ledger closure version')
+    if version==2:
+        if marker.get('paid_receipt_hashes')!=_paid_receipt_hashes(run_dir):
+            raise ValueError('closed paid receipt checksum/set mismatch')
+        return 'forward_v2'
+    seal_path=Path(run_dir)/'paid-receipts.sealed.json'
+    if not seal_path.exists(): return 'legacy_unsealed'
+    seal=_read(seal_path)
+    if any(not p.protocol_hash.startswith('development') for p in predictions):
+        raise ValueError('nondevelopment runs require forward paid receipt closure')
+    if (seal.get('qualification')!='retrospective_not_historical_completion_attestation' or
+            seal.get('original_prediction_closure_sha256')!=_digest(Path(run_dir)/'predictions.closed.json') or
+            seal.get('paid_receipt_hashes')!=_paid_receipt_hashes(run_dir)):
+        raise ValueError('legacy paid receipt seal checksum/set mismatch')
+    return 'legacy_retrospective'
+
+
+def _check_paid_payloads(run_dir, predictions, documents):
+    """Check extant legacy receipt contents against already hash-bound core records."""
+    root=Path(run_dir);finished_by_job={}
+    count=0
+    for final in predictions:
+        for attempt in sorted((root/'jobs'/final.job_id).glob('attempt-*')):
+            if (attempt/'observed-failure.closed.json').exists(): record,events=_observed_failure(attempt)
+            else:
+                record=_prediction(_read(attempt/'prediction.json'))
+                events=[CostEvent(**r) for r in read_jsonl(attempt/'events.jsonl')]
+            byid={e.event_id:e for e in events}
+            finished=[]
+            for path in sorted(attempt.glob('paid-*.finished.json'),key=lambda p:int(p.name.split('-')[1].split('.')[0])):
+                number=int(path.name.split('-')[1].split('.')[0]);row=_read(path)
+                event=CostEvent(**row['event']);result=_result(row['result']);validate_record(event)
+                if byid.get(event.event_id)!=event or event.event_id not in record.event_ids or event.status!=result.status:
+                    raise ValueError('paid finished event differs from bound core event')
+                started=_read(attempt/f'paid-{number}.started.json')
+                request=GenerationRequest(**started['request']);validate_record(request)
+                if (started['role']!=event.role or started['start_ns']!=event.start_ns or
+                    request.model_revision!=record.model_revision or request.decoding_hash!=record.decoding_hash or
+                    result.prompt_tokens!=event.prompt_tokens or result.generated_tokens!=event.output_tokens or
+                    result.telemetry.get('clean_prefill_seconds',0.)!=event.clean_prefill_seconds):
+                    raise ValueError('paid request/result differs from bound core event')
+                partial=attempt/f'paid-{number}.partial.json'
+                if partial.exists():
+                    value=_read(partial)
+                    if (value['text'],value['prompt_ids'],value['token_ids'])!=(result.raw_output,result.prompt_token_ids,result.generated_token_ids):
+                        raise ValueError('paid partial differs from finished result')
+                finished.append((event,result,request));count+=1
+            if record.status!='infra_error' and len(finished)!=record.generation_calls:
+                raise ValueError('missing paid terminal receipt')
+            if finished and record.status!='infra_error':
+                event,result,request=finished[-1]
+                if (result.raw_output,result.prompt_tokens,result.generated_tokens,request.prompt_hash)!=(
+                        record.raw_output,record.prompt_tokens,record.generated_tokens,record.prompt_hash):
+                    raise ValueError('paid final result differs from bound prediction')
+                if documents is not None and event.role!='generation:judge':
+                    decision=_read(attempt/'decision.json')
+                    parsed=Reader.parse_generated(result,[documents.get(i) for i in record.evidence_ids],decision['aliases'])
+                    if (parsed.answer,parsed.citations,parsed.status)!=(record.answer,record.citations,record.status):
+                        raise ValueError('paid parsed result differs from bound prediction')
+            if record.attempt==final.attempt: finished_by_job[final.job_id]=finished
+    schedule_path=root/'schedule.json';checks=[]
+    if schedule_path.exists():
+        schedule=_read(schedule_path)
+        sources={(j['task_id'],j['arm']):j['job_id'] for j in schedule.get('jobs',[]) if 'arm' in j}
+        byjob={p.job_id:p for p in predictions}
+        for (task_id,arm),identity in sources.items():
+            if arm=='post-full':
+                small_id=sources.get((task_id,'k=2'))
+                if small_id is None or not finished_by_job.get(identity) or not finished_by_job.get(small_id):
+                    raise ValueError('POST draft requires a bound fixed-two observation')
+                _,draft,request=finished_by_job[identity][0]
+                _,small,small_request=finished_by_job[small_id][0]
+                signature=lambda r:(r.raw_output,r.prompt_token_ids,r.generated_token_ids,r.status,r.stop_reason)
+                if signature(draft)!=signature(small) or request!=small_request:
+                    raise ValueError('POST paid draft raw/token/status differs from fixed-two observation')
+                checks.append({'task_id':task_id,'kind':'post_draft_fixed_two_raw_token_status','passed':True})
+            if arm=='judge':
+                if not finished_by_job.get(identity): raise ValueError('missing paid judge observation')
+                _,judge,_=finished_by_job[identity][0]
+                sufficient=(judge.status not in {'timeout','infra_error','budget_exhausted','context_overflow'} and
+                            judge.stop_reason=='stop' and judge.raw_output.strip()=='SUFFICIENT')
+                prediction=byjob[identity]
+                decision=_read(root/'jobs'/identity/f'attempt-{prediction.attempt}'/'decision.json')['decision']
+                if decision['action_k']!=(2 if sufficient else 10):
+                    raise ValueError('paid judge disagrees with bound final decision')
+                checks.append({'task_id':task_id,'kind':'paid_judge_final_decision','passed':True})
+    return {'finished_receipts_checked':count,'development_crosschecks':checks,
+            'parsed_final_fields_checked':documents is not None}
+
+
+def seal_legacy_paid_receipts(run_dir, predictions, *, documents=None, source_binding_hash=None):
+    """Seal current legacy ancillary bytes before Gold; never rewrite old closure."""
+    from datetime import datetime,timezone
+    root=Path(run_dir);path=root/'paid-receipts.sealed.json'
+    if path.exists(): raise ValueError('legacy paid receipt seal already exists')
+    marker=_read(root/'predictions.closed.json')
+    if marker.get('closure_version',1)!=1: raise ValueError('forward closure already binds paid receipts')
+    if any(not p.protocol_hash.startswith('development') for p in predictions):
+        raise ValueError('legacy sealing is restricted to historical development runs')
+    context=validate_closed_accounting(root,predictions)
+    hashes=_paid_receipt_hashes(root)
+    checks=_check_paid_payloads(root,predictions,documents)
+    context.verify_unchanged()
+    result={'qualification':'retrospective_not_historical_completion_attestation',
+            'sealed_utc':datetime.now(timezone.utc).isoformat(),
+            'original_prediction_closure_sha256':_digest(root/'predictions.closed.json'),
+            'paid_receipt_hashes':hashes,'source_binding_hash':source_binding_hash,**checks,
+            'limitation':'Original v1 closure did not hash successful ancillary paid receipts. This seals extant bytes after core/content checks; it does not prove their historical completion-time bytes.'}
+    atomic_json(path,result)
+    return result

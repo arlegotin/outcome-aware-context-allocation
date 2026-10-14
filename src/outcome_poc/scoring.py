@@ -117,6 +117,8 @@ def main(args) -> int:
     if getattr(args,'run_dir',None):
         from .runner import validate_closed_accounting
         accounting_context=validate_closed_accounting(Path(args.run_dir),predictions)
+        if accounting_context.receipt_coverage=='legacy_unsealed':
+            raise ValueError('complete-ledger scoring requires paid receipt coverage or explicit legacy seal')
         accounting_context.verify_unchanged()
     # All prediction payloads and optional complete accounting have been closed before gold is opened.
     gold_records = {}
@@ -150,7 +152,11 @@ def main(args) -> int:
         'prediction_closure_sha256':hashlib.sha256(closure_path.read_bytes()).hexdigest(),
         'gold_projection_sha256':hashlib.sha256(gold_projection.read_bytes()).hexdigest(),
         'record_count':len(scores), 'scoring_seconds':time.perf_counter()-started,
-        'timing_kind':'complete_ledger' if getattr(args,'run_dir',None) else 'diagnostic_interval_fallback'})
+        'timing_kind':'complete_ledger' if getattr(args,'run_dir',None) else 'diagnostic_interval_fallback',
+        'paid_receipt_coverage':accounting_context.receipt_coverage if accounting_context else None,
+        'scorer_source_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest()})
     print(json.dumps({'assigned_predictions': len(scores), 'joint_successes': sum(score.joint_em for score in scores),
-                      'timing_kind':'complete_ledger' if getattr(args,'run_dir',None) else 'diagnostic_interval_fallback'}))
+                      'timing_kind':'complete_ledger' if getattr(args,'run_dir',None) else 'diagnostic_interval_fallback',
+        'paid_receipt_coverage':accounting_context.receipt_coverage if accounting_context else None,
+        'scorer_source_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest()}))
     return 0

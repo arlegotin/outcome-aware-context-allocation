@@ -83,3 +83,12 @@ def test_score_cli_requires_closed_predictions_before_reading_gold(tmp_path):
     assert closed.returncode == 0, closed.stderr
     result = json.loads(output.read_text())
     assert result['joint_em'] == 1 and result['answer_f1'] == 1
+
+
+def test_tune_closed_analysis_refuses_unfinished_native_acquisition(tmp_path):
+    root=tmp_path/'run';root.mkdir()
+    config=tmp_path/'config.json';config.write_text(json.dumps({'tuning':{'run_dir':str(root)}}))
+    result=subprocess.run([sys.executable,'-m','outcome_poc','tune','--config',str(config),'--analyze-closed'],
+                          capture_output=True,text=True)
+    assert result.returncode!=0
+    assert 'requires complete native closure' in result.stderr
