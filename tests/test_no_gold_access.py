@@ -103,6 +103,26 @@ print(json.dumps(sorted(name for name in sys.modules if name.startswith('outcome
     assert 'outcome_poc.data' not in imported
 
 
+def test_observable_features_and_policies_work_when_all_file_opens_are_denied(monkeypatch):
+    import numpy as np
+    from outcome_poc.features import build_features
+    from outcome_poc.policies import FixedPolicy, AdaptiveKPolicy, ThresholdPolicy
+    from test_features import packet
+    def denied(*args, **kwargs):
+        raise PermissionError('all file access denied')
+    monkeypatch.setattr(builtins, 'open', denied)
+    monkeypatch.setattr(io, 'open', denied)
+    monkeypatch.setattr(os, 'open', denied)
+    class Model:
+        def predict(self, values):
+            return np.array([0.])
+    ranked = packet()
+    assert build_features('Who glows?', ranked).shape == (42,)
+    for policy in [FixedPolicy(2), AdaptiveKPolicy(0),
+                   ThresholdPolicy(Model(), {'threshold_mode': 'numeric', 'threshold': 0})]:
+        assert policy.choose('Who glows?', ranked).effective_budget > 0
+
+
 def test_ranking_and_indexing_work_with_all_gold_file_access_denied(tmp_path, monkeypatch):
     from outcome_poc.retrieval import build_index, Retrieval
     from retrieval_helpers import Encoder, document, store
