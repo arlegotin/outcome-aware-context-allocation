@@ -122,3 +122,39 @@ def test_failed_offline_attempt_persists_costs_with_gold_file_access_denied(tmp_
     assert attempt['status'] == 'failed'
     assert attempt['terminal_stage'] == 'encoding'
     assert attempt['elapsed_seconds'] > 0
+
+
+def test_physically_committed_index_survives_post_commit_telemetry_fault_with_gold_denied(tmp_path, monkeypatch, caplog):
+    from pathlib import Path
+    from outcome_poc import retrieval
+    from retrieval_helpers import Encoder, document, store
+    doc = document('Invented lamp', ['A lamp glows.'])
+    documents = store(tmp_path, [doc])
+    def guard(function):
+        def access(file, *args, **kwargs):
+            if isinstance(file, (str, Path)) and 'gold' in Path(file).parts:
+                raise PermissionError('gold access denied')
+            return function(file, *args, **kwargs)
+        return access
+    monkeypatch.setattr(builtins, 'open', guard(builtins.open))
+    monkeypatch.setattr(io, 'open', guard(io.open))
+    monkeypatch.setattr(os, 'open', guard(os.open))
+    original = retrieval.append_jsonl
+    wrote = [False]
+    def readonly_after_write(path, value):
+        if wrote[0]:
+            raise PermissionError('telemetry retry denied')
+        original(path, value)
+        wrote[0] = True
+        raise OSError('post-commit telemetry fault')
+    monkeypatch.setattr(retrieval, 'append_jsonl', readonly_after_write)
+    original_unlink = Path.unlink
+    def deny_revoke(path, *args, **kwargs):
+        if path == tmp_path / 'index/manifest.json':
+            raise PermissionError('revocation denied')
+        return original_unlink(path, *args, **kwargs)
+    monkeypatch.setattr(Path, 'unlink', deny_revoke)
+    encoder = Encoder()
+    retrieval.build_index([doc], encoder, tmp_path / 'index')
+    assert retrieval.Retrieval(tmp_path / 'index', documents, encoder).rank('Which lamp?', [doc.doc_id])[0].doc_id == doc.doc_id
+    assert 'post-commit' in caplog.text

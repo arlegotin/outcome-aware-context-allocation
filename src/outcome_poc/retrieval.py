@@ -173,6 +173,32 @@ def _query_convention(encoder) -> dict:
             'special_tokens': encoder.tokenizer('', add_special_tokens=True)['input_ids']}
 
 
+def _completed_manifest(index_dir: Path) -> dict:
+    """Read the shared physical commit predicate without modifying its artifacts."""
+    try:
+        manifest = json.loads((index_dir / 'manifest.json').read_text())
+        completion = manifest.get('completion', {})
+        if manifest.get('format_version') != 2 or completion.get('status') != 'complete':
+            raise ValueError('index completion is missing')
+        attempts = list(read_jsonl(Path(completion['attempt_ledger'])))
+        matching = [row for row in attempts if row['attempt_id'] == completion['attempt_id']]
+        if (len(matching) != 1 or matching[0]['status'] != 'ok' or
+                matching[0].get('manifest_hash') != content_hash(manifest)):
+            raise ValueError('index completion attempt is not successful')
+        if completion['scope'] == 'cli':
+            provenance = json.loads(Path(completion['provenance_path']).read_text())
+            if provenance != manifest:
+                raise ValueError('index completion provenance mismatch')
+        elif completion['scope'] != 'selected_documents':
+            raise ValueError('index completion scope is unsupported')
+        for name, expected in manifest['files'].items():
+            if file_identity(index_dir / name) != expected:
+                raise ValueError('index file digest mismatch')
+    except (OSError, KeyError, ValueError) as error:
+        raise ValueError(f'index completion unavailable: {error}') from error
+    return manifest
+
+
 class _IndexAttempt:
     """Keep payload completion separate from append-only, post-boundary cost telemetry."""
 
@@ -257,6 +283,21 @@ class _IndexAttempt:
         try:
             append_jsonl(self.ledger, self.record)
         except Exception as telemetry_error:
+            if error_type is None and self.manifest is not None:
+                try:
+                    committed = _completed_manifest(self.output_dir) == self.manifest
+                except ValueError:
+                    committed = False
+                if committed:
+                    # Required payload/provenance and the unique success row are
+                    # physically committed. A later flush/sync fault is telemetry,
+                    # not a failed index invocation; rollback would contradict the
+                    # same immutable completion predicate used by readers.
+                    self.record['post_commit_telemetry_fault'] = str(telemetry_error)
+                    LOGGER.warning('index committed; post-commit telemetry fault: %s; record=%s',
+                                   telemetry_error, canonical_bytes(self.record).decode())
+                    return False
+            # No valid physical commit exists. Preserve failure/rollback costs.
             # A write may have reached disk before fsync failed. Revoke the owned
             # manifest and append a failed record so that such a row cannot pass
             # constructor checks. Include the failed telemetry/rollback work.
@@ -371,31 +412,11 @@ class Retrieval:
     def __init__(self, index_dir: Path, documents: DocumentStore, encoder: EncoderBackend):
         self.index_dir = Path(index_dir)
         self.documents, self.encoder = documents, encoder
-        try:
-            self.manifest = json.loads((self.index_dir / 'manifest.json').read_text())
-            completion = self.manifest.get('completion', {})
-            if self.manifest.get('format_version') != 2 or completion.get('status') != 'complete':
-                raise ValueError('index completion is missing')
-            attempts = list(read_jsonl(Path(completion['attempt_ledger'])))
-            matching = [row for row in attempts if row['attempt_id'] == completion['attempt_id']]
-            if (len(matching) != 1 or matching[0]['status'] != 'ok' or
-                    matching[0].get('manifest_hash') != content_hash(self.manifest)):
-                raise ValueError('index completion attempt is not successful')
-            if completion['scope'] == 'cli':
-                provenance = json.loads(Path(completion['provenance_path']).read_text())
-                if provenance != self.manifest:
-                    raise ValueError('index completion provenance mismatch')
-            elif completion['scope'] != 'selected_documents':
-                raise ValueError('index completion scope is unsupported')
-        except (OSError, KeyError, ValueError) as error:
-            raise ValueError(f'index completion unavailable: {error}') from error
+        self.manifest = _completed_manifest(self.index_dir)
         if any(self.manifest['encoder'].get(k) != v for k, v in encoder.identity.items()):
             raise ValueError('index encoder identity mismatch')
         if self.manifest['query_convention'] != _query_convention(encoder):
             raise ValueError('index encoder tokenizer convention mismatch')
-        for name, expected in self.manifest['files'].items():
-            if file_identity(self.index_dir / name) != expected:
-                raise ValueError('index file digest mismatch')
         self.vectors = np.memmap(self.index_dir / 'vectors.f32', dtype=np.float32, mode='r',
                                  shape=(self.manifest['window_count'], 384))
         self.last_timings, self.last_query = {}, {}
@@ -499,8 +520,11 @@ def main(args) -> int:
             manifest['offline']['model_load_seconds'] = model_load_seconds
             manifest['offline']['setup_seconds'] = setup_seconds
             attempt.publish(manifest, Path(config['output_dir']) / f'wp1-index-{args.split}.json')
-    # Presentation is explicitly outside the payload publication cost boundary.
-    print(json.dumps({'split': args.split, 'tasks': len(tasks), 'documents': manifest['document_count'],
-                      'windows': manifest['window_count'], 'offline': manifest['offline'],
-                      'attempt': attempt.record}, indent=2))
+    # Presentation is outside the commit/cost boundary and cannot undo it.
+    try:
+        print(json.dumps({'split': args.split, 'tasks': len(tasks), 'documents': manifest['document_count'],
+                          'windows': manifest['window_count'], 'offline': manifest['offline'],
+                          'attempt': attempt.record}, indent=2))
+    except OSError as error:
+        LOGGER.warning('index committed; post-commit console fault: %s', error)
     return 0

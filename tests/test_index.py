@@ -202,7 +202,7 @@ def test_full_offline_clock_boundary_includes_required_publications(tmp_path, cl
     assert attempt['status'] == 'ok'
 
 
-def test_attempt_telemetry_failure_after_write_cannot_leave_accepted_completion(tmp_path, monkeypatch):
+def test_after_write_telemetry_fault_preserves_physically_committed_success(tmp_path, monkeypatch, caplog):
     from outcome_poc.storage import read_jsonl
     from retrieval_helpers import store
     doc = document('Title', ['body'])
@@ -212,13 +212,12 @@ def test_attempt_telemetry_failure_after_write_cannot_leave_accepted_completion(
         original(path, value)
         raise OSError('injected attempt telemetry fsync failure')
     monkeypatch.setattr(retrieval, 'append_jsonl', failing_after_write)
-    with pytest.raises(OSError, match='telemetry'):
-        retrieval.build_index([doc], encoder, tmp_path / 'index')
-    with pytest.raises(ValueError, match='complet'):
-        retrieval.Retrieval(tmp_path / 'index', store(tmp_path, [doc]), encoder)
+    manifest = retrieval.build_index([doc], encoder, tmp_path / 'index')
+    retrieval.Retrieval(tmp_path / 'index', store(tmp_path, [doc]), encoder)
     attempt = list(read_jsonl(tmp_path / 'index-attempts.jsonl'))[-1]
-    assert attempt['status'] == 'failed'
-    assert sum(attempt['stage_seconds'].values()) == pytest.approx(attempt['elapsed_seconds'], abs=1e-8)
+    assert attempt['status'] == 'ok'
+    assert attempt['manifest_hash'] == retrieval.content_hash(manifest)
+    assert 'post-commit' in caplog.text
 
 
 def test_failed_attempt_retains_cost_record_when_partial_byte_snapshot_is_unavailable(tmp_path, monkeypatch):
@@ -240,3 +239,72 @@ def test_failed_attempt_retains_cost_record_when_partial_byte_snapshot_is_unavai
     assert attempt['status'] == 'failed'
     assert attempt['elapsed_seconds'] > 0
     assert attempt['partial_bytes']['measurement_errors']
+
+
+def test_committed_index_reports_success_when_telemetry_raises_and_rollback_and_retry_are_refused(tmp_path, monkeypatch, caplog):
+    from pathlib import Path
+    from outcome_poc.storage import read_jsonl
+    from retrieval_helpers import store
+    doc = document('Title', ['body'])
+    encoder = Encoder()
+    original_append, original_unlink = retrieval.append_jsonl, Path.unlink
+    appended = [False]
+    def storage_transition(path, value):
+        if appended[0]:
+            raise PermissionError('failed-record retry refused')
+        original_append(path, value)
+        appended[0] = True
+        raise OSError('success telemetry reached disk before fault')
+    def cannot_revoke(path, *args, **kwargs):
+        if path == tmp_path / 'index/manifest.json':
+            raise PermissionError('owned manifest revocation refused')
+        return original_unlink(path, *args, **kwargs)
+    monkeypatch.setattr(retrieval, 'append_jsonl', storage_transition)
+    monkeypatch.setattr(Path, 'unlink', cannot_revoke)
+    manifest = retrieval.build_index([doc], encoder, tmp_path / 'index')
+    assert manifest['completion']['status'] == 'complete'
+    assert retrieval.Retrieval(tmp_path / 'index', store(tmp_path, [doc]), encoder).rank('question', [doc.doc_id])[0].doc_id == doc.doc_id
+    rows = list(read_jsonl(tmp_path / 'index-attempts.jsonl'))
+    assert len(rows) == 1 and rows[0]['status'] == 'ok'
+    assert 'post-commit' in caplog.text
+
+
+def test_cli_returns_success_for_committed_payload_despite_combined_readonly_telemetry_fault(tmp_path, cli_index_fixture, monkeypatch, caplog):
+    from argparse import Namespace
+    from pathlib import Path
+    from outcome_poc.data_runtime import DocumentStore
+    from outcome_poc.storage import read_jsonl
+    config_path, encoder, active = cli_index_fixture
+    original_append, original_unlink = retrieval.append_jsonl, Path.unlink
+    wrote = [False]
+    def readonly_after_write(path, value):
+        if wrote[0]:
+            raise PermissionError('failed-record retry refused')
+        original_append(path, value)
+        wrote[0] = True
+        raise OSError('success row reached disk before telemetry fault')
+    def deny_revoke(path, *args, **kwargs):
+        if path == tmp_path / 'indexes/pilot/manifest.json':
+            raise PermissionError('manifest revocation refused')
+        return original_unlink(path, *args, **kwargs)
+    monkeypatch.setattr(retrieval, 'append_jsonl', readonly_after_write)
+    monkeypatch.setattr(Path, 'unlink', deny_revoke)
+    assert retrieval.main(Namespace(config=str(config_path), split='pilot')) == 0
+    documents = DocumentStore(tmp_path / 'prepared/documents.jsonl')
+    rows = retrieval.Retrieval(tmp_path / 'indexes/pilot', documents, encoder).rank('question', [d.doc_id for d in active])
+    assert {r.doc_id for r in rows} == {d.doc_id for d in active}
+    attempt = list(read_jsonl(tmp_path / 'provenance/index-attempts.jsonl'))[-1]
+    assert attempt['status'] == 'ok'
+    assert 'post-commit' in caplog.text
+
+
+def test_post_commit_console_failure_does_not_reclassify_completed_cli_as_failed(tmp_path, cli_index_fixture, monkeypatch, caplog):
+    from argparse import Namespace
+    from outcome_poc.data_runtime import DocumentStore
+    config_path, encoder, active = cli_index_fixture
+    def broken_console(*args, **kwargs):
+        raise BrokenPipeError('post-commit console unavailable')
+    monkeypatch.setattr('builtins.print', broken_console)
+    assert retrieval.main(Namespace(config=str(config_path), split='pilot')) == 0
+    retrieval.Retrieval(tmp_path / 'indexes/pilot', DocumentStore(tmp_path / 'prepared/documents.jsonl'), encoder)
+    assert 'post-commit console' in caplog.text

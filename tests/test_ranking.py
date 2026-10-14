@@ -102,3 +102,21 @@ def test_ranker_rejects_changed_required_provenance_after_completed_cli(tmp_path
     atomic_json(path, provenance)
     with pytest.raises(ValueError, match='provenance'):
         retrieval.Retrieval(tmp_path / 'indexes/pilot', documents, encoder)
+
+
+def test_post_commit_telemetry_fault_cannot_establish_completion_without_valid_payload(tmp_path, monkeypatch):
+    from outcome_poc.storage import read_jsonl
+    doc = document('Title', ['body'])
+    encoder = Encoder()
+    original_append = retrieval.append_jsonl
+    def corrupted_after_write(path, value):
+        original_append(path, value)
+        with (tmp_path / 'index/vectors.f32').open('r+b') as stream:
+            stream.write(b'broken')
+        raise OSError('telemetry and payload fault')
+    monkeypatch.setattr(retrieval, 'append_jsonl', corrupted_after_write)
+    with pytest.raises(OSError):
+        retrieval.build_index([doc], encoder, tmp_path / 'index')
+    with pytest.raises(ValueError, match='complet|digest'):
+        retrieval.Retrieval(tmp_path / 'index', store(tmp_path, [doc]), encoder)
+    assert list(read_jsonl(tmp_path / 'index-attempts.jsonl'))[-1]['status'] == 'failed'
