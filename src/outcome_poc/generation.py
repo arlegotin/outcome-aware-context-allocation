@@ -238,6 +238,7 @@ class ReaderBackend:
         from mlx_lm.sample_utils import make_sampler
         start = time.perf_counter()
         text, token_ids, stop_reason = '', [], None
+        failures = []
         def check_timeout(*args):
             if time.perf_counter() - start > request.timeout_seconds:
                 raise TimeoutError('generation timeout at synchronized token/prefill boundary')
@@ -255,14 +256,25 @@ class ReaderBackend:
             answer, citations, status = parse_citation_json(text)
             if stop_reason != 'stop':
                 status = 'budget_exhausted'
-        except TimeoutError:
+        except TimeoutError as error:
+            failures.append({'stage': 'generation', 'type': type(error).__name__, 'message': str(error)})
             answer, citations, status, stop_reason = None, [], 'timeout', 'timeout'
         except Exception as error:
+            failures.append({'stage': 'generation', 'type': type(error).__name__, 'message': str(error)})
             answer, citations, status = None, [], 'infra_error'
             stop_reason = f'infra_error:{type(error).__name__}:{error}'
         finally:
-            iterator.close()
-            self.synchronize()
+            cleanup_failed = False
+            for stage, cleanup in (('iterator.close', iterator.close), ('synchronize', self.synchronize)):
+                try:
+                    cleanup()
+                except Exception as error:
+                    cleanup_failed = True
+                    failures.append({'stage': stage, 'type': type(error).__name__, 'message': str(error)})
+            if cleanup_failed:
+                status = 'infra_error'
+                stop_reason = 'infra_error:' + json.dumps({'generation_stop_reason': stop_reason,
+                                                         'errors': failures}, ensure_ascii=False)
         result = ReaderResult(text, answer, citations, status, len(prompt_ids), len(token_ids),
                               prompt_ids, token_ids, stop_reason)
         validate_record(result)

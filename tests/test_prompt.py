@@ -121,3 +121,51 @@ def test_native_stream_failures_preserve_partial_output_without_retry(monkeypatc
     result = backend.generate('rendered', GenerationRequest('r', 'h', 'p', 'd', 'answer', 8192, 256, 120., 'none'), rendered=True)
     assert result.status == want and result.raw_output == '{"answer":"blue",'
     assert result.generated_token_ids == [2]
+
+
+@pytest.mark.parametrize('stream_error,close_error,sync_error', [
+    (RuntimeError('stream device fault'), RuntimeError('close device fault'), None),
+    (RuntimeError('stream device fault'), None, RuntimeError('sync device fault')),
+    (RuntimeError('stream device fault'), RuntimeError('close device fault'), RuntimeError('sync device fault')),
+    (TimeoutError('stream timeout'), RuntimeError('close device fault'), RuntimeError('sync device fault')),
+    (None, RuntimeError('close device fault'), None),
+    (None, None, RuntimeError('sync device fault')),
+])
+def test_cleanup_failure_returns_paid_payload_with_original_and_all_cleanup_errors(
+        monkeypatch, stream_error, close_error, sync_error):
+    import json
+    import sys
+    from types import ModuleType, SimpleNamespace
+    mlx_lm, sampler = ModuleType('mlx_lm'), ModuleType('mlx_lm.sample_utils')
+    raw = '{"answer":"blue",' if stream_error else '{"answer":"blue","citations":[]}'
+    class Stream:
+        def __init__(self): self.yielded = False
+        def __iter__(self): return self
+        def __next__(self):
+            if not self.yielded:
+                self.yielded = True
+                return SimpleNamespace(text=raw, token=2, finish_reason=None if stream_error else 'stop')
+            if stream_error: raise stream_error
+            raise StopIteration
+        def close(self):
+            if close_error: raise close_error
+    mlx_lm.stream_generate = lambda *args, **kwargs: Stream()
+    sampler.make_sampler = lambda temp: None
+    monkeypatch.setitem(sys.modules, 'mlx_lm', mlx_lm)
+    monkeypatch.setitem(sys.modules, 'mlx_lm.sample_utils', sampler)
+    backend = generation.ReaderBackend()
+    backend.tokenizer = SimpleNamespace(encode=lambda prompt, add_special_tokens: [1])
+    backend.model, backend.identity = None, {'revision': 'r', 'snapshot_hash': 'h'}
+    def synchronize():
+        if sync_error: raise sync_error
+    backend.synchronize = synchronize
+    result = backend.generate('rendered', GenerationRequest('r', 'h', 'p', 'd', 'answer', 8192, 256, 120., 'none'), rendered=True)
+    assert result.status == 'infra_error' and result.raw_output == raw
+    assert result.prompt_token_ids == [1] and result.generated_token_ids == [2]
+    assert result.prompt_tokens == 1 and result.generated_tokens == 1
+    details = json.loads(result.stop_reason.removeprefix('infra_error:'))
+    expected = []
+    for stage, error in [('generation', stream_error), ('iterator.close', close_error), ('synchronize', sync_error)]:
+        if error:
+            expected.append({'stage': stage, 'type': type(error).__name__, 'message': str(error)})
+    assert details['errors'] == expected
