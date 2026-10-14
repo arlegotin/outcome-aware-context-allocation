@@ -8,7 +8,7 @@ import importlib
 COMMAND_MODULES = {
     "discover": "environment", "assets": "assets", "smoke": "generation",
     "prepare": "data", "index": "retrieval", "audit-data": "data", "reader": "generation",
-    "validate-harness": "runner", "pilot": "pilot", "collect": "runner",
+    "validate-harness": "runner", "pilot": "pilot", "collect": "collection",
     "fit": "train", "tune": "select", "freeze": "protocol", "plan": "protocol",
     "run": "runner", "score": "scoring", "ablate": "robustness",
     "transfer": "robustness", "reproduce": "report", "report": "report",
@@ -20,9 +20,9 @@ def main(argv: list[str] | None = None) -> int:
     subparsers = parser.add_subparsers(dest="command", required=True)
     for command in COMMAND_MODULES:
         stage_parser = subparsers.add_parser(command, help=f"{command} experiment stage")
-        if command in {"discover", "assets", "smoke", "prepare", "audit-data", "index", "reader", "validate-harness", "pilot"}:
+        if command in {"discover", "assets", "smoke", "prepare", "audit-data", "index", "reader", "validate-harness", "pilot", "collect", "fit"}:
             stage_parser.add_argument("--config", required=True, help="local JSON setup configuration")
-        if command == "index":
+        if command in {"index", "collect"}:
             stage_parser.add_argument("--split", required=True, choices=["pilot", "fit", "tune"], help="scheduled active partition")
         if command == "reader":
             stage_parser.add_argument('--task-id', help='pilot task ID; default is first pilot task')

@@ -258,7 +258,9 @@ def main(args) -> int:
     window = json.loads(Path('artifacts/provenance/execution-window.json').read_text())
     if (datetime.fromisoformat(window['deadline_utc'])-datetime.now(timezone.utc)).total_seconds() <= 3600:
         raise TimeoutError('project execution deadline reserve exhausted')
-    root = Path(config['pilot']['run_dir'])
+    collecting = args.command == 'collect'
+    session = config['collection'] if collecting else config['pilot']
+    root = Path(session['run_dir'])
     root.mkdir(parents=True, exist_ok=True)
     # Fresh subprocess proves OS isolation independently of the Python guard.
     probe = "import errno,json,socket,sys\nr={}\nfor i,p in enumerate(sys.argv[1:]):\n try: open(p,'rb').read(1)\n except PermissionError: r[str(i)]=True\n else: r[str(i)]=False\ns=socket.socket();s.settimeout(.1)\ntry: s.connect(('1.1.1.1',443))\nexcept OSError as e: r['network']=e.errno in (errno.EPERM,errno.EACCES)\nelse: r['network']=False\nprint(json.dumps(r))"
@@ -289,10 +291,15 @@ def main(args) -> int:
         with offline_network() as attempts:
             start = main_start
             prepared = Path(config['inputs']['prepared_dir'])
-            tasks, reservation = load_pilot_inputs(config)
+            if collecting:
+                from .collection import load_fit_inputs
+                tasks, reservation = load_fit_inputs(config)
+            else:
+                tasks, reservation = load_pilot_inputs(config)
             documents = DocumentStore(prepared/'documents.jsonl')
             encoder = EncoderBackend(Path(manifest['assets']['encoder']['local_path']))
-            retrieval = Retrieval(Path(config['inputs']['index_dir']), documents, encoder)
+            index_dir = config['inputs'].get('fit_index_dir') if collecting else config['inputs']['index_dir']
+            retrieval = Retrieval(Path(index_dir), documents, encoder)
             with SupervisedBackend(NativeReaderFactory(Path(asset['local_path']), {**config['reader'], 'asset': asset})) as backend:
                 settings = {'model_revision': asset['revision'], 'model_hash': asset['snapshot_hash'],
                             'decoding_hash': content_hash({**config['reader'], 'temperature': 0, 'cache_mode': 'none',
@@ -301,7 +308,14 @@ def main(args) -> int:
                             'backend': 'persistent-supervised-native-mlx', 'prompt_version': 1,
                             'index_manifest_hash': content_hash(retrieval.manifest)}
                 runtime = Runtime(retrieval, documents, Reader(backend), settings)
-                result = run_pilot({**config['pilot'], 'tasks': tasks, 'assigned_ids': reservation,
+                if collecting:
+                    from .collection import collect_raw_pairs
+                    result = collect_raw_pairs(tasks, runtime, {**session, 'assigned_ids': reservation,
+                        'deadline_utc': window['deadline_utc'],
+                        'offline_attempts_path': config['inputs'].get('offline_attempts_path', 'artifacts/provenance/index-attempts.jsonl'),
+                        'setup_interval': [start, time.perf_counter_ns()]})
+                else:
+                    result = run_pilot({**session, 'tasks': tasks, 'assigned_ids': reservation,
                                     'deadline_utc': window['deadline_utc'],
                                     'offline_attempts_path': config['inputs'].get('offline_attempts_path', 'artifacts/provenance/index-attempts.jsonl'),
                                     'setup_interval': [start, time.perf_counter_ns()]}, runtime)
@@ -316,8 +330,9 @@ def main(args) -> int:
     result['resource_bound_kind'] = 'conservative RSS plus MLX overlap bound; not exact working set'
     result['swap_used_bytes'] = psutil.swap_memory().used
     result['measured_utc'] = datetime.now(timezone.utc).isoformat()
+    result['acquisition_wall_seconds'] = (time.perf_counter_ns()-main_start)/1e9
     result['os_denials'] = denials
-    atomic_json(root/'pilot_costs.json', result)
+    atomic_json(root/('collection_costs.json' if collecting else 'pilot_costs.json'), result)
     print(json.dumps({'closed': True, 'assigned_tasks': result['assigned_tasks'],
                       'generation_calls': result['generation_calls'], 'resource_gate': result['resource_gate'],
                       'determinism': result['determinism'], 'run_dir': str(root)}), flush=True)

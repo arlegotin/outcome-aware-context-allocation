@@ -3,6 +3,7 @@
 from collections import Counter
 import re
 import string
+import time
 import hashlib
 import json
 from pathlib import Path
@@ -96,6 +97,7 @@ class Scorer:
 
 
 def main(args) -> int:
+    started = time.perf_counter()
     predictions_path = Path(args.predictions)
     closure_path = predictions_path.with_suffix('.closed.json')
     if not closure_path.is_file():
@@ -127,9 +129,22 @@ def main(args) -> int:
     output = Path(args.output)
     if output.exists():
         raise ValueError('score output already exists')
+    gold_projection = output.with_suffix('.gold.jsonl')
+    if gold_projection.exists(): raise ValueError('scorer gold projection already exists')
+    for task_id in sorted({prediction.task_id for prediction in predictions}):
+        append_jsonl(gold_projection, gold_records[task_id])
     scores = [Scorer().score(prediction, gold_records[prediction.task_id], documents, run_dir=Path(args.run_dir) if getattr(args,'run_dir',None) else None) for prediction in predictions]
     for score in scores:
         append_jsonl(output, score)
+    from .storage import atomic_json
+    atomic_json(output.with_suffix(output.suffix+'.closed.json'), {
+        'kind':'separate_closed_run_scorer',
+        'scores_sha256':hashlib.sha256(output.read_bytes()).hexdigest(),
+        'prediction_sha256':closure['prediction_sha256'],
+        'prediction_closure_sha256':hashlib.sha256(closure_path.read_bytes()).hexdigest(),
+        'gold_projection_sha256':hashlib.sha256(gold_projection.read_bytes()).hexdigest(),
+        'record_count':len(scores), 'scoring_seconds':time.perf_counter()-started,
+        'timing_kind':'complete_ledger' if getattr(args,'run_dir',None) else 'diagnostic_interval_fallback'})
     print(json.dumps({'assigned_predictions': len(scores), 'joint_successes': sum(score.joint_em for score in scores),
                       'timing_kind':'complete_ledger' if getattr(args,'run_dir',None) else 'diagnostic_interval_fallback'}))
     return 0

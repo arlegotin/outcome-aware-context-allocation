@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 import sqlite3
 import numpy as np
 import pytest
@@ -339,3 +340,25 @@ def test_post_commit_console_failure_does_not_reclassify_completed_cli_as_failed
     assert retrieval.main(Namespace(config=str(config_path), split='pilot')) == 0
     retrieval.Retrieval(tmp_path / 'indexes/pilot', DocumentStore(tmp_path / 'prepared/documents.jsonl'), encoder)
     assert 'post-commit console' in caplog.text
+
+
+def test_fit_cli_copies_all_existing_exact_windows_without_new_encoding(tmp_path, cli_index_fixture):
+    from argparse import Namespace
+    from outcome_poc.data_runtime import DocumentStore, load_tasks
+    config_path, encoder, _ = cli_index_fixture
+    config = json.loads(config_path.read_text())
+    prepared = Path(config['preparation']['output_dir'])
+    task = load_tasks(prepared/'tasks.jsonl','fit')[0]
+    store = DocumentStore(prepared/'documents.jsonl')
+    source = tmp_path/'existing'
+    retrieval.build_index([store.get(i) for i in task.candidate_ids],encoder,source)
+    before = (source/'vectors.f32').read_bytes()
+    encoder.texts.clear()
+    config['retrieval']['reuse_indexes'] = [str(source)]
+    config_path.write_text(json.dumps(config))
+    retrieval.main(Namespace(config=str(config_path),split='fit'))
+    manifest = json.loads((tmp_path/'indexes/fit/manifest.json').read_text())
+    assert manifest['offline']['reused_window_count'] == 10
+    assert manifest['offline']['encoded_window_count'] == 0
+    assert encoder.texts == []
+    assert before == (source/'vectors.f32').read_bytes()
