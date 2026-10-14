@@ -75,6 +75,12 @@ def freeze_methods(development: dict, selection: dict, capacity: dict) -> dict:
     reps=[_policy(selection['families'][f]['representative']) for f in sorted(FAMILIES)]
     if any(row['family']!=f for row,f in zip(reps,sorted(FAMILIES))): raise ValueError('mismatched representative')
     if a not in reps or b not in reps: raise ValueError('selected pair differs from family representatives')
+    for row in reps:
+        if 'model_name' in row:
+            manifest=development['models'].get(row['model_name'])
+            if (not isinstance(manifest,dict) or manifest.get('family')!=row['model_name'] or
+                    manifest.get('origin')!='locally_created_fit_only' or manifest.get('artifact_sha256')!=row['model_artifact_sha256']):
+                raise ValueError('unresolved or mismatched local gate model manifest')
     reader=copy.deepcopy(development['reader'])
     if (reader['max_context_tokens'],reader['max_new_tokens'])!=(8192,256): raise ValueError('unamended token caps')
     if (capacity.get('passed') is not True or capacity.get('max_prompt_tokens')!=7936 or

@@ -41,7 +41,8 @@ def inputs(tmp_path):
         'diagnostics':{'no_context':{'split':'tune','count':2,'selection_rule':'hash'}},
         'forecast':{'conservative_seconds_per_question':45.,'fixed_remaining_seconds':7200.,
                     'report_reserve_seconds':7200.,'available_seconds':14700.,'bytes_per_question':1000},
-        'retrieval':{'index_dir':'sample-index','algorithm':'frozen-source'},'models':{},'identities':{'feature_schema':'f','scorer':'s'}}
+        'retrieval':{'index_dir':'sample-index','algorithm':'frozen-source'},
+        'models':{f:{'family':f,'origin':'locally_created_fit_only','artifact_sha256':'a'*64} for f in FAMILIES if f not in ('FIXED','ADAPTIVE-k-published','ADAPTIVE-k-tuned','LLM-SUFFICIENCY')},'identities':{'feature_schema':'f','scorer':'s'}}
     capacity={'passed':True,'max_prompt_tokens':7936,'forced_output_tokens':256,'max_request_seconds':10.}
     return {'development':development,'selection':selected,'capacity':capacity,'population_ids':[t.task_id for t in tasks],
             'tasks':tasks,'n':5,'source_commit':'a'*40,'source_files':[str(source)],'artifact_files':[str(artifact)],
@@ -180,3 +181,14 @@ def test_production_source_list_cannot_omit_the_local_model_loader(tmp_path,monk
     f=p.freeze(c)
     assert 'src/outcome_poc/train.py' in f['source']['sha256']
     assert 'src/outcome_poc/protocol.py' in f['source']['sha256']
+
+
+def test_missing_or_mismatched_selected_gate_manifest_is_unresolved(tmp_path):
+    p=api();c=inputs(tmp_path)
+    c['development']['models'].pop('PRE-OUTCOME-GBM',None)
+    with pytest.raises(ValueError,match='model|gate'):p.freeze(c)
+
+
+def test_population_input_order_cannot_change_the_sample():
+    p=api();ids=['z','m','a','q','b','h']
+    assert p.sample_protected(ids,4)==p.sample_protected(list(reversed(ids)),4)
