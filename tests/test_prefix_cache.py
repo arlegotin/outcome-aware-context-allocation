@@ -124,3 +124,43 @@ def test_prefix_action_signature_stays_distinct_from_fresh(tmp_path):
     a=runner._bound_action_signature(job['task'],runtime,job['task'].candidate_ids,'none')
     b=runner._bound_action_signature(job['task'],runtime,job['task'].candidate_ids,'within_query_prefix')
     assert a != b
+
+
+@pytest.mark.parametrize('mutation',['template','decoding','limit','model','evidence'])
+def test_prefix_rejects_changed_inputs(monkeypatch,mutation):
+    from dataclasses import replace
+    from outcome_poc.schemas import GenerationRequest
+    from outcome_poc.generation import prompt_identity
+    backend,observed=fake_native(monkeypatch)
+    a,b='1 2 3','1 2 4'
+    scope={'scope':'q','target_prompt':b,'source_prompt_hash':prompt_identity(a,backend.tokenizer)}
+    req=GenerationRequest('r','m',scope['source_prompt_hash'],'d','answer',8192,256,120.,'within_query_prefix')
+    backend.generate(a,req,rendered=True,prefix_cache={**scope,'operation':'capture'})
+    if mutation == 'template': backend.tokenizer.chat_template='changed'
+    if mutation == 'decoding': req=replace(req,decoding_hash='changed')
+    if mutation == 'limit': req=replace(req,max_new_tokens=128)
+    if mutation == 'model': req=replace(req,model_hash='changed')
+    if mutation == 'evidence': b='1 2 9'
+    req=replace(req,prompt_hash=prompt_identity(b,backend.tokenizer))
+    with pytest.raises(ValueError): backend.generate(b,req,rendered=True,prefix_cache={**scope,'operation':'reuse'})
+    assert len(observed) == 1
+
+
+def test_native_prefix_full_event_links_to_paid_source(tmp_path):
+    """A cache continuation must preserve its source paid event in the durable ledger."""
+    from dataclasses import replace
+    from outcome_poc.policies import PostOutcomePolicy
+    runtime,job,_=fixture_runtime(tmp_path)
+    original=runtime.reader.backend.generate
+    handles=[]
+    def generate(prompt,request,*,rendered=False,prefix_cache=None):
+        handles.append(prefix_cache)
+        return original(prompt,replace(request,cache_mode='none'),rendered=rendered)
+    runtime.reader.backend.generate=generate
+    policy=PostOutcomePolicy(None,{'threshold_mode':'always_ten','threshold':None})
+    runner.execute_job({**job,'policy':policy,'cache_mode':'within_query_prefix'},runtime,tmp_path)
+    events=[e for e in runner.load_events(tmp_path) if e.role.startswith('generation:')]
+    assert len(events) == 2
+    assert events[1].source_event_id == events[0].event_id
+    assert handles[0]['operation']=='capture' and handles[1]['operation']=='reuse'
+    assert handles[0]['scope']==handles[1]['scope']

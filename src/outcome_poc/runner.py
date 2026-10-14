@@ -162,7 +162,8 @@ def serve(task: Task, policy: object, runtime: object, job: dict) -> Prediction:
         finally:
             backend.progress_callback=previous_progress
         event = ledger.event('generation:'+role,generation_start,runtime.clock(),
-                             status=result.status,result=result,resources=getattr(backend,'last_resources',None))
+                             status=result.status,result=result,resources=getattr(backend,'last_resources',None),
+                             source=draft.generation_event_id if prefix is not None and role == 'answer' else None)
         runtime.last_paid_result=result
         _consume_worker_lifecycle(runtime,job,ledger,serving_window=(start,runtime.clock()))
         _record_pending_recovery(backend)

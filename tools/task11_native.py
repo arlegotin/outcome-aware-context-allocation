@@ -4,6 +4,8 @@ from pathlib import Path
 import subprocess
 import sys
 import time
+import threading
+import psutil
 from dataclasses import replace
 from datetime import datetime, timezone
 
@@ -22,6 +24,18 @@ from outcome_poc.storage import atomic_json, append_jsonl, content_hash
 
 def main():
     start=time.perf_counter_ns()
+    rss_peak=[0]
+    monitor_stop=threading.Event()
+    process=psutil.Process()
+    def monitor():
+        while not monitor_stop.wait(.02):
+            try:
+                rss=process.memory_info().rss
+                rss+=sum(p.memory_info().rss for p in process.children(recursive=True) if p.is_running())
+                rss_peak[0]=max(rss_peak[0],rss)
+            except (psutil.NoSuchProcess,psutil.AccessDenied): pass
+    observer=threading.Thread(target=monitor,daemon=True)
+    observer.start()
     plan=json.loads(Path(sys.argv[1]).read_text())
     root=Path(plan['run_dir']);root.mkdir(parents=True,exist_ok=False)
     config=json.loads(Path(plan['config']).read_text())
@@ -105,12 +119,15 @@ def main():
                     'statuses':[o.status for o in outcomes]})
                 atomic_json(root/'boundary-summary.json',fixture_rows)
                 print(json.dumps(fixture_rows[-1]),flush=True)
+    monitor_stop.set();observer.join()
     peak_mlx=max((r.get('peak_mlx_bytes') or 0 for r in resources),default=0)
     peak_rss=max((r.get('rss_bytes') or 0 for r in resources),default=0)
     summary={'run_dir':str(root),'record_count':len(records),'generation_calls':sum(p.generation_calls for p in records),
         'synthetic_calls':len(fixture_rows)*3,'os_denials':denials,'network_attempts':len(attempts),
-        'resource_gate':resource_gate(environment['physical_memory_bytes'],peak_mlx+peak_rss),
+        'resource_gate':resource_gate(environment['physical_memory_bytes'],peak_mlx+rss_peak[0]),
         'peak_mlx_bytes':peak_mlx,'peak_worker_rss_bytes':peak_rss,
+        'sampled_peak_process_tree_rss_bytes':rss_peak[0],
+        'resource_bound_kind':'sampled parent plus child RSS plus MLX overlapping conservative bound',
         'elapsed_seconds':(time.perf_counter_ns()-start)/1e9,'boundary_cases':fixture_rows,
         'source_binding_hash':plan['source_binding_hash'],'status_counts':{s:sum(p.status==s for p in records) for s in sorted({p.status for p in records})}}
     atomic_json(root/'native-summary.json',summary)
