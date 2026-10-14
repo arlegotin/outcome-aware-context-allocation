@@ -92,3 +92,11 @@ def test_tune_closed_analysis_refuses_unfinished_native_acquisition(tmp_path):
                           capture_output=True,text=True)
     assert result.returncode!=0
     assert 'requires complete native closure' in result.stderr
+
+
+def test_freeze_and_plan_cli_expose_protocol_and_source_only_hooks():
+    for command,expected in [('freeze',['--config','--bind-source-only']),('plan',['--protocol','--dry-run']),
+                             ('run',['--protocol']),('report',['--protocol','--output','--run-dir','--state']),('reproduce',['--scores-only','--run-dir','--state'])]:
+        result=subprocess.run([sys.executable,'-m','outcome_poc',command,'--help'],capture_output=True,text=True)
+        assert result.returncode==0
+        assert all(flag in result.stdout for flag in expected)

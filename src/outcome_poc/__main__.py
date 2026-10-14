@@ -20,7 +20,7 @@ def main(argv: list[str] | None = None) -> int:
     subparsers = parser.add_subparsers(dest="command", required=True)
     for command in COMMAND_MODULES:
         stage_parser = subparsers.add_parser(command, help=f"{command} experiment stage")
-        if command in {"discover", "assets", "smoke", "prepare", "audit-data", "index", "reader", "validate-harness", "pilot", "collect", "fit", "tune"}:
+        if command in {"discover", "assets", "smoke", "prepare", "audit-data", "index", "reader", "validate-harness", "pilot", "collect", "fit", "tune", "freeze"}:
             stage_parser.add_argument("--config", required=True, help="local JSON setup configuration")
         if command in {"index", "collect"}:
             stage_parser.add_argument("--split", required=True, choices=["pilot", "fit", "tune"], help="scheduled active partition")
@@ -30,6 +30,20 @@ def main(argv: list[str] | None = None) -> int:
             stage_parser.add_argument('--task-id', help='pilot task ID; default is first pilot task')
             stage_parser.add_argument('--evidence-budget', type=int, choices=[2, 10], default=10)
             stage_parser.add_argument('--output', required=True, help='private diagnostic directory')
+        if command == 'freeze':
+            stage_parser.add_argument('--bind-source-only', action='store_true')
+        if command in {'plan','run','report','reproduce','ablate','transfer'}:
+            stage_parser.add_argument('--protocol', help='immutable confirmation protocol')
+        if command == 'plan':
+            stage_parser.add_argument('--dry-run', action='store_true')
+        if command in {'report','reproduce','ablate','transfer'}:
+            stage_parser.add_argument('--output', help='report or separately scoped diagnostic output')
+            stage_parser.add_argument('--config', help='optional reporting/diagnostic configuration')
+        if command in {'report','reproduce'}:
+            stage_parser.add_argument('--run-dir', help='closed experiment run')
+            stage_parser.add_argument('--state', help='experiment handoff state')
+        if command == 'reproduce':
+            stage_parser.add_argument('--scores-only', action='store_true')
         if command == "score":
             stage_parser.add_argument('--run-dir', help='complete durable run ledger for experimental accounting')
             for argument in ('predictions', 'gold', 'documents', 'output'):
