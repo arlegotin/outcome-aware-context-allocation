@@ -183,7 +183,9 @@ def test_public_summary_retains_losing_rows_without_duplicating_private_events()
     result={'A*':{'config_id':'a','per_task':[{'task_id':'x'}],'source_event_ids':['paid']},
             'configurations':[{'config_id':'losing','eligible':False,'per_task':[],'source_event_ids':['paid']}],
             'families':{'candidate':{'representative':{'config_id':'a','per_task':[{}],'source_event_ids':['paid']}}},
-            'deterministic_paid_action_checks':[{'task_id':'x'}]}
+            'deterministic_paid_action_checks':[{'task_id':'x'}],
+            'legacy_receipt_seal':{'paid_receipt_hashes':{'private':'hash'},'development_crosschecks':[{}]},
+            'task_ids':['x']}
     helper=getattr(select,'compact_selection_summary',None)
     assert callable(helper), 'compact public selection summary missing'
     summary=helper(result)
@@ -192,3 +194,6 @@ def test_public_summary_retains_losing_rows_without_duplicating_private_events()
     assert summary['families']['candidate']['representative']=={'config_id':'a'}
     assert summary['private_selection_path'].endswith('/selection.json')
     assert result['A*']['source_event_ids']==['paid']
+    assert summary['assigned_task_count']==1
+    assert 'task_ids' not in summary
+    assert summary['legacy_receipt_seal']=={'paid_receipt_file_count':1,'development_crosscheck_count':1}

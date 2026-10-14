@@ -507,11 +507,17 @@ def compact_selection_summary(result):
     """Keep every configuration/metric; store duplicated task/event rows privately."""
     def compact(value):
         if isinstance(value,dict):
-            return {k:compact(v) for k,v in value.items()
-                    if k not in {'per_task','source_event_ids','deterministic_paid_action_checks'}}
+            kept={k:compact(v) for k,v in value.items()
+                  if k not in {'per_task','source_event_ids','deterministic_paid_action_checks',
+                               'task_ids','paid_receipt_hashes','development_crosschecks'}}
+            for field,count in [('paid_receipt_hashes','paid_receipt_file_count'),
+                                ('development_crosschecks','development_crosscheck_count')]:
+                if field in value: kept[count]=len(value[field])
+            return kept
         if isinstance(value,list): return [compact(v) for v in value]
         return value
     public=compact(result)
+    public['assigned_task_count']=len(result.get('task_ids',result.get('A*',{}).get('task_ids',[])))
     public['private_selection_path']='artifacts/runs/task12-tune128-retry/selection.json'
     public['interpretation']='development selection only; no protected sample/generation/freeze'
     return public
