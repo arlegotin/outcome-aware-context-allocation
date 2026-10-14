@@ -214,6 +214,8 @@ Required record fields:
 
 Statuses: `ok`, `abstain`, `parse_error`, `invalid_citation`, `context_overflow`, `timeout`, `budget_exhausted`, `infra_error`. `infra_error` has a terminal record but blocks valid complete primary inference until resolved or explicitly declared incomplete. Cost cache modes: `none`, `within_query_prefix`, `development_replay`.
 
+**Builder decision:** `Decision.threshold_mode` and `threshold` are both null for non-threshold policies (fixed, Adaptive-k, sufficiency, random and oracle diagnostics). Learned threshold policies retain the three required modes and their strict finite/null endpoint validation. Do not invent a numeric threshold for a rule that has none.
+
 Action signature hashes task/question, reader/backend/tokenizer/prompt/decoding/index/evidence identities, seed, role and cache mode. Job ID additionally hashes execution mode and repetition ID; attempts have distinct IDs linked to the job. Development deduplication never deduplicates direct timing repetitions. Only locally trained estimator files may be loaded, and their manifest/hash must match; external serialized estimators are prohibited.
 
 Manifests use atomic temp/write/fsync/replace. Per-job completion is checksummed and atomic; attempt/event/error ledgers append. On resume, verify checksums/config/protocol before skipping; preserve interrupted attempts, unavailable/corrupt records and paid time. Infrastructure retries retain all attempts and do not selectively retry semantic failures. Test a killed fixture write and recovery. Close runs with expected/completed counts and file hashes before scoring; scoring refuses hash mismatches and unclosed protected runs. Missing scheduled work is not converted to a smaller sample.
@@ -234,7 +236,7 @@ Record adaptation separately: project indexing, paired labels, training and tuni
 
 ## 12. Frozen confirmation and uncertainty
 
-Freeze reader/retriever revisions, prompt/decoding/backend/schema/scorer hashes, token limits, timeout, selected policies, all family representatives, seeds, `N`, `n`, repetitions, scheduling/resource forecast, cost boundary and multiplicity before protected predictions. The protected runtime sees only sampled tasks and documents, not annotations.
+Freeze reader/retriever revisions, prompt/decoding/backend/schema/scorer hashes, token limits, timeout, selected policies, all family representatives, seeds, `N`, `n`, repetitions, scheduling/resource forecast, cost boundary and multiplicity before protected predictions. Record the source commit and an explicit set of execution-relevant file hashes (schemas/storage, retrieval, generation, features/policies, timing/runner, protocol, scoring/statistics and resolved backend files). Subsequent documentation/report/robustness additions cannot change these frozen files; reproduce against the frozen source if they must change. A source-binding update before the first protected generation may preserve already frozen methods/sample/schedule, but must be logged and cannot alter scientific settings. The protected runtime sees only sampled tasks and documents, not annotations.
 
 Choose `n` once from measured conservative cost, remaining 24-hour budget, fixed remaining work and report/recovery allowance:
 
