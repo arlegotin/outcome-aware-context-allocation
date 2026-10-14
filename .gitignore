@@ -17,3 +17,9 @@ models/
 artifacts/runs/
 
 # Keep requirements.lock, provenance, sanitized manifests and reports visible.
+
+# Private frozen confirmation task text and execution manifests.
+artifacts/protocol.json
+artifacts/methods.json
+artifacts/sample.json
+artifacts/schedule.json

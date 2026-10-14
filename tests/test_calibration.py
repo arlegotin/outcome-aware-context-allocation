@@ -41,3 +41,34 @@ def test_maximum_prompt_accounts_for_token_merging_at_padding_boundary():
     value=tool().pad_to_tokens('base',count,100)
     assert count(value)==100
     with pytest.raises(ValueError):tool().pad_to_tokens('base',count,5)
+
+
+def test_timing_summary_keeps_pair_covariance_and_full_roster_costs():
+    rows=[]
+    for task in ('short','long'):
+        for rep,(a,b) in enumerate(((1.,2.),(2.,4.),(3.,6.),(4.,8.)),1):
+            for arm,seconds in [('A',a),('B',b)]:
+                rows.append({'task_id':task,'scope':'primary','phase':'full-roster' if rep<3 else 'later-pair-block',
+                    'arm':arm,'repetition_id':rep,'elapsed_seconds':seconds,'output_hash':arm,'token_hash':arm,
+                    'generation_calls':1,'status':'ok'})
+        for i in range(14):rows.append({'task_id':task,'scope':'representative','phase':'full-roster',
+            'elapsed_seconds':1.,'generation_calls':1,'status':'ok'})
+    result=tool().timing_summary(rows,{'short':0,'long':2},full_roster_envelope_seconds=50.)
+    assert result['full_roster_seconds_per_question']==[23.,23.]
+    import numpy as np
+    np.testing.assert_allclose(result['paired_tasks'][0]['arm_covariance_seconds_squared'],[[5/3,10/3],[10/3,20/3]],rtol=1e-15)
+    assert result['deterministic_outputs'] is True
+    assert result['timing_stationary'] is None
+    assert result['native_envelope_factor']==50/46
+    rows[0]['token_hash']='changed'
+    assert tool().timing_summary(rows,{'short':0,'long':2},50.)['deterministic_outputs'] is False
+
+
+def test_batch_forecast_uses_higher_complete_roster_mean_and_envelope():
+    rows=[]
+    for rep in (1,2):
+        for arm in ('A','B'):
+            rows.append({'task_id':'x','scope':'primary','phase':'full-roster','arm':arm,
+                         'repetition_id':rep,'elapsed_seconds':1.,'output_hash':arm,'token_hash':arm})
+    summary=tool().timing_summary(rows,{'x':0},4.,historical_mean_seconds=30.,historical_envelope_factor=1.1)
+    assert summary['conservative_seconds_per_question']==pytest.approx(49.5)

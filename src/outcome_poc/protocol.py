@@ -71,6 +71,7 @@ def freeze_methods(development: dict, selection: dict, capacity: dict) -> dict:
     a,b=_policy(selection['A*']),_policy(selection['B*'])
     if a['family']!='PRE-OUTCOME-GBM' or b['family'] in ('PRE-OUTCOME-GBM','SHUFFLED-LABEL-GBM'):
         raise ValueError('invalid selected pair')
+    if selection['fixed_ten_anchor'].get('k')!=10 or selection['fixed_ten_anchor'].get('family')!='FIXED': raise ValueError('fixed-ten anchor required')
     reps=[_policy(selection['families'][f]['representative']) for f in sorted(FAMILIES)]
     if any(row['family']!=f for row,f in zip(reps,sorted(FAMILIES))): raise ValueError('mismatched representative')
     if a not in reps or b not in reps: raise ValueError('selected pair differs from family representatives')
@@ -93,7 +94,7 @@ def freeze_methods(development: dict, selection: dict, capacity: dict) -> dict:
         'anchor':_policy(selection['fixed_ten_anchor']),'oracle_source':{'config_id':'FIXED-2','family':'FIXED','k':2},
         'random':{'config_id':'RANDOM-MIXTURE','family':'RANDOM-MIXTURE','probability':probability,
                   'rule':'unsigned SHA256 canonical [271828,task_id,"random-mixture"] / 2**256 < p chooses ten'},
-        'reader':reader,'encoder':copy.deepcopy(development['encoder']),'models':copy.deepcopy(development['models']),
+        'reader':reader,'encoder':copy.deepcopy(development['encoder']),'retrieval':copy.deepcopy(development['retrieval']),'models':copy.deepcopy(development['models']),
         'identities':copy.deepcopy(development['identities']),'calibration':copy.deepcopy(development['calibration']),
         'capacity':copy.deepcopy(capacity),'forecast':forecast,'repetitions':repetitions,'post_cache_mode':'none',
         'seeds':{'split':20261014,'estimator':1729,'sampling':271828},
@@ -109,6 +110,9 @@ def freeze_methods(development: dict, selection: dict, capacity: dict) -> dict:
         'statistics':{'primary_alpha':.05,'quality_guards':['joint_vs_B','joint_vs_fixed10','answer_vs_B','answer_vs_fixed10'],
             'quality_tail_alpha':.05/16,'minimum_successes':30,'loo_minimum_successes':30,
             'stationarity_required':True,'deterministic_outputs_required':True,'single_dominance_review_required':True,
+            'actual_run_assessment':{'timing':'retain raw paired times and covariance; inspect question-centered A-B differences by order/repetition/run block/length and recorded resource state; document evidence, never infer True merely from no rejected test; unresolved=None',
+                'determinism':'compare raw output/status and paid token IDs across fresh same-arm repetitions; any difference invalidates fixed-outcome primary inference',
+                'influence':'retain all leave-one-out effects/intervals/sign conclusions; documented dominance review, no invented universal cutoff; unresolved=None'},
             'all_family_superiority':'not prespecified','zero_successes':'null with reason zero_successes'},
         'cost_boundary':'complete warm pipeline; every paid attempt/draft/judge; direct repetitions averaged within question'}
 
@@ -149,7 +153,8 @@ def plan_jobs(methods: dict, sampled_tasks: list) -> list[dict]:
 
 
 def _source_files(config):
-    return sorted(set(map(str,config['source_files'])))
+    names=sorted(set(map(str,config['source_files'])))
+    return names if config.get('fixture',False) else execution_source_files(names)
 
 
 def _capture_source(commit, source_files, fixture=False):
@@ -183,6 +188,13 @@ def freeze(config: dict) -> dict:
     if n>feasible or n>len(config['population_ids']): raise ValueError('unfeasible sample size')
     source=_capture_source(config['source_commit'],_source_files(config),config.get('fixture',False))
     artifacts={str(p):file_hash(p) for p in config['artifact_files']}
+    if config.get('artifact_manifest_path'):
+        manifest=Path(config['artifact_manifest_path'])
+        expected=_read(manifest)
+        for name,digest in expected.items():
+            if file_hash(name)!=digest:raise ValueError('artifact/dependency changed: '+name)
+        artifacts.update(expected)
+        artifacts[str(manifest)]=file_hash(manifest)
     methods['n']=n;methods['N']=len(config['population_ids'])
     methods['deadline_utc']=config['deadline_utc']
     # The write precedes selection and survives an interruption without resampling.
@@ -193,7 +205,8 @@ def freeze(config: dict) -> dict:
     selected=[byid[i] for i in ids]
     sample={'population_hash':content_hash(sorted(config['population_ids'])),'N':len(config['population_ids']),
             'n':n,'seed':271828,'algorithm':'NumPy Generator PCG64 choice sorted IDs without replacement',
-            'task_ids':ids,'tasks':json.loads(canonical_bytes(selected))}
+            'task_ids':ids,'tasks':json.loads(canonical_bytes(selected)),
+            'document_ids_hash':content_hash(sorted({d for t in selected for d in (t['candidate_ids'] if isinstance(t,dict) else t.candidate_ids)}))}
     schedule={'jobs':plan_jobs(methods,selected),'assigned_task_ids':ids}
     atomic_json(root/'sample.json',sample);atomic_json(root/'schedule.json',schedule)
     protocol={'version':1,'methods':methods,'sample':sample,'schedule':schedule,

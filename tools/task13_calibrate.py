@@ -246,6 +246,35 @@ def run(plan_path):
     return summary
 
 
+def timing_summary(rows,strata,full_roster_envelope_seconds,*,historical_mean_seconds=0.,historical_envelope_factor=1.):
+    """Operational development estimates; covariance does not prove stationarity."""
+    import numpy as np
+    task_ids=sorted({r['task_id'] for r in rows if r['phase']=='full-roster'})
+    full=[sum(r['elapsed_seconds'] for r in rows if r['phase']=='full-roster' and r['task_id']==tid) for tid in task_ids]
+    if not full or any(v<=0 for v in full):raise ValueError('complete positive roster costs required')
+    paired=[];deterministic=True
+    for tid in task_ids:
+        group=[r for r in rows if r.get('scope')=='primary' and r['task_id']==tid]
+        values={arm:{r['repetition_id']:r for r in group if r['arm']==arm} for arm in ('A','B')}
+        repetitions=sorted(values['A'])
+        if len(repetitions)<2 or set(repetitions)!=set(values['B']):raise ValueError('complete paired repeats required')
+        matrix=np.array([[values[arm][rep]['elapsed_seconds'] for arm in ('A','B')] for rep in repetitions])
+        parity={arm:len({(r['output_hash'],r['token_hash']) for r in values[arm].values()})==1 for arm in ('A','B')}
+        deterministic=deterministic and all(parity.values())
+        paired.append({'task_id':tid,'length_stratum':strata[tid],'paired_seconds':matrix.tolist(),
+            'arm_covariance_seconds_squared':np.cov(matrix,rowvar=False,ddof=1).tolist(),
+            'output_token_parity':parity,'later_over_early_ratio':(matrix[len(matrix)//2:].mean(axis=0)/matrix[:len(matrix)//2].mean(axis=0)).tolist()})
+    factor=max(1.,full_roster_envelope_seconds/sum(full))
+    return {'full_roster_seconds_per_question':full,'full_roster_mean_seconds':float(np.mean(full)),
+        'full_roster_max_seconds':max(full),'full_roster_envelope_seconds':full_roster_envelope_seconds,
+        'native_envelope_factor':factor,'paired_tasks':paired,'deterministic_outputs':deterministic,
+        'timing_stationary':None,'stationarity_qualification':'small development order/block diagnostics; no automatic stationarity certificate',
+        'conservative_seconds_per_question':1.5*max(float(np.mean(full)),historical_mean_seconds)*max(factor,historical_envelope_factor),
+        'historical_complete_roster_mean_seconds':historical_mean_seconds,'historical_envelope_factor':historical_envelope_factor,
+        'forecast_rule':'1.5 * max(fresh complete-roster mean, historical complete-roster mean) * max(fresh native-envelope factor, historical native-envelope factor)',
+        'forecast_qualification':'planning allowance from development, not a statistical bound or deadline guarantee'}
+
+
 if __name__=='__main__':
     if sys.argv[1]=='prepare': print(json.dumps(prepare(Path(sys.argv[2])),allow_nan=False))
     elif sys.argv[1]=='run':

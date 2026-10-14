@@ -41,7 +41,7 @@ def inputs(tmp_path):
         'diagnostics':{'no_context':{'split':'tune','count':2,'selection_rule':'hash'}},
         'forecast':{'conservative_seconds_per_question':45.,'fixed_remaining_seconds':7200.,
                     'report_reserve_seconds':7200.,'available_seconds':14700.,'bytes_per_question':1000},
-        'models':{},'identities':{'feature_schema':'f','scorer':'s'}}
+        'retrieval':{'index_dir':'sample-index','algorithm':'frozen-source'},'models':{},'identities':{'feature_schema':'f','scorer':'s'}}
     capacity={'passed':True,'max_prompt_tokens':7936,'forced_output_tokens':256,'max_request_seconds':10.}
     return {'development':development,'selection':selected,'capacity':capacity,'population_ids':[t.task_id for t in tasks],
             'tasks':tasks,'n':5,'source_commit':'a'*40,'source_files':[str(source)],'artifact_files':[str(artifact)],
@@ -111,3 +111,72 @@ def test_protected_execution_remains_blocked_before_task14(tmp_path):
     task=replace(job['task'],split='protected')
     with pytest.raises(ValueError,match='protected'): serve(task,job['policy'],runtime,job)
     assert runtime.reader.backend.calls==0
+
+
+def test_source_rebind_cannot_change_scientific_artifacts_or_frozen_index_inputs(tmp_path):
+    p=api();c=inputs(tmp_path);f=p.freeze(c)
+    assert f['sample']['document_ids_hash']==content_hash([f'doc-{j}' for j in range(10)])
+    assert f['methods']['retrieval']==c['development']['retrieval']
+    Path(c['artifact_files'][0]).write_bytes(b'changed model')
+    with pytest.raises(ValueError,match='artifact'):p.bind_source(f,'b'*40)
+
+
+def test_wrong_fixed_ten_anchor_is_rejected(tmp_path):
+    p=api();c=inputs(tmp_path);c['selection']['fixed_ten_anchor']['k']=9
+    with pytest.raises(ValueError,match='anchor'):p.freeze(c)
+
+
+def test_fixture_protocol_schedule_resumes_interrupted_transaction_without_repeat_payment(tmp_path,monkeypatch):
+    from outcome_poc import runner
+    from serving_helpers import fixture_runtime
+    runtime,base,_=fixture_runtime(tmp_path)
+    c=inputs(tmp_path);c.update(tasks=[base['task']],population_ids=[base['task'].task_id],n=1)
+    c['development']['reader']={**runtime.config,'timeout_seconds':20.}
+    runtime.config=c['development']['reader']
+    p=api();f=p.freeze(c);rows=f['schedule']['jobs']
+    class Model:
+        def __init__(self,n):self.n_features_in_=n
+        def predict(self,values):return np.zeros(len(values))
+    models={family:Model(46 if family=='POST-OUTCOME' else 42) for family in FAMILIES}
+    jobs=[{**base,**row,'task':base['task'],'policy':p.materialize_policy(row['method'],models),
+           'protocol_hash':'development-fixture-'+f['protocol_hash']} for row in rows]
+    original=runner.atomic_json
+    def interrupt(path,value):
+        if path.name=='completion.json':raise KeyboardInterrupt('fixture killed at commit')
+        return original(path,value)
+    monkeypatch.setattr(runner,'atomic_json',interrupt)
+    with pytest.raises(KeyboardInterrupt):runner.execute_job(jobs[0],runtime,Path(c['run_dir']))
+    paid=runtime.reader.backend.calls
+    monkeypatch.setattr(runner,'atomic_json',original)
+    runner.execute_job(jobs[0],runtime,Path(c['run_dir']))
+    assert runtime.reader.backend.calls==paid
+    for job in jobs[1:]:runner.execute_job(job,runtime,Path(c['run_dir']))
+    closed=runner.close_run(Path(c['run_dir']),jobs)
+    assert closed['record_count']==18 and closed['closure_version']==2
+    assert runtime.reader.backend.calls==19
+    with pytest.raises(ValueError,match='attempt'):p.bind_source(f,'b'*40)
+
+
+def test_external_dependency_manifest_cannot_rebind_changed_dependency_bytes(tmp_path):
+    p=api();c=inputs(tmp_path);dependency=tmp_path/'installed-backend.so';dependency.write_bytes(b'original')
+    manifest=tmp_path/'dependency-bindings.json';atomic_json(manifest,{str(dependency):p.file_hash(dependency)})
+    c['artifact_manifest_path']=str(manifest)
+    dependency.write_bytes(b'changed')
+    with pytest.raises(ValueError,match='artifact|dependency'):p.freeze(c)
+
+
+def test_later_reporting_commit_does_not_invalidate_unchanged_frozen_files(tmp_path,monkeypatch):
+    p=api();c=inputs(tmp_path);f=p.freeze(c)
+    monkeypatch.setattr(p.subprocess,'check_output',lambda *a,**k:'b'*40+'\n')
+    (tmp_path/'report-only.py').write_text('new descendant report module')
+    assert p.verify_protocol(Path(c['output_dir'])/'protocol.json')==f
+
+
+def test_production_source_list_cannot_omit_the_local_model_loader(tmp_path,monkeypatch):
+    p=api();c=inputs(tmp_path);c['fixture']=False
+    def committed(commit,names,fixture=False):
+        return {'commit':commit,'sha256':{name:p.file_hash(name) for name in names}}
+    monkeypatch.setattr(p,'_capture_source',committed)
+    f=p.freeze(c)
+    assert 'src/outcome_poc/train.py' in f['source']['sha256']
+    assert 'src/outcome_poc/protocol.py' in f['source']['sha256']

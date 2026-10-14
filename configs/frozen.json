@@ -1,0 +1,18 @@
+{
+  "selection_path": "artifacts/provenance/task12-selection.json",
+  "capacity_path": "artifacts/runs/task13-calibration-retry/capacity.json",
+  "development_path": "artifacts/runs/task13-freeze-inputs/development.json",
+  "artifact_manifest_path": "artifacts/runs/task13-freeze-inputs/artifact-bindings.json",
+  "artifact_files": [
+    "artifacts/runs/task13-freeze-inputs/development.json"
+  ],
+  "prepared_dir": "data/prepared",
+  "n": 480,
+  "output_dir": "artifacts",
+  "run_dir": "artifacts/runs/confirmation",
+  "deadline_utc": "2026-10-15T12:12:52+00:00",
+  "source_files": [
+    "configs/frozen.json"
+  ],
+  "fixture": false
+}
