@@ -1,0 +1,12 @@
+{
+  "deadline_utc": "2026-10-15T12:12:52+00:00",
+  "includes": [
+    "implementation",
+    "setup",
+    "evaluation",
+    "reporting"
+  ],
+  "start_reason": "first execution turn after user authorized implementation",
+  "started_utc": "2026-10-14T12:12:52+00:00",
+  "window_seconds": 86400
+}

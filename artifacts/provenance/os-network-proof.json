@@ -1,0 +1,6 @@
+{
+  "network_denied": true,
+  "error": "[Errno 1] Operation not permitted",
+  "mechanism": "macOS sandbox-exec (version 1)(allow default)(deny network*)",
+  "probe": "socket connect to1.1.1.1:443 without Python guard"
+}
