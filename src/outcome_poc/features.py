@@ -89,3 +89,26 @@ def build_features(question: str, ranked: list[RankedDocument]) -> np.ndarray:
     if not np.isfinite(result).all():
         raise ValueError('nonfinite allocation features')
     return result
+
+
+def post_feature_schema() -> dict:
+    schema = {'version': 'post_features_v1', 'base_feature_schema_hash': feature_schema()['hash'],
+              'features': feature_schema()['features'] + [
+                  {'name':'log1p_raw_draft_characters','formula':'log1p(len(raw_output))'},
+                  {'name':'draft_contract_valid','formula':'status in (ok, abstain)'},
+                  {'name':'empty_answer','formula':'not (answer or empty).strip()'},
+                  {'name':'unique_valid_citation_sentences','formula':'unique citations if contract valid else zero'}],
+              'feature_count':46}
+    return {**schema, 'hash':content_hash(schema)}
+
+
+def post_features(question: str, ranked: list[RankedDocument], draft) -> np.ndarray:
+    from .schemas import PaidDraft
+    if type(draft) is not PaidDraft:
+        raise ValueError('POST requires an event-backed paid draft')
+    validate_record(draft)
+    result = draft.reader_result
+    valid = result.status in {'ok','abstain'}
+    return np.concatenate((build_features(question, ranked), [math.log1p(len(result.raw_output)),
+        float(valid), float(not (result.answer or '').strip()),
+        float(len(set(result.citations))) if valid else 0.]))

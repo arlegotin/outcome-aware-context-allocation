@@ -21,7 +21,8 @@ class TimingLedger:
                           self.job.get('cache_mode','none'), source,
                           (resources or {}).get('peak_mlx_bytes'),
                           (resources or {}).get('rss_bytes'),
-                          (resources or {}).get('swap_used_bytes'),self.job.get('attempt',1),status)
+                          (resources or {}).get('swap_used_bytes'),self.job.get('attempt',1),status,
+                          result.telemetry.get('clean_prefill_seconds',0.) if result else 0.)
         validate_record(event)
         self.events.append(event)
         return event

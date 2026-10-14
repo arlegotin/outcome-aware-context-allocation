@@ -12,7 +12,7 @@ import numpy as np
 from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 from sklearn.linear_model import Ridge
 
-from .features import build_features, feature_schema
+from .features import build_features, feature_schema, post_features, post_feature_schema
 from .policies import training_thresholds
 from .schemas import GoldRecord, PairedActionRow, RankedDocument, ScoredTask, validate_record
 from .storage import atomic_json, content_hash, read_jsonl
@@ -162,7 +162,12 @@ def load_gate(manifest: dict) -> object:
     origin = json.loads((root/'fit-origin.json').read_text())
     if origin['kind'] != 'locally_created_fit_only' or origin['models'].get(manifest['family']) != manifest:
         raise ValueError('gate does not match persisted training origin')
-    if manifest['feature_schema_hash'] != feature_schema()['hash'] or manifest['fit_ids'] != origin['fit_ids']:
+    schema = post_feature_schema() if manifest['family'] == 'POST-OUTCOME' else feature_schema()
+    if manifest['family'] == 'POST-OUTCOME':
+        parent = origin['parent_origin']
+        if _digest(Path(parent['path'])) != parent['sha256']:
+            raise ValueError('POST parent origin checksum mismatch')
+    if manifest['feature_schema_hash'] != schema['hash'] or manifest['fit_ids'] != origin['fit_ids']:
         raise ValueError('gate feature/training origin mismatch')
     artifact = root/manifest['artifact_file']
     if root.is_symlink() or artifact.is_symlink() or _digest(artifact) != manifest['artifact_sha256']:
@@ -319,3 +324,83 @@ def main(args):
                  'extension_decision': 'no extension: initial fit preserved; sparse development outcomes require reserved tune evaluation, no search for favorable labels'})
     print(json.dumps({'fit_count':len(rows), 'models':len(fit['models']), 'target_distribution':fit['target_distribution'], 'training_seconds':fit['training_seconds']}))
     return 0
+
+
+def fit_post_gate(rows, drafts, prior_training_dir: Path, output_dir: Path) -> dict:
+    """Add one local POST model in a separate origin, preserving nine-model origin."""
+    origin_path = Path(prior_training_dir).resolve()/'fit-origin.json'
+    prior = json.loads(origin_path.read_text())
+    row_hash = content_hash([asdict(r) for r in rows])
+    if prior['rows_hash'] != row_hash or prior['fit_ids'] != [r.task_id for r in rows]:
+        raise ValueError('POST rows differ from existing fit origin')
+    target = outcome_targets(rows)
+    feature_matrix(rows)
+    if set(drafts) != {r.task_id for r in rows}:
+        raise ValueError('POST drafts must contain exactly fit IDs')
+    matrix = []
+    for row in rows:
+        paid = drafts[row.task_id]
+        validate_record(paid)
+        if paid.generation_event_id not in row.small_event_ids or paid.reader_result.status != row.small_status:
+            raise ValueError('POST draft event/status differs from paid small action')
+        matrix.append(post_features(row.question,row.ranked_documents,paid))
+    matrix = np.array(matrix)
+    root = Path(output_dir).resolve()
+    root.mkdir(parents=True,exist_ok=True)
+    if (root/'fit-origin.json').exists() or (root/'POST-OUTCOME.pkl').exists():
+        raise ValueError('POST artifacts already exist; immutable local origin')
+    start = time.perf_counter()
+    model = GradientBoostingRegressor(**GBM_PARAMS).fit(matrix,target)
+    predictions = np.clip(model.predict(matrix),-1,1)
+    artifact = root/'POST-OUTCOME.pkl'
+    artifact.write_bytes(pickle.dumps(model,protocol=5))
+    manifest = {'family':'POST-OUTCOME','artifact_file':artifact.name,'artifact_root':str(root),
+        'artifact_sha256':_digest(artifact),'artifact_bytes':artifact.stat().st_size,
+        'feature_schema_hash':post_feature_schema()['hash'],'fit_ids':prior['fit_ids'],
+        'training_rows_hash':row_hash,'parameters':model.get_params(),'schema_version':'local_gate_v1',
+        'sklearn_version':sklearn.__version__,'numpy_version':np.__version__,
+        'input_feature_names':[f['name'] for f in post_feature_schema()['features']],
+        'target_definition':'full_joint_em-small_joint_em','clipping':[-1,1],'feature_count':46,
+        'training_predictions':predictions.tolist(),'thresholds':training_thresholds(predictions),
+        'training_seconds':time.perf_counter()-start,'origin':'locally_created_fit_only'}
+    origin = {'kind':'locally_created_fit_only','fit_ids':prior['fit_ids'],'rows_hash':row_hash,
+        'feature_schema_hash':post_feature_schema()['hash'],'models':{'POST-OUTCOME':manifest},
+        'parent_origin':{'path':str(origin_path),'sha256':_digest(origin_path)},
+        'paid_draft_hash':content_hash(drafts),'source_code_hashes':{p.name:_digest(p) for p in Path(__file__).parent.glob('*.py')},
+        'training_seconds':manifest['training_seconds'],'additional_generation_calls':0}
+    atomic_json(root/'fit-origin.json',origin)
+    return origin
+
+
+def fit_post_from_closed(config, output_dir: Path):
+    """Join existing immutable scored pairs and event-backed small payloads; no new labels."""
+    from .collection import load_fit_inputs
+    from .runner import _result
+    from .schemas import PaidDraft
+    tasks, _ = load_fit_inputs(config)
+    acquisition = Path(config['collection']['run_dir'])
+    rows = collect_pairs(tasks,None,{'run_dir':str(acquisition),'scores_path':str(acquisition/'scores.jsonl')})
+    original = Path(config['training']['output_dir'])
+    saved = json.loads((original/'paid-draft-features.json').read_text())
+    if len(saved) != len(rows) or [r['task_id'] for r in saved] != [r.task_id for r in rows]:
+        raise ValueError('saved paid draft assignment mismatch')
+    predictions = {r['job_id']:r for r in read_jsonl(acquisition/'predictions.jsonl')}
+    drafts = {}
+    for row, stored in zip(rows,saved):
+        p = predictions[row.small_prediction_id]
+        if stored != {'task_id':row.task_id,'source_prediction_id':row.small_prediction_id,
+                      'source_event_ids':row.small_event_ids,'base_features':row.features,
+                      'draft_features':paid_draft_inputs(p)}:
+            raise ValueError('saved paid draft features differ from closed prediction')
+        # The result is reparsed in the original paid flow; use closed prediction's validated fields.
+        citations=[(c['doc_id'],c['sentence_index']) for c in p['citations']]
+        from .schemas import ReaderResult
+        drafts[row.task_id] = PaidDraft(row.small_event_ids[0],ReaderResult(p['raw_output'],p['answer'],citations,
+            p['status'],p['prompt_tokens'],p['generated_tokens'],[],[],None))
+    origin = fit_post_gate(rows,drafts,original,output_dir)
+    origin['acquisition_provenance'] = {'prediction_closure_sha256':_digest(acquisition/'predictions.closed.json'),
+        'collection_closure_sha256':_digest(acquisition/'collection.closed.json'),
+        'scorer_receipt_sha256':_digest(acquisition/'scores.jsonl.closed.json'),
+        'paid_draft_features_sha256':_digest(original/'paid-draft-features.json')}
+    atomic_json(Path(output_dir)/'fit-origin.json',origin)
+    return origin

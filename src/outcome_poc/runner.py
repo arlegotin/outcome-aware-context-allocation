@@ -92,12 +92,12 @@ def serve(task: Task, policy: object, runtime: object, job: dict) -> Prediction:
     validate_record(task)
     if task.split not in {'pilot','fit','tune'}:
         raise ValueError('protected serving blocked until protocol/sample verification')
-    if job.get('cache_mode','none') not in {'none','development_replay'}:
+    if job.get('cache_mode','none') not in {'none','within_query_prefix','development_replay'}:
         raise ValueError('native serving supports fresh generation or explicit development replay only')
     if job.get('mode','direct') not in {'direct','replay'}:
         raise ValueError('unknown serving mode')
     if job.get('mode','direct') == 'direct' and (
-            job.get('cache_mode','none') != 'none' or 'replay_prediction' in job):
+            job.get('cache_mode','none') == 'development_replay' or 'replay_prediction' in job):
         raise ValueError('direct mode refuses answer-cache reuse')
     if job.get('cache_mode','none') == 'development_replay':
         return _replay(task,policy,runtime,job)
@@ -117,22 +117,26 @@ def serve(task: Task, policy: object, runtime: object, job: dict) -> Prediction:
     aliases, evidence, prompt_hash, decision = {},[],content_hash('no-prompt'),None
     generated, calls = _empty('budget_exhausted','budget_exhausted'),0
     config = runtime.config
+    prefix = None
+    if job.get('cache_mode') == 'within_query_prefix' and not getattr(policy,'requires_draft',False):
+        raise ValueError('within-query prefix mode is POST only')
     def paid(budget, role):
         nonlocal calls,prompt_hash,evidence
         with ledger.component('evidence:'+role):
             evidence = [runtime.documents.get(row.doc_id) for row in ranked[:budget]]
         with ledger.component('prompt:'+role):
-            prompt = render_prompt(task.question,evidence,aliases,runtime.reader.backend.tokenizer)
+            prompt = render_prompt(task.question,evidence,aliases,runtime.reader.backend.tokenizer,
+                                   'judge' if role == 'judge' else 'answer')
             prompt_hash = prompt_identity(prompt,runtime.reader.backend.tokenizer)
             request = GenerationRequest(config['model_revision'],config['model_hash'],prompt_hash,
-                config['decoding_hash'],'answer',config['max_context_tokens'],
-                config['max_new_tokens'],config['timeout_seconds'],job.get('cache_mode','none'))
+                config['decoding_hash'],'judge' if role == 'judge' else 'answer',config['max_context_tokens'],
+                16 if role == 'judge' else config['max_new_tokens'],config['timeout_seconds'],job.get('cache_mode','none'))
         generation_start = runtime.clock()
-        calls += 1
         active = job.get('_attempt_dir')
         if active:
-            atomic_json(active / f'paid-{calls}.started.json',{
+            atomic_json(active / f'paid-{calls+1}.started.json',{
                 'role':'generation:'+role,'start_ns':generation_start,'request':request})
+        calls += 1
         last_partial={'text':'','prompt_ids':[],'token_ids':[]}
         backend=runtime.reader.backend
         previous_progress=getattr(backend,'progress_callback',None)
@@ -142,7 +146,14 @@ def serve(task: Task, policy: object, runtime: object, job: dict) -> Prediction:
             if previous_progress: previous_progress(text,prompt_ids,token_ids)
         backend.progress_callback=progress
         try:
-            result = backend.generate(prompt,request,rendered=True)
+            cache_args = {}
+            if prefix is not None:
+                handle = {**prefix,'operation':'capture' if role == 'draft' else 'reuse'}
+                if role == 'draft':
+                    prefix['source_prompt_hash'] = prompt_hash
+                    handle['source_prompt_hash'] = prompt_hash
+                cache_args['prefix_cache'] = handle
+            result = backend.generate(prompt,request,rendered=True,**cache_args)
             validate_record(result)
         except Exception as error:
             result = ReaderResult(last_partial['text'],None,[],'infra_error',
@@ -158,22 +169,40 @@ def serve(task: Task, policy: object, runtime: object, job: dict) -> Prediction:
         if active:
             atomic_json(active / f'paid-{calls}.finished.json',{'event':event,'result':result})
         with ledger.component('parse:'+role):
-            result = Reader.parse_generated(result,evidence,aliases)
+            if role == 'judge':
+                status = result.status if result.status in {'timeout','infra_error','budget_exhausted','context_overflow'} else (
+                    'ok' if result.stop_reason == 'stop' and result.raw_output.strip() in {'SUFFICIENT','INSUFFICIENT'} else 'parse_error')
+                result = replace(result,status=status,answer=None,citations=[])
+            else:
+                result = Reader.parse_generated(result,evidence,aliases)
         return result,event
     try:
         with ledger.component('retrieval'):
             ranked = runtime.retrieval.rank(task.question,task.candidate_ids)
             aliases = ranking_aliases(ranked)
-        draft = None
+        if job.get('cache_mode') == 'within_query_prefix' and 0 < min(2,len(ranked)) <= job.get('caller_cap',10):
+            with ledger.component('prefix_target'):
+                full_evidence = [runtime.documents.get(row.doc_id) for row in ranked]
+                prefix = {'scope':content_hash([task,job['job_id'],job.get('attempt',1)]),
+                          'target_prompt':render_prompt(task.question,full_evidence,aliases,backend.tokenizer),
+                          'source_prompt_hash':None}
+        draft, judge = None, None
+        if getattr(policy,'requires_judge',False):
+            if 0 < min(2,len(ranked)) <= job.get('caller_cap',10):
+                generated,event = paid(min(2,len(ranked)),'judge')
+                judge = PaidDraft(event.event_id,generated)
         if getattr(policy,'requires_draft',False):
             if min(2,len(ranked)) == 0 or min(2,len(ranked)) > job.get('caller_cap',10):
                 generated = _empty('budget_exhausted','budget_exhausted')
             else:
                 generated,event = paid(min(2,len(ranked)),'draft')
                 draft = PaidDraft(event.event_id,generated)
-        if not getattr(policy,'requires_draft',False) or draft is not None:
+        eligible = ((not getattr(policy,'requires_draft',False) or draft is not None)
+                    and (not getattr(policy,'requires_judge',False) or judge is not None))
+        if eligible:
             with ledger.component('routing'):
-                decision = policy.choose(task.question,ranked,draft,caller_cap=job.get('caller_cap',10))
+                decision = policy.choose(task.question,ranked,draft,caller_cap=job.get('caller_cap',10),
+                                         **({'paid_judge':judge} if judge is not None else {}))
                 validate_record(decision)
                 if decision.policy_id != pid:
                     raise ValueError('policy decision identity mismatch')
@@ -186,14 +215,14 @@ def serve(task: Task, policy: object, runtime: object, job: dict) -> Prediction:
                     raise ValueError('decision requested/effective budget violates caller/packet limits')
             if budget == 0 and pid != 'NO-CONTEXT-DIAGNOSTIC':
                 generated = _empty('budget_exhausted','budget_exhausted')
-            elif draft is not None and generated.status in {'timeout','infra_error'}:
+            elif (draft is not None or judge is not None) and generated.status in {'timeout','infra_error'}:
                 pass  # An infrastructure/timeout draft cannot invisibly trigger another answer.
             elif draft is None or budget != min(2,len(ranked)):
                 generated,_ = paid(budget,'answer')
     except Exception as error:
         generated = replace(runtime.last_paid_result or generated,status='infra_error',answer=None,citations=[],stop_reason=f'{type(error).__name__}:{error}')
     runtime.decision_payload = {'decision':decision,'aliases':aliases,'stop_reason':generated.stop_reason,
-        'action_signature':_bound_action_signature(task,runtime,[d.doc_id for d in evidence])}
+        'action_signature':_bound_action_signature(task,runtime,[d.doc_id for d in evidence],job.get('cache_mode','none'))}
     prediction = Prediction(job['run_id'],task.task_id,pid,job['protocol_hash'],job['job_id'],
         job.get('attempt',1),job.get('repetition_id',0),[d.doc_id for d in evidence],
         generated.raw_output,generated.answer,generated.citations,generated.status,
@@ -320,7 +349,7 @@ def _job_identity(job,runtime):
     return content_hash({'task':job['task'],'config':runtime.config,'policy_id':_policy_id(policy),
         'installed_chat_template_hash':content_hash(runtime.reader.backend.tokenizer.chat_template),
         'policy_config':getattr(policy,'config',None),'k':getattr(policy,'k',None),
-        'buffer':getattr(policy,'buffer',None),'requires_draft':getattr(policy,'requires_draft',False),
+        'buffer':getattr(policy,'buffer',None),'requires_draft':getattr(policy,'requires_draft',False),'requires_judge':getattr(policy,'requires_judge',False),
         'protocol_hash':job['protocol_hash'],'mode':job.get('mode','direct'),
         'cache_mode':job.get('cache_mode','none'),'caller_cap':job.get('caller_cap',10),
         'arm':job.get('arm'),'repetition_id':job.get('repetition_id',0),'allow_no_context_diagnostic':job.get('allow_no_context_diagnostic',False)})
@@ -823,10 +852,10 @@ print(json.dumps(checks))
     return 0 if result['passed'] else 1
 
 
-def _bound_action_signature(task,runtime,evidence_ids):
+def _bound_action_signature(task,runtime,evidence_ids,cache_mode='none'):
     config={**runtime.config,'installed_chat_template_hash':content_hash(runtime.reader.backend.tokenizer.chat_template),
             'prompt_system_hash':content_hash(ANSWER_SYSTEM)}
-    return action_signature(task,config,evidence_ids,'answer','none')
+    return action_signature(task,config,evidence_ids,'answer',cache_mode)
 
 
 def _answer_payload(prediction):
@@ -966,3 +995,26 @@ def _certify_observed_serving_failure(job,runtime,attempt_dir,error):
         ledger.event('serving',start,stop,status='infra_error')
     runtime.events=ledger.events
     return replace(prediction,elapsed_seconds=(stop-start)/1e9)
+
+
+def optimistic_post_cost(events: list[CostEvent], reusable_prefill_seconds: float) -> dict:
+    """Remove measured full-call prompt-only work; all draft/decode/other costs remain.
+
+    Taking all full-call clean chunk prefill as reusable is deliberately optimistic:
+    it includes noncommon full-prompt chunks. Backend prompt_tps is never used.
+    """
+    import math
+    for event in events: validate_record(event)
+    boundaries = [e for e in events if e.role == 'serving']
+    if len(boundaries) != 1 or not any(e.role == 'generation:draft' for e in events):
+        raise ValueError('one POST serving attempt required')
+    full = [e for e in events if e.role == 'generation:answer']
+    available = sum(e.clean_prefill_seconds for e in full)
+    if (not math.isfinite(reusable_prefill_seconds) or reusable_prefill_seconds < 0
+            or reusable_prefill_seconds > available or available > sum(e.elapsed_seconds for e in full)):
+        raise ValueError('bound exceeds measured full clean prefill')
+    total = boundaries[0].elapsed_seconds
+    return {'observed_serving_seconds':total, 'optimistic_serving_seconds':total-reusable_prefill_seconds,
+            'removed_full_prefill_seconds':reusable_prefill_seconds,
+            'kind':'optimistic_all_measured_full_clean_prefill',
+            'limitation':'last prompt token and sampling excluded; common-prefix partition unresolved'}

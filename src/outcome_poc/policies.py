@@ -134,3 +134,69 @@ def training_thresholds(predictions: np.ndarray) -> list[dict]:
     return ([{'threshold_mode': 'always_ten', 'threshold': None}]
             + [{'threshold_mode': 'numeric', 'threshold': float(value)} for value in thresholds]
             + [{'threshold_mode': 'always_two', 'threshold': None}])
+
+
+class PostOutcomePolicy:
+    requires_draft = True
+
+    def __init__(self, model, config):
+        from .features import post_feature_schema
+        self.model, self.config = model, dict(config)
+        self.policy_id = self.config.get('policy_id', 'POST-OUTCOME')
+        if not (self.policy_id == 'POST-OUTCOME' or self.policy_id.startswith('POST-OUTCOME-')):
+            raise ValueError('POST policy family required')
+        self.mode, self.threshold = self.config.get('threshold_mode'), self.config.get('threshold')
+        self.schema_hash = post_feature_schema()['hash']
+        _decision(self.policy_id, 2 if self.mode == 'always_two' else 10, 10, 10,
+                  'configuration', mode=self.mode, threshold=self.threshold)
+
+    def choose(self, question, ranked, paid_draft=None, *, caller_cap=10):
+        from dataclasses import replace
+        from .features import post_features
+        _preconditions(None, caller_cap)
+        mode, threshold = self.mode, self.threshold
+        requested = 2 if mode == 'always_two' else 10
+        def decision(reason, prediction=None):
+            return replace(_decision(self.policy_id, requested, len(ranked), caller_cap, reason,
+                                     prediction, mode, threshold), feature_schema_hash=self.schema_hash)
+        if not ranked or min(2,len(ranked)) > caller_cap:
+            return decision('budget_exhausted')
+        if type(paid_draft) is not PaidDraft:
+            raise ValueError('POST requires an event-backed paid draft')
+        validate_record(paid_draft)
+        try:
+            if self.config.get('feature_schema_hash',self.schema_hash) != self.schema_hash:
+                raise ValueError('POST schema mismatch')
+            values = post_features(question,ranked,paid_draft)
+            prediction = None
+            if mode == 'numeric':
+                if getattr(self.model,'n_features_in_',None) != 46:
+                    raise ValueError('POST model must have 46 inputs')
+                prediction = np.asarray(self.model.predict(values.reshape(1,-1)),dtype=float)
+                if prediction.shape != (1,) or not np.isfinite(prediction).all():
+                    raise ValueError('invalid POST prediction')
+                prediction = float(np.clip(prediction[0],-1,1))
+                requested = 2 if prediction <= threshold else 10
+            return decision('threshold' if mode == 'numeric' else mode,prediction)
+        except Exception as error:
+            logger.warning('POST full fallback: %s',error)
+            requested = 10
+            if mode != 'numeric': mode = 'always_ten'
+            return decision('full_fallback')
+
+
+class SufficiencyPolicy:
+    policy_id = 'LLM-SUFFICIENCY'
+    requires_judge = True
+
+    def choose(self, question, ranked, paid_draft=None, *, paid_judge=None, caller_cap=10):
+        _preconditions(paid_draft,caller_cap)
+        if type(paid_judge) is not PaidDraft:
+            raise ValueError('sufficiency requires an event-backed paid judge')
+        validate_record(paid_judge)
+        result = paid_judge.reader_result
+        sufficient = (result.status == 'ok' and result.stop_reason == 'stop'
+                      and result.raw_output.strip() == 'SUFFICIENT')
+        if ranked: validate_ranking(ranked)
+        return _decision(self.policy_id,2 if sufficient else 10,len(ranked),caller_cap,
+                         'sufficient' if sufficient else 'insufficient_or_malformed')

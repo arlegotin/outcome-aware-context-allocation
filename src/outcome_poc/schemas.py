@@ -1,6 +1,6 @@
 """Shared records with explicit, strict runtime validation."""
 
-from dataclasses import dataclass, fields
+from dataclasses import field, dataclass, fields
 from functools import lru_cache
 import math
 import types
@@ -81,6 +81,7 @@ class ReaderResult:
     prompt_token_ids: list[int]
     generated_token_ids: list[int]
     stop_reason: str | None
+    telemetry: dict[str, float | str | int | None | list[float]] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -132,6 +133,7 @@ class CostEvent:
     swap_used_bytes: int | None
     attempt: int
     status: str
+    clean_prefill_seconds: float = 0.
 
 
 @dataclass(frozen=True)
