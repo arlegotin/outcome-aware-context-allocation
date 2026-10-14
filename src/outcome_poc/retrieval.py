@@ -542,7 +542,8 @@ def main(args) -> int:
             if encoder.identity != {'revision': asset['revision'], 'snapshot_hash': asset['snapshot_hash']}:
                 raise ValueError('encoder snapshot identity mismatch')
             setup_seconds = time.perf_counter() - attempt.started
-            reuse = settings.get('reuse_indexes', []) if args.split in ('fit', 'tune') else []
+            reuse = (settings.get('reuse_indexes_by_split', {}).get(args.split, settings.get('reuse_indexes', []))
+                     if args.split in ('fit', 'tune') else [])
             manifest = _build_index_payload((documents.get(doc_id) for doc_id in ids), encoder, attempt.output_dir, attempt, reuse_indexes=reuse)
             attempt.mark('source_fingerprints')
             manifest['scheduled_split'] = args.split

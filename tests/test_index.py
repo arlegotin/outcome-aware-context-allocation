@@ -362,3 +362,24 @@ def test_fit_cli_copies_all_existing_exact_windows_without_new_encoding(tmp_path
     assert manifest['offline']['encoded_window_count'] == 0
     assert encoder.texts == []
     assert before == (source/'vectors.f32').read_bytes()
+
+
+def test_tune_cli_reuses_completed_fit_windows_from_split_specific_sources(tmp_path, cli_index_fixture):
+    from argparse import Namespace
+    from outcome_poc.data_runtime import load_tasks
+    from outcome_poc.schemas import Task
+    from outcome_poc.storage import append_jsonl
+    config_path, encoder, _ = cli_index_fixture
+    config = json.loads(config_path.read_text())
+    prepared = Path(config['preparation']['output_dir'])
+    fit_task = load_tasks(prepared/'tasks.jsonl','fit')[0]
+    append_jsonl(prepared/'tasks.jsonl',Task('tune','tune','Reserved tune question',fit_task.candidate_ids))
+    retrieval.main(Namespace(config=str(config_path),split='fit'))
+    encoder.texts.clear()
+    config['retrieval']['reuse_indexes_by_split']={'tune':[str(tmp_path/'indexes/fit')]}
+    config_path.write_text(json.dumps(config))
+    retrieval.main(Namespace(config=str(config_path),split='tune'))
+    manifest=json.loads((tmp_path/'indexes/tune/manifest.json').read_text())
+    assert manifest['offline']['reused_window_count']==10
+    assert manifest['offline']['encoded_window_count']==0
+    assert encoder.texts==[]

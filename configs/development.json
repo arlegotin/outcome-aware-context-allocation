@@ -73,7 +73,18 @@
     "reuse_indexes": [
       "data/index/pilot",
       "data/index/pilot64"
-    ]
+    ],
+    "reuse_indexes_by_split": {
+      "fit": [
+        "data/index/pilot",
+        "data/index/pilot64"
+      ],
+      "tune": [
+        "data/index/pilot",
+        "data/index/pilot64",
+        "data/index/fit"
+      ]
+    }
   },
   "collection": {
     "run_dir": "artifacts/runs/task10-fit256",
