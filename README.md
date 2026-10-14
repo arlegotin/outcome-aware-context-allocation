@@ -2,7 +2,7 @@
 
 A local experiment in development: train a cheap controller to choose two or ten already-retrieved paragraphs before a QA reader generates its answer. Evaluate complete serving time per HotpotQA joint-EM success against strong tuned baselines.
 
-Validated records, durable storage, native environment discovery, pinned assets, and offline reader/encoder smoke are implemented. The full experimental pipeline, controller training, and benchmark comparisons remain unimplemented. Passing the prerequisite smoke is not evidence of a research improvement.
+Validated records, durable storage, native discovery, pinned assets, isolated data preparation, deterministic CPU retrieval, and the citation reader/scorer are implemented and reviewed. Controller training and comparative experiments remain ahead. Passing these gates is not evidence of a research improvement.
 
 - [Implementation specification](docs/superpowers/specs/2026-10-14-outcome-aware-context-allocation-design.md)
 - [Implementation plan](docs/superpowers/plans/2026-10-14-outcome-aware-context-allocation.md)
@@ -45,6 +45,8 @@ Live official CMU training and distractor-development URLs timed out. Acquisitio
 
 HotpotQA is the dataset of Yang et al., *HotpotQA: A Dataset for Diverse, Explainable Multi-hop Question Answering* (2018), released under [CC BY-SA 4.0 by its authors](https://hotpotqa.github.io/). Retain attribution and applicable share-alike obligations when distributing data or derivatives. Raw/model/data text and caches are not committed by default.
 
-Only `discover`, `assets`, and `smoke` currently execute stages. The remaining commands listed by `--help` are proposed interfaces and return an explicit unavailable-stage error. No scientific dataset preparation, scoring, model training, protected generation or evaluation has run.
+`discover`, `assets`, `smoke`, `prepare`, `audit-data`, `index`, `reader`, and `score` currently execute stages. Other commands listed by `--help` remain proposed interfaces and return an explicit unavailable-stage error. Preparation produced a protected population of 7,344 structurally valid representative questions; it has no model outcomes. The current index covers only the first 32 development pilot questions.
+
+One ten-paragraph development reader diagnostic returned valid JSON/citations but failed answer and support scoring. Its raw output and failure are retained locally. This checks the plumbing, not allocation headroom or efficiency. The next experimental gate is a paired two/ten pilot with complete warm serving costs; no controller fitting or protected generation has run.
 
 The experiment tests context allocation on supplied evidence packets. It does not establish open-web search savings, commercial value, algorithmic novelty, or a full reproduction of related papers. Negative, tradeoff, inconclusive and prerequisite-blocked outcomes are valid handoffs.

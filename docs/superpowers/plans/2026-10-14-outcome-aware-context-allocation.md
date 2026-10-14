@@ -124,7 +124,7 @@ Also assert runtime `validate_record` rejects a citation index `True`, negative 
 
 **Interfaces:** `render_prompt(question: str, evidence: list[Document], aliases: dict[str,str], tokenizer: object, role: str = 'answer') -> str`; `parse_answer(raw: str, evidence: list[Document], aliases: dict[str,str], truncated: bool = False) -> ReaderResult`; `Reader.answer(...) -> ReaderResult` as in the spec; `normalize_answer(text: str) -> str`; `score_answer(prediction: str, gold: str) -> dict`; `score_support(predicted: set[tuple[str,int]], gold: set[tuple[str,int]]) -> dict`; `Scorer.score(...) -> ScoredTask` as specified. Metric dictionaries include EM/F1/precision/recall.
 
-- [ ] **Step 1: Write failing prompt/parser/metric fixtures.** Golden prompt contains the exact system text and aliases based on full ranking; selecting a budget never renumbers sentences. Accept one JSON/unlabeled fence, reject multiple objects/prose/duplicate keys/extra fields/bool or unknown indices/truncation; empty answer abstains; duplicate citations do not inflate support recall. Invalid citations with a correct answer score zero primary success and retain answer-only diagnostics.
+- [x] **Step 1: Write failing prompt/parser/metric fixtures.** Golden prompt contains the exact system text and aliases based on full ranking; selecting a budget never renumbers sentences. Accept one JSON/unlabeled fence, reject multiple objects/prose/duplicate keys/extra fields/bool or unknown indices/truncation; empty answer abstains; duplicate citations do not inflate support recall. Invalid citations with a correct answer score zero primary success and retain answer-only diagnostics.
 
 ```python
 def test_official_joint_f1_is_not_mean_of_f1s():
@@ -137,10 +137,10 @@ def test_official_joint_f1_is_not_mean_of_f1s():
 ```
 
 Define `joint_f1(answer: dict, support: dict) -> float` in `scoring.py`. Include normalized `yes/no/noanswer` mismatch, empty support sets and repeated answer-token fixtures; a forced-correct/forced-wrong pair changes the success count by exactly one.
-- [ ] **Step 2: Run red.** `python -m pytest tests/test_prompt.py tests/test_parsing.py tests/test_scoring.py tests/test_no_gold_access.py -q`.
-- [ ] **Step 3: Implement renderer/parser/scorer and pinned parity fixtures.** Retrieve the official evaluator at a resolved repository commit, save source digest/provenance, and compare fixture mathematical outputs in a scorer-only test. Avoid runtime dependency on the evaluator's optional imports or external pickle use. `Scorer` maps hashes through original documents to title/index sets. Distinguish prompt/output truncation from valid EOS; reserve output capacity before generation. No free repair generation.
-- [ ] **Step 4: Verify fixtures and one development generation.** Run Step 2, parity fixtures and a local pilot-input reader call. Gold is read only afterward by the separate scorer. Validate complete import closure and denied-gold runtime test.
-- [ ] **Step 5: Commit.** `git add src/outcome_poc/generation.py src/outcome_poc/scoring.py src/outcome_poc/__main__.py tests`; `git commit -m "feat: enforce citation contract and official HotpotQA scoring"`.
+- [x] **Step 2: Run red.** `python -m pytest tests/test_prompt.py tests/test_parsing.py tests/test_scoring.py tests/test_no_gold_access.py -q`.
+- [x] **Step 3: Implement renderer/parser/scorer and pinned parity fixtures.** Retrieve the official evaluator at a resolved repository commit, save source digest/provenance, and compare fixture mathematical outputs in a scorer-only test. Avoid runtime dependency on the evaluator's optional imports or external pickle use. `Scorer` maps hashes through original documents to title/index sets. Distinguish prompt/output truncation from valid EOS; reserve output capacity before generation. No free repair generation.
+- [x] **Step 4: Verify fixtures and one development generation.** Run Step 2, parity fixtures and a local pilot-input reader call. Gold is read only afterward by the separate scorer. Validate complete import closure and denied-gold runtime test.
+- [x] **Step 5: Commit.** `git add src/outcome_poc/generation.py src/outcome_poc/scoring.py src/outcome_poc/__main__.py tests`; `git commit -m "feat: enforce citation contract and official HotpotQA scoring"`.
 
 ## Task 6: Implement Conservative Finite-Population Analysis (WP2)
 
