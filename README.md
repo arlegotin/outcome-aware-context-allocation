@@ -2,7 +2,7 @@
 
 A local experiment in development: train a cheap controller to choose two or ten already-retrieved paragraphs before a QA reader generates its answer. Evaluate complete serving time per HotpotQA joint-EM success against strong tuned baselines.
 
-Validated records, durable storage, native discovery, pinned assets, isolated data preparation, deterministic CPU retrieval, and the citation reader/scorer are implemented and reviewed. Controller training and comparative experiments remain ahead. Passing these gates is not evidence of a research improvement.
+Validated records, durable storage, native discovery, pinned assets, isolated data preparation, deterministic CPU retrieval, the citation reader/scorer, observable policies, uncertainty analysis, and complete service accounting are implemented and reviewed. Controller training and comparative experiments remain ahead. Passing these gates is not evidence of a research improvement.
 
 - [Implementation specification](docs/superpowers/specs/2026-10-14-outcome-aware-context-allocation-design.md)
 - [Implementation plan](docs/superpowers/plans/2026-10-14-outcome-aware-context-allocation.md)
@@ -45,8 +45,10 @@ Live official CMU training and distractor-development URLs timed out. Acquisitio
 
 HotpotQA is the dataset of Yang et al., *HotpotQA: A Dataset for Diverse, Explainable Multi-hop Question Answering* (2018), released under [CC BY-SA 4.0 by its authors](https://hotpotqa.github.io/). Retain attribution and applicable share-alike obligations when distributing data or derivatives. Raw/model/data text and caches are not committed by default.
 
-`discover`, `assets`, `smoke`, `prepare`, `audit-data`, `index`, `reader`, and `score` currently execute stages. Other commands listed by `--help` remain proposed interfaces and return an explicit unavailable-stage error. Preparation produced a protected population of 7,344 structurally valid representative questions; it has no model outcomes. The current index covers only the first 32 development pilot questions.
+`discover`, `assets`, `smoke`, `prepare`, `audit-data`, `index`, `reader`, `validate-harness`, and `score` currently execute stages. Other commands listed by `--help` remain proposed interfaces and return an explicit unavailable-stage error. Preparation produced a protected population of 7,344 structurally valid representative questions; it has no model outcomes. The current index covers only the first 32 development pilot questions.
 
-One ten-paragraph development reader diagnostic returned valid JSON/citations but failed answer and support scoring. Its raw output and failure are retained locally. This checks the plumbing, not allocation headroom or efficiency. The next experimental gate is a paired two/ten pilot with complete warm serving costs; no controller fitting or protected generation has run.
+One ten-paragraph development reader diagnostic returned valid JSON/citations but failed answer and support scoring. Its raw output and failure are retained locally. This checks the plumbing, not allocation headroom or efficiency. The accounting/recovery harness has passed its scoped reviews and native checks; its six development calls remain recorded. The next experimental gate is a paired two/ten pilot with complete warm serving costs; no controller fitting or protected generation has run.
+
+Development-only structural checks found top-two prompts of 283–670 tokens and top-ten prompts of 1,203–2,304 across the reserved 32-question pilot, with no initial-cap overflow. Top two contained every annotated support document on 17 questions; all ten did on 32. Support inclusion is a proxy, not observed reader success or a controller advantage. The separate audit costs and counts are retained in `artifacts/provenance/pilot-token-length-audit.json` and `pilot-retrieval-coverage-audit.json`.
 
 The experiment tests context allocation on supplied evidence packets. It does not establish open-web search savings, commercial value, algorithmic novelty, or a full reproduction of related papers. Negative, tradeoff, inconclusive and prerequisite-blocked outcomes are valid handoffs.
