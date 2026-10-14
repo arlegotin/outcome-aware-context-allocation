@@ -74,3 +74,26 @@ print(json.dumps(sorted(name for name in sys.modules if name.startswith('outcome
     imported = json.loads(result.stdout)
     assert 'outcome_poc.scoring' not in imported
     assert 'outcome_poc.data' not in imported
+
+
+def test_ranking_and_indexing_work_with_all_gold_file_access_denied(tmp_path, monkeypatch):
+    from outcome_poc.retrieval import build_index, Retrieval
+    from retrieval_helpers import Encoder, document, store
+    doc = document('Invented lantern', ['A violet lamp glows.'])
+    documents = store(tmp_path, [doc])
+    def guard(function):
+        def access(file, *args, **kwargs):
+            if isinstance(file, (str, Path)) and 'gold' in Path(file).parts:
+                raise PermissionError('gold access denied')
+            return function(file, *args, **kwargs)
+        return access
+    monkeypatch.setattr(builtins, 'open', guard(builtins.open))
+    monkeypatch.setattr(io, 'open', guard(io.open))
+    monkeypatch.setattr(os, 'open', guard(os.open))
+    encoder = Encoder()
+    build_index([doc], encoder, tmp_path / 'index')
+    ranker = Retrieval(tmp_path / 'index', documents, encoder)
+    assert ranker.rank('Which lamp glows?', [doc.doc_id])[0].doc_id == doc.doc_id
+    assert ranker.documents.get(doc.doc_id).sentences == ['A violet lamp glows.']
+    with pytest.raises(PermissionError):
+        (tmp_path / 'gold/gold.jsonl').open()

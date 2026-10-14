@@ -20,8 +20,10 @@ def main(argv: list[str] | None = None) -> int:
     subparsers = parser.add_subparsers(dest="command", required=True)
     for command in COMMAND_MODULES:
         stage_parser = subparsers.add_parser(command, help=f"{command} experiment stage")
-        if command in {"discover", "assets", "smoke", "prepare", "audit-data"}:
+        if command in {"discover", "assets", "smoke", "prepare", "audit-data", "index"}:
             stage_parser.add_argument("--config", required=True, help="local JSON setup configuration")
+        if command == "index":
+            stage_parser.add_argument("--split", required=True, choices=["pilot", "fit", "tune", "protected"], help="scheduled active partition")
     args = parser.parse_args(argv)
     module_name = f"outcome_poc.{COMMAND_MODULES[args.command]}"
     try:
