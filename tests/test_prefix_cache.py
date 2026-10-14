@@ -164,3 +164,24 @@ def test_native_prefix_full_event_links_to_paid_source(tmp_path):
     assert events[1].source_event_id == events[0].event_id
     assert handles[0]['operation']=='capture' and handles[1]['operation']=='reuse'
     assert handles[0]['scope']==handles[1]['scope']
+
+
+def test_timeout_discards_clean_handle_without_free_regeneration(monkeypatch):
+    from dataclasses import replace
+    from outcome_poc.schemas import GenerationRequest
+    from outcome_poc.generation import prompt_identity
+    import sys
+    backend,observed=fake_native(monkeypatch)
+    original=sys.modules['mlx_lm'].stream_generate
+    def timed_out(*args,**kwargs):
+        yield from original(*args,**kwargs)
+        raise TimeoutError('after paid draft continuation')
+    monkeypatch.setattr(sys.modules['mlx_lm'],'stream_generate',timed_out)
+    a,b='1 2 3','1 2 4'
+    scope={'scope':'q','target_prompt':b,'source_prompt_hash':prompt_identity(a,backend.tokenizer)}
+    req=GenerationRequest('r','m',scope['source_prompt_hash'],'d','answer',8192,256,120.,'within_query_prefix')
+    result=backend.generate(a,req,rendered=True,prefix_cache={**scope,'operation':'capture'})
+    assert result.status == 'timeout' and result.generated_token_ids == [999]
+    with pytest.raises(ValueError,match='prefix'):
+        backend.generate(b,replace(req,prompt_hash=prompt_identity(b,backend.tokenizer)),rendered=True,prefix_cache={**scope,'operation':'reuse'})
+    assert len(observed)==1
