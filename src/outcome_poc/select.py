@@ -443,11 +443,7 @@ def capture_launch(config_path, stage='tune'):
           'planned_common_jobs':128*12,'planned_common_generation_calls':128*14,
           'direct_checks_are_diagnostics':True}
     atomic_json(prelaunch/'plan.json',plan)
-    cwd=Path.cwd()
-    profile='(version 1)\n(allow default)\n(deny network*)\n'
-    for blocked in (prepared/'gold',Path('data/gold'),Path('models/pinned/data')):
-        profile+='(deny file-read* (subpath '+json.dumps(str((cwd/blocked).resolve()))+'))\n'
-    profile+='(deny file-read* (regex #".*\\\\.gold\\\\.jsonl$"))\n'
+    profile=native_sandbox_profile(Path.cwd(),prepared)
     (prelaunch/'native.sb').write_text(profile)
     atomic_json(Path('artifacts/provenance')/f'task12-{stage}-prelaunch.json',
                 {'binding':binding,'source_binding_hash':plan['source_binding_hash'],
@@ -516,3 +512,13 @@ def main(args):
     print(json.dumps({'A*':result['A*']['config_id'],'B*':result['B*']['config_id'],
                       'configurations':len(result['configurations']),'assigned_tune_tasks':len(launch['plan']['task_ids'])}),flush=True)
     return 0
+
+
+def native_sandbox_profile(cwd, prepared):
+    from pathlib import Path
+    import json
+    profile='(version 1)\n(allow default)\n(deny network*)\n'
+    for blocked in (prepared/'gold',Path('data/gold'),Path('models/pinned/data')):
+        profile+='(deny file-read* (subpath '+json.dumps(str((cwd/blocked).resolve()))+'))\n'
+    profile+='(deny file-read* (regex #".*[.]gold[.]jsonl$"))\n'
+    return profile

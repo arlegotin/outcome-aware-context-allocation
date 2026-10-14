@@ -159,8 +159,8 @@
     }
   },
   "tuning": {
-    "run_dir": "artifacts/runs/task12-tune128",
-    "prelaunch_dir": "artifacts/runs/task12-prelaunch",
+    "run_dir": "artifacts/runs/task12-tune128-retry",
+    "prelaunch_dir": "artifacts/runs/task12-prelaunch-retry",
     "post_training_dir": "artifacts/runs/task11-post-training",
     "index_dir": "data/index/tune",
     "direct_check_count": 4,

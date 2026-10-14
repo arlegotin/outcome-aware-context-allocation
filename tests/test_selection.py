@@ -150,3 +150,22 @@ def test_closed_tuning_analysis_keeps_paid_post_and_all_family_rows(tmp_path):
     assert len([r for r in result['configurations'] if r['family']=='FIXED'])==10
     assert result['families']['LLM-SUFFICIENCY']['config_count']==1
     assert result['published_adaptive_k']['config_id']=='ADAPTIVE-k-published-B5'
+
+
+def test_native_profile_denies_all_scorer_projection_suffixes(tmp_path):
+    import json
+    import subprocess
+    import sys
+    from pathlib import Path
+    profile_builder=getattr(select,'native_sandbox_profile',None)
+    assert callable(profile_builder), 'sandbox profile requires an executable projection denial contract'
+    if sys.platform!='darwin': pytest.skip('macOS sandbox-exec contract')
+    gold=tmp_path/'example.gold.jsonl';gold.write_text('fixture')
+    other=tmp_path/'example.gold.jsonl.other';other.write_text('fixture')
+    profile=tmp_path/'test.sb';profile.write_text(profile_builder(tmp_path,tmp_path/'prepared'))
+    probe="import json,sys\nr=[]\nfor p in sys.argv[1:]:\n try: open(p).read()\n except PermissionError:r.append('denied')\n else:r.append('allowed')\nprint(json.dumps(r))"
+    result=subprocess.run(['/usr/bin/sandbox-exec','-f',str(profile),sys.executable,'-c',probe,str(gold),str(other)],capture_output=True,text=True)
+    if 'sandbox_init: Operation not permitted' in result.stderr:
+        pytest.skip('outer sandbox disallows nested sandbox; run this test with authorized escalation')
+    assert result.returncode==0,result.stderr
+    assert json.loads(result.stdout)==['denied','allowed']
