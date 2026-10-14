@@ -269,6 +269,11 @@ def validate_record(record: object) -> None:
         policy_id = record.policy_id.upper()
         learned = any(policy_id == family or policy_id.startswith(family + "-")
                       for family in LEARNED_POLICY_FAMILIES)
+        no_context = record.policy_id == "NO-CONTEXT-DIAGNOSTIC"
+        if no_context:
+            if (record.action_k, record.requested_budget, record.effective_budget) != (0, 0, 0) or mode is not None or threshold is not None or record.predicted_delta is not None:
+                raise ValueError("no-context diagnostic requires explicit zero budgets and null threshold metadata")
+            return
         if record.action_k < 1:
             raise ValueError("action_k: must be positive")
         if learned and record.action_k not in {2, 10}:

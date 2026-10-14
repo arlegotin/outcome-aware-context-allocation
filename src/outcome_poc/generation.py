@@ -1,6 +1,6 @@
 """Local MLX reader and prerequisite smoke, with no scoring or gold dependency."""
 from contextlib import contextmanager
-from dataclasses import asdict, replace
+from dataclasses import asdict, dataclass, replace
 from datetime import datetime, timezone
 import inspect
 import hashlib
@@ -131,6 +131,10 @@ class Reader:
         if request.prompt_hash != prompt_identity(prompt, self.backend.tokenizer):
             raise ValueError('request prompt hash does not bind rendered prompt and template')
         generated = self.backend.generate(prompt, request, rendered=True)
+        return self.parse_generated(generated, evidence, aliases)
+
+    @staticmethod
+    def parse_generated(generated, evidence, aliases):
         parsed = parse_answer(generated.raw_output, evidence, aliases,
                               truncated=generated.status == 'budget_exhausted')
         status = (generated.status if generated.status in
@@ -221,6 +225,16 @@ class ReaderBackend:
         from mlx_lm.generate import generation_stream
         mx.synchronize(generation_stream)
 
+    def reset_resources(self):
+        import mlx.core as mx
+        mx.reset_peak_memory()
+
+    def resource_counters(self):
+        import mlx.core as mx
+        import psutil
+        return {'peak_mlx_bytes':mx.get_peak_memory(),'rss_bytes':psutil.Process().memory_info().rss,
+                'swap_used_bytes':psutil.swap_memory().used}
+
     def generate(self, prompt: str, request: GenerationRequest, *, rendered: bool = False) -> ReaderResult:
         validate_record(request)
         if not self.identity or (request.model_revision, request.model_hash) != (
@@ -234,6 +248,8 @@ class ReaderBackend:
         if len(prompt_ids) + request.max_new_tokens > request.max_context_tokens:
             return ReaderResult('', None, [], 'context_overflow', len(prompt_ids), 0,
                                 prompt_ids, [], 'context_overflow')
+        if getattr(self, "progress_callback", None):
+            self.progress_callback("", prompt_ids, [])
         from mlx_lm import stream_generate
         from mlx_lm.sample_utils import make_sampler
         start = time.perf_counter()
@@ -251,6 +267,8 @@ class ReaderBackend:
             for response in iterator:
                 text += response.text
                 token_ids.append(int(response.token))
+                if getattr(self, "progress_callback", None):
+                    self.progress_callback(text, prompt_ids, token_ids)
                 stop_reason = response.finish_reason
                 check_timeout()
             answer, citations, status = parse_citation_json(text)
@@ -523,3 +541,158 @@ def reader_diagnostic(args) -> int:
     print(json.dumps({key: metadata.get(key) for key in ('status', 'generation_calls', 'prompt_tokens',
                                                        'generated_tokens', 'stop_reason', 'errors')}))
     return 0 if not metadata['errors'] else 1
+
+
+def _reader_worker(connection, factory):
+    """Worker receives only rendered requests, never task annotations or gold paths."""
+    try:
+        backend = factory()
+        def resources():
+            measure=getattr(backend,'resource_counters',None)
+            return measure() if measure else {}
+        def progress(text, prompt_ids, token_ids):
+            connection.send(('progress',text,list(prompt_ids),list(token_ids),resources()))
+        backend.progress_callback = progress
+        connection.send(('ready',backend.tokenizer,resources()))
+        while True:
+            message = connection.recv()
+            if message[0] == 'close': return
+            if message[0] == 'sync':
+                backend.synchronize()
+                connection.send(('synced',))
+                continue
+            _,prompt,request,rendered = message
+            try:
+                reset=getattr(backend,'reset_resources',None)
+                if reset: reset()
+                result = backend.generate(prompt,request,rendered=rendered)
+            except Exception as error:
+                result = ReaderResult('',None,[],'infra_error',0,0,[],[],
+                                      f'infra_error:{type(error).__name__}:{error}')
+            connection.send(('result',result,resources()))
+    except BaseException as error:
+        try: connection.send(('error',f'{type(error).__name__}:{error}'))
+        except (OSError,EOFError): pass
+    finally:
+        connection.close()
+
+
+class SupervisedBackend:
+    """Persistent spawn worker; parent bounds even stalled prefill/device cleanup.
+
+    A forced timeout returns the last received partial payload. It never issues a
+    second generation. A later job synchronizes/reloads at its own boundary.
+    Lifecycle load/termination durations are observable for setup/reload charging.
+    """
+    def __init__(self, factory, *, startup_timeout=120.):
+        self.factory,self.startup_timeout = factory,startup_timeout
+        self.lifecycle=[]
+        self.last_resources={}
+        self.peak_mlx_bytes=None
+        self.worker=None
+        self.connection=None
+        self._start()
+
+    @property
+    def worker_pid(self):
+        return self.worker.pid if self.worker and self.worker.is_alive() else None
+
+    def _start(self):
+        import multiprocessing
+        start=time.perf_counter_ns()
+        context=multiprocessing.get_context('spawn')
+        self.connection,child=context.Pipe()
+        self.worker=context.Process(target=_reader_worker,args=(child,self.factory),daemon=True)
+        self.worker.start()
+        child.close()
+        try:
+            if not self.connection.poll(self.startup_timeout): raise TimeoutError('reader startup stalled')
+            message=self.connection.recv()
+            if message[0] != 'ready': raise RuntimeError(f'reader startup failed:{message}')
+            self.tokenizer=message[1]
+            self._resources(message[2])
+        except BaseException:
+            self._terminate('startup_failure')
+            raise
+        self.lifecycle.append({'kind':'load','pid':self.worker.pid,'start_ns':start,
+                               'stop_ns':time.perf_counter_ns()})
+
+    def _resources(self,values):
+        self.last_resources=values
+        peak=values.get('peak_mlx_bytes')
+        if peak is not None: self.peak_mlx_bytes=max(peak,self.peak_mlx_bytes or 0)
+
+    def _terminate(self, reason):
+        start=time.perf_counter_ns()
+        pid=self.worker.pid if self.worker else None
+        if self.worker:
+            if self.worker.is_alive(): self.worker.terminate()
+            self.worker.join(.5)
+            if self.worker.is_alive():
+                self.worker.kill()
+                self.worker.join(.5)
+            if self.worker.is_alive(): raise RuntimeError('reader worker could not be killed')
+            self.worker.close()
+        if self.connection: self.connection.close()
+        self.worker=self.connection=None
+        self.lifecycle.append({'kind':reason,'pid':pid,'start_ns':start,'stop_ns':time.perf_counter_ns()})
+
+    def synchronize(self):
+        if self.worker_pid is None: self._start()
+        self.connection.send(('sync',))
+        if not self.connection.poll(self.startup_timeout):
+            self._terminate('synchronization_timeout')
+            raise TimeoutError('reader synchronization stalled')
+        message=self.connection.recv()
+        if message[0] != 'synced':
+            self._terminate('synchronization_failure')
+            raise RuntimeError('reader synchronization failed')
+
+    def generate(self,prompt,request,*,rendered=False):
+        validate_record(request)
+        if self.worker_pid is None: self._start()
+        start=time.perf_counter()
+        text,prompt_ids,token_ids='',[],[]
+        self.connection.send(('generate',prompt,request,rendered))
+        try:
+            while True:
+                remaining=request.timeout_seconds-(time.perf_counter()-start)
+                if remaining <= 0 or not self.connection.poll(max(0.,remaining)):
+                    self._terminate('forced_timeout')
+                    return ReaderResult(text,None,[],'timeout',len(prompt_ids),len(token_ids),
+                                        prompt_ids,token_ids,'forced_timeout')
+                message=self.connection.recv()
+                if message[0] == 'progress':
+                    _,text,prompt_ids,token_ids,resources=message
+                    self._resources(resources)
+                    if getattr(self,'progress_callback',None):
+                        self.progress_callback(text,prompt_ids,token_ids)
+                elif message[0] == 'result':
+                    validate_record(message[1])
+                    self._resources(message[2])
+                    return message[1]
+                else: raise RuntimeError(str(message))
+        except (OSError,EOFError,RuntimeError) as error:
+            self._terminate('worker_failure')
+            return ReaderResult(text,None,[],'infra_error',len(prompt_ids),len(token_ids),
+                                prompt_ids,token_ids,f'infra_error:{type(error).__name__}:{error}')
+
+    def close(self):
+        if self.worker:
+            try: self.connection.send(('close',))
+            except (OSError,EOFError): pass
+            self._terminate('closed')
+
+    def __enter__(self): return self
+    def __exit__(self,*args): self.close()
+
+
+@dataclass(frozen=True)
+class NativeReaderFactory:
+    snapshot: Path
+    config: dict
+
+    def __call__(self):
+        backend=ReaderBackend()
+        backend.load(self.snapshot,self.config)
+        return backend

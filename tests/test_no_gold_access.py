@@ -205,3 +205,42 @@ def test_physically_committed_index_survives_post_commit_telemetry_fault_with_go
     retrieval.build_index([doc], encoder, tmp_path / 'index')
     assert retrieval.Retrieval(tmp_path / 'index', documents, encoder).rank('Which lamp?', [doc.doc_id])[0].doc_id == doc.doc_id
     assert 'post-commit' in caplog.text
+
+
+def test_full_serving_closure_operates_with_gold_denied(tmp_path,monkeypatch):
+    from outcome_poc.runner import execute_job,close_run,validate_closed_accounting
+    from serving_helpers import fixture_runtime
+    runtime,job,_=fixture_runtime(tmp_path)
+    def guarded(function):
+        def access(file,*args,**kwargs):
+            if isinstance(file,(str,Path)) and 'gold' in Path(file).parts:
+                raise PermissionError('gold access denied')
+            return function(file,*args,**kwargs)
+        return access
+    monkeypatch.setattr(builtins,'open',guarded(builtins.open))
+    monkeypatch.setattr(io,'open',guarded(io.open))
+    monkeypatch.setattr(os,'open',guarded(os.open))
+    prediction=execute_job(job,runtime,tmp_path)
+    assert close_run(tmp_path,[job])['record_count']==1
+    validate_closed_accounting(tmp_path,[prediction])
+    with pytest.raises(PermissionError): (tmp_path/'gold/gold.jsonl').read_bytes()
+
+
+def test_missing_accounting_fails_before_scorer_opens_gold(tmp_path,monkeypatch):
+    from outcome_poc import runner,scoring
+    from serving_helpers import fixture_runtime
+    from types import SimpleNamespace
+    runtime,job,_=fixture_runtime(tmp_path)
+    runner.execute_job(job,runtime,tmp_path)
+    runner.close_run(tmp_path,[job])
+    (tmp_path/'jobs/job/attempt-1/events.jsonl').unlink()
+    accessed=[]
+    original=scoring.read_jsonl
+    def read(path):
+        if path.name=='gold.jsonl': accessed.append(path)
+        return original(path)
+    monkeypatch.setattr(scoring,'read_jsonl',read)
+    with pytest.raises((ValueError,FileNotFoundError)):
+        scoring.main(SimpleNamespace(predictions=str(tmp_path/'predictions.jsonl'),
+            gold=str(tmp_path/'gold.jsonl'),documents='missing',output='missing',run_dir=str(tmp_path)))
+    assert accessed==[]

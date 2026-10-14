@@ -59,7 +59,8 @@ def joint_f1(answer: dict, support: dict) -> float:
 
 
 class Scorer:
-    def score(self, prediction: Prediction, gold: GoldRecord, documents: DocumentStore) -> ScoredTask:
+    def score(self, prediction: Prediction, gold: GoldRecord, documents: DocumentStore, *,
+              run_dir: Path | None = None) -> ScoredTask:
         validate_record(prediction)
         validate_record(gold)
         if prediction.task_id != gold.task_id:
@@ -76,13 +77,20 @@ class Scorer:
             except KeyError:
                 valid = False
         support = score_support(support_pairs, set(gold.supporting_facts))
-        # Cost-ledger reconstruction is a later runner task. Here these fields
-        # carry the prediction's supplied diagnostic interval only.
+        # Backward-compatible diagnostic fallback; experimental callers must
+        # supply the complete durable run ledger and fail on any missing event.
+        if run_dir is None:
+            serving_seconds=experiment_seconds=prediction.elapsed_seconds
+        else:
+            from .runner import accounting
+            costs=accounting(run_dir,prediction)
+            serving_seconds=costs['total_serving_seconds']
+            experiment_seconds=costs['total_experiment_seconds']
         result = ScoredTask(prediction.run_id, prediction.task_id, prediction.policy_id,
                             prediction.job_id, prediction.repetition_id, answer['em'], support['em'],
                             answer['em'] * support['em'] if valid else 0,
                             answer['f1'], support['f1'], joint_f1(answer, support) if valid else 0.,
-                            prediction.elapsed_seconds, prediction.elapsed_seconds)
+                            serving_seconds, experiment_seconds)
         validate_record(result)
         return result
 
@@ -103,7 +111,10 @@ def main(args) -> int:
         predictions.append(prediction)
     if closure.get('record_count') != len(predictions):
         raise ValueError('closed prediction count mismatch')
-    # All prediction payloads have been read and closed before gold is opened.
+    if getattr(args,'run_dir',None):
+        from .runner import validate_closed_accounting
+        validate_closed_accounting(Path(args.run_dir),predictions)
+    # All prediction payloads and optional complete accounting have been closed before gold is opened.
     gold_records = {}
     for row in read_jsonl(Path(args.gold)):
         row['supporting_facts'] = [tuple(pair) for pair in row['supporting_facts']]
@@ -116,8 +127,9 @@ def main(args) -> int:
     output = Path(args.output)
     if output.exists():
         raise ValueError('score output already exists')
-    scores = [Scorer().score(prediction, gold_records[prediction.task_id], documents) for prediction in predictions]
+    scores = [Scorer().score(prediction, gold_records[prediction.task_id], documents, run_dir=Path(args.run_dir) if getattr(args,'run_dir',None) else None) for prediction in predictions]
     for score in scores:
         append_jsonl(output, score)
-    print(json.dumps({'assigned_predictions': len(scores), 'joint_successes': sum(score.joint_em for score in scores)}))
+    print(json.dumps({'assigned_predictions': len(scores), 'joint_successes': sum(score.joint_em for score in scores),
+                      'timing_kind':'complete_ledger' if getattr(args,'run_dir',None) else 'diagnostic_interval_fallback'}))
     return 0
