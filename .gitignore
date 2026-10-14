@@ -1,0 +1,19 @@
+.venv/
+.cache/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+.DS_Store
+
+# Downloaded or annotation-bearing assets and generated experiment runs.
+data/raw/
+data/prepared/
+data/gold/
+data/index/
+models/
+artifacts/runs/
+
+# Keep requirements.lock, provenance, sanitized manifests and reports visible.
