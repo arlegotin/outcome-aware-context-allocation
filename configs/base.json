@@ -1,6 +1,12 @@
 {
   "output_dir": "artifacts/provenance",
   "cache_dir": "models/pinned",
+  "preparation": {
+    "train_path": "models/pinned/data/hotpot_train_v1.1.json",
+    "dev_path": "models/pinned/data/hotpot_dev_distractor_v1.json",
+    "output_dir": "data/prepared",
+    "asset_manifest": "artifacts/provenance/asset-manifest.json"
+  },
   "download_timeout_seconds": 20,
   "reader": {
     "repo_id": "mlx-community/Qwen3-4B-Instruct-2507-4bit",

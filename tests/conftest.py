@@ -7,6 +7,30 @@ import json
 import pytest
 
 
+@pytest.fixture
+def raw_hotpot():
+    return {'_id': 'invented-task', 'question': 'Which lantern glows?',
+            'answer': 'violet', 'type': 'bridge', 'level': 'easy',
+            'context': [[f'Invented lantern {i}', [f'Lantern {i} rests.', f'Lantern {i} glows.']]
+                        for i in range(10)],
+            'supporting_facts': [['Invented lantern 0', 1], ['Invented lantern 1', 0]]}
+
+
+@pytest.fixture
+def documents10(raw_hotpot):
+    from outcome_poc.schemas import Document
+    from outcome_poc.storage import content_hash
+    return [Document(content_hash([title, sentences]), title, sentences,
+                     sum(map(len, sentences))) for title, sentences in raw_hotpot['context']]
+
+
+@pytest.fixture
+def task10(raw_hotpot, documents10):
+    from outcome_poc.schemas import Task
+    return Task(raw_hotpot['_id'], 'fit', raw_hotpot['question'],
+                [doc.doc_id for doc in documents10])
+
+
 @pytest.fixture(scope='module')
 def matching_asset_template(tmp_path_factory):
     """Invented but fully valid native dev bytes; never fed to a public reader."""
