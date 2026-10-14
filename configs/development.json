@@ -1,0 +1,47 @@
+{
+  "reader": {
+    "repo_id": "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+    "revision": "50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b",
+    "max_context_tokens": 8192,
+    "max_new_tokens": 256,
+    "timeout_seconds": 120,
+    "prefill_step_size": 512
+  },
+  "encoder": {
+    "repo_id": "BAAI/bge-small-en-v1.5",
+    "revision": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+    "dimensions": 384,
+    "device": "cpu",
+    "precision": "float32"
+  },
+  "original_reader": {
+    "repo_id": "Qwen/Qwen3-4B-Instruct-2507",
+    "revision": "cdbee75f17c01a7cc42f958dc650907174af0554"
+  },
+  "seeds": {
+    "split": 20261014,
+    "estimator": 1729,
+    "sampling_bootstrap": 271828
+  },
+  "inputs": {
+    "prepared_dir": "data/prepared",
+    "index_dir": "data/index/pilot",
+    "asset_manifest": "artifacts/provenance/asset-manifest.json"
+  },
+  "pilot": {
+    "run_dir": "artifacts/runs/task9-pilot32",
+    "active_tasks": 32,
+    "all_k_size": 4,
+    "warmups": true,
+    "determinism": true
+  },
+  "development_gate": {
+    "min_oracle_successes": 4,
+    "min_discordant_tasks": 2,
+    "extension_limit": 64,
+    "min_savings_envelope_seconds_per_task": 0.01,
+    "planned_jobs": 12000,
+    "reserved_reporting_seconds": 3600,
+    "rule_frozen_before_generation": true
+  }
+}

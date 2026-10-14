@@ -17,7 +17,7 @@ from test_data import prepare_rows
 
 def test_serving_import_closure_has_no_scorer_or_preparation_module():
     root = Path(__file__).parents[1] / 'src' / 'outcome_poc'
-    pending = [name for name in ('runner', 'generation', 'retrieval', 'features', 'policies', 'data_runtime')
+    pending = [name for name in ('pilot', 'runner', 'generation', 'retrieval', 'features', 'policies', 'data_runtime')
                if (root / f'{name}.py').exists()]
     visited = set()
     while pending:
@@ -90,7 +90,7 @@ def test_reader_answer_operates_with_gold_denied(tmp_path, monkeypatch):
 def test_actual_serving_import_closure_in_fresh_process():
     script = '''
 import importlib, importlib.util, json, sys
-for name in ('runner', 'generation', 'retrieval', 'features', 'policies', 'data_runtime'):
+for name in ('pilot', 'runner', 'generation', 'retrieval', 'features', 'policies', 'data_runtime'):
     module = 'outcome_poc.' + name
     if importlib.util.find_spec(module) is not None:
         importlib.import_module(module)

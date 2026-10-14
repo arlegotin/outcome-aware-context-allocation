@@ -198,6 +198,18 @@ def parse_citation_json(raw: str) -> tuple[str | None, list[tuple[str, int]], st
         return None, [], 'parse_error'
 
 
+def backend_throughput(response=None):
+    """MLX-reported rates, never a clean reusable-prefill duration estimate."""
+    import math
+    values = {}
+    for name, attribute in [('backend_prompt_tokens_per_second', 'prompt_tps'),
+                            ('backend_generation_tokens_per_second', 'generation_tps')]:
+        value = getattr(response, attribute, None)
+        values[name] = float(value) if type(value) in (int, float) and math.isfinite(value) and value > 0 else None
+    return {**values, 'rate_kind': 'backend_reported_including_callback_and_first_token_overhead',
+            'reason': 'backend_rate_unavailable' if any(value is None for value in values.values()) else None}
+
+
 class ReaderBackend:
     def __init__(self):
         self.settings = {}
@@ -232,10 +244,12 @@ class ReaderBackend:
     def resource_counters(self):
         import mlx.core as mx
         import psutil
-        return {'peak_mlx_bytes':mx.get_peak_memory(),'rss_bytes':psutil.Process().memory_info().rss,
+        return {**getattr(self, 'throughput', backend_throughput()),
+                'peak_mlx_bytes':mx.get_peak_memory(),'rss_bytes':psutil.Process().memory_info().rss,
                 'swap_used_bytes':psutil.swap_memory().used}
 
     def generate(self, prompt: str, request: GenerationRequest, *, rendered: bool = False) -> ReaderResult:
+        self.throughput = backend_throughput()
         validate_record(request)
         if not self.identity or (request.model_revision, request.model_hash) != (
                 self.identity['revision'], self.identity['snapshot_hash']):
@@ -265,6 +279,7 @@ class ReaderBackend:
                                    prompt_progress_callback=check_timeout)
         try:
             for response in iterator:
+                self.throughput = backend_throughput(response)
                 text += response.text
                 token_ids.append(int(response.token))
                 if getattr(self, "progress_callback", None):
