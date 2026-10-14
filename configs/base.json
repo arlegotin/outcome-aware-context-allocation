@@ -1,0 +1,62 @@
+{
+  "output_dir": "artifacts/provenance",
+  "cache_dir": "models/pinned",
+  "download_timeout_seconds": 20,
+  "reader": {
+    "repo_id": "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+    "revision": "50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b",
+    "max_context_tokens": 8192,
+    "max_new_tokens": 256,
+    "timeout_seconds": 120,
+    "prefill_step_size": 512
+  },
+  "original_reader": {
+    "repo_id": "Qwen/Qwen3-4B-Instruct-2507",
+    "revision": "cdbee75f17c01a7cc42f958dc650907174af0554"
+  },
+  "encoder": {
+    "repo_id": "BAAI/bge-small-en-v1.5",
+    "revision": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+    "dimensions": 384,
+    "device": "cpu",
+    "precision": "float32"
+  },
+  "data": [
+    {
+      "name": "hotpot_train",
+      "url": "http://curtis.ml.cmu.edu/datasets/hotpot/hotpot_train_v1.1.json",
+      "license": "cc-by-sa-4.0",
+      "provenance_url": "https://hotpotqa.github.io/",
+      "expected_rows": 90447,
+      "archive": {
+        "url": "https://web.archive.org/web/20250512032701id_/http://curtis.ml.cmu.edu/datasets/hotpot/hotpot_train_v1.1.json",
+        "capture": "20250512032701",
+        "expected_bytes": 566426227,
+        "expected_rows": 90447,
+        "sha1_base32": "BDCCIMOCFGCPGYXJJXQOMNOHXBMMHT7Q"
+      }
+    },
+    {
+      "name": "hotpot_dev_distractor",
+      "url": "http://curtis.ml.cmu.edu/datasets/hotpot/hotpot_dev_distractor_v1.json",
+      "license": "cc-by-sa-4.0",
+      "provenance_url": "https://hotpotqa.github.io/",
+      "expected_rows": 7405,
+      "archive": {
+        "url": "https://web.archive.org/web/20250512032701id_/http://curtis.ml.cmu.edu/datasets/hotpot/hotpot_dev_distractor_v1.json",
+        "capture": "20250512032701",
+        "expected_bytes": 46320117,
+        "expected_rows": 7405,
+        "sha1_base32": null
+      }
+    }
+  ],
+  "seeds": {
+    "split": 20261014,
+    "estimator": 1729,
+    "sampling_bootstrap": 271828
+  },
+  "asset_source_policy": "direct_author_or_pinned_raw_author_archive",
+  "asset_source_amendment": "A01",
+  "archive_timeout_seconds": 180
+}

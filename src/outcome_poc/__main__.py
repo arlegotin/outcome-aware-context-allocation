@@ -19,7 +19,9 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Local outcome-aware context allocation experiment")
     subparsers = parser.add_subparsers(dest="command", required=True)
     for command in COMMAND_MODULES:
-        subparsers.add_parser(command, help=f"{command} experiment stage")
+        stage_parser = subparsers.add_parser(command, help=f"{command} experiment stage")
+        if command in {"discover", "assets", "smoke"}:
+            stage_parser.add_argument("--config", required=True, help="local JSON setup configuration")
     args = parser.parse_args(argv)
     module_name = f"outcome_poc.{COMMAND_MODULES[args.command]}"
     try:

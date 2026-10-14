@@ -1,6 +1,6 @@
 # Research and attribution handoff
 
-Research brief date: 14 October 2026. Planning status: specification and implementation plan only; experimental improvement remains untested.
+Research brief date: 14 October 2026. Execution status: validated foundation and native asset/inference prerequisites implemented; experimental improvement remains untested.
 
 The [specification](docs/superpowers/specs/2026-10-14-outcome-aware-context-allocation-design.md) and [implementation plan](docs/superpowers/plans/2026-10-14-outcome-aware-context-allocation.md) are the executable-design handoff. This file retains discovery links and research limits from the supplied brief so future workers do not need the chat to recover attribution.
 
@@ -52,7 +52,15 @@ The IDs below preserve the supplied brief's references. “Inherited” means it
 
 During planning, read-only shell discovery observed arm64, macOS 26.7.1/build 25G241, Python 3.14.6 and approximately 69 GiB available storage. Physical-memory discovery was denied by the sandbox. This is preliminary environment information, not a hardware/inference readiness certificate; chip identity, memory and a supported native 3.11/3.12 interpreter remain prerequisites.
 
-The supplied brief reports synthetic SciPy checks in a Linux/Python 3.13.5 research environment. Those checks are inherited evidence, not tests rerun here. This turn does not run scoring fixtures, download assets, fit policies or evaluate a benchmark. Planning document checks validate only links, structure, syntax and coverage.
+The supplied brief reports synthetic SciPy checks in a Linux/Python 3.13.5 research environment. Those checks are inherited evidence, not tests rerun here. The planning turn did not run scoring fixtures, download assets, fit policies or evaluate a benchmark. Its checks validated only links, structure, syntax and coverage. The subsequent execution evidence below is separate.
+
+## Subsequent Native Prerequisite Evidence
+
+Task 1 implemented strict records/storage/CLI foundations. Task 2 resolved and hash-locked a native Python 3.12.9 environment, acquired exact reader/encoder Hub commits, preserved licensing provenance, and verified deterministic local inference with an invented short citation example. The encoder returned normalized finite CPU float32 vectors with 384 columns. Model revisions, asset/wheel SHA-256 identities, API signatures, cold-load time, memory/swap measurements and offline proof are in local `artifacts/provenance`; the detailed execution report is `.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-2-report.md`.
+
+The live author CMU files were inaccessible during bounded probes. Source amendment A01 explicitly permits their unaltered raw Internet Archive replay at capture `20250512032701`, acquired directly without executing the third-party HF loader or using transformed records. Full byte lengths (566,426,227 train; 46,320,117 dev), native JSON structure and row counts (90,447 / 7,405), archive author-origin metadata, local SHA-256 and the available full-body training CDX SHA-1 digest were verified. No external dev payload digest or separately fetched current author copy was available. This archived-source distribution limitation must remain beside future dataset/population claims. HotpotQA author attribution and CC BY-SA 4.0 remain unchanged; data/model text is excluded from publication by default.
+
+The successful native smoke passes asset/inference prerequisites under A01. It does not estimate natural task quality, competitive efficiency, longest-prompt capacity, or paper reproducibility. All scientific preparation, scoring, training, tuning, freeze and protected comparisons remain pending. The original UTC project clock and 24-hour deadline were preserved.
 
 ## Remaining Limits and Decision Discipline
 
