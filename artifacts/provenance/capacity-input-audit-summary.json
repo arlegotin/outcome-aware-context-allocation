@@ -1,0 +1,65 @@
+{
+  "N": 7344,
+  "all_ranking_maximum": "unresolved; finite development permutations are not an all-ranking proof",
+  "ancillary_check": {
+    "cost_qualification": "Ancillary normalization check cost was not captured before assertion failure. Main successful audit measurements are exact; no further CPU extension performed.",
+    "elapsed_cpu_seconds": null,
+    "elapsed_wall_seconds": null,
+    "file": "bound_check.py",
+    "log": "bound-console.log",
+    "max_rss_bytes": null,
+    "status": "failed_already_NFC_assertion"
+  },
+  "bins": {
+    "0..2048": 6013,
+    "16385..32768": 0,
+    "2049..4096": 1329,
+    "4097..6144": 2,
+    "6145..7936": 0,
+    "7937..8192": 0,
+    "8193..16384": 0
+  },
+  "canonical_order_counts": {
+    "above_8192_without_reserve": 0,
+    "over_prompt_cap": 0,
+    "within_prompt_cap": 7344
+  },
+  "canonical_order_distribution": {
+    "max": 4396,
+    "mean": 1733.112336601307,
+    "median": 1694,
+    "min": 621,
+    "p90": 2224,
+    "p95": 2404,
+    "p99": 2880
+  },
+  "development_order_sensitivity": {
+    "largest_spread": 0,
+    "permutations_per_task": 31,
+    "tasks": 12,
+    "tasks_with_nonzero_spread": 0
+  },
+  "limitations": [
+    "Protected maximum/distribution apply to canonical order only. Development permutations are finite samples, not proof of all-ranking invariance.",
+    "Longest protected task IDs are private structural metadata only. Use development or synthetic length-matched inputs for calibration; never generate actual protected questions before verified freeze. Protected sample selection must remain uniform and independent of lengths.",
+    "No predictions or historical outcome records were read; known-length comparisons were omitted."
+  ],
+  "measurement": {
+    "elapsed_cpu_seconds": 26.910973000000002,
+    "elapsed_wall_seconds": 26.96328145795269,
+    "end_utc": "2026-10-14T19:28:52.323470+00:00",
+    "max_rss_bytes": 656982016,
+    "rss_bytes": 656982016,
+    "start_utc": "2026-10-14T19:28:25.360163+00:00"
+  },
+  "output_reserve": 256,
+  "prompt_cap": 7936,
+  "total_cap": 8192,
+  "withdrawn_raw_byte_candidate": {
+    "explanation": "Token count cannot exceed rendered UTF-8 bytes for this byte-level tokenizer with no encode-time added specials. All aliases D0..D9 have one ASCII digit and each appears exactly once; reordering preserves rendered byte count. This loose upper bound does not assert an exact all-ranking maximum.",
+    "max": 17969,
+    "reason": "Pinned tokenizer uses NFC normalization; independent check found an annotation-free sentence not already NFC. Raw rendered byte counts do not establish a normalized-byte bound. Do not use this candidate for all-order capacity claims.",
+    "valid_capacity_bound": false,
+    "within_prompt_cap": 5839
+  }
+}
