@@ -44,6 +44,23 @@ def load_pilot_inputs(config):
     return [replace(by_id[identity], split='pilot') for identity in identities], identities
 
 
+def job_components(run_dir, prediction):
+    """Read every certified job-attempt component, not only paid generation IDs."""
+    from .runner import _observed_failure, _owned_reloads
+    components = {}
+    for attempt in sorted((Path(run_dir)/'jobs'/prediction.job_id).glob('attempt-*')):
+        if (attempt/'observed-failure.closed.json').exists():
+            _, events = _observed_failure(attempt)
+            rows = [event.__dict__ for event in events]
+        else:
+            rows = list(read_jsonl(attempt/'events.jsonl'))
+        rows += [event.__dict__ for event in _owned_reloads(attempt)]
+        for event in rows:
+            name = event['role']
+            components[name] = components.get(name, 0.)+event['elapsed_seconds']
+    return components
+
+
 def capacity_forecast(observations: list[dict], remaining_seconds: float) -> dict:
     if not math.isfinite(remaining_seconds) or remaining_seconds < 0:
         raise ValueError('remaining time must be finite and nonnegative')
@@ -202,13 +219,9 @@ def run_pilot(config: dict, runtime: object) -> dict:
     last = {**jobs[-1], '_run_dir': str(root), 'attempt': predictions[-1].attempt}
     _consume_worker_lifecycle(runtime, last, TimingLedger(last, jobs[-1]['policy'].policy_id, runtime.clock))
     closure = close_run(root, jobs)
-    events = load_events(root)
     for item, prediction in zip(schedule['jobs'], predictions):
         costs = accounting(root, prediction)
-        components = {}
-        for event in events:
-            if event.task_id == prediction.task_id and event.policy_id == prediction.policy_id and event.event_id in prediction.event_ids:
-                components[event.role] = components.get(event.role, 0.)+event.elapsed_seconds
+        components = job_components(root, prediction)
         observations.append({**{key: value for key, value in item.items() if key != 'question'},
                              'status': prediction.status, 'prompt_tokens': prediction.prompt_tokens,
                              'output_tokens': prediction.generated_tokens, 'generation_calls': prediction.generation_calls,

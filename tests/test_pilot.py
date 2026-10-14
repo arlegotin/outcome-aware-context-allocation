@@ -42,6 +42,8 @@ def test_pilot_closes_every_assigned_job_with_distinct_direct_repetitions(tmp_pa
     assert result['closure']['record_count'] == 13
     assert runtime.reader.backend.calls == 13
     assert result['determinism']['passed']
+    assert result['observations'][0]['components']['retrieval'] == 2.
+    assert result['observations'][0]['components']['payload'] == 3.
     rows = list(read_jsonl(tmp_path/'pilot/predictions.jsonl'))
     assert len({row['job_id'] for row in rows}) == 13
     assert len([row for row in rows if row['policy_id'] == 'FIXED-2']) == 2
@@ -80,6 +82,7 @@ def test_closed_pilot_analysis_keeps_all_metrics_and_denominators(tmp_path):
     assert summary['all_k_slice_metrics']['1']['assigned'] == 1
     assert summary['gate']['next_stage'] == 'extend_reserved_pilot_to_64'
     assert (tmp_path/'summary/headroom.csv').exists()
+    assert b'\r' not in (tmp_path/'summary/headroom.csv').read_bytes()
     assert (tmp_path/'summary/reader_failures.jsonl').exists()
 
 
@@ -140,3 +143,27 @@ def test_extension_inputs_use_declared_reservation_and_explicit_runtime_relabel(
     assert tasks[0].split == 'pilot'
     assert tasks[0].task_id == reserved.task_id
     assert tasks[0].candidate_ids == reserved.candidate_ids
+
+
+def test_combined_pilot_analysis_reuses_closed_initial_pairs_and_has_64_denominator(tmp_path):
+    from outcome_poc.pilot import run_pilot
+    from outcome_poc.oracle import analyze_pilot
+    from outcome_poc.storage import append_jsonl
+    from serving_helpers import fixture_runtime
+    roots = [tmp_path/'first', tmp_path/'extension']
+    for index, root in enumerate(roots):
+        runtime, job, _ = fixture_runtime(tmp_path)
+        tasks = [replace(job['task'], task_id=f'{index}-{i}') for i in range(32)]
+        result = run_pilot({'tasks': tasks, 'assigned_ids': [t.task_id for t in tasks], 'all_k_size': 0,
+                            'run_dir': str(root), 'warmups': False, 'determinism': True}, runtime)
+        for observation in result['observations']:
+            append_jsonl(root/'scores.jsonl', {'job_id': observation['job_id'], 'task_id': observation['task_id'],
+                         'joint_em': 0, 'answer_em': 1, 'support_em': 0,
+                         'joint_f1': .5, 'answer_f1': 1., 'support_f1': .5})
+    original = (roots[0]/'predictions.jsonl').read_bytes()
+    summary = analyze_pilot(roots[0], roots[0]/'scores.jsonl', tmp_path/'summary', 50000., planned_jobs=10,
+                            extension_run_dirs=[roots[1]], extension_scores_paths=[roots[1]/'scores.jsonl'])
+    assert summary['headroom']['n'] == 64
+    assert summary['headroom']['cells']['both_fail'] == 64
+    assert summary['gate']['next_stage'] == 'task16_report'
+    assert (roots[0]/'predictions.jsonl').read_bytes() == original

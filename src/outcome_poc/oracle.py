@@ -56,13 +56,14 @@ def headroom(rows: list[PairedActionRow]) -> dict:
             'scope': 'clairvoyant development diagnostic; future outcomes and zero gate overhead'}
 
 
-def analyze_pilot(run_dir, scores_path, output_dir, remaining_seconds, *, planned_jobs=1920, setup_allowance_seconds=1800):
+def analyze_pilot(run_dir, scores_path, output_dir, remaining_seconds, *, planned_jobs=1920, setup_allowance_seconds=1800,
+                  extension_run_dirs=(), extension_scores_paths=()):
     """Analyze a closed ledger and separate scorer output, with no corpus text."""
     import csv
     from collections import Counter
     import json
     from pathlib import Path
-    from .pilot import capacity_forecast
+    from .pilot import capacity_forecast, job_components
     from .runner import validate_closed_accounting, _prediction
     from .storage import atomic_json, append_jsonl, content_hash, read_jsonl
     root, output = Path(run_dir), Path(output_dir)
@@ -71,11 +72,58 @@ def analyze_pilot(run_dir, scores_path, output_dir, remaining_seconds, *, planne
     predictions = [_prediction(row) for row in read_jsonl(root/'predictions.jsonl')]
     validate_closed_accounting(root, predictions)
     scores_list = list(read_jsonl(Path(scores_path)))
+    if len(extension_run_dirs) != len(extension_scores_paths):
+        raise ValueError('extension ledgers and score paths must pair exactly')
+    source_closures = [{'run_dir': str(root), 'closure': costs['closure']}]
+    source_runs = [str(root)]
+    for extension_root, extension_scores in zip(extension_run_dirs, extension_scores_paths):
+        extension_root = Path(extension_root)
+        extra = json.loads((extension_root/'pilot_costs.json').read_text())
+        extra_schedule = json.loads((extension_root/'schedule.json').read_text())
+        extra_predictions = [_prediction(row) for row in read_jsonl(extension_root/'predictions.jsonl')]
+        validate_closed_accounting(extension_root, extra_predictions)
+        source_closures.append({'run_dir': str(extension_root), 'closure': extra['closure']})
+        source_runs.append(str(extension_root))
+        predictions.extend(extra_predictions)
+        scores_list.extend(read_jsonl(Path(extension_scores)))
+        if set(schedule['assigned_ids']) & set(extra_schedule['assigned_ids']):
+            raise ValueError('pilot extension must be disjoint; old pairs cannot be repeated as tasks')
+        schedule['assigned_ids'] += extra_schedule['assigned_ids']
+        schedule['all_k_ids'] += extra_schedule['all_k_ids']
+        costs['observations'] += extra['observations']
+        costs['assigned_tasks'] += extra['assigned_tasks']
+        costs['scheduled_calls'] += extra['scheduled_calls']
+        costs['generation_calls'] += extra['generation_calls']
+        costs['determinism']['checks'] += extra['determinism']['checks']
+        costs['determinism']['passed'] &= extra['determinism']['passed']
+        costs['feature_overhead_seconds_per_task'] = max(costs.get('feature_overhead_seconds_per_task') or 0.,
+                                                        extra.get('feature_overhead_seconds_per_task') or 0.)
+        costs.setdefault('resource_gate', {})['passed'] = (costs.get('resource_gate', {}).get('passed', False)
+                                                         and extra.get('resource_gate', {}).get('passed', False))
+        for field in ('working_set_bytes', 'reserve_bytes', 'limit_bytes'):
+            if field in extra.get('resource_gate', {}):
+                costs['resource_gate'][field] = max(costs['resource_gate'].get(field, 0), extra['resource_gate'][field])
+        for field in ('peak_mlx_bytes', 'sampled_parent_worker_rss_bytes', 'swap_used_bytes'):
+            if field in extra:
+                costs[field] = max(costs.get(field) or 0, extra[field] or 0)
+    if extension_run_dirs:
+        costs['closure'] = {'record_count': sum(source['closure']['record_count'] for source in source_closures),
+                            'source_runs': source_closures, 'kind': 'aggregate_of_separately_closed_disjoint_pilot_runs'}
+        costs['private_run_dirs'] = source_runs
+        costs['all_k_scope'] = 'four pre-outcome hash tasks in each32-task reserved block; eight total diagnostic tasks'
     scores = {row['job_id']: row for row in scores_list}
     if len(scores) != len(scores_list) or set(scores) != {row.job_id for row in predictions}:
         raise ValueError('scoring does not exactly cover the closed assigned ledger')
     if any(scores[p.job_id]['task_id'] != p.task_id for p in predictions):
         raise ValueError('score task identity mismatch')
+    # Regenerate explanatory component metadata from immutable closed receipts;
+    # existing scalar serving/experiment costs and outcomes are unchanged.
+    by_prediction = {p.job_id: p for p in predictions}
+    for source_dir in source_runs:
+        source_ids = {p.job_id for p in map(_prediction, read_jsonl(Path(source_dir)/'predictions.jsonl'))}
+        for observation in costs['observations']:
+            if observation['job_id'] in source_ids:
+                observation['components'] = job_components(source_dir, by_prediction[observation['job_id']])
     obs = costs['observations']
     core = {(row['task_id'], row['k']): row for row in obs if row['kind'] == 'primary'}
     pairs = []
@@ -159,7 +207,7 @@ def analyze_pilot(run_dir, scores_path, output_dir, remaining_seconds, *, planne
     gate['scope'] = 'development feasibility only; no learned policy or protected claim'
     output.mkdir(parents=True, exist_ok=True)
     with (output/'headroom.csv').open('w', newline='') as stream:
-        writer = csv.DictWriter(stream, fieldnames=['task_id', 'small_joint_em', 'full_joint_em', 'small_answer_em', 'full_answer_em',
+        writer = csv.DictWriter(stream, lineterminator='\n', fieldnames=['task_id', 'small_joint_em', 'full_joint_em', 'small_answer_em', 'full_answer_em',
                                                   'small_cost_seconds', 'full_cost_seconds', 'small_status', 'full_status'])
         writer.writeheader()
         for row in pairs:
@@ -178,6 +226,7 @@ def analyze_pilot(run_dir, scores_path, output_dir, remaining_seconds, *, planne
                'gate': gate, 'capacity_forecast': forecast,
                'oracle_overhead_comparison': overhead_comparison, 'oracle_savings_at_fixed_ten_quality_seconds': savings,
                'closed_ledger': costs['closure'], 'score_hash': content_hash(scores_list), 'private_run_dir': str(root),
+               'private_run_dirs': source_runs,
                'interpretation': 'inconclusive', 'protected_generation': False}
     atomic_json(output/'pilot_costs.json', costs)
     atomic_json(output/'capacity_forecast.json', forecast)
