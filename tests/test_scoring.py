@@ -68,3 +68,24 @@ def test_scorer_maps_hashes_preserves_diagnostics_and_counts_one_success(tmp_pat
     assert empty.answer_em == 1 and empty.joint_em == 0
     with pytest.raises(ValueError, match='task'):
         scoring.Scorer().score(prediction, replace(gold, task_id='other'), documents)
+
+
+def test_separate_scorer_never_materializes_unassigned_annotations(tmp_path,monkeypatch):
+    from types import SimpleNamespace
+    from outcome_poc import runner,scoring
+    from outcome_poc.storage import append_jsonl,read_jsonl
+    from outcome_poc.schemas import GoldRecord
+    from serving_helpers import fixture_runtime
+    runtime,job,_=fixture_runtime(tmp_path)
+    runner.execute_job(job,runtime,tmp_path)
+    runner.close_run(tmp_path,[job])
+    gold=tmp_path/'gold.jsonl'
+    append_jsonl(gold,{'task_id':'unassigned-protected','answer':['must not materialize'],
+                       'supporting_facts':'must not validate or score'})
+    append_jsonl(gold,GoldRecord('task','blue',[('Lamp 0',0)]))
+    monkeypatch.setattr(scoring,'DocumentStore',lambda path:runtime.documents)
+    scoring.main(SimpleNamespace(predictions=str(tmp_path/'predictions.jsonl'),gold=str(gold),
+        documents='unused',output=str(tmp_path/'scores.jsonl'),run_dir=str(tmp_path)))
+    scores=list(read_jsonl(tmp_path/'scores.jsonl'))
+    assert len(scores)==1 and scores[0]['joint_em']==1
+    assert [r['task_id'] for r in read_jsonl(tmp_path/'scores.gold.jsonl')]==['task']

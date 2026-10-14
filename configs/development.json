@@ -157,5 +157,14 @@
         "tol": 0.0001
       }
     }
+  },
+  "tuning": {
+    "run_dir": "artifacts/runs/task12-tune128",
+    "prelaunch_dir": "artifacts/runs/task12-prelaunch",
+    "post_training_dir": "artifacts/runs/task11-post-training",
+    "index_dir": "data/index/tune",
+    "direct_check_count": 4,
+    "direct_check_selection": "ascending SHA256 canonical [271828,task12-direct-reconstruction,tune task id], first four",
+    "complete_roster_required": true
   }
 }

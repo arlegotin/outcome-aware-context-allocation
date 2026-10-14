@@ -20,7 +20,7 @@ def main(argv: list[str] | None = None) -> int:
     subparsers = parser.add_subparsers(dest="command", required=True)
     for command in COMMAND_MODULES:
         stage_parser = subparsers.add_parser(command, help=f"{command} experiment stage")
-        if command in {"discover", "assets", "smoke", "prepare", "audit-data", "index", "reader", "validate-harness", "pilot", "collect", "fit"}:
+        if command in {"discover", "assets", "smoke", "prepare", "audit-data", "index", "reader", "validate-harness", "pilot", "collect", "fit", "tune"}:
             stage_parser.add_argument("--config", required=True, help="local JSON setup configuration")
         if command in {"index", "collect"}:
             stage_parser.add_argument("--split", required=True, choices=["pilot", "fit", "tune"], help="scheduled active partition")

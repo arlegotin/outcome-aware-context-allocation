@@ -61,7 +61,7 @@ def joint_f1(answer: dict, support: dict) -> float:
 
 class Scorer:
     def score(self, prediction: Prediction, gold: GoldRecord, documents: DocumentStore, *,
-              run_dir: Path | None = None) -> ScoredTask:
+              run_dir: Path | None = None, accounting_context=None) -> ScoredTask:
         validate_record(prediction)
         validate_record(gold)
         if prediction.task_id != gold.task_id:
@@ -84,7 +84,7 @@ class Scorer:
             serving_seconds=experiment_seconds=prediction.elapsed_seconds
         else:
             from .runner import accounting
-            costs=accounting(run_dir,prediction)
+            costs=accounting_context.costs(prediction) if accounting_context is not None else accounting(run_dir,prediction)
             serving_seconds=costs['total_serving_seconds']
             experiment_seconds=costs['total_experiment_seconds']
         result = ScoredTask(prediction.run_id, prediction.task_id, prediction.policy_id,
@@ -113,18 +113,24 @@ def main(args) -> int:
         predictions.append(prediction)
     if closure.get('record_count') != len(predictions):
         raise ValueError('closed prediction count mismatch')
+    accounting_context=None
     if getattr(args,'run_dir',None):
         from .runner import validate_closed_accounting
-        validate_closed_accounting(Path(args.run_dir),predictions)
+        accounting_context=validate_closed_accounting(Path(args.run_dir),predictions)
+        accounting_context.verify_unchanged()
     # All prediction payloads and optional complete accounting have been closed before gold is opened.
     gold_records = {}
+    assigned_task_ids={prediction.task_id for prediction in predictions}
     for row in read_jsonl(Path(args.gold)):
+        if row['task_id'] not in assigned_task_ids:
+            continue  # Project only assigned annotations; never construct unassigned GoldRecord values.
         row['supporting_facts'] = [tuple(pair) for pair in row['supporting_facts']]
         gold = GoldRecord(**row)
         validate_record(gold)
         if gold.task_id in gold_records:
             raise ValueError('duplicate gold task ID')
         gold_records[gold.task_id] = gold
+    if set(gold_records)!=assigned_task_ids: raise ValueError('assigned gold records incomplete')
     documents = DocumentStore(Path(args.documents))
     output = Path(args.output)
     if output.exists():
@@ -133,7 +139,7 @@ def main(args) -> int:
     if gold_projection.exists(): raise ValueError('scorer gold projection already exists')
     for task_id in sorted({prediction.task_id for prediction in predictions}):
         append_jsonl(gold_projection, gold_records[task_id])
-    scores = [Scorer().score(prediction, gold_records[prediction.task_id], documents, run_dir=Path(args.run_dir) if getattr(args,'run_dir',None) else None) for prediction in predictions]
+    scores = [Scorer().score(prediction, gold_records[prediction.task_id], documents, run_dir=Path(args.run_dir) if getattr(args,'run_dir',None) else None, accounting_context=accounting_context) for prediction in predictions]
     for score in scores:
         append_jsonl(output, score)
     from .storage import atomic_json

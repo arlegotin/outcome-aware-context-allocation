@@ -200,3 +200,97 @@ def test_resume_rejects_changed_installed_template(tmp_path):
     runtime.reader.backend.tokenizer.chat_template='changed-template'
     with pytest.raises(ValueError,match='identity'):
         runner.execute_job(job,runtime,tmp_path)
+
+
+def test_closed_snapshot_matches_retry_shared_costs_and_validates_supplement_once(tmp_path,monkeypatch):
+    runtime,job,_=fixture_runtime(tmp_path,['INFRA','{"answer":"blue","citations":[{"doc_id":"D0","sentence_index":0}]}'])
+    runner.execute_job(job,runtime,tmp_path)
+    p=runner.execute_job({**job,'retry_infrastructure':True},runtime,tmp_path)
+    second={**job,'job_id':'second'}
+    q=runner.execute_job(second,runtime,tmp_path)
+    runner.record_shared_cost(tmp_path,'offline',0,4_000_000_000,['job','second'])
+    runner.close_run(tmp_path,[job,second])
+    expected=[runner.accounting(tmp_path,x) for x in [p,q]]
+    calls=[]
+    original=runner._supplement_hashes
+    def counted(path): calls.append(path);return original(path)
+    monkeypatch.setattr(runner,'_supplement_hashes',counted)
+    snapshot=runner.validate_closed_accounting(tmp_path,[p,q])
+    assert [snapshot.costs(x) for x in [p,q]]==expected
+    assert expected==[{'total_serving_seconds':22.,'total_experiment_seconds':24.},
+                      {'total_serving_seconds':11.,'total_experiment_seconds':13.}]
+    assert len(calls)==1
+    with pytest.raises(ValueError): snapshot.costs(replace(p,answer='changed'))
+
+
+@pytest.mark.parametrize('corruption',['event','completion','shared','extra-job','missing-job','extra-attempt'])
+def test_closed_snapshot_rejects_corruption_before_gold(tmp_path,corruption):
+    runtime,job,_=fixture_runtime(tmp_path)
+    p=runner.execute_job(job,runtime,tmp_path)
+    runner.record_shared_cost(tmp_path,'offline',0,1_000_000_000,['job'])
+    runner.close_run(tmp_path,[job])
+    if corruption=='event': (tmp_path/'jobs/job/attempt-1/events.jsonl').write_text('{}\n')
+    if corruption=='completion': (tmp_path/'jobs/job/completion.json').write_text('{}')
+    if corruption=='shared': (tmp_path/'shared-costs.jsonl').write_text('{}\n')
+    if corruption=='extra-job': (tmp_path/'jobs/extra').mkdir()
+    if corruption=='missing-job': (tmp_path/'jobs/job').rename(tmp_path/'jobs/missing')
+    if corruption=='extra-attempt': (tmp_path/'jobs/job/attempt-99').mkdir()
+    with pytest.raises((ValueError,KeyError,FileNotFoundError)):
+        runner.validate_closed_accounting(tmp_path,[p])
+
+
+def test_snapshot_cannot_accept_files_changed_after_validation(tmp_path):
+    runtime,job,_=fixture_runtime(tmp_path)
+    p=runner.execute_job(job,runtime,tmp_path)
+    runner.close_run(tmp_path,[job])
+    snapshot=runner.validate_closed_accounting(tmp_path,[p])
+    (tmp_path/'jobs/job/attempt-1/events.jsonl').write_text('{}\n')
+    with pytest.raises(ValueError): snapshot.verify_unchanged()
+
+
+def test_separate_scorer_uses_one_global_validation_and_retains_zero_success(tmp_path,monkeypatch):
+    from outcome_poc import scoring
+    from outcome_poc.storage import append_jsonl
+    from outcome_poc.schemas import GoldRecord
+    from types import SimpleNamespace
+    runtime,job,_=fixture_runtime(tmp_path,['malformed'])
+    p=runner.execute_job(job,runtime,tmp_path)
+    second={**job,'job_id':'second'}
+    q=runner.execute_job(second,runtime,tmp_path)
+    runner.close_run(tmp_path,[job,second])
+    gold=tmp_path/'gold.jsonl';append_jsonl(gold,GoldRecord('task','blue',[('Lamp 0',0)]))
+    calls=[];original=runner._supplement_hashes
+    def counted(path): calls.append(path);return original(path)
+    monkeypatch.setattr(runner,'_supplement_hashes',counted)
+    monkeypatch.setattr(scoring,'DocumentStore',lambda path:runtime.documents)
+    scoring.main(SimpleNamespace(predictions=str(tmp_path/'predictions.jsonl'),gold=str(gold),
+        documents='unused',output=str(tmp_path/'scores.jsonl'),run_dir=str(tmp_path)))
+    assert len(calls)==1
+    scores=list(runner.read_jsonl(tmp_path/'scores.jsonl'))
+    assert len(scores)==2 and [s['joint_em'] for s in scores]==[0,0]
+    assert [s['total_serving_seconds'] for s in scores]==[11.,11.]
+
+
+@pytest.mark.parametrize('target',['payload','prior-attempt','supplement','extra-job','missing-job'])
+def test_any_closed_ledger_corruption_stops_scorer_before_gold(tmp_path,monkeypatch,target):
+    from outcome_poc import scoring
+    from types import SimpleNamespace
+    runtime,job,_=fixture_runtime(tmp_path,['INFRA','{"answer":"blue","citations":[]}'])
+    runner.execute_job(job,runtime,tmp_path)
+    p=runner.execute_job({**job,'retry_infrastructure':True},runtime,tmp_path)
+    runner.close_run(tmp_path,[job])
+    if target=='payload': (tmp_path/'jobs/job/attempt-2/payload.json').write_text('{}')
+    if target=='prior-attempt':
+        path=tmp_path/'jobs/job/attempt-1/events.jsonl';path.write_bytes(path.read_bytes()+b'\n')
+    if target=='supplement': runner.atomic_json(tmp_path/'jobs/job/attempt-1/recovery-pending.json',{'owner':'late'})
+    if target=='extra-job': (tmp_path/'jobs/extra').mkdir()
+    if target=='missing-job': (tmp_path/'jobs/job').rename(tmp_path/'jobs/missing')
+    accessed=[];original=scoring.read_jsonl
+    def read(path):
+        if path.name=='gold.jsonl': accessed.append(path)
+        return original(path)
+    monkeypatch.setattr(scoring,'read_jsonl',read)
+    with pytest.raises((ValueError,KeyError,FileNotFoundError)):
+        scoring.main(SimpleNamespace(predictions=str(tmp_path/'predictions.jsonl'),gold=str(tmp_path/'gold.jsonl'),
+            documents='missing',output='missing',run_dir=str(tmp_path)))
+    assert accessed==[]

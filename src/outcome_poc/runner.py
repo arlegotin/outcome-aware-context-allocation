@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 import random
 import time
+from types import MappingProxyType
 
 from .data_runtime import Task
 from .generation import ANSWER_SYSTEM, Reader, render_prompt, prompt_identity, ranking_aliases
@@ -489,6 +490,23 @@ def accounting(run_dir: Path, prediction: Prediction) -> dict:
     closed=Path(run_dir)/'predictions.closed.json'
     if closed.exists() and _supplement_hashes(run_dir)!=_read(closed).get('supplement_hashes',{}):
         raise ValueError('closed accounting supplement checksum mismatch')
+    shared=Path(run_dir) / 'shared-costs.jsonl'
+    rows=list(read_jsonl(shared)) if shared.exists() else []
+    _validate_shared_costs(rows)
+    return _accounting_local(run_dir,prediction,_shared_allocations(rows).get(prediction.job_id,()))
+
+
+def _shared_allocations(rows):
+    index={}
+    for row in rows:
+        amount=row['elapsed_seconds']/len(row['assigned_job_ids'])
+        for identity in row['assigned_job_ids']:
+            index.setdefault(identity,[]).append(amount)
+    return index
+
+
+def _accounting_local(run_dir, prediction, shared_amounts):
+    directory=Path(run_dir) / 'jobs' / prediction.job_id
     if _complete(directory) != prediction: raise ValueError('final prediction completion mismatch')
     serving,experiment=0.,0.
     final_seen=False
@@ -517,12 +535,8 @@ def accounting(run_dir: Path, prediction: Prediction) -> dict:
         serving+=boundary-transfer+sum(e.elapsed_seconds for e in events if e.role=='worker_reload')
         experiment+=boundary-transfer+sum(e.elapsed_seconds for e in events if e.role in {'telemetry','setup','warmup','worker_reload','offline'})
     if not final_seen: raise ValueError('missing final attempt event ledger')
-    shared=Path(run_dir) / 'shared-costs.jsonl'
-    if shared.exists():
-        rows=list(read_jsonl(shared));_validate_shared_costs(rows)
-        for row in rows:
-            if prediction.job_id in row['assigned_job_ids']:
-                experiment+=row['elapsed_seconds']/len(row['assigned_job_ids'])
+    for amount in shared_amounts:
+        experiment+=amount
     return {'total_serving_seconds':serving,'total_experiment_seconds':experiment}
 
 
@@ -656,9 +670,35 @@ class _TimeoutBackend:
 def _timeout_factory(): return _TimeoutBackend()
 
 
-def validate_closed_accounting(run_dir: Path,predictions: list[Prediction]) -> None:
+def _ledger_bindings(run_dir):
+    paths=[Path(run_dir)/name for name in ('predictions.jsonl','predictions.closed.json','shared-costs.jsonl')]
+    paths += list((Path(run_dir)/'jobs').rglob('*'))
+    return {str(p.relative_to(run_dir)):_digest(p) if p.is_file() else 'directory' for p in paths if p.exists()}
+
+
+@dataclass(frozen=True)
+class ClosedAccounting:
+    """Immutable exact costs from fully validated closed inputs, bound by hashes."""
+    run_dir: Path
+    bindings: tuple
+    index: object
+
+    def costs(self, prediction):
+        key=content_hash(prediction)
+        values=self.index.get(key)
+        if values is None: raise ValueError('prediction does not match validated snapshot')
+        return dict(zip(('total_serving_seconds','total_experiment_seconds'),values))
+
+    def verify_unchanged(self):
+        if _ledger_bindings(self.run_dir) != dict(self.bindings):
+            raise ValueError('closed accounting input changed after validation')
+
+
+
+def validate_closed_accounting(run_dir: Path,predictions: list[Prediction]) -> ClosedAccounting:
     """Validate the entire assigned closure before a scoring process opens gold."""
     run_dir=Path(run_dir)
+    bindings=_ledger_bindings(run_dir)
     marker=_read(run_dir / 'predictions.closed.json')
     if _digest(run_dir / 'predictions.jsonl') != marker['prediction_sha256']:
         raise ValueError('closed accounting prediction checksum mismatch')
@@ -667,17 +707,28 @@ def validate_closed_accounting(run_dir: Path,predictions: list[Prediction]) -> N
     shared=run_dir / 'shared-costs.jsonl'
     if (_digest(shared) if shared.exists() else None)!=marker.get('shared_costs_sha256'):
         raise ValueError('closed accounting shared cost checksum mismatch')
+    rows=list(read_jsonl(shared)) if shared.exists() else []
+    _validate_shared_costs(rows)
     ids=[p.job_id for p in predictions]
     if len(ids)!=len(set(ids)) or ids!=marker['assigned_job_ids'] or len(ids)!=marker['record_count']:
         raise ValueError('closed accounting assigned denominator mismatch')
     actual={p.name for p in (run_dir / 'jobs').iterdir() if p.is_dir()}
     if actual!=set(ids): raise ValueError('closed accounting assigned job set changed')
+    if any(not set(row['assigned_job_ids']) <= set(ids) for row in rows):
+        raise ValueError('shared cost allocation includes unassigned job')
+    costs={}
+    allocated=_shared_allocations(rows)
     for prediction in predictions:
         completion=run_dir / 'jobs' / prediction.job_id / 'completion.json'
         if _digest(completion)!=marker['completion_hashes'][prediction.job_id]:
             raise ValueError('closed accounting completion checksum mismatch')
         if prediction.status=='infra_error': raise ValueError('unresolved infrastructure failure')
-        accounting(run_dir,prediction)
+        for attempt_dir in completion.parent.glob('attempt-*'):
+            _check_recovery_settled(attempt_dir)
+        costs[content_hash(prediction)]=tuple(_accounting_local(run_dir,prediction,allocated.get(prediction.job_id,())).values())
+    snapshot=ClosedAccounting(run_dir,tuple(sorted(bindings.items())),MappingProxyType(costs))
+    snapshot.verify_unchanged()
+    return snapshot
 
 
 def _validate_shared_costs(rows):

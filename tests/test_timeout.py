@@ -112,6 +112,9 @@ def test_failed_arm_owns_deferred_reload_without_changing_its_completion(tmp_pat
     assert runner.accounting(tmp_path/'replay',replayed)['total_serving_seconds']==18.
     assert original.calls==2
     assert runner.close_run(tmp_path,[{**job,'arm':'A*'},bjob])['record_count']==2
+    snapshot=runner.validate_closed_accounting(tmp_path,[a,b])
+    assert snapshot.costs(a)=={'total_serving_seconds':18.,'total_experiment_seconds':18.}
+    assert snapshot.costs(b)=={'total_serving_seconds':11.,'total_experiment_seconds':11.}
 
 
 def test_pending_recovery_blocks_closure_and_closed_origin_cannot_gain_cost(tmp_path):
