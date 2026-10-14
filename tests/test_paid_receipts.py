@@ -160,3 +160,120 @@ def test_non_development_runs_cannot_use_retrospective_receipt_seal(tmp_path):
     atomic_json(tmp_path/'predictions.closed.json',marker)
     with pytest.raises(ValueError,match='development'):
         runner.seal_legacy_paid_receipts(tmp_path,[p],documents=runtime.documents)
+
+
+def before_close(tmp_path, progress=True):
+    runtime,job,_=fixture_runtime(tmp_path)
+    if progress:
+        original=runtime.reader.backend.generate
+        def generate(*args,**kwargs):
+            result=original(*args,**kwargs)
+            runtime.reader.backend.progress_callback(result.raw_output,result.prompt_token_ids,result.generated_token_ids)
+            return result
+        runtime.reader.backend.generate=generate
+    prediction=runner.execute_job(job,runtime,tmp_path)
+    return runtime,job,prediction
+
+
+@pytest.mark.parametrize('name',['started','partial','finished'])
+def test_first_closure_rejects_missing_paid_receipt(tmp_path,name):
+    _,job,_=before_close(tmp_path)
+    (tmp_path/f'jobs/job/attempt-1/paid-1.{name}.json').unlink()
+    with pytest.raises(ValueError,match='paid'):
+        runner.close_run(tmp_path,[job])
+    assert not (tmp_path/'predictions.closed.json').exists()
+
+
+@pytest.mark.parametrize('corruption',['empty_finished','extra_call','extra_started','extra_partial','wrong_number','request_identity','request_model_hash','event_identity','result_tokens','partial_content'])
+def test_first_closure_rejects_unbound_paid_receipts(tmp_path,corruption):
+    _,job,_=before_close(tmp_path)
+    attempt=tmp_path/'jobs/job/attempt-1'
+    if corruption=='empty_finished': atomic_json(attempt/'paid-1.finished.json',{})
+    elif corruption=='extra_call':
+        (attempt/'paid-2.finished.json').write_bytes((attempt/'paid-1.finished.json').read_bytes())
+    elif corruption in {'extra_started','extra_partial'}:
+        kind=corruption.removeprefix('extra_')
+        (attempt/f'paid-2.{kind}.json').write_bytes((attempt/f'paid-1.{kind}.json').read_bytes())
+    elif corruption=='wrong_number':
+        for path in list(attempt.glob('paid-1.*')): path.rename(path.with_name(path.name.replace('paid-1.','paid-2.')))
+    else:
+        name='started' if corruption in {'request_identity','request_model_hash'} else 'partial' if corruption=='partial_content' else 'finished'
+        path=attempt/f'paid-1.{name}.json';row=json.loads(path.read_text())
+        if corruption=='request_identity':row['request']['model_revision']='other'
+        elif corruption=='request_model_hash':row['request']['model_hash']='other'
+        elif corruption=='event_identity':row['event']['task_id']='other'
+        elif corruption=='result_tokens':row['result']['generated_tokens']+=1
+        else:row['text']='changed'
+        atomic_json(path,row)
+    with pytest.raises(ValueError,match='paid'):
+        runner.close_run(tmp_path,[job])
+    assert not (tmp_path/'predictions.closed.json').exists()
+
+
+@pytest.mark.parametrize('name',['started','partial','finished'])
+@pytest.mark.parametrize('change',['mutate','delete'])
+def test_reclosing_cannot_recertify_changed_paid_bytes(tmp_path,name,change):
+    _,job,p=closed(tmp_path)
+    marker=tmp_path/'predictions.closed.json';original=marker.read_bytes()
+    path=tmp_path/f'jobs/job/attempt-1/paid-1.{name}.json'
+    if change=='mutate': path.write_text('{}')
+    else:path.unlink()
+    with pytest.raises(ValueError,match='paid'):
+        runner.close_run(tmp_path,[job])
+    assert marker.read_bytes()==original
+    with pytest.raises(ValueError,match='paid'):runner.validate_closed_accounting(tmp_path,[p])
+
+
+def test_reclosing_unchanged_run_is_byte_preserving_and_exact_cost(tmp_path):
+    _,job,p=closed(tmp_path)
+    path=tmp_path/'predictions.closed.json';before=path.read_bytes()
+    assert runner.close_run(tmp_path,[job])==json.loads(before)
+    assert path.read_bytes()==before
+    assert runner.validate_closed_accounting(tmp_path,[p]).costs(p)=={'total_serving_seconds':11.,'total_experiment_seconds':11.}
+
+
+def test_no_progress_call_has_explicitly_bound_absence_of_partial(tmp_path):
+    _,job,p=before_close(tmp_path,progress=False)
+    row=json.loads((tmp_path/'jobs/job/attempt-1/paid-1.finished.json').read_text())
+    assert 'partial_receipt_sha256' in row and row['partial_receipt_sha256'] is None
+    assert runner.close_run(tmp_path,[job])['closure_version']==2
+    assert runner.validate_closed_accounting(tmp_path,[p]).receipt_coverage=='forward_v2'
+
+
+def test_reclosing_legacy_does_not_upgrade_or_overwrite_original_closure(tmp_path):
+    _,job,p=legacy(tmp_path)
+    path=tmp_path/'predictions.closed.json';before=path.read_bytes()
+    assert runner.close_run(tmp_path,[job])==json.loads(before)
+    assert path.read_bytes()==before
+    assert runner.validate_closed_accounting(tmp_path,[p]).receipt_coverage=='legacy_unsealed'
+
+
+def test_first_closure_checks_paid_calls_in_earlier_failed_attempts(tmp_path):
+    runtime,job,_=fixture_runtime(tmp_path,['INFRA','{"answer":"blue","citations":[]}'])
+    first=runner.execute_job(job,runtime,tmp_path)
+    assert first.status=='infra_error' and first.generation_calls==1
+    last=runner.execute_job({**job,'retry_infrastructure':True},runtime,tmp_path)
+    assert last.attempt==2 and runner.accounting(tmp_path,last)['total_serving_seconds']==22.
+    (tmp_path/'jobs/job/attempt-1/paid-1.finished.json').unlink()
+    with pytest.raises(ValueError,match='paid'):runner.close_run(tmp_path,[job])
+    assert not (tmp_path/'predictions.closed.json').exists()
+
+
+def test_forward_validation_rejects_semantically_incomplete_even_matching_file_hashes(tmp_path):
+    _,_,p=closed(tmp_path)
+    (tmp_path/'jobs/job/attempt-1/paid-1.finished.json').unlink()
+    path=tmp_path/'predictions.closed.json';marker=json.loads(path.read_text())
+    marker['paid_receipt_hashes']=runner._paid_receipt_hashes(tmp_path)
+    atomic_json(path,marker)
+    with pytest.raises(ValueError,match='paid'):runner.validate_closed_accounting(tmp_path,[p])
+
+
+@pytest.mark.parametrize('corruption',['unsupported_version','wrong_assigned_ids'])
+def test_reclosing_preserves_invalid_existing_marker_instead_of_replacing_it(tmp_path,corruption):
+    _,job,_=closed(tmp_path)
+    path=tmp_path/'predictions.closed.json';marker=json.loads(path.read_text())
+    if corruption=='unsupported_version':marker['closure_version']=99
+    else:marker['assigned_job_ids']=['other']
+    atomic_json(path,marker);before=path.read_bytes()
+    with pytest.raises(ValueError):runner.close_run(tmp_path,[job])
+    assert path.read_bytes()==before

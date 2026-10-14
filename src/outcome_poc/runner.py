@@ -167,10 +167,13 @@ def serve(task: Task, policy: object, runtime: object, job: dict) -> Prediction:
                              status=result.status,result=result,resources=getattr(backend,'last_resources',None),
                              source=draft.generation_event_id if prefix is not None and role == 'answer' else None)
         runtime.last_paid_result=result
+        if active:
+            partial=active / f'paid-{calls}.partial.json'
+            atomic_json(active / f'paid-{calls}.finished.json',{'event':event,'result':result,
+                'started_receipt_sha256':_digest(active / f'paid-{calls}.started.json'),
+                'partial_receipt_sha256':_digest(partial) if partial.exists() else None})
         _consume_worker_lifecycle(runtime,job,ledger,serving_window=(start,runtime.clock()))
         _record_pending_recovery(backend)
-        if active:
-            atomic_json(active / f'paid-{calls}.finished.json',{'event':event,'result':result})
         with ledger.component('parse:'+role):
             if role == 'judge':
                 status = result.status if result.status in {'timeout','infra_error','budget_exhausted','context_overflow'} else (
@@ -557,6 +560,12 @@ def close_run(run_dir: Path, expected_jobs: list[dict]) -> dict:
             _check_recovery_settled(attempt_dir)
         accounting(run_dir,result)
         predictions.append(result)
+    closed=run_dir/'predictions.closed.json'
+    if closed.exists():
+        # Re-closing is validation, never a new attestation of changed bytes.
+        validate_closed_accounting(run_dir,predictions)
+        return _read(closed)
+    _validate_forward_paid_receipts(run_dir,predictions)
     # Hash-bound files for downstream scoring, with exactly one terminal row per job.
     path=run_dir / 'predictions.jsonl'
     if path.exists():
@@ -1089,6 +1098,7 @@ def _paid_receipt_coverage(run_dir, marker, predictions):
     if version==2:
         if marker.get('paid_receipt_hashes')!=_paid_receipt_hashes(run_dir):
             raise ValueError('closed paid receipt checksum/set mismatch')
+        _validate_forward_paid_receipts(run_dir,predictions)
         return 'forward_v2'
     seal_path=Path(run_dir)/'paid-receipts.sealed.json'
     if not seal_path.exists(): return 'legacy_unsealed'
@@ -1102,8 +1112,15 @@ def _paid_receipt_coverage(run_dir, marker, predictions):
     return 'legacy_retrospective'
 
 
-def _check_paid_payloads(run_dir, predictions, documents):
-    """Check extant legacy receipt contents against already hash-bound core records."""
+def _validate_forward_paid_receipts(run_dir, predictions):
+    try:
+        _check_paid_payloads(run_dir,predictions,None,strict=True,development_crosschecks=False)
+    except (KeyError,TypeError,OSError) as error:
+        raise ValueError('missing/malformed paid receipt') from error
+
+
+def _check_paid_payloads(run_dir, predictions, documents, *, strict=False, development_crosschecks=True):
+    """Check paid contents against core records; strict mode requires every call."""
     root=Path(run_dir);finished_by_job={}
     count=0
     for final in predictions:
@@ -1112,6 +1129,27 @@ def _check_paid_payloads(run_dir, predictions, documents):
             else:
                 record=_prediction(_read(attempt/'prediction.json'))
                 events=[CostEvent(**r) for r in read_jsonl(attempt/'events.jsonl')]
+            generation=[e for e in events if e.role.startswith('generation:')]
+            if strict:
+                _validate_events(record,events)
+                # A development replay copies source events, not new paid calls.
+                if generation and all(e.cache_mode=='development_replay' for e in generation):
+                    if list(attempt.glob('paid-*')): raise ValueError('replay has unexpected paid receipts')
+                    continue
+                expected={f'paid-{i}.{kind}.json' for i in range(1,len(generation)+1)
+                          for kind in ('started','finished')}
+                for number in range(1,len(generation)+1):
+                    value=_read(attempt/f'paid-{number}.finished.json')
+                    if value.get('started_receipt_sha256')!=_digest(attempt/f'paid-{number}.started.json'):
+                        raise ValueError('paid started receipt checksum mismatch')
+                    if 'partial_receipt_sha256' not in value:
+                        raise ValueError('paid finished receipt lacks explicit partial coverage')
+                    partial=attempt/f'paid-{number}.partial.json'
+                    if value['partial_receipt_sha256']!=(_digest(partial) if partial.exists() else None):
+                        raise ValueError('paid partial receipt checksum/absence mismatch')
+                    if value['partial_receipt_sha256'] is not None: expected.add(partial.name)
+                if {p.name for p in attempt.glob('paid-*')}!=expected:
+                    raise ValueError('missing/extra paid call receipt')
             byid={e.event_id:e for e in events}
             finished=[]
             for path in sorted(attempt.glob('paid-*.finished.json'),key=lambda p:int(p.name.split('-')[1].split('.')[0])):
@@ -1119,6 +1157,8 @@ def _check_paid_payloads(run_dir, predictions, documents):
                 event=CostEvent(**row['event']);result=_result(row['result']);validate_record(event)
                 if byid.get(event.event_id)!=event or event.event_id not in record.event_ids or event.status!=result.status:
                     raise ValueError('paid finished event differs from bound core event')
+                if strict and event!=generation[number-1]:
+                    raise ValueError('paid call ordinal differs from bound generation event')
                 started=_read(attempt/f'paid-{number}.started.json')
                 request=GenerationRequest(**started['request']);validate_record(request)
                 if (started['role']!=event.role or started['start_ns']!=event.start_ns or
@@ -1132,7 +1172,7 @@ def _check_paid_payloads(run_dir, predictions, documents):
                     if (value['text'],value['prompt_ids'],value['token_ids'])!=(result.raw_output,result.prompt_token_ids,result.generated_token_ids):
                         raise ValueError('paid partial differs from finished result')
                 finished.append((event,result,request));count+=1
-            if record.status!='infra_error' and len(finished)!=record.generation_calls:
+            if (strict or record.status!='infra_error') and len(finished)!=record.generation_calls:
                 raise ValueError('missing paid terminal receipt')
             if finished and record.status!='infra_error':
                 event,result,request=finished[-1]
@@ -1146,7 +1186,7 @@ def _check_paid_payloads(run_dir, predictions, documents):
                         raise ValueError('paid parsed result differs from bound prediction')
             if record.attempt==final.attempt: finished_by_job[final.job_id]=finished
     schedule_path=root/'schedule.json';checks=[]
-    if schedule_path.exists():
+    if development_crosschecks and schedule_path.exists():
         schedule=_read(schedule_path)
         sources={(j['task_id'],j['arm']):j['job_id'] for j in schedule.get('jobs',[]) if 'arm' in j}
         byjob={p.job_id:p for p in predictions}
