@@ -106,15 +106,14 @@ def serve(task: Task, policy: object, runtime: object, job: dict) -> Prediction:
         raise ValueError('runtime must explicitly opt into no-context diagnostic')
     ledger = TimingLedger({**job,'task':task},pid,runtime.clock)
     runtime.events = ledger.events
-    runtime.synchronize()
     backend=runtime.reader.backend
-    lifecycle=getattr(backend,'lifecycle',[])
-    seen=getattr(runtime,'_lifecycle_seen',0)
-    for index,record in enumerate(lifecycle[seen:],start=seen):
-        if record['kind']=='load':
-            ledger.event('setup' if index==0 else 'worker_reload',record['start_ns'],record['stop_ns'])
-    runtime._lifecycle_seen=len(lifecycle)
+    backend.job_owner=_worker_owner(job,pid)
+    _check_pending_recovery(backend)
+    runtime.synchronize()
+    _consume_worker_lifecycle(runtime,job,ledger)
     start = runtime.clock()
+    runtime.service_start_ns=start
+    runtime.last_paid_result=None
     aliases, evidence, prompt_hash, decision = {},[],content_hash('no-prompt'),None
     generated, calls = _empty('budget_exhausted','budget_exhausted'),0
     config = runtime.config
@@ -153,6 +152,9 @@ def serve(task: Task, policy: object, runtime: object, job: dict) -> Prediction:
             backend.progress_callback=previous_progress
         event = ledger.event('generation:'+role,generation_start,runtime.clock(),
                              status=result.status,result=result,resources=getattr(backend,'last_resources',None))
+        runtime.last_paid_result=result
+        _consume_worker_lifecycle(runtime,job,ledger,serving_window=(start,runtime.clock()))
+        _record_pending_recovery(backend)
         if active:
             atomic_json(active / f'paid-{calls}.finished.json',{'event':event,'result':result})
         with ledger.component('parse:'+role):
@@ -189,7 +191,7 @@ def serve(task: Task, policy: object, runtime: object, job: dict) -> Prediction:
             elif draft is None or budget != min(2,len(ranked)):
                 generated,_ = paid(budget,'answer')
     except Exception as error:
-        generated = replace(generated,status='infra_error',answer=None,citations=[],stop_reason=f'{type(error).__name__}:{error}')
+        generated = replace(runtime.last_paid_result or generated,status='infra_error',answer=None,citations=[],stop_reason=f'{type(error).__name__}:{error}')
     runtime.decision_payload = {'decision':decision,'aliases':aliases,'stop_reason':generated.stop_reason,
         'action_signature':_bound_action_signature(task,runtime,[d.doc_id for d in evidence])}
     prediction = Prediction(job['run_id'],task.task_id,pid,job['protocol_hash'],job['job_id'],
@@ -198,10 +200,24 @@ def serve(task: Task, policy: object, runtime: object, job: dict) -> Prediction:
         config['model_revision'],prompt_hash,config['decoding_hash'],0.,
         generated.prompt_tokens,generated.generated_tokens,calls,
         [event.event_id for event in ledger.events if event.role.startswith('generation:')])
-    with ledger.component('payload'):
-        # This bound artifact omits the enclosing interval, preventing self-reference.
-        runtime.payload = runtime.serialize({'prediction':_answer_payload(prediction),'decision':runtime.decision_payload})
-    runtime.synchronize(allow_reload=False)
+    runtime.last_prediction=prediction
+    try:
+        with ledger.component('payload'):
+            # This bound artifact omits the enclosing interval, preventing self-reference.
+            runtime.payload = runtime.serialize({'prediction':_answer_payload(prediction),'decision':runtime.decision_payload})
+        sync_start=runtime.clock()
+        try:
+            runtime.synchronize(allow_reload=False)
+        except Exception:
+            ledger.event('synchronization_failure',sync_start,runtime.clock(),status='infra_error')
+            raise
+    except Exception as error:
+        prediction=replace(prediction,status='infra_error',answer=None,citations=[])
+        runtime.decision_payload['stop_reason']=f'{type(error).__name__}:{error}'
+        with ledger.component('failure_payload'):
+            runtime.payload=canonical_bytes({'prediction':_answer_payload(prediction),'decision':runtime.decision_payload})
+    finally:
+        _record_pending_recovery(backend)
     stop = runtime.clock()
     ledger.event('serving',start,stop,status=prediction.status,result=generated)
     return replace(prediction,elapsed_seconds=(stop-start)/1e9)
@@ -264,8 +280,15 @@ def _validate_events(prediction,events):
 
 
 def load_events(run_dir: Path) -> list[CostEvent]:
-    return [CostEvent(**row) for path in sorted(Path(run_dir).glob('jobs/*/attempt-*/events.jsonl'))
-            for row in read_jsonl(path)]
+    events=[]
+    for attempt_dir in sorted(Path(run_dir).glob('jobs/*/attempt-*')):
+        if (attempt_dir/'observed-failure.closed.json').exists():
+            _,observed=_observed_failure(attempt_dir)
+            events+=observed
+        elif (attempt_dir/'events.jsonl').exists():
+            events+=[CostEvent(**row) for row in read_jsonl(attempt_dir/'events.jsonl')]
+        events+=_owned_reloads(attempt_dir)
+    return events
 
 
 def _complete(directory,expected_job=None):
@@ -318,50 +341,88 @@ def execute_job(job: dict, runtime: object, run_dir: Path) -> Prediction:
         if _read(identity_path)['identity'] != identity: raise ValueError('resume job identity changed')
     else: atomic_json(identity_path,{'identity':identity})
     previous=None
-    if (directory / 'completion.json').exists():
-        previous=_complete(directory,job)
-        if previous.status != 'infra_error' or not job.get('retry_infrastructure',False): return previous
     attempts=sorted(directory.glob('attempt-*'),key=lambda p:int(p.name.split('-')[-1]))
+    if (directory / 'completion.json').exists():
+        committed=_complete(directory,job)
+        if committed.attempt==int(attempts[-1].name.split('-')[-1]):
+            previous=committed
+            if previous.status!='infra_error' or not job.get('retry_infrastructure',False): return previous
     if attempts and previous is None:
         last=attempts[-1]
-        if (last / 'ready.json').exists():
+        if (last / 'observed-failure.closed.json').exists():
+            previous,_=_observed_failure(last)
+            if not job.get('retry_infrastructure',False): return previous
+        elif (last / 'ready.json').exists():
             ready=_read(last / 'ready.json')
             if any(_digest(last / name) != digest for name,digest in ready['hashes'].items()):
                 raise ValueError('interrupted transaction checksum mismatch')
-            prediction=_prediction(_read(last / 'prediction.json'))
-            _validate_events(prediction,[CostEvent(**row) for row in read_jsonl(last / 'events.jsonl')])
-            _commit(directory,last,prediction)
-            return prediction
-        _recover_interrupted(last,job,runtime,Path(run_dir))
+            previous=_prediction(_read(last / 'prediction.json'))
+            _validate_events(previous,[CostEvent(**row) for row in read_jsonl(last / 'events.jsonl')])
+            _commit(directory,last,previous)
+            if previous.status!='infra_error' or not job.get('retry_infrastructure',False): return previous
+        else:
+            _recover_interrupted(last,job,runtime,Path(run_dir))
     attempt=(int(attempts[-1].name.split('-')[-1])+1) if attempts else 1
     attempt_dir=directory / f'attempt-{attempt}'
     attempt_dir.mkdir()
-    attempt_job={**job,'attempt':attempt,'_attempt_dir':attempt_dir}
+    attempt_job={**job,'attempt':attempt,'_attempt_dir':attempt_dir,'_run_dir':Path(run_dir).resolve()}
     atomic_json(attempt_dir / 'started.json',{'start_ns':runtime.clock(),'job_id':job['job_id'],
                                             'attempt':attempt,'clock_kind':'monotonic'})
     append_jsonl(Path(run_dir) / 'attempts.jsonl',{'job_id':job['job_id'],'attempt':attempt,
         'previous_attempt':attempt-1 if attempt>1 else None,'status':'started'})
-    prediction=serve(job['task'],job['policy'],runtime,attempt_job)
+    runtime.service_start_ns=None
+    runtime.last_prediction=None
+    runtime.events=[]
+    runtime.decision_payload={}
+    runtime.payload=None
+    try:
+        prediction=serve(job['task'],job['policy'],runtime,attempt_job)
+    except Exception as error:
+        if runtime.service_start_ns is None and isinstance(error,ValueError): raise
+        prediction=_certify_observed_serving_failure(attempt_job,runtime,attempt_dir,error)
     telemetry_start=runtime.clock()
-    for event in runtime.events: append_jsonl(attempt_dir / 'events.jsonl',event)
-    # Persist the serialized artifact verbatim via atomic_json after decoding canonical JSON.
-    atomic_json(attempt_dir / 'payload.json',json.loads(runtime.payload))
-    atomic_json(attempt_dir / 'prediction.json',prediction)
-    telemetry_stop=runtime.clock()
-    ledger=TimingLedger(attempt_job,prediction.policy_id,runtime.clock)
-    ledger.events=list(runtime.events)
-    overhead=ledger.event('telemetry',telemetry_start,telemetry_stop)
-    append_jsonl(attempt_dir / 'events.jsonl',overhead)
-    atomic_json(attempt_dir / 'decision.json',runtime.decision_payload)
-    atomic_json(attempt_dir / 'ready.json',{'hashes':{name:_digest(attempt_dir / name)
-        for name in ('prediction.json','payload.json','events.jsonl','decision.json')}})
-    append_jsonl(Path(run_dir) / 'attempts.jsonl',{'job_id':job['job_id'],'attempt':attempt,
-        'previous_attempt':attempt-1 if attempt>1 else None,'status':prediction.status})
-    if prediction.status in {'infra_error','timeout','parse_error','invalid_citation','context_overflow','budget_exhausted'}:
-        append_jsonl(Path(run_dir) / 'errors.jsonl',{'job_id':job['job_id'],'attempt':attempt,
-            'status':prediction.status,'reason':runtime.decision_payload.get('stop_reason')})
-    _commit(directory,attempt_dir,prediction)
-    return prediction
+    try:
+        for event in runtime.events: append_jsonl(attempt_dir / 'events.jsonl',event)
+        # Persist the serialized artifact verbatim via atomic_json after decoding canonical JSON.
+        atomic_json(attempt_dir / 'payload.json',json.loads(runtime.payload))
+        atomic_json(attempt_dir / 'prediction.json',prediction)
+        telemetry_stop=runtime.clock()
+        ledger=TimingLedger(attempt_job,prediction.policy_id,runtime.clock)
+        ledger.events=list(runtime.events)
+        overhead=ledger.event('telemetry',telemetry_start,telemetry_stop)
+        append_jsonl(attempt_dir / 'events.jsonl',overhead)
+        atomic_json(attempt_dir / 'decision.json',runtime.decision_payload)
+        atomic_json(attempt_dir / 'ready.json',{'hashes':{name:_digest(attempt_dir / name)
+            for name in ('prediction.json','payload.json','events.jsonl','decision.json')}})
+        append_jsonl(Path(run_dir) / 'attempts.jsonl',{'job_id':job['job_id'],'attempt':attempt,
+            'previous_attempt':attempt-1 if attempt>1 else None,'status':prediction.status})
+        if prediction.status in {'infra_error','timeout','parse_error','invalid_citation','context_overflow','budget_exhausted'}:
+            append_jsonl(Path(run_dir) / 'errors.jsonl',{'job_id':job['job_id'],'attempt':attempt,
+                'status':prediction.status,'reason':runtime.decision_payload.get('stop_reason')})
+        _commit(directory,attempt_dir,prediction)
+        return prediction
+    except Exception as error:
+        # A post-commit exception must not mutate an already durable transaction.
+        if (directory/'completion.json').exists():
+            committed=_complete(directory,job)
+            if committed.attempt==attempt: return committed
+        failed=replace(prediction,status='infra_error',answer=None,citations=[])
+        ledger=TimingLedger(attempt_job,failed.policy_id,runtime.clock)
+        ledger.events=[replace(event,status='infra_error') if event.role=='serving' else event
+                       for event in runtime.events]
+        ledger.event('telemetry',telemetry_start,runtime.clock(),status='infra_error')
+        row={'prediction':failed,'events':ledger.events,'payload':json.loads(runtime.payload),
+             'decision':runtime.decision_payload,'error':f'{type(error).__name__}:{error}',
+             'paid_receipt_hashes':{path.name:_digest(path) for path in sorted(attempt_dir.glob('paid-*.json'))}}
+        # If certification writes fail too, leave the original attempt untouched;
+        # a later observer must use conservative unobserved recovery and block closure.
+        digest=atomic_json(attempt_dir/'observed-failure.json',row)
+        atomic_json(attempt_dir/'observed-failure.closed.json',{'receipt_sha256':digest})
+        append_jsonl(Path(run_dir)/'attempts.jsonl',{'job_id':job['job_id'],'attempt':attempt,
+            'previous_attempt':attempt-1 if attempt>1 else None,'status':'infra_error','observed':True})
+        append_jsonl(Path(run_dir)/'errors.jsonl',{'job_id':job['job_id'],'attempt':attempt,
+            'status':'infra_error','reason':row['error'],'observed':True})
+        return failed
 
 
 def _recover_interrupted(attempt_dir,job,runtime,run_dir):
@@ -395,6 +456,9 @@ def accounting(run_dir: Path, prediction: Prediction) -> dict:
     Never infer them from missing counters or from prediction's diagnostic interval.
     """
     directory=Path(run_dir) / 'jobs' / prediction.job_id
+    closed=Path(run_dir)/'predictions.closed.json'
+    if closed.exists() and _supplement_hashes(run_dir)!=_read(closed).get('supplement_hashes',{}):
+        raise ValueError('closed accounting supplement checksum mismatch')
     if _complete(directory) != prediction: raise ValueError('final prediction completion mismatch')
     serving,experiment=0.,0.
     final_seen=False
@@ -402,19 +466,26 @@ def accounting(run_dir: Path, prediction: Prediction) -> dict:
         path=attempt_dir / 'events.jsonl'
         if (attempt_dir / 'interrupted.json').exists():
             raise ValueError('uncertified interrupted infrastructure cost')
-        if not path.exists(): raise ValueError('missing attempt event ledger')
-        events=[CostEvent(**row) for row in read_jsonl(path)]
-        ready=_read(attempt_dir / 'ready.json')
-        if any(_digest(attempt_dir / name) != digest for name,digest in ready['hashes'].items()):
-            raise ValueError('attempt event/artifact checksum mismatch')
-        record=_prediction(_read(attempt_dir / 'prediction.json'))
-        _validate_events(record,events)
+        if (attempt_dir/'observed-failure.closed.json').exists():
+            record,events=_observed_failure(attempt_dir)
+        else:
+            if not path.exists(): raise ValueError('missing attempt event ledger')
+            events=[CostEvent(**row) for row in read_jsonl(path)]
+            ready=_read(attempt_dir / 'ready.json')
+            if any(_digest(attempt_dir / name) != digest for name,digest in ready['hashes'].items()):
+                raise ValueError('attempt event/artifact checksum mismatch')
+            record=_prediction(_read(attempt_dir / 'prediction.json'))
+            _validate_events(record,events)
         if record.attempt == prediction.attempt:
             final_seen=True
             if record != prediction: raise ValueError('prediction ledger mismatch')
+        reloads=_owned_reloads(attempt_dir)
+        events+=reloads
+        _validate_events(record,events)
         boundary=sum(e.elapsed_seconds for e in events if e.role == 'serving')
-        serving+=boundary+sum(e.elapsed_seconds for e in events if e.role=='worker_reload')
-        experiment+=boundary+sum(e.elapsed_seconds for e in events if e.role in {'telemetry','setup','warmup','worker_reload','offline'})
+        transfer=sum(e.elapsed_seconds for e in events if e.role=='worker_reload_transfer')
+        serving+=boundary-transfer+sum(e.elapsed_seconds for e in events if e.role=='worker_reload')
+        experiment+=boundary-transfer+sum(e.elapsed_seconds for e in events if e.role in {'telemetry','setup','warmup','worker_reload','offline'})
     if not final_seen: raise ValueError('missing final attempt event ledger')
     shared=Path(run_dir) / 'shared-costs.jsonl'
     if shared.exists():
@@ -437,6 +508,8 @@ def close_run(run_dir: Path, expected_jobs: list[dict]) -> dict:
         if not (directory / 'completion.json').exists(): raise ValueError('assigned terminal record missing')
         result=_complete(directory,job)
         if result.status == 'infra_error': raise ValueError('unresolved infrastructure failure')
+        for attempt_dir in directory.glob('attempt-*'):
+            _check_recovery_settled(attempt_dir)
         accounting(run_dir,result)
         predictions.append(result)
     # Hash-bound files for downstream scoring, with exactly one terminal row per job.
@@ -453,6 +526,7 @@ def close_run(run_dir: Path, expected_jobs: list[dict]) -> dict:
             raise ValueError('shared cost allocation includes unassigned job')
     marker={'prediction_sha256':_digest(path),'record_count':len(predictions),
             'shared_costs_sha256':_digest(shared) if shared.exists() else None,
+            'supplement_hashes':_supplement_hashes(run_dir),
             'assigned_job_ids':ids,'completion_hashes':{identity:_digest(run_dir / 'jobs' / identity / 'completion.json') for identity in ids}}
     atomic_json(path.with_suffix('.closed.json'),marker)
     return marker
@@ -558,6 +632,8 @@ def validate_closed_accounting(run_dir: Path,predictions: list[Prediction]) -> N
     marker=_read(run_dir / 'predictions.closed.json')
     if _digest(run_dir / 'predictions.jsonl') != marker['prediction_sha256']:
         raise ValueError('closed accounting prediction checksum mismatch')
+    if _supplement_hashes(run_dir)!=marker.get('supplement_hashes',{}):
+        raise ValueError('closed accounting supplement checksum mismatch')
     shared=run_dir / 'shared-costs.jsonl'
     if (_digest(shared) if shared.exists() else None)!=marker.get('shared_costs_sha256'):
         raise ValueError('closed accounting shared cost checksum mismatch')
@@ -756,3 +832,131 @@ def _bound_action_signature(task,runtime,evidence_ids):
 def _answer_payload(prediction):
     return {item.name:getattr(prediction,item.name) for item in fields(prediction)
             if item.name!='elapsed_seconds'}
+
+
+def _worker_owner(job,policy_id):
+    if not job.get('_run_dir'): return None
+    return {'run_dir':str(job['_run_dir']),'run_id':job['run_id'],'job_id':job['job_id'],
+            'task_id':job['task'].task_id,'policy_id':policy_id,'attempt':job.get('attempt',1)}
+
+
+def _owner_attempt(owner):
+    return Path(owner['run_dir'])/'jobs'/owner['job_id']/f"attempt-{owner['attempt']}"
+
+
+def _check_pending_recovery(backend):
+    owner=getattr(backend,'pending_owner',None)
+    if owner and (Path(owner['run_dir'])/'predictions.closed.json').exists():
+        raise ValueError('closed origin run cannot receive worker recovery costs')
+
+
+def _record_pending_recovery(backend):
+    owner=getattr(backend,'pending_owner',None)
+    if owner:
+        path=_owner_attempt(owner)/'recovery-pending.json'
+        record={'owner':owner,'recovery_id':content_hash(owner)}
+        if not path.exists(): atomic_json(path,record)
+        elif _read(path)!=record: raise ValueError('worker recovery origin changed')
+
+
+def _consume_worker_lifecycle(runtime,job,ledger,*,serving_window=None):
+    backend=runtime.reader.backend
+    lifecycle=getattr(backend,'lifecycle',[])
+    seen=getattr(runtime,'_lifecycle_seen',0)
+    for index,record in enumerate(lifecycle[seen:],start=seen):
+        if record['kind']!='load':
+            runtime._lifecycle_seen=index+1
+            continue
+        owner=record.get('owner')
+        if owner:
+            if (Path(owner['run_dir'])/'predictions.closed.json').exists():
+                raise ValueError('closed origin run cannot receive worker recovery costs')
+            identity=content_hash({'owner':owner,'load':record})
+            inline=serving_window is not None and serving_window[0]<=record['start_ns']<=record['stop_ns']<=serving_window[1]
+            same_owner=owner==_worker_owner(job,ledger.policy_id)
+            role='worker_reload_in_serving' if inline and same_owner else 'worker_reload'
+            if inline and not same_owner:
+                ledger.event('worker_reload_transfer',record['start_ns'],record['stop_ns'])
+            event=CostEvent(identity,owner['run_id'],owner['task_id'],owner['policy_id'],
+                role,record['start_ns'],record['stop_ns'],
+                (record['stop_ns']-record['start_ns'])/1e9,0,0,'none',None,None,None,None,
+                owner['attempt'],record.get('status','ok'))
+            row={'job_id':owner['job_id'],'recovery_id':content_hash(owner),'event':event,
+                 'resolved':record.get('status','ok')=='ok'}
+            path=_owner_attempt(owner)/'reloads'/f'{identity}.json'
+            if path.exists():
+                if canonical_bytes(_read(path))!=canonical_bytes(row): raise ValueError('worker recovery receipt changed')
+            else: atomic_json(path,row)
+        elif index==0:
+            inline=serving_window is not None and serving_window[0]<=record['start_ns']<=record['stop_ns']<=serving_window[1]
+            ledger.event('setup_in_serving' if inline else 'setup',record['start_ns'],record['stop_ns'])
+        else:
+            raise ValueError('worker reload lacks causal job ownership')
+        runtime._lifecycle_seen=index+1
+    runtime._lifecycle_seen=len(lifecycle)
+
+
+def _owned_reloads(attempt_dir):
+    events=[]
+    for path in sorted((attempt_dir/'reloads').glob('*.json')):
+        row=_read(path);event=CostEvent(**row['event']);validate_record(event)
+        if event.event_id!=path.stem or row['job_id']!=attempt_dir.parent.name or event.attempt!=int(attempt_dir.name.split('-')[-1]):
+            raise ValueError('worker recovery receipt identity mismatch')
+        if event.elapsed_seconds!=(event.stop_ns-event.start_ns)/1e9:
+            raise ValueError('worker recovery duration mismatch')
+        events.append(event)
+    return events
+
+
+def _check_recovery_settled(attempt_dir):
+    pending=attempt_dir/'recovery-pending.json'
+    if pending.exists():
+        identity=_read(pending)['recovery_id']
+        if not any(_read(path)['recovery_id']==identity and _read(path)['resolved']
+                   for path in (attempt_dir/'reloads').glob('*.json')):
+            raise ValueError('unresolved attributable worker recovery')
+
+
+def _supplement_hashes(run_dir):
+    names=('recovery-pending.json','observed-failure.json','observed-failure.closed.json')
+    paths=[p for p in Path(run_dir).glob('jobs/*/attempt-*/*') if p.is_file() and p.name in names]
+    paths+=list(Path(run_dir).glob('jobs/*/attempt-*/reloads/*.json'))
+    return {str(p.relative_to(run_dir)):_digest(p) for p in sorted(paths)}
+
+
+def _observed_failure(attempt_dir):
+    marker=_read(attempt_dir/'observed-failure.closed.json')
+    path=attempt_dir/'observed-failure.json'
+    if _digest(path)!=marker['receipt_sha256']: raise ValueError('observed failure checksum mismatch')
+    row=_read(path)
+    if any(_digest(attempt_dir/name)!=digest for name,digest in row['paid_receipt_hashes'].items()):
+        raise ValueError('observed paid receipt checksum mismatch')
+    prediction=_prediction(row['prediction'])
+    events=[CostEvent(**event) for event in row['events']]
+    _validate_events(prediction,events)
+    return prediction,events
+
+
+def _certify_observed_serving_failure(job,runtime,attempt_dir,error):
+    """Alive parent observes an exact failure stop; never label it as process death."""
+    start=runtime.service_start_ns
+    if start is None: start=_read(attempt_dir/'started.json')['start_ns']
+    ledger=TimingLedger(job,_policy_id(job['policy']),runtime.clock)
+    ledger.events=list(runtime.events)
+    _consume_worker_lifecycle(runtime,job,ledger,serving_window=(start,runtime.clock()))
+    _record_pending_recovery(runtime.reader.backend)
+    prediction=runtime.last_prediction
+    if prediction is None:
+        prediction=Prediction(job['run_id'],job['task'].task_id,ledger.policy_id,job['protocol_hash'],
+            job['job_id'],job['attempt'],job.get('repetition_id',0),[], '',None,[],'infra_error',
+            runtime.config['model_revision'],content_hash('no-prompt'),runtime.config['decoding_hash'],
+            0.,0,0,0,[])
+    prediction=replace(prediction,status='infra_error',answer=None,citations=[])
+    runtime.decision_payload={**(runtime.decision_payload or {}),'stop_reason':f'{type(error).__name__}:{error}'}
+    with ledger.component('failure_payload'):
+        runtime.payload=canonical_bytes({'prediction':_answer_payload(prediction),'decision':runtime.decision_payload})
+    stop=runtime.clock()
+    if not any(event.role=='serving' for event in ledger.events):
+        ledger.event('serving',start,stop,status='infra_error')
+    runtime.events=ledger.events
+    return replace(prediction,elapsed_seconds=(stop-start)/1e9)

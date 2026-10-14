@@ -588,6 +588,8 @@ class SupervisedBackend:
         self.factory,self.startup_timeout = factory,startup_timeout
         self.lifecycle=[]
         self.last_resources={}
+        self.job_owner=None
+        self.pending_owner=None
         self.peak_mlx_bytes=None
         self.worker=None
         self.connection=None
@@ -600,6 +602,7 @@ class SupervisedBackend:
     def _start(self):
         import multiprocessing
         start=time.perf_counter_ns()
+        owner=self.pending_owner
         context=multiprocessing.get_context('spawn')
         self.connection,child=context.Pipe()
         self.worker=context.Process(target=_reader_worker,args=(child,self.factory),daemon=True)
@@ -613,9 +616,12 @@ class SupervisedBackend:
             self._resources(message[2])
         except BaseException:
             self._terminate('startup_failure')
+            self.lifecycle.append({'kind':'load','pid':None,'start_ns':start,'stop_ns':time.perf_counter_ns(),
+                                   'owner':owner,'status':'infra_error'})
             raise
         self.lifecycle.append({'kind':'load','pid':self.worker.pid,'start_ns':start,
-                               'stop_ns':time.perf_counter_ns()})
+                               'stop_ns':time.perf_counter_ns(),'owner':owner,'status':'ok'})
+        self.pending_owner=None
 
     def _resources(self,values):
         self.last_resources=values
@@ -635,7 +641,10 @@ class SupervisedBackend:
             self.worker.close()
         if self.connection: self.connection.close()
         self.worker=self.connection=None
-        self.lifecycle.append({'kind':reason,'pid':pid,'start_ns':start,'stop_ns':time.perf_counter_ns()})
+        if reason in {'forced_timeout','worker_failure','synchronization_timeout','synchronization_failure','startup_failure'}:
+            self.pending_owner=self.pending_owner or self.job_owner
+        self.lifecycle.append({'kind':reason,'pid':pid,'start_ns':start,'stop_ns':time.perf_counter_ns(),
+                               'owner':self.pending_owner})
 
     def synchronize(self):
         if self.worker_pid is None: self._start()

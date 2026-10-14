@@ -148,3 +148,114 @@ def test_bound_payload_has_no_unmeasured_enclosing_time_placeholder(tmp_path):
     payload=json.loads((tmp_path/'jobs/job/attempt-1/payload.json').read_text())
     assert 'elapsed_seconds' not in payload['prediction']
     assert result.elapsed_seconds==11.
+
+
+def test_observed_final_sync_failure_retains_paid_receipt_and_exact_retry_cost(tmp_path):
+    runtime,job,clock=fixture_runtime(tmp_path)
+    count=[0]
+    def synchronize():
+        count[0]+=1
+        if count[0]==2:
+            clock.advance(4)
+            raise RuntimeError('observed final device sync fault')
+    runtime.reader.backend.synchronize=synchronize
+    first=runner.execute_job(job,runtime,tmp_path)
+    assert first.status=='infra_error' and first.elapsed_seconds==15.
+    assert first.raw_output and first.generation_calls==1
+    assert not (tmp_path/'jobs/job/attempt-1/interrupted.json').exists()
+    second=runner.execute_job({**job,'retry_infrastructure':True},runtime,tmp_path)
+    assert second.status=='ok' and second.attempt==2
+    assert runner.accounting(tmp_path,second)=={'total_serving_seconds':26.,'total_experiment_seconds':26.}
+    assert runner.close_run(tmp_path,[job])['record_count']==1
+
+
+def test_observed_payload_failure_is_certified_and_not_retried_semantically(tmp_path):
+    runtime,job,clock=fixture_runtime(tmp_path)
+    original=runtime.serialize
+    count=[0]
+    def serialize(value):
+        count[0]+=1
+        if count[0]==1:
+            clock.advance(3)
+            raise RuntimeError('observed payload codec fault')
+        return original(value)
+    runtime.serialize=serialize
+    first=runner.execute_job(job,runtime,tmp_path)
+    assert first.status=='infra_error' and first.elapsed_seconds==11.
+    assert first.raw_output and first.generated_tokens==8
+    assert runner.execute_job(job,runtime,tmp_path)==first
+    assert runtime.reader.backend.calls==1
+    second=runner.execute_job({**job,'retry_infrastructure':True},runtime,tmp_path)
+    assert runner.accounting(tmp_path,second)['total_serving_seconds']==22.
+    assert runner.close_run(tmp_path,[job])['record_count']==1
+
+
+def test_observed_transaction_fault_uses_certified_receipt_and_explicit_retry(tmp_path,monkeypatch):
+    runtime,job,clock=fixture_runtime(tmp_path)
+    original=runner.atomic_json
+    fault=[False]
+    def injected(path,value):
+        if path.name=='payload.json' and not fault[0]:
+            fault[0]=True;clock.advance(2)
+            raise OSError('observed one-shot transaction fault')
+        return original(path,value)
+    monkeypatch.setattr(runner,'atomic_json',injected)
+    first=runner.execute_job(job,runtime,tmp_path)
+    assert first.status=='infra_error' and first.raw_output and first.generation_calls==1
+    assert runner.execute_job(job,runtime,tmp_path)==first
+    assert runtime.reader.backend.calls==1
+    second=runner.execute_job({**job,'retry_infrastructure':True},runtime,tmp_path)
+    assert second.status=='ok' and second.attempt==2
+    assert runner.accounting(tmp_path,second)=={'total_serving_seconds':22.,'total_experiment_seconds':24.}
+    assert runner.close_run(tmp_path,[job])['record_count']==1
+
+
+def test_storage_failure_preventing_certification_remains_uncertified(tmp_path,monkeypatch):
+    runtime,job,_=fixture_runtime(tmp_path)
+    original=runner.atomic_json
+    broken=[False]
+    def unavailable(path,value):
+        if path.name=='payload.json': broken[0]=True
+        if broken[0]: raise OSError('storage unavailable')
+        return original(path,value)
+    monkeypatch.setattr(runner,'atomic_json',unavailable)
+    with pytest.raises(OSError): runner.execute_job(job,runtime,tmp_path)
+    monkeypatch.setattr(runner,'atomic_json',original)
+    second=runner.execute_job({**job,'retry_infrastructure':True},runtime,tmp_path)
+    with pytest.raises(ValueError,match='uncertified'):
+        runner.close_run(tmp_path,[job])
+
+
+def test_latest_observed_retry_failure_supersedes_older_completion(tmp_path,monkeypatch):
+    runtime,job,clock=fixture_runtime(tmp_path,['INFRA','{"answer":"blue","citations":[]}'])
+    first=runner.execute_job(job,runtime,tmp_path)
+    original=runner.atomic_json
+    failed=[False]
+    def injected(path,value):
+        if path.parent.name=='attempt-2' and path.name=='payload.json' and not failed[0]:
+            failed[0]=True;clock.advance(2);raise OSError('second attempt publication fault')
+        return original(path,value)
+    monkeypatch.setattr(runner,'atomic_json',injected)
+    second=runner.execute_job({**job,'retry_infrastructure':True},runtime,tmp_path)
+    assert second.attempt==2 and second.status=='infra_error'
+    assert runner.execute_job(job,runtime,tmp_path)==second
+    third=runner.execute_job({**job,'retry_infrastructure':True},runtime,tmp_path)
+    assert third.attempt==3
+    assert runner.accounting(tmp_path,third)=={'total_serving_seconds':33.,'total_experiment_seconds':35.}
+    assert runner.close_run(tmp_path,[job])['record_count']==1
+
+
+def test_observed_initial_sync_failure_has_exact_interval_and_can_resolve(tmp_path):
+    runtime,job,clock=fixture_runtime(tmp_path)
+    count=[0]
+    def synchronize():
+        count[0]+=1
+        if count[0]==1:
+            clock.advance(4)
+            raise RuntimeError('observed synchronization failure before query')
+    runtime.reader.backend.synchronize=synchronize
+    first=runner.execute_job(job,runtime,tmp_path)
+    assert first.status=='infra_error' and first.generation_calls==0 and first.elapsed_seconds==4.
+    second=runner.execute_job({**job,'retry_infrastructure':True},runtime,tmp_path)
+    assert runner.accounting(tmp_path,second)['total_serving_seconds']==15.
+    assert runner.close_run(tmp_path,[job])['record_count']==1

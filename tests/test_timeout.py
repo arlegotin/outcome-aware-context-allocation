@@ -1,5 +1,7 @@
 import time
 
+import pytest
+
 from outcome_poc.generation import SupervisedBackend
 from outcome_poc.schemas import GenerationRequest, ReaderResult
 
@@ -52,6 +54,114 @@ def test_worker_reload_charge_survives_timeout_and_is_added_once(tmp_path):
         from dataclasses import replace
         second=runner.execute_job({**job,'job_id':'job2','task':replace(job['task'],question='Next?')},runtime,tmp_path / 'second')
         events=runner.load_events(tmp_path / 'second')
-        assert len([e for e in events if e.role=='worker_reload'])==1
+        assert len([e for e in events if e.role=='worker_reload'])==0
+        source=runner.load_events(tmp_path / 'first')
+        assert len([e for e in source if e.role=='worker_reload'])==1
         totals=runner.accounting(tmp_path / 'second',second)
-        assert totals['total_serving_seconds'] > second.elapsed_seconds
+        assert totals['total_serving_seconds'] == second.elapsed_seconds
+        assert runner.accounting(tmp_path / 'first',first)['total_serving_seconds'] > first.elapsed_seconds
+
+
+def test_failed_arm_owns_deferred_reload_without_changing_its_completion(tmp_path):
+    from outcome_poc import runner
+    from serving_helpers import fixture_runtime
+    runtime,job,clock=fixture_runtime(tmp_path)
+    original=runtime.reader.backend
+    class Backend:
+        tokenizer=original.tokenizer
+        worker_pid=1
+        lifecycle=[{'kind':'load','start_ns':0,'stop_ns':0}]
+        pending_owner=None
+        def synchronize(self):
+            if self.worker_pid is None:
+                start=clock();clock.advance(7)
+                self.lifecycle.append({'kind':'load','start_ns':start,'stop_ns':clock(),'owner':self.pending_owner})
+                self.pending_owner=None
+                self.worker_pid=2
+        def generate(self,*args,**kwargs):
+            result=original.generate(*args,**kwargs)
+            if original.calls==1:
+                from dataclasses import replace
+                self.worker_pid=None
+                self.pending_owner=getattr(self,'job_owner',None)
+                return replace(result,status='timeout',stop_reason='forced_timeout')
+            return result
+    runtime.reader.backend=Backend()
+    a=runner.execute_job({**job,'arm':'A*'},runtime,tmp_path)
+    transaction=tmp_path/'jobs/job/completion.json'
+    original_bytes=transaction.read_bytes()
+    bjob={**job,'job_id':'B','arm':'B*'}
+    b=runner.execute_job(bjob,runtime,tmp_path)
+    assert a.elapsed_seconds==b.elapsed_seconds==11.
+    assert runner.accounting(tmp_path,a)['total_serving_seconds']==18.
+    assert runner.accounting(tmp_path,b)['total_serving_seconds']==11.
+    assert transaction.read_bytes()==original_bytes
+    # Verified resume of B consumes no lifecycle/cost again.
+    assert runner.execute_job(bjob,runtime,tmp_path)==b
+    assert runner.accounting(tmp_path,a)['total_serving_seconds']==18.
+    from outcome_poc.schemas import CostEvent
+    from outcome_poc.storage import read_jsonl
+    import json
+    source_dir=tmp_path/'jobs/job/attempt-1'
+    source_events=[CostEvent(**row) for row in read_jsonl(source_dir/'events.jsonl')]
+    source_events += [CostEvent(**json.loads(path.read_text())['event']) for path in (source_dir/'reloads').glob('*.json')]
+    source_signature=json.loads((source_dir/'decision.json').read_text())['action_signature']
+    replay={**job,'job_id':'replay','mode':'replay','cache_mode':'development_replay',
+        'replay_prediction':a,'replay_events':source_events,'replay_signature':source_signature}
+    replayed=runner.execute_job(replay,runtime,tmp_path/'replay')
+    assert runner.accounting(tmp_path/'replay',replayed)['total_serving_seconds']==18.
+    assert original.calls==2
+    assert runner.close_run(tmp_path,[{**job,'arm':'A*'},bjob])['record_count']==2
+
+
+def test_pending_recovery_blocks_closure_and_closed_origin_cannot_gain_cost(tmp_path):
+    import json
+    from outcome_poc import runner
+    from serving_helpers import fixture_runtime
+    from types import SimpleNamespace
+    runtime,job,_=fixture_runtime(tmp_path)
+    result=runner.execute_job(job,runtime,tmp_path)
+    owner={'run_dir':str(tmp_path),'run_id':'run','task_id':'task','policy_id':'FIXED-2','job_id':'job','attempt':1}
+    backend=SimpleNamespace(pending_owner=owner)
+    runner._record_pending_recovery(backend)
+    with pytest.raises(ValueError,match='unresolved attributable'):
+        runner.close_run(tmp_path,[job])
+    (tmp_path/'predictions.closed.json').write_text('{}')
+    with pytest.raises(ValueError,match='closed origin'):
+        runner._check_pending_recovery(backend)
+    assert not list((tmp_path/'jobs/job/attempt-1/reloads').glob('*.json'))
+
+
+def test_reload_already_inside_origin_service_is_not_charged_twice(tmp_path):
+    from outcome_poc import runner
+    from serving_helpers import fixture_runtime
+    runtime,job,clock=fixture_runtime(tmp_path)
+    original=runtime.reader.backend
+    class Backend:
+        tokenizer=original.tokenizer
+        lifecycle=[{'kind':'load','start_ns':0,'stop_ns':0}]
+        def synchronize(self): pass
+        def generate(self,*args,**kwargs):
+            start=clock();clock.advance(7)
+            self.lifecycle.append({'kind':'load','start_ns':start,'stop_ns':clock(),'owner':getattr(self,'job_owner',None)})
+            return original.generate(*args,**kwargs)
+    runtime.reader.backend=Backend()
+    result=runner.execute_job(job,runtime,tmp_path)
+    assert result.elapsed_seconds==18.
+    assert runner.accounting(tmp_path,result)['total_serving_seconds']==18.
+    assert len([e for e in runner.load_events(tmp_path) if e.role=='worker_reload_in_serving'])==1
+    b=runner.execute_job({**job,'job_id':'B'},runtime,tmp_path)
+    assert runner.accounting(tmp_path,result)['total_serving_seconds']==18.
+    assert runner.accounting(tmp_path,b)['total_serving_seconds']==18.
+
+
+def test_closed_supplement_checksum_cannot_change_primary_cost(tmp_path):
+    from outcome_poc import runner
+    from serving_helpers import fixture_runtime
+    runtime,job,_=fixture_runtime(tmp_path)
+    result=runner.execute_job(job,runtime,tmp_path)
+    runner.close_run(tmp_path,[job])
+    # Late origin-owned metadata would invalidate the fixed closure denominator/cost.
+    runner.atomic_json(tmp_path/'jobs/job/attempt-1/recovery-pending.json',{'owner':'late'})
+    with pytest.raises(ValueError,match='supplement'):
+        runner.accounting(tmp_path,result)
