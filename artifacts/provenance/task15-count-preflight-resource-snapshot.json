@@ -1,0 +1,21 @@
+{
+  "available_memory_bytes": 10416144384,
+  "count_run_forecast_note": "no corpus/window tokenization measured; proposed 900s hard cap bounds exposure, not guaranteed completion",
+  "disk_free_bytes": 60929720320,
+  "disk_total_bytes": 930662584320,
+  "earlier_managed_sandbox_attempt": "psutil.swap_memory raised OSError and sysctl hw.memsize/vm.swapusage was denied; no receipt published or experimental work executed",
+  "load_average": [
+    7.0693359375,
+    5.6806640625,
+    4.9296875
+  ],
+  "logical_cpus": 14,
+  "physical_memory_bytes": 38654705664,
+  "recorded_utc": "2026-10-15T07:21:18.037755+00:00",
+  "required_reserve_bytes": 7730941133,
+  "scope": "fresh system resource metadata only; no tokenizer/data/model/index imported or executed",
+  "self_rss_bytes": 20742144,
+  "swap_used_bytes": 6845300736,
+  "used_memory_bytes": 14266056704,
+  "working_set_limit_bytes": 30923764531
+}

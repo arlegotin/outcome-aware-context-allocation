@@ -1,0 +1,115 @@
+{
+  "asset_bytes_metadata_only": {
+    "encoder": 134505940,
+    "reader": 2278970666
+  },
+  "available_memory_bytes": 10928783360,
+  "available_until_collection_cutoff_seconds": 9792.305063,
+  "disk_free_bytes": 60872871936,
+  "documents_bytes_metadata_only": 324547371,
+  "frozen_ledger_path": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/index-attempts.jsonl",
+  "frozen_source_index_metadata": {
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/fit/manifest.json": {
+      "completion_attempt_ledger": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/provenance/index-attempts.jsonl",
+      "file_sha256": "46c98600ee7cbdd2811ab8d835937bf53ce6a5035fc51b648f74a683ec5cbcbe"
+    },
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/pilot/manifest.json": {
+      "completion_attempt_ledger": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/provenance/index-attempts.jsonl",
+      "file_sha256": "8be21995414c0da8a7291e237343e119d6d7321620cbfbb3db82be1c6adf04d0"
+    },
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/protected/manifest.json": {
+      "completion_attempt_ledger": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/index-attempts.jsonl",
+      "file_sha256": "486d7d0e4be7c34872dafaa4f15ef1ac6618cf64c3db1282a4c4b16e464e3aa4"
+    },
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/tune/manifest.json": {
+      "completion_attempt_ledger": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/provenance/index-attempts.jsonl",
+      "file_sha256": "4a5c339d30a032119e16768fa767de0c0661da8062d6b53d223f3273f0258973"
+    }
+  },
+  "inherited_index_ledgers": {
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/provenance/index-attempts.jsonl": {
+      "bytes": 5315,
+      "file_sha256": "a34e23e4ffecd26ad858cae577805b640071323b088625803d3e4317914500f7"
+    },
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/index-attempts.jsonl": {
+      "bytes": 921,
+      "file_sha256": "83ae73c172d1c78761dc63656b20d6ae8ed40b06ff09afe7995d8fccad40fdf4"
+    }
+  },
+  "load_average": [
+    5.1103515625,
+    5.3125,
+    5.08984375
+  ],
+  "manifest_file_sha256": "75ebb9d431a5c62a8bacdb3f8dd89fe8d56824f2cb47e51483b57d67b5c996f5",
+  "manifest_hash": "c81c662a7540b4119d65989f8f31471bfd0924f8c38f8c50758767a46fdf7e74",
+  "physical_memory_bytes": 38654705664,
+  "prospective_output_alias_checks": [
+    {
+      "exists": false,
+      "is_symlink": false,
+      "path": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/index",
+      "resolved": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/index"
+    },
+    {
+      "exists": false,
+      "is_symlink": false,
+      "path": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/index/attempt-1",
+      "resolved": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/index/attempt-1"
+    },
+    {
+      "exists": false,
+      "is_symlink": false,
+      "path": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/index/index-attempts.jsonl",
+      "resolved": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/index/index-attempts.jsonl"
+    },
+    {
+      "exists": false,
+      "is_symlink": false,
+      "path": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/index-attempts.jsonl",
+      "resolved": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/index-attempts.jsonl"
+    },
+    {
+      "exists": false,
+      "is_symlink": false,
+      "path": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/index-realization.json",
+      "resolved": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/index-realization.json"
+    },
+    {
+      "exists": false,
+      "is_symlink": false,
+      "path": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/pilot.closed.json",
+      "resolved": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/pilot.closed.json"
+    }
+  ],
+  "recorded_utc": "2026-10-15T07:29:39.694937+00:00",
+  "scope": "read-only sources/path/ledger-hash/resource/asset-size metadata; no source vectors, weights, index build, query or generation loaded",
+  "source_hashes": {
+    "configs/frozen.json": "81f62ce1c6128a35a59230624604a2efad0129750700f17e72c50cc95314b662",
+    "requirements.lock": "e1bd09c1dc51f39bd53e62df6ce79eb2d726b26fa30d486ac3d584f297c2d8c8",
+    "src/outcome_poc/__init__.py": "b8d2507d09fc68e6a0db97322619f7686bcaa0c6b99dacd276e7e0ece04f0e7a",
+    "src/outcome_poc/__main__.py": "24ead4009facd23ae679a65757ea5ca1f51b36e868f122fe6416975280e410b3",
+    "src/outcome_poc/assets.py": "d77314a45f16b506bc67c1b40ae805c7fc528507b55640801119db713b6d07ce",
+    "src/outcome_poc/data_runtime.py": "fa0382c0b38867e8e3a5d863db01dc5b2a08a081355093650850d8e89535f87e",
+    "src/outcome_poc/environment.py": "fee0f1ebd28f59f4f510b2bb74f5f8e1a83177ce17b38a3bc5d5089d253798c9",
+    "src/outcome_poc/features.py": "31441203d79f2e7e98194254e62e93bad8bc2af0ea71b64371b66aea4c456ba0",
+    "src/outcome_poc/generation.py": "d7bd43ee780d097982d01a7bd504758e3dba350e50f072ed1d0e98131c996cd6",
+    "src/outcome_poc/policies.py": "4fc9d5738c6f379238a13facb204f714a7773f659dcf56b58504e7812809796b",
+    "src/outcome_poc/protected.py": "e1cd734c61b0ec29f3aa2a17ea9124502d1c4ef5f3233005f8271d3c2fddee40",
+    "src/outcome_poc/protocol.py": "9046d6ceae657c86078a218fee0eb378e0ad9e272a868b84ebfc3d7aa384c541",
+    "src/outcome_poc/retrieval.py": "7114865d033c05066651ab9c6e9a8e2baa6d21bd11f8ddf656fa0c05babfd4e1",
+    "src/outcome_poc/robustness.py": "bb2588e119d09f3ca224e070452d30af97228ae8eabe252b3a3998a47e7c7fbd",
+    "src/outcome_poc/runner.py": "36b5bd8f9381a8530c74e25ec618ed2bdde7aa8ae0d1a4c827487f463b5c141c",
+    "src/outcome_poc/schemas.py": "67da95ad64be9bed963d9954b44f151d7110cf1ae6106dcb3cb23ca49071c8a5",
+    "src/outcome_poc/scoring.py": "912eb951565aeb6e71d8b215eedfa5b108c1a4332b5020460d80a6bb8ed6469f",
+    "src/outcome_poc/statistics.py": "2c60606424cd26f87b84479a8b7cbfdaca21f7c2fc2601c9e39066f76efc277a",
+    "src/outcome_poc/storage.py": "87e645a6baf2ce3c1644df243dbf0f5f978c4e2314c327bb737c75eb8d19e215",
+    "src/outcome_poc/timing.py": "046746943f77cd7688f55f4407be33b0adcd4952c292944255e6afb0e6680f5c",
+    "src/outcome_poc/train.py": "c26cbddeab0143ec122f7ed3a338fe525553aa741d7174f6427598e1e828ac04",
+    "src/outcome_poc/transfer_runtime.py": "66c7c0a0cbf4b6874eadca7645d5189c715676968eee5450e3ab54581dc2c95c",
+    "tools/task13_calibrate.py": "224d70b5901502cede0cf207ce3ee8a3592928828932d138dbc41303547ee50b",
+    "tools/task14_native.py": "459e4e301e78a931fb33f50005920383b1f1defde5e5425c22583b19af5fba94",
+    "tools/task15_transfer_native.py": "a503092b087f55e565f4b9ffed6c9f5de6e1e3bb67b63d0f243e3f779d70c724"
+  },
+  "swap_used_bytes": 6836912128
+}

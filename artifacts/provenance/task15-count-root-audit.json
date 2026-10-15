@@ -1,0 +1,15 @@
+{
+  "all_new_windows_upper_bound": 70233,
+  "count_closure_sha256": "703a4f6d25fd9834ac59f52b7a3930c08c4b8ffb8dc0ba4ced320606c75c4414",
+  "count_parent_sha256": "028fe16ad47589e0d6e23f780309d1699a6e1664d7dd824c58fe54a4e4939cdc",
+  "document_count": 70092,
+  "new_windows_unmeasured": true,
+  "os_denials_pass": true,
+  "root_validation_seconds": 0.01604524999856949,
+  "scope": "root count/parent/source metadata verification only; no Gold, embedding or generation",
+  "source_hashes_verified": 25,
+  "status": "verified",
+  "summary_sha256": "6a5327e057d90a62d1f13d883d22860c0e88b0513586af4f5f5423db6791792a",
+  "utc": "2026-10-15T07:29:52.365890+00:00",
+  "window_count": 70233
+}

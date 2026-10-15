@@ -1,0 +1,77 @@
+{
+  "category_counts": {
+    "alternative_direct_support_with_missing_requested_bridge": 1,
+    "citation_selection_error": 1,
+    "missing_bridge_citation": 2,
+    "missing_bridge_with_reference_concern": 1,
+    "plausibly_sufficient_nonexact_reference_set": 2,
+    "question_ambiguity_with_incomplete_reference_set": 1
+  },
+  "eligible_distinct_question_count": 149,
+  "eligible_output_count": 274,
+  "evidence": {
+    "admission_receipt_path": "artifacts/runs/task15-blind-review/postseal-admission-receipt.json",
+    "admission_receipt_sha256": "8ae47587a57f8caca4a1747dabd0535fc5f070478285d263d988205a95724862",
+    "key_file_sha256": "90d62ce7e5b8fab25a94dc1d096926872756c6c983849c8726bb5cc94395a37e",
+    "notes_file_sha256": "70639e5d66c1d94cdb9afc4a7380348a6f7e35ddf76d0b7af65e6dec2d63ecaf",
+    "notes_seal_sha256": "9ee86cd4940085f88b66400d16f07dd5d4356cfd7e4e78479cbefcf63a86a519",
+    "packet_file_sha256": "9839f9725367c6cf89d5f2d2eea6c9ed16b9a8110eea1eb0d1c5e614c3631473",
+    "packet_manifest_sha256": "bf9951274a42af64efd067eee4685bfa1f7e0c447f3c33f7896214dad145dbab",
+    "primary_scores_sha256_unchanged": "9cab98d22bb560ee0a160c53daf7efd4f1199790d585b88967da8f3e3fdda48e",
+    "private_adjudication_path": "artifacts/runs/task15-blind-review/postseal-adjudication.json",
+    "private_adjudication_sha256": "a7dbbed3d4b471c0658f0cf9c7450ab7f1c43435a2d606754eb1052dc10ad4ba",
+    "selection_rule_sha256": "09c364b34b954dff9027ca523fffa358e01d9730b216a842227c527d38180ccb"
+  },
+  "final_synthesis_held": true,
+  "instructional_blindness_not_capability_sandbox": true,
+  "interpretation": "The selected disagreements mix concrete citation-coverage problems and plausible nonexact reference-set penalties. Four cases contain wrong or missing relational citations; two plausibly have sufficient cited answer support despite nonexact annotations; one additional case offers a qualified direct alternative while omitting the requested relation; one question has unresolved wording ambiguity. Categories/tags are diagnostic judgments, not corrected labels.",
+  "limits": [
+    "Only8 enriched cases selected from149eligible questions; these counts estimate no population prevalence or policy error rate.",
+    "One agent provided tentative notes; no human annotation study or inter-rater reliability estimate.",
+    "Postseal adjudicator had already seen aggregate A03 results and is not a blinded independent judge.",
+    "Instructional reviewer isolation was recorded; no formal capability sandbox certifies blindness.",
+    "No external fact checking or independent truth verification.",
+    "Original primary annotations, all scores, denominators, policies and metrics remain unchanged."
+  ],
+  "mechanical_annotation_counts": {
+    "all_reference_support_available_in_context_cases": 7,
+    "extra_cited_pairs_cases": 3,
+    "missing_reference_pairs_cases": 8
+  },
+  "metering": {
+    "admission_perf_seconds_nested": 0.22180408396525308,
+    "financial_inference_cost": null,
+    "observed_postseal_stage_finished_utc": "2026-10-15T07:26:04.353597+00:00",
+    "observed_postseal_stage_started_utc": "2026-10-15T07:22:28.719391+00:00",
+    "observed_utc_stage_seconds": 215.634206,
+    "preliminary_inspection_reason": "Not comprehensively metered; never zero.",
+    "preliminary_inspection_seconds": null,
+    "publication_perf_seconds_nested": 0.00512216700008139,
+    "stage_boundary": "From source/selector verification through eight-case extraction, agent reading/reasoning and adjudication publication; admission processing is nested. Excludes preliminary inspection and final receipt persistence."
+  },
+  "notes_sealed_before_key_and_gold_decode": true,
+  "overlapping_tag_counts": {
+    "annotated_support_outside_supplied_context": 1,
+    "missing_requested_county_bridge": 1,
+    "plausible_sufficient_nonexact_set": 2,
+    "qualified_alternative_support": 1,
+    "question_or_reference_concern": 2,
+    "wording_qualification": 1,
+    "wrong_or_missing_relational_citation": 4
+  },
+  "primary_scores_modified": false,
+  "reference_caution": "One missing-bridge case also has a reference-set concern: the annotated sentence differs from the substantive bridge identified before reveal. No annotation is certified erroneous.",
+  "review_kind": "one fresh agent-assisted tentative review, followed by nonblind agent annotation comparison",
+  "schema_version": 1,
+  "seal_utc": "2026-10-15T07:15:41.363207+00:00",
+  "selected_case_count": 8,
+  "selected_gold_records_decoded": 8,
+  "selection": "Presealed hash selection of distinct tasks among A/B direct first-repetition answer-exact/support-nonexact outputs; enriched, not representative.",
+  "status": "postseal_adjudication_complete",
+  "unchanged_primary_selection_scores": {
+    "answer_em_count": 8,
+    "joint_em_count": 0,
+    "support_em_count": 0
+  },
+  "unselected_gold_lines_skipped_without_json_decode": 472
+}
