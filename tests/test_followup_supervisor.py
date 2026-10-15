@@ -4,6 +4,7 @@ import importlib
 import os
 import queue
 import struct
+import threading
 import time
 
 import pytest
@@ -75,6 +76,19 @@ class Transport:
     def stop(self): self.stopped = True
 
 
+class Sender:
+    def __init__(self, connection):
+        self.connection = connection
+
+    def submit(self, message):
+        self.connection.send(message)
+        completion = queue.Queue(maxsize=1)
+        completion.put_nowait(None)
+        return completion
+
+    def stop(self): pass
+
+
 def message(value, **kwargs):
     return {'message': value, **kwargs}
 
@@ -85,6 +99,7 @@ def harness(monkeypatch):
     # The queue is the scheduling boundary; only deterministic queue waits are
     # substituted. Real spawn and partial-frame tests exercise the actual pump.
     monkeypatch.setattr(module, '_Receiver', lambda connection: connection)
+    monkeypatch.setattr(module, '_Sender', Sender)
     import multiprocessing
     clock = Clock()
     transports = []
@@ -240,6 +255,48 @@ def test_failed_termination_is_visible_and_stamped(harness, monkeypatch):
     backend.close()
 
 
+@pytest.mark.parametrize('primary', ['timeout', 'infra_error'])
+def test_cleanup_exception_carries_terminal_result_and_partial(harness, monkeypatch, primary):
+    build, _, _ = harness
+    events = [message(('progress', 'partial', [1, 2], [9], {}))]
+    if primary == 'infra_error':
+        events.append({'error': EOFError('worker gone')})
+    backend = build(events)
+    monkeypatch.setattr(backend.worker, 'terminate', lambda: None)
+    monkeypatch.setattr(backend.worker, 'kill', lambda: None)
+    try:
+        with pytest.raises(RuntimeError) as caught:
+            backend.generate('prompt', REQUEST)
+        terminal = getattr(caught.value, 'result', None)
+        assert isinstance(terminal, ReaderResult)
+        assert terminal.status == primary
+        assert (terminal.raw_output, terminal.prompt_token_ids, terminal.generated_token_ids) == (
+            'partial', [1, 2], [9])
+        assert (terminal.prompt_tokens, terminal.generated_tokens) == (2, 1)
+        assert 'could not be killed' in str(caught.value.cleanup_error)
+        assert caught.value.__cause__ is caught.value.cleanup_error
+    finally:
+        backend.worker.alive = False
+        backend.close()
+
+
+def test_context_exit_does_not_replace_structured_cleanup_failure(harness, monkeypatch):
+    build, _, _ = harness
+    backend = build([message(('progress', 'partial', [1, 2], [9], {}))])
+    monkeypatch.setattr(backend.worker, 'terminate', lambda: None)
+    monkeypatch.setattr(backend.worker, 'kill', lambda: None)
+    try:
+        with pytest.raises(RuntimeError) as caught:
+            with backend:
+                backend.generate('prompt', REQUEST)
+        terminal = getattr(caught.value, 'result', None)
+        assert isinstance(terminal, ReaderResult)
+        assert (terminal.status, terminal.raw_output) == ('timeout', 'partial')
+    finally:
+        backend.worker.alive = False
+        backend.close()
+
+
 class WorkerTokenizer:
     chat_template = 'fixture'
 
@@ -253,6 +310,8 @@ class FixtureBackend:
             time.sleep(30)
         if prompt == 'die':
             os._exit(17)
+        if prompt == 'raise':
+            raise RuntimeError('backend failed after progress')
         return RESULT
 
     def synchronize(self): pass
@@ -270,6 +329,88 @@ def partial_frame_worker(connection, factory):
     # without the rest. A parent deadline must not enter that blocking recv.
     os.write(connection.fileno(), struct.pack('!i', 100_000) + b'X')
     time.sleep(30)
+
+
+def stalled_command_reader(connection, factory):
+    connection.send(('ready', WorkerTokenizer(), {}))
+    time.sleep(30)  # ready but never consumes a command
+
+
+def test_stalled_command_reader_cannot_block_large_outbound_request(monkeypatch):
+    module = importlib.import_module('outcome_poc.followup.supervisor')
+    monkeypatch.setattr(module, '_reader_worker', stalled_command_reader)
+    before = time.monotonic()
+    with module.ContinuousBackend(fixture_factory, startup_timeout=5) as backend:
+        result = backend.generate('X' * 1_000_000, replace(REQUEST, timeout_seconds=.1))
+        assert result.status == 'timeout'
+        assert backend.worker_pid is None
+        assert backend.receiver is None
+        assert backend.sender is None
+    assert time.monotonic() - before < 3
+
+
+def test_synchronization_send_is_bounded_behind_stalled_write(monkeypatch):
+    module = importlib.import_module('outcome_poc.followup.supervisor')
+    monkeypatch.setattr(module, '_reader_worker', stalled_command_reader)
+    before = time.monotonic()
+    with module.ContinuousBackend(fixture_factory, startup_timeout=5) as backend:
+        # Occupy the sender with a real write to a nonreading peer. The tiny
+        # sync command must wait for its send under its own deadline as well.
+        entered = threading.Event()
+        send = backend.connection.send
+        def entered_send(value):
+            entered.set()
+            return send(value)
+        monkeypatch.setattr(backend.connection, 'send', entered_send)
+        backend.sender.submit(('generate', 'X' * 1_000_000, REQUEST, False, None))
+        assert entered.wait(1)
+        backend.startup_timeout = .15
+        with pytest.raises(TimeoutError):
+            backend.synchronize()
+        assert backend.worker_pid is None
+        assert backend.sender is None
+    assert time.monotonic() - before < 3
+
+
+class SerializationGate(str):
+    entered = threading.Event()
+    release = threading.Event()
+
+    def __reduce_ex__(self, protocol):
+        self.entered.set()
+        self.release.wait(30)
+        return str, (str(self),)
+
+
+def test_serialization_is_inside_deadline_and_cleanup_failure_keeps_timeout():
+    module = importlib.import_module('outcome_poc.followup.supervisor')
+    SerializationGate.entered.clear()
+    SerializationGate.release.clear()
+    backend = module.ContinuousBackend(fixture_factory, startup_timeout=5)
+    before = time.monotonic()
+    try:
+        with pytest.raises(module.CleanupFailure) as caught:
+            backend.generate(SerializationGate('prompt'), replace(REQUEST, timeout_seconds=.1))
+        assert SerializationGate.entered.is_set()
+        assert caught.value.result.status == 'timeout'
+        assert 'sender could not be stopped' in str(caught.value.cleanup_error)
+        assert time.monotonic() - before < 3
+    finally:
+        SerializationGate.release.set()
+        if backend.sender:
+            backend.sender.thread.join(1)
+        backend.close()
+
+
+def test_real_worker_exception_keeps_accepted_progress_and_original_failure():
+    module = importlib.import_module('outcome_poc.followup.supervisor')
+    with module.ContinuousBackend(fixture_factory, startup_timeout=5) as backend:
+        result = backend.generate('raise', REQUEST)
+        assert result.status == 'infra_error'
+        assert (result.raw_output, result.prompt_token_ids, result.generated_token_ids) == (
+            'partial', [1, 2], [9])
+        assert (result.prompt_tokens, result.generated_tokens) == (2, 1)
+        assert 'backend failed after progress' in result.stop_reason
 
 
 def test_partial_frame_cannot_block_generation_or_cleanup(monkeypatch):
