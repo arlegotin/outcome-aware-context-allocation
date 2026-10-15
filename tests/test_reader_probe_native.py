@@ -30,9 +30,18 @@ class Fake:
         raw='{"answer":"LARK-27","citations":[{"doc_id":"D0","sentence_index":0}]}'
         self.progress_callback(raw,ids,[1,2])
         return ReaderResult(raw,None,[],'ok',len(ids),2,ids,[1,2],'stop')
+def actual_denials(root):
+    checkout=root.parents[2]
+    for path in (checkout/'relocated/raw-assets/authored.json',
+                 checkout/'data/prepared/reproduction/gold/gold.jsonl',
+                 checkout/'models/pinned/data/fallback.json'):
+        try:path.read_bytes()
+        except PermissionError:continue
+        raise AssertionError('actual raw/Gold file readable before acquisition: '+str(path))
 class Acquire:
     def __init__(self,root):self.root=root
     def __call__(self):
+        actual_denials(self.root)
         assert list((self.root/'stages/preflight').glob('worker-probes-*.json'))
         (self.root/'acquisition-marker').write_text('after worker denials')
         return Fake()
@@ -42,6 +51,7 @@ if __name__=='__main__':
     root=Path(sys.argv[1])
     plan=study.verify(root)
     assert runtime.isolation(root,plan)['network_denied']
+    actual_denials(root)
     result=runtime.run(root,backend_factory=Spawn)
     assert result['status']=='passed',result
     assert (root/'acquisition-marker').exists()

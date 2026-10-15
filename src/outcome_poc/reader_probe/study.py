@@ -1,6 +1,8 @@
 """Seal the authored, three-call feasibility experiment without task data."""
 from dataclasses import asdict
 from importlib import metadata
+import hashlib
+import json
 import os
 from pathlib import Path
 import platform
@@ -76,6 +78,82 @@ def build_prompt(tokenizer, shape):
     raise ValueError('long prompt construction did not converge')
 
 
+def _existing_files(path, root):
+    """Enumerate paths/stat only; annotation bytes never enter preparation."""
+    path = Path(path)
+    if path.is_file():
+        if not path.resolve().is_relative_to(root):
+            yield path.resolve()
+        return
+    for parent, dirs, files in os.walk(path):
+        dirs[:] = sorted(d for d in dirs if not (Path(parent)/d).resolve().is_relative_to(root))
+        for name in sorted(files):
+            candidate = Path(parent)/name
+            if candidate.is_file() and not candidate.resolve().is_relative_to(root):
+                yield candidate.resolve()
+
+
+def discover_denial_locations(root):
+    """Project only historical asset metadata and discovered file locations.
+
+    Native serving reads this sealed projection, never the denied registries.
+    The pinned-data fallback remains denied even when a registry is present.
+    """
+    conventional = [str((CHECKOUT/'data'/name).resolve()) for name in ('raw','prepared','gold','index')]
+    conventional.append(str((CHECKOUT/'artifacts').resolve()))
+    raw_locations = {str((CHECKOUT/'data/raw').resolve()), str((CHECKOUT/'models/pinned/data').resolve())}
+    registries, declared_files = [], set()
+    for relative in ('artifacts/provenance/asset-manifest.json', 'models/pinned/asset-manifest.json'):
+        registry = CHECKOUT/relative
+        if not registry.is_file():
+            continue
+        payload = registry.read_bytes()  # Registry metadata only, never its assets.
+        entries = json.loads(payload)['assets']
+        locations = []
+        for role, entry in sorted(entries.items()):
+            if entry.get('kind') != 'data':
+                continue
+            local = Path(entry['local_path'])
+            local = (local if local.is_absolute() else CHECKOUT/local).resolve()
+            if root.is_relative_to(local) or local.is_relative_to(root):
+                raise ValueError('raw asset location overlaps the new run')
+            files = []
+            for name in sorted(entry.get('files', {})):
+                relative_file = Path(name)
+                if relative_file.is_absolute() or '..' in relative_file.parts:
+                    raise ValueError('unsafe data registry filename')
+                actual = (local/relative_file).resolve()
+                files.append(str(actual))
+                declared_files.add(str(actual))
+            raw_locations.add(str(local))
+            locations.append({'role': role, 'local_path': str(local), 'files': files})
+        registries.append({'path': str(registry.resolve()),
+            'identity': {'sha256': hashlib.sha256(payload).hexdigest(), 'bytes': len(payload)},
+            'data_locations': locations})
+    if any(root.is_relative_to(Path(path)) for path in raw_locations):
+        raise ValueError('new run cannot be inside a raw asset store')
+    raw_probes = set()
+    for path in sorted(raw_locations):
+        probe = next(_existing_files(path, root), None)
+        if probe is not None:
+            raw_probes.add(str(probe))
+    raw_probes.update(path for path in declared_files if Path(path).is_file())
+    gold_probes = set()
+    for directory in (CHECKOUT/'data/gold', CHECKOUT/'data/prepared'):
+        for path in _existing_files(directory, root):
+            if (directory.name == 'gold' or 'gold' in path.parts or
+                    path.name == 'gold.jsonl' or path.name.endswith('.gold.jsonl')):
+                gold_probes.add(str(path))
+    return {'version': 1, 'registries': registries, 'conventional_denied': conventional,
+            'raw_locations': sorted(raw_locations), 'declared_raw_files': sorted(declared_files),
+            'raw_probes': sorted(raw_probes), 'gold_probes': sorted(gold_probes)}
+
+
+def denial_paths(projection):
+    return sorted(set(projection['conventional_denied'] + projection['raw_locations'] +
+                      projection['declared_raw_files'] + projection['gold_probes']))
+
+
 def _probes(denied, root):
     probes = []
     for directory in denied:
@@ -119,17 +197,20 @@ def prepare(root: Path, config_path: Path, assets_path: Path) -> dict:
         if snapshot.exists():
             raise ValueError('partial preparation source already exists; preserve and inspect it')
         shutil.copytree(SOURCE, snapshot, ignore=shutil.ignore_patterns('__pycache__','*.pyc'))
-        denied = [str((CHECKOUT/'data'/name).resolve()) for name in ('raw','prepared','gold','index')]
-        denied.append(str((CHECKOUT/'artifacts').resolve()))
+        locations = discover_denial_locations(root)
+        publish(root/'denial-locations.json', locations)
+        denied = denial_paths(locations)
+        probes = sorted(set(_probes(denied, root) + locations['raw_probes'] + locations['gold_probes']))
         profile = sandbox_profile(root, denied)
         (root/'native.sb').write_text(profile)
         plan = {'version': 1, 'root': str(root), 'calls': call_schedule(config['reader']),
                 'freeze': {'boot_id': boot_identity(), 'clock': clock_identity(),
                     'settings': config, 'environment': environment_identity(),
-                    'denied_paths': denied, 'denied_probes': _probes(denied, root),
+                    'denied_paths': denied, 'denied_probes': probes,
+                    'denial_locations_hash': content_hash(locations),
                     'denied_modules': list(DENIED_MODULES)},
                 'inputs': {name: identity(root/name) for name in
-                    ('config.json','assets.json','requirements.lock','native.sb')},
+                    ('config.json','assets.json','requirements.lock','native.sb','denial-locations.json')},
                 'source': inventory(root/'source')}
         plan['plan_hash'] = content_hash(plan)
         publish(root/'plan.json', plan)
@@ -153,6 +234,11 @@ def verify(root: Path) -> dict:
         raise ValueError('sealed settings or call schedule changed')
     if plan['freeze']['denied_modules'] != list(DENIED_MODULES):
         raise ValueError('sealed import denials changed')
+    locations = read(root/'denial-locations.json')
+    if (content_hash(locations) != plan['freeze']['denial_locations_hash'] or
+            plan['freeze']['denied_paths'] != denial_paths(locations) or
+            not set(locations['raw_probes'] + locations['gold_probes']) <= set(plan['freeze']['denied_probes'])):
+        raise ValueError('sealed actual data-location denials or probes changed')
     if (root/'native.sb').read_text() != sandbox_profile(root, plan['freeze']['denied_paths']):
         raise ValueError('native profile differs from required isolation')
     if environment_identity() != plan['freeze']['environment']:

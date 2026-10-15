@@ -16,6 +16,18 @@ def prepared(tmp_path, monkeypatch):
     (checkout/'data/raw/probe').write_text('authored denied bytes')
     (checkout/'artifacts/analysis').mkdir(parents=True)
     (checkout/'artifacts/analysis/probe').write_text('authored outcome sentinel')
+    raw=checkout/'relocated/raw-assets/authored.json'
+    raw.parent.mkdir(parents=True);raw.write_text('authored raw sentinel')
+    gold=checkout/'data/prepared/reproduction/gold/gold.jsonl'
+    gold.parent.mkdir(parents=True);gold.write_text('authored Gold sentinel')
+    (checkout/'data/prepared/audit.json').write_text('authored harmless audit')
+    fallback=checkout/'models/pinned/data/fallback.json'
+    fallback.parent.mkdir(parents=True);fallback.write_text('authored fallback sentinel')
+    registry=checkout/'artifacts/provenance/asset-manifest.json'
+    registry.parent.mkdir(parents=True)
+    atomic_json(registry,{'assets':{'authored_raw':{'kind':'data','local_path':str(raw.parent),
+        'files':{raw.name:{'sha256':'authored metadata only'}}},
+        'authored_model':{'kind':'model','local_path':str(tmp_path/'keep-readable-model')}}})
     config = checkout/'config.json'
     config.write_bytes(Path('configs/reader-capability-preflight.json').read_bytes())
     manifest = checkout/'assets.json'
@@ -39,7 +51,7 @@ def test_prepare_seals_exact_calls_and_assets_stay_external(prepared):
     assert 'enable_thinking' in json.dumps(plan)
 
 
-@pytest.mark.parametrize('name', ['config.json','assets.json','requirements.lock','native.sb','source/src/outcome_poc/reader_probe/profile.py'])
+@pytest.mark.parametrize('name', ['config.json','assets.json','requirements.lock','native.sb','denial-locations.json','source/src/outcome_poc/reader_probe/profile.py'])
 def test_changed_sealed_file_rejected(prepared,name):
     from outcome_poc.reader_probe import study
     path=prepared/name
@@ -85,3 +97,63 @@ def test_extra_bytecode_in_snapshot_is_rejected(prepared):
     path.write_bytes(b'authored unexpected cached code')
     with pytest.raises(ValueError,match='source'):
         study.verify(prepared)
+
+
+def test_registry_projection_denies_actual_raw_and_explicit_gold(prepared):
+    from outcome_poc.reader_probe import study
+    from outcome_poc.followup.study import identity
+    plan=study.verify(prepared)
+    checkout=prepared.parents[2]
+    raw=checkout/'relocated/raw-assets/authored.json'
+    gold=checkout/'data/prepared/reproduction/gold/gold.jsonl'
+    projection=json.loads((prepared/'denial-locations.json').read_text())
+    assert str(raw.parent) in plan['freeze']['denied_paths']
+    assert str(checkout/'models/pinned/data') in plan['freeze']['denied_paths']
+    assert str(raw) in plan['freeze']['denied_probes']
+    assert str(gold) in plan['freeze']['denied_probes']
+    assert projection['registries'][0]['identity']==identity(checkout/'artifacts/provenance/asset-manifest.json')
+    assert projection['registries'][0]['data_locations'][0]['role']=='authored_raw'
+    assert projection['raw_probes'] and projection['gold_probes']==[str(gold)]
+    assert 'keep-readable-model' not in json.dumps(projection)
+
+
+def test_missing_registry_still_denies_and_probes_pinned_data(prepared):
+    from outcome_poc.reader_probe import study
+    checkout=prepared.parents[2]
+    (checkout/'artifacts/provenance/asset-manifest.json').unlink()
+    root=prepared.with_name('without-registry')
+    plan=study.prepare(root,prepared/'config.json',prepared/'assets.json')
+    projection=json.loads((root/'denial-locations.json').read_text())
+    assert projection['registries']==[]
+    assert str(checkout/'models/pinned/data') in plan['freeze']['denied_paths']
+    assert str(checkout/'models/pinned/data/fallback.json') in projection['raw_probes']
+
+
+def test_discovery_reads_metadata_but_never_dataset_contents(prepared,monkeypatch):
+    from outcome_poc.reader_probe import study
+    checkout=prepared.parents[2]
+    forbidden={checkout/'relocated/raw-assets/authored.json',
+               checkout/'data/prepared/reproduction/gold/gold.jsonl',
+               checkout/'models/pinned/data/fallback.json',checkout/'data/raw/probe'}
+    original=Path.open
+    def guarded(path,*args,**kwargs):
+        assert path not in forbidden,'preparation attempted dataset content read'
+        return original(path,*args,**kwargs)
+    monkeypatch.setattr(Path,'open',guarded)
+    study.prepare(prepared.with_name('metadata-only'),prepared/'config.json',prepared/'assets.json')
+
+
+def test_cached_registry_resolves_relative_raw_location(prepared):
+    from outcome_poc.reader_probe import study
+    checkout=prepared.parents[2]
+    raw=checkout/'additional-raw/fixture.json'
+    raw.parent.mkdir();raw.write_text('authored relative raw asset')
+    registry=checkout/'models/pinned/asset-manifest.json'
+    atomic_json(registry,{'assets':{'additional':{'kind':'data','local_path':'additional-raw',
+        'files':{'fixture.json':{}}}}})
+    root=prepared.with_name('cached-registry')
+    plan=study.prepare(root,prepared/'config.json',prepared/'assets.json')
+    assert str(raw.parent) in plan['freeze']['denied_paths']
+    assert str(raw) in plan['freeze']['denied_probes']
+    projection=json.loads((root/'denial-locations.json').read_text())
+    assert len(projection['registries'])==2
