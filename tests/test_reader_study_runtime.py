@@ -183,3 +183,75 @@ def test_failed_warmup_retains_post_attempt_resource_gate(ready):
     with pytest.raises(RuntimeError):runtime.run_stage(root,'development',backend_factory=lambda _:Fails(),encoder_factory=encoder)
     gates=[r for p in (root/'leaves/development').glob('*/stages/diagnosis/gates-*/gates.jsonl') for r in read_jsonl(p)]
     assert 'after_warmup' in {r['boundary'] for r in gates}
+
+
+def retained_native_acquisition(root,reader,*,accounted):
+    """Crash fixture: durable acquisition preceded the worker's identity publish."""
+    import os,psutil,time
+    from outcome_poc.reader_study import runtime
+    from outcome_poc.followup.study import publish
+    leaf=runtime.leaf_root(root,'development',reader);plan=read(leaf/'plan.json')
+    directory=leaf/'stages/diagnosis';directory.mkdir(parents=True,exist_ok=True)
+    sid='authored-acquisition-window';start=runtime.continuous_ns();active=time.perf_counter_ns()
+    state={'session':sid,'plan_hash':plan['plan_hash'],'boot_id':plan['freeze']['boot_id'],
+        'start_ns':start,'active_start_ns':active,'parent_pid':os.getpid(),
+        'parent_created':psutil.Process().create_time(),'reader_worker_expected':False,
+        'native_execution':True,'reader_id':reader,'scientific_stage':'development'}
+    path=directory/f'session-start-{sid}.json';publish(path,state)
+    publish(directory/f'acquisition-{sid}.json',{'continuous_ns':runtime.continuous_ns(),'active_ns':time.perf_counter_ns()})
+    if accounted:
+        stop=runtime.continuous_ns()
+        publish(directory/f'session-accounting-{sid}.json',{'session':sid,'plan_hash':plan['plan_hash'],
+            'boot_id':state['boot_id'],'start_identity':identity(path),'start_ns':start,'stop_ns':stop,
+            'stop_lower_bound_ns':stop,'stop_upper_bound_ns':stop,'timing_status':'exact',
+            'cleanup_error':None,'status':'failed','error':'authored startup failure'})
+    return directory,state
+
+
+def publish_stopped_worker(directory,state):
+    import subprocess,sys,psutil
+    from outcome_poc.reader_study import runtime
+    from outcome_poc.followup.study import publish
+    process=subprocess.Popen([sys.executable,'-c','import sys;sys.stdin.read()'],stdin=subprocess.PIPE)
+    try:
+        created=psutil.Process(process.pid).create_time()
+        process.terminate();process.wait(timeout=5)
+        publish(directory/f"session-worker-{state['session']}-{process.pid}.json",{
+            'session':state['session'],'plan_hash':state['plan_hash'],'boot_id':state['boot_id'],
+            'pid':process.pid,'created':created,'continuous_ns':runtime.continuous_ns()})
+    finally:
+        if process.poll() is None:process.terminate();process.wait(timeout=5)
+        process.stdin.close()
+
+
+@pytest.mark.parametrize('reader',['qwen4b-instruct','qwen14b-nonthinking'])
+@pytest.mark.parametrize('accounted',[False,True])
+def test_native_acquisition_without_worker_identity_blocks_both_readers_before_reconcile(ready,reader,accounted):
+    from outcome_poc.reader_study import runtime
+    root,_,encoder=ready
+    directory,state=retained_native_acquisition(root,reader,accounted=accounted)
+    original={p.name:p.read_bytes() for p in directory.iterdir() if p.is_file()}
+    def forbidden(factory):pytest.fail('reader acquired before identifying retained native acquisition: '+factory.reader_id)
+    with pytest.raises(RuntimeError,match='unknown|unidentified'):
+        runtime.run_stage(root,'development',backend_factory=forbidden,encoder_factory=encoder)
+    assert (directory/'aborted.json').exists()
+    assert all((directory/name).read_bytes()==value for name,value in original.items())
+    assert not list(directory.glob('session-reconciliation-*.json'))
+    if not accounted:assert not list(directory.glob('session-accounting-*.json'))
+    assert not list((root/'leaves/development').glob('*/jobs/*/paid.json'))
+    # A later-arriving stopped-worker receipt cannot undo the permanent refusal.
+    publish_stopped_worker(directory,state)
+    with pytest.raises(RuntimeError,match='abort'):
+        runtime.run_stage(root,'development',backend_factory=forbidden,encoder_factory=encoder)
+
+
+def test_native_acquisition_with_verified_stopped_worker_keeps_clean_startup_resume(ready):
+    from outcome_poc.reader_study import runtime
+    root,_,encoder=ready
+    directory,state=retained_native_acquisition(root,'qwen14b-nonthinking',accounted=True)
+    publish_stopped_worker(directory,state)
+    path=directory/f"session-accounting-{state['session']}.json";before=path.read_bytes()
+    result=runtime.run_stage(root,'development',backend_factory=lambda _:Counters(),encoder_factory=encoder,max_jobs=1)
+    assert result['status']=='incomplete'
+    assert path.read_bytes()==before
+    assert len(list((root/'leaves/development').glob('*/jobs/*/paid.json')))==1

@@ -280,6 +280,24 @@ def _session(root,stage,reader,plan,jobs,backend_factory,encoder_factory,max_job
     return done
 
 
+def _require_native_acquisition_identity(leaf, plan):
+    """Acquisition itself requires worker proof, including abrupt constructor loss."""
+    directory=leaf/'stages'/SLOT
+    for marker in directory.glob('acquisition-*.json'):
+        session=marker.stem.removeprefix('acquisition-')
+        try:
+            state=read(directory/f'session-start-{session}.json')
+            if state.get('native_execution') is False: continue
+            unknown=_worker_identity_unknown(directory,state,plan,require_identity=True)
+        except (ValueError,KeyError,TypeError,OSError):
+            unknown=True
+        # A known live worker raises directly above; an unidentified acquisition
+        # permanently aborts rather than letting reconciliation assume quiescence.
+        if unknown:
+            abort(leaf,plan,SLOT,'native acquisition worker identity unknown')
+            raise RuntimeError('native acquisition worker identity unknown; stage permanently aborted')
+
+
 def run_stage(root, stage, *, backend_factory=None, encoder_factory=None, max_jobs=None):
     root=Path(root).resolve()
     if max_jobs is not None and (type(max_jobs) is not int or max_jobs<1): raise ValueError('max_jobs must be positive')
@@ -291,9 +309,11 @@ def run_stage(root, stage, *, backend_factory=None, encoder_factory=None, max_jo
         if boot_identity()!=plan['freeze']['boot_id']: raise ValueError('cross-boot resumption forbidden')
         if not (root/'stages'/stage/'index-envelope.json').exists(): raise ValueError('shared index missing')
         jobs=_jobs(root,stage)
+        # Require acquisition identity across both leaves before any reconciliation.
+        leaves=[(reader,leaf_root(root,stage,reader),verify_leaf(root,stage,reader,plan)) for reader in READERS]
+        for _,leaf,lp in leaves: _require_native_acquisition_identity(leaf,lp)
         # Reconcile both readers before acquiring either. An aborted later block cannot hide.
-        for reader in READERS:
-            leaf=leaf_root(root,stage,reader);lp=verify_leaf(root,stage,reader,plan)
+        for reader,leaf,lp in leaves:
             reconcile_sessions(leaf,SLOT,lp)
             for warm in (leaf/'stages'/SLOT).glob('warmup-*'):
                 if warm.is_dir() and (warm/'paid.json').exists() and not (warm/'receipt.json').exists():
