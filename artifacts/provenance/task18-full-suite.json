@@ -1,0 +1,14 @@
+{
+  "command": [
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/.venv/bin/python3.12",
+    "-m",
+    "pytest",
+    "-q"
+  ],
+  "elapsed_seconds": 213.82618183398154,
+  "exit_code": 0,
+  "finished_utc": "2026-10-15T02:46:03.540053+00:00",
+  "interpreter": "3.12.9 (main, Feb  4 2025, 14:38:38) [Clang 16.0.0 (clang-1600.0.26.6)]",
+  "reason": "Full integration after new Task18 action-replay admission and closure guards; original wall endpoint already invalid; no clean timing run active.",
+  "started_utc": "2026-10-15T02:42:29.713048+00:00"
+}
