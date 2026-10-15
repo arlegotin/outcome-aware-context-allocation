@@ -47,7 +47,7 @@ Live official CMU training and distractor-development URLs timed out. Acquisitio
 
 HotpotQA is the dataset of Yang et al., *HotpotQA: A Dataset for Diverse, Explainable Multi-hop Question Answering* (2018), released under [CC BY-SA 4.0 by its authors](https://hotpotqa.github.io/). Retain attribution and applicable share-alike obligations when distributing data or derivatives. Raw/model/data text and caches are not committed by default.
 
-`discover`, `assets`, `smoke`, `prepare`, `audit-data`, `index`, `reader`, `validate-harness`, `pilot`, `collect`, `fit`, `tune`, `freeze`, `plan`, and `score` currently execute stages. Other commands listed by `--help` remain proposed interfaces and return an explicit unavailable-stage error. Preparation produced a protected population of 7,344 structurally valid representative questions; it has no model outcomes. The current indexes cover 64 reserved pilot questions, 256 separate fit questions and 128 tuning questions, with exact-identity document-vector reuse across stages.
+`discover`, `assets`, `smoke`, `prepare`, `audit-data`, `index`, `reader`, `validate-harness`, `pilot`, `collect`, `fit`, `tune`, `freeze`, `plan`, and `score` currently execute stages. `run`, `ablate`, `transfer`, `reproduce` and `report` also have implementations; execution requires their stated frozen protocol, receipt and release prerequisites. An implemented command does not mean its experiment was executed. Preparation produced a protected population of 7,344 structurally valid representative questions; it has no model outcomes. The current indexes cover 64 reserved pilot questions, 256 separate fit questions and 128 tuning questions, with exact-identity document-vector reuse across stages.
 
 One ten-paragraph development reader diagnostic returned valid JSON/citations but failed answer and support scoring. Its raw output and failure are retained locally. This checks the plumbing, not allocation headroom or efficiency. The accounting/recovery harness has passed its scoped reviews and native checks; its six development calls remain recorded. The paired two/ten pilot has now closed and scored all 64 assigned questions. Nine control models have been fitted; the frozen protected collection is running and its outcomes remain unscored.
 
@@ -66,3 +66,19 @@ The receipt integrity review found and fixed two forward-closure defects before 
 The reviewed confirmation protocol fixes 480 questions, all eleven family representatives, fixed-two/fixed-ten diagnostics and two fresh paired repetitions of the main contenders: 8,640 complete pipeline jobs. Calibration retained 286 paid calls and passed two exact 7,936-input/256-output checks. The 37.0816-second timeout and runtime forecast are measured; timing stationarity remains unverified. [Freeze and calibration evidence](artifacts/provenance/task13-report.md) and [the protocol review](docs/superpowers/reviews/2026-10-14-task13-review.md) preserve the hashes, costs and limitations. Protected execution is underway; original wall-time inference is invalidated by the recorded host-sleep clock discrepancy. Separate scoring remains held.
 
 The experiment tests context allocation on supplied evidence packets. It does not establish open-web search savings, commercial value, algorithmic novelty, or a full reproduction of related papers. Negative, tradeoff, inconclusive and prerequisite-blocked outcomes are valid handoffs.
+
+
+## Reproduction and reporting
+
+`report --state PATH` renders an explicit development-only, blocked or incomplete handoff without loading a model. An incomplete protected assignment retains all 480 questions and 8,640 jobs; it cannot be reported as a smaller scored sample. Known clock failures invalidate the wall-time conclusion even if an active-compute ratio looks favorable.
+
+After a full run has closed and been scored, the scores-only command validates the immutable ledgers, calls the unchanged scorer on every raw prediction, and recomputes the frozen statistics. It never generates an answer or changes the original run. These commands are implemented; actual Task16 execution remains held pending the final closure/cutoff handoff and release:
+
+```sh
+.venv/bin/python -m outcome_poc reproduce --scores-only --protocol artifacts/protocol.json
+.venv/bin/python -m outcome_poc report --protocol artifacts/protocol.json --config PATH_TO_SANITIZED_REPORT_METADATA
+# For a blocked/development-only/incomplete handoff:
+.venv/bin/python -m outcome_poc report --state PATH_TO_SANITIZED_HANDOFF_STATE
+```
+
+The report and `summary.json` share one verdict. Quality preservation requires all four exact guards plus failure/latency clearance; similar measured accuracy is insufficient. The tested mechanism is whether outcome-derived training labels improve pre-answer routing over the learned support-coverage proxy and other frozen alternatives. Existing development results do not demonstrate that added value. The current environmental timing failure does not establish that the mechanism is false.
