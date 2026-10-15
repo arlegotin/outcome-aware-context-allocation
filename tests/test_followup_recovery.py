@@ -231,3 +231,55 @@ def test_failed_job_with_successful_close_keeps_exact_session_cost(tmp_path, doc
     assert receipt['stop_ns']==receipt['stop_lower_bound_ns']==receipt['stop_upper_bound_ns']
     costs=report(root)['physical_costs']
     assert costs['accounting_status']=='complete' and costs['total_seconds']>0
+
+
+@pytest.mark.parametrize('startup_cleanup_succeeds',[False,True])
+def test_constructor_failure_checks_registered_worker_before_exact_accounting(tmp_path, documents10, startup_cleanup_succeeds):
+    import psutil
+    from followup_helpers import root_fixture, Backend
+    from retrieval_helpers import Encoder
+    from outcome_poc.followup import runtime
+    from outcome_poc.followup.__main__ import report
+    from outcome_poc.followup.clock import continuous_ns
+    from outcome_poc.followup.study import publish, read
+    root,plan=root_fixture(tmp_path,documents10)
+    stage=root/'stages/calibration'
+    child=subprocess.Popen([sys.executable,'-B','-c','import sys; sys.stdin.read()'],stdin=subprocess.PIPE)
+    acquired=[]
+    def constructor(factory):
+        state=read(factory.session_start)
+        publish(stage/f"session-worker-{state['session']}-{child.pid}.json",{'session':state['session'],
+            'plan_hash':plan['plan_hash'],'boot_id':state['boot_id'],'pid':child.pid,
+            'created':psutil.Process(child.pid).create_time(),'continuous_ns':continuous_ns()})
+        if startup_cleanup_succeeds:child.terminate();child.wait(timeout=5)
+        raise RuntimeError('authored constructor failed before backend assignment')
+    def next_factory(_):acquired.append(True);return Backend()
+    try:
+        with pytest.raises(RuntimeError,match='constructor failed'):
+            runtime.run_stage(root,'calibration',backend_factory=constructor,encoder_factory=lambda _:Encoder())
+        original=list(stage.glob('session-accounting-*.json'))[0]
+        receipt=read(original)
+        costs=report(root)['physical_costs']
+        assert not list((root/'jobs').glob('*/started.json'))
+        assert not list(stage.glob('warmup-*/paid.json'))
+        if startup_cleanup_succeeds:
+            assert receipt['timing_status']=='exact' and receipt['status']=='failed'
+            assert receipt['stop_ns']==receipt['stop_lower_bound_ns']==receipt['stop_upper_bound_ns']
+            assert costs['accounting_status']=='complete' and costs['total_seconds']>0
+        else:
+            assert receipt['stop_ns'] is None and receipt['stop_upper_bound_ns'] is None
+            assert costs['accounting_status']=='unresolved' and costs['total_seconds'] is None
+            assert costs['total_upper_seconds'] is None
+            with pytest.raises(RuntimeError,match='still alive'):
+                runtime.run_stage(root,'calibration',backend_factory=next_factory,encoder_factory=lambda _:Encoder())
+            assert not acquired and child.poll() is None
+            assert len(list(stage.glob('session-start-*.json')))==1
+    finally:
+        if child.poll() is None:child.terminate();child.wait(timeout=5)
+        child.stdin.close()
+    if not startup_cleanup_succeeds:
+        runtime.run_stage(root,'calibration',backend_factory=next_factory,encoder_factory=lambda _:Encoder())
+        assert acquired==[True] and read(original)==receipt
+        reconciliation=read(list(stage.glob('session-reconciliation-*.json'))[0])
+        assert reconciliation['stop_ns'] is None and reconciliation['stop_upper_bound_ns']>=receipt['stop_lower_bound_ns']
+        assert report(root)['physical_costs']['total_seconds'] is None

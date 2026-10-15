@@ -561,7 +561,7 @@ def run_stage(root, stage, *, backend_factory=None, encoder_factory=None, max_jo
     stage_dir=root/'stages'/stage;stage_dir.mkdir(parents=True,exist_ok=True)
     session=uuid.uuid4().hex
     monitor=ResourceMonitor(stage_dir/f'resources-{session}.jsonl')
-    backend=None;error=None
+    backend=None;error=None;reader_acquisition_started=False
     with stage_lock(root):
         reconcile_sessions(root,stage,plan)
         setup_start=continuous_ns();active_start=time.perf_counter_ns()
@@ -583,6 +583,7 @@ def run_stage(root, stage, *, backend_factory=None, encoder_factory=None, max_jo
                 reader_start=continuous_ns()
                 factory=IsolatedReaderFactory(NativeReaderFactory(Path(assets['reader']['local_path']),
                     {**plan['freeze']['settings']['reader'],'asset':assets['reader']}),root,plan['plan_hash'],session_start)
+                reader_acquisition_started=True
                 backend=(backend_factory or ContinuousBackend)(factory)
                 monitor.backend=backend
                 append_jsonl(stage_dir/'setup.jsonl',{'session':session,'kind':'reader_load',
@@ -614,6 +615,15 @@ def run_stage(root, stage, *, backend_factory=None, encoder_factory=None, max_jo
                     error=error or caught;cleanup_error=f'{type(caught).__name__}: {caught}'
                     append_jsonl(stage_dir/'setup.jsonl',{'session':session,'kind':'cleanup_error','error':cleanup_error})
                 for row in backend.lifecycle:append_jsonl(stage_dir/'lifecycle.jsonl',{'session':session,**row})
+            # A constructor can leave an owned worker even though assignment failed.
+            if reader_acquisition_started:
+                try:
+                    if _worker_identity_unknown(stage_dir,read(session_start),plan,require_identity=cleanup_error is not None):
+                        raise RuntimeError('owned reader worker identity unknown; quiescence unverified')
+                except Exception as caught:
+                    error=error or caught
+                    cleanup_error=cleanup_error or f'{type(caught).__name__}: {caught}'
+                    append_jsonl(stage_dir/'setup.jsonl',{'session':session,'kind':'quiescence_error','error':str(caught)})
             monitor.stop()
             session_stop=continuous_ns()
             publish(stage_dir/f'session-accounting-{session}.json',{'session':session,'plan_hash':plan['plan_hash'],
