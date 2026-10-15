@@ -94,11 +94,14 @@ def make_schedule(cohorts, bindings_hash):
     return jobs
 
 
-def verify_stage(root, stage, plan=None):
+def verify_stage(root, stage, plan=None, *, _inventory_only=False):
     if stage not in STAGES:
         raise ValueError('unknown citation stage')
     root = Path(root).resolve()
     plan = plan or verify(root)
+    if stage == 'comparison' and not _inventory_only:
+        from .runtime import validate_admission
+        validate_admission(root,plan)
     expected = plan['stage_files'][stage]
     prefix = f'inputs/{stage}/'
     names = {prefix+'tasks.jsonl',prefix+'documents.jsonl'}
@@ -151,7 +154,7 @@ def verify(root, *, privileged=False):
         verify_files(freeze['source_files'])
         verify_files(freeze['privileged_inputs'])
         verify_files({plan['gold_input']['path']:plan['gold_input']['identity']})
-        verify_stage(root,'comparison',plan)
+        verify_stage(root,'comparison',plan,_inventory_only=True)
     return plan
 
 

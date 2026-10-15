@@ -147,7 +147,8 @@ def test_stage_stores_and_indexes_are_separate_fresh_and_immutable(tmp_path,docu
     assert not (root/'inputs/comparison/support-doc-ids.jsonl').exists()
     monkeypatch.setattr(preparation,'EncoderBackend',lambda path: Encoder())
     before=(root/'plan.json').read_bytes()
-    for stage in ('diagnosis','comparison'):
+    with pytest.raises(ValueError,match='admission'):preparation.index(root,'comparison')
+    for stage in ('diagnosis',):
         seal=preparation.index(root,stage)
         assert verify_index(root/f'stages/{stage}/index-setup',seal)['offline']['reused_window_count']==0
         with pytest.raises(FileExistsError): preparation.index(root,stage)

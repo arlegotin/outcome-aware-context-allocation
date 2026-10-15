@@ -201,6 +201,9 @@ def prepare(root, config_path):
 def index(root, stage):
     root = Path(root).resolve()
     plan = verify(root)
+    if stage == 'comparison':
+        from .runtime import validate_admission
+        validate_admission(root,plan)
     verify_stage(root,stage,plan)
     setup = root/'stages'/stage/'index-setup'
     setup.mkdir(parents=True,exist_ok=False)
