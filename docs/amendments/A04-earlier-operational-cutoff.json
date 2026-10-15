@@ -1,0 +1,39 @@
+{
+  "a03_protocol_hash": "ad632aa3f9a37765b62d237abb3782251bb54084e6bc6a8309399f873adfba07",
+  "amendment_id": "A04",
+  "forecast": {
+    "active_budget_seconds": 15227.676546682502,
+    "additional_last_inflight_seconds": 37.081555666,
+    "latest_start_utc": "2026-10-15T05:58:27.241898+00:00",
+    "path": "artifacts/runs/operational-planning/task17-runtime-forecast-20261015T040133Z.json",
+    "qualification": "Conservative active-clock planning with 1.5 margin, measured setup allowance and assumed 600-second closure allowance; no future wall-time or stationarity guarantee.",
+    "sha256": "e7c7fccc5cf12e26bb95a6ebc35de27168cc861b4b59afa8b9684433497835d1",
+    "total_budget_seconds": 15264.758102348502
+  },
+  "new_settings": {
+    "boundary": "Stop at the first safe available generation/question boundary; if the host is suspended record actual later control time. Preserve every attempt and the full assigned denominator.",
+    "original_collector_cutoff_utc": "2026-10-15T04:30:00+00:00"
+  },
+  "parent_protocol_hash": "415c80344dc3609ee2600a20c63c2502e4fc100cf50c60daee73ebc8a721e100",
+  "previous_settings": {
+    "original_collector_cutoff_utc": "2026-10-15T06:12:52+00:00"
+  },
+  "reason": "Recent measured selected-seven costs require about 4h14m, so A03 cannot fit before its unchanged10:12:52 collection deadline if the original waits until06:12:52. All source implementation/reviews and the802-test integration suite are now complete. Stop already wall-invalid original collection earlier to prioritise one complete fixed480-question A03 comparison, while retaining reporting reserve and all original work. This decision uses operational costs only.",
+  "registered_utc": "2026-10-15T04:04:44.225709+00:00",
+  "registration_state": "Outcome-blind; no original or A03 benchmark scores or Gold have been opened. Review and operator release remain separate.",
+  "risk": "Forgoes the remaining chance of a complete original full-family quality table and may spend additional compute without a valid A03 result. Preserve original480/8640 as incomplete when applicable. Updated cost or awake evidence can still make A03 wholly unexecuted; no smaller sample or deadline extension is allowed.",
+  "supersession": "Only the operational original_collector_cutoff_utc in the prior coordinator Ruling and registered A03 metadata is superseded by this external amendment. Those immutable files retain their original registration bytes; actual launch/stop receipts bind A04 and report the deviation explicitly. A03 scientific settings and identity are unchanged.",
+  "title": "Advance the original collector cutoff to preserve the fixed A03 comparison",
+  "unchanged": {
+    "a03_assignment": "Same480questions/sample/order;3360jobs/1920primarydirect;two paired A/B repetitions; no new independent questions.",
+    "a03_collection_deadline_utc": "2026-10-15T10:12:52+00:00",
+    "a03_declared_latest_launch_utc": "2026-10-15T08:12:52+00:00",
+    "data_preservation": "No original or A03 protocol/methods/sample/schedule/source is edited or rebound; original timings remain invalid and all paid attempts remain visible.",
+    "launch_gate": "Original must first close or stop. Root separately verifies awake coverage, current measured full-run feasibility, no concurrent model/index workload, setup/final-request/closure and report reserve. No power changes or battery stop.",
+    "measured_latest_start_is_stricter": true,
+    "original_assignment": "480questions/8640jobs; incomplete stays incomplete and is not subset-scored.",
+    "project_deadline_utc": "2026-10-15T12:12:52+00:00",
+    "quality_hold": "All benchmark scoring/Gold remains held until A03 closes or is explicitly wholly unexecuted.",
+    "science": "All hypotheses, selected A*/B*, anchor/random/oracle, reader/retriever/model/prompt/decoding/token/timeout settings, metrics, thresholds, statistical rules and source hashes stay unchanged. No retuning, sample extension, extra repetition or third timing attempt."
+  }
+}

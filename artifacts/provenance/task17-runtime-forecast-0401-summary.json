@@ -1,0 +1,58 @@
+{
+  "all_complete_blocks_seven_pipeline_seconds": {
+    "blocks": 325,
+    "max": 53.31981675,
+    "mean": 16.08261120387077,
+    "min": 5.364031166,
+    "p50": 14.862040876,
+    "p90": 26.4768053754,
+    "p95": 29.1218143082,
+    "p99": 34.63047831291999,
+    "sample_stddev": 7.479513083608315
+  },
+  "awake_or_stationarity_certificate": false,
+  "captured_utc": "2026-10-15T04:01:33.535925+00:00",
+  "chosen_higher_envelope_factor": 1.0052215563026905,
+  "chosen_higher_mean_seconds": 20.10348686207,
+  "closure_allowance_seconds_ASSUMED_NOT_MEASURED": 600,
+  "complete_question_blocks": 325,
+  "conservative_setup_allowance_seconds": 77.58653425,
+  "extra_final_inflight_allowance_seconds": 37.081555666,
+  "forecast_active_seconds": 15227.676546682502,
+  "forecast_path": "artifacts/runs/operational-planning/task17-runtime-forecast-20261015T040133Z.json",
+  "forecast_sha256": "e7c7fccc5cf12e26bb95a6ebc35de27168cc861b4b59afa8b9684433497835d1",
+  "future_wall_time_guarantee": false,
+  "last100_blocks_completion_clock_check": {
+    "from_utc": "2026-10-15T02:32:58.996939+00:00",
+    "perf_elapsed_seconds": 5263.04817875,
+    "qualification": "Completion/telemetry boundary offsets remain; descriptive clock check, not statistical stationarity proof",
+    "to_utc": "2026-10-15T04:00:42.040797+00:00",
+    "utc_elapsed_seconds": 5263.043858,
+    "utc_minus_perf_seconds": -0.004320750000260887
+  },
+  "last100_complete_blocks_seven_pipeline_seconds": {
+    "blocks": 100,
+    "max": 53.31981675,
+    "mean": 20.10348686207,
+    "min": 11.464996582000001,
+    "p50": 18.3241337085,
+    "p90": 26.367419437200002,
+    "p95": 30.592296478249995,
+    "p99": 41.49749872776006,
+    "sample_stddev": 6.533848445289223
+  },
+  "latest_continuous_sampler_window": {
+    "duration_seconds": 10690.164969,
+    "max_interval_seconds": 4.024967,
+    "samples": 5295,
+    "start_utc": "2026-10-15T01:03:21.833651+00:00",
+    "stop_utc": "2026-10-15T04:01:31.998620+00:00"
+  },
+  "latest_start_including_extra_inflight": "2026-10-15T05:58:27.241898+00:00",
+  "new_sampler_gaps_after_old_capture": [],
+  "no_quality_raw_output_gold_prediction_or_score_files_read": true,
+  "old_173_blocks_mean_seconds": 12.385328765936416,
+  "original_cutoff_cannot_fit": true,
+  "planning_margin": 1.5,
+  "total_conservative_budget_seconds": 15264.758102348502
+}
