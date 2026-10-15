@@ -54,7 +54,7 @@ There is a known defect in native index ancestry bookkeeping: `protected.py` and
 
 The follow-up has a separate runner with continuous deadlines and a fresh index that reuses no embeddings. It also includes a native regression for a sandbox/SQLite failure discovered during execution. The failed attempt remains recorded separately; none of the original results were repaired or overwritten.
 
-This checkout includes source, tests, configuration, reports and selected provenance. Raw benchmark text, predictions, fitted models, downloaded assets and detailed archives stay external. A clone can run software checks and inspect the findings; authenticating every raw result requires the retained research assets. See [publication scope](docs/PUBLICATION.md).
+This checkout includes source, tests, configuration, reports and selected provenance. Raw benchmark text, predictions, fitted models, downloaded assets and detailed archives stay external. A clone can run software checks and inspect the findings. Raw follow-up authentication requires the recorded `9ddc4ae` checkout at its bound original paths and the retained research assets; later hardening intentionally fails that run's source binding. A separate read-only archive audit checks retained hashes. See [follow-up reproduction](docs/experiments/2026-10-15-reader-headroom-followup.md#provenance-and-reproduction) and [publication scope](docs/PUBLICATION.md).
 
 ## Run the checks
 
@@ -72,7 +72,7 @@ python -m pytest -q
 python -m outcome_poc --help
 ```
 
-The publication suite passed **802 tests with zero skips**; the follow-up source at `9ddc4ae` passed **867 with zero skips**. Software verification doesn't validate the original speed measurements or establish a research win. On non-macOS systems or inside an outer sandbox, the macOS denial-profile checks can skip.
+The publication suite passed **802 tests with zero skips**; the measured follow-up source at `9ddc4ae` passed **867 with zero skips**. Separate post-study failure-accounting hardening at `c1c1720` passed **869 with zero skips** and was not used for the measured follow-up or its rescoring. Software verification doesn't validate the original speed measurements or establish a research win. On non-macOS systems or inside an outer sandbox, the macOS denial-profile checks can skip.
 
 These commands don't start a benchmark experiment. For a new study, follow the [fresh-experiment guide](docs/fresh-experiment.md): use a separate checkout, fresh output roots and attempt-ledger parents, new development outputs, and a newly frozen protocol. Historical configurations record this experiment. Running mutable setup or indexing over the retained evidence can invalidate its bindings.
 

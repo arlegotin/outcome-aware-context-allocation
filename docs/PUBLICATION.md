@@ -8,7 +8,9 @@ sample, predictions or scientific conclusions.
 
 The subsequent [reader/headroom follow-up](experiments/2026-10-15-reader-headroom-followup.md)
 adds separate software, fresh development results and aggregate provenance. Its
-867-test native suite and stable descriptive timings belong to that new study.
+867-test native suite and stable descriptive timings belong to that new study at
+recorded source `9ddc4ae`. Later failure-accounting hardening at `c1c1720` passed
+869 native tests separately; it was not used for the study or its rescoring.
 The original source bindings, results and invalid speed endpoints remain unchanged.
 The follow-up's private runs, benchmark text and model assets are not bundled.
 
@@ -51,6 +53,15 @@ that bounded scan is not a guarantee about every possible secret format.
    newly generated development outputs and a new protocol/deadline. The supplied
    configs are historical records. Do not overwrite this experiment or treat its
    fixed sample as a new independent test.
+
+Raw authentication of the follow-up requires its recorded `9ddc4ae` checkout at
+the original absolute paths bound by the plan, plus the retained private assets
+and closed run. The later hardened source deliberately rejects the frozen v2
+mutable-source binding. No snapshots or manifests were rebound. A separate
+read-only inventory and Git-source audit confirms archived hashes without
+inference or scoring; it does not reproduce raw scores. The
+[follow-up reproduction instructions](experiments/2026-10-15-reader-headroom-followup.md#provenance-and-reproduction)
+and aggregate provenance distinguish these checks and source versions.
 
 ## Known limits remain in force
 

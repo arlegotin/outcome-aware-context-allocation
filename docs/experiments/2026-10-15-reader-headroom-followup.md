@@ -121,11 +121,11 @@ Across the three serving stages, peak sampled MLX allocation was 3,367,285,216 b
 
 ## Provenance and reproduction
 
-The repaired source is `9ddc4ae0b50aebf115ccf2679d39d1bf296ba0fb`; plan hash is `c105dfabbdb0611832e55444fc340b201b063986792b338746ea606e42f9bf65`. Its new physical index manifest hash is `70cf7f872d58bafb2ce1141d0881c5b49fcfdd7ac8cd17dfa2372dc7f600e3f2`. Both versioned attempts retain their source snapshots, and all 37 bound source files in each snapshot match its recorded Git commit. The original protocols' 22 and 26 source bindings and protocol-file hashes remain unchanged.
+The measured v2 study used source `9ddc4ae0b50aebf115ccf2679d39d1bf296ba0fb`; plan hash is `c105dfabbdb0611832e55444fc340b201b063986792b338746ea606e42f9bf65`. Its new physical index manifest hash is `70cf7f872d58bafb2ce1141d0881c5b49fcfdd7ac8cd17dfa2372dc7f600e3f2`. Both versioned attempts retain their source snapshots, and all 37 bound source files in each snapshot match its recorded Git commit. The original protocols' 22 and 26 source bindings and protocol-file hashes remain unchanged.
 
-The repaired source passed **867 tests with zero skips** in 118.86 seconds on native macOS, including actual sandbox/SQLite ranking, isolation and interrupted-session checks. All three stages were rescored in separate fresh processes; all nine score/summary/closure files matched byte-for-byte. Final verification checked frozen source, inputs/assets, index, jobs and stage closures. The [aggregate receipt](../../artifacts/provenance/followup-reader-headroom-summary.json) contains counts, tables, frontiers, hashes, resource observations and verification evidence without benchmark text.
+That measured source passed **867 tests with zero skips** in 118.86 seconds on native macOS, including actual sandbox/SQLite ranking, isolation and interrupted-session checks. At the same source version, all three stages were rescored in separate fresh processes; all nine score/summary/closure files matched byte-for-byte. Verification checked frozen source, inputs/assets, index, jobs and stage closures. The [aggregate receipt](../../artifacts/provenance/followup-reader-headroom-summary.json) contains counts, tables, frontiers, hashes, resource observations and verification evidence without benchmark text.
 
-With the retained private data, assets, original working-tree paths and closed run present, the relevant commands are:
+To authenticate the raw v2 results, use a checkout of the recorded `9ddc4ae` source at the original absolute paths bound by its plan, with the retained private data, assets and closed run present. From that checkout, the relevant commands are:
 
 ```sh
 .venv/bin/python3.12 -B -m outcome_poc.followup verify --root artifacts/runs/followup-reader-headroom-v2
@@ -135,7 +135,11 @@ With the retained private data, assets, original working-tree paths and closed r
 .venv/bin/python3.12 -B -m outcome_poc.followup report --root artifacts/runs/followup-reader-headroom-v2
 ```
 
-Verification deliberately rejects mismatched source or inputs. Repeated scoring adds a separate measured scoring-attempt cost, while immutable score outputs must remain identical. A public clone does not contain the private run, benchmark stores, historical exclusion metadata or model weights. It can run authored software tests and inspect the aggregates. These commands authenticate the retained study; they are not a turnkey public rerun or authority to overwrite historical outputs. New studies need fresh roots, manifests and an independently frozen protocol.
+Verification deliberately rejects mismatched source or inputs. The later hardened source intentionally fails v2's mutable-working-tree source binding; neither the archived snapshots nor the plan have been rebound. As a separate read-only archive check, the retained inventories and recorded Git commits can authenticate file hashes and source snapshots without executing inference or scoring. Such an audit does not reproduce raw scores. After hardening, that audit matched all 1,303 v1 and 4,431 v2 inventoried files and both sets of 37 source snapshots against their recorded commits.
+
+Post-study software hardening at `c1c1720264eb0b537645cad6db25ad7be618e58c` fixes uncertain cost accounting when reader construction fails and leaves an owned worker alive. No recorded v1/v2 session took that failure path. This version was not used for the measured study or its rescoring; its separate native suite passed **869 tests with zero skips** in 114.66 seconds. Its test receipt and archive-audit hashes are recorded separately under `post_study_hardening` in the aggregate provenance. These software checks add no measured study outcomes or engine costs.
+
+Repeated scoring adds a separate measured scoring-attempt cost, while immutable score outputs must remain identical. A public clone does not contain the private run, benchmark stores, historical exclusion metadata or model weights. It can run authored software tests and inspect the aggregates. The commands above authenticate the retained study; they are not a turnkey public rerun or authority to overwrite historical outputs. New studies need fresh roots, manifests and an independently frozen protocol.
 
 ## Decision and next experiment
 

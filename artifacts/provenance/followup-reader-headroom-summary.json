@@ -71,6 +71,83 @@
     "unstable": false
   },
   "plan_hash": "c105dfabbdb0611832e55444fc340b201b063986792b338746ea606e42f9bf65",
+  "post_study_hardening": {
+    "finding": "I1: verify owned-reader quiescence when construction raises before backend assignment; retain unknown stop when cleanup is unverified.",
+    "raw_authentication": {
+      "current_hardened_source_matches_frozen_binding": false,
+      "original_bound_paths_required": true,
+      "read_only_archive_audit_does_not_reproduce_raw_scores": true,
+      "recorded_source_commit": "9ddc4ae0b50aebf115ccf2679d39d1bf296ba0fb",
+      "retained_private_assets_required": true
+    },
+    "retained_archive_audit": {
+      "created_utc": "2026-10-15T12:08:47.941248+00:00",
+      "receipt_sha256": "ba0199cd47af186d37d1b86f6dbf3077c1b11436cd9bb64efde087973a1fb172",
+      "runs": {
+        "v1": {
+          "expected_current_working_tree_source_mismatches": [
+            "src/outcome_poc/followup/runtime.py"
+          ],
+          "files_checked": 1303,
+          "git_commit_mismatches": [],
+          "inventory_identity": {
+            "bytes": 260548,
+            "sha256": "4fddcce45829609da4f3b81c0e3667abfedf53571999b75063048becc0e0d8d2"
+          },
+          "inventory_mismatches": [],
+          "snapshot_mismatches": [],
+          "source_commit": "a8b4b5cc36dc271c2cc1bec2f8b0a02084b0492f",
+          "source_count": 37
+        },
+        "v2": {
+          "expected_current_working_tree_source_mismatches": [
+            "src/outcome_poc/followup/runtime.py"
+          ],
+          "files_checked": 4431,
+          "git_commit_mismatches": [],
+          "inventory_identity": {
+            "bytes": 895424,
+            "sha256": "347921997e67d44d80ab3dd3eb03797bd03c238e700842e9b2aabd82ae7e57e1"
+          },
+          "inventory_mismatches": [],
+          "snapshot_mismatches": [],
+          "source_commit": "9ddc4ae0b50aebf115ccf2679d39d1bf296ba0fb",
+          "source_count": 37
+        }
+      },
+      "scope": "Read-only file inventories and archived source/Git identity; no Gold/scorer/inference execution."
+    },
+    "scientific_results_changed": false,
+    "scope": "Software failure-accounting hardening after the measured study; no new inference or rescoring.",
+    "software_tests": {
+      "log_sha256": "8a9188e272b4df58eadc503ebb28620272378ffb3d7c4628a592b428d292f8ac",
+      "passed": 869,
+      "pytest_seconds": 114.66,
+      "receipt": {
+        "clock": {
+          "conversion": "ticks * numer // denom",
+          "includes_sleep": true,
+          "name": "mach_continuous_time",
+          "platform": "darwin",
+          "timebase_denom": 3,
+          "timebase_numer": 125,
+          "unit": "nanoseconds"
+        },
+        "command": ".venv/bin/python3.12 -B -m pytest -q",
+        "elapsed_continuous_seconds": 114.961226167,
+        "exit_code": 0,
+        "source_commit": "c1c1720264eb0b537645cad6db25ad7be618e58c",
+        "source_commit_after": "c1c1720264eb0b537645cad6db25ad7be618e58c",
+        "start_utc": "2026-10-15T12:07:30.401493+00:00",
+        "stop_utc": "2026-10-15T12:09:25.363383+00:00"
+      },
+      "receipt_sha256": "94c742825329723e6fec8be489a76d6a72ba51fc5c33cd2ae92a67ab028002c1",
+      "skipped": 0,
+      "source_commit": "c1c1720264eb0b537645cad6db25ad7be618e58c"
+    },
+    "source_commit": "c1c1720264eb0b537645cad6db25ad7be618e58c",
+    "used_for_measured_v2": false
+  },
   "reader": {
     "max_context_tokens": 8192,
     "max_new_tokens": 256,
@@ -92,7 +169,7 @@
     "total_seconds": 1387.5041274609998,
     "total_upper_seconds": 1387.5041274609998
   },
-  "report_sha256": "ce9a32059b5f5332c0327c63a2db680620dad4ea7156a5819b32aee3e519bda7",
+  "report_sha256": "ed56d7a591ed81d91d4de66b766f5c1920550957c4c1c2bfce319eede25a4fc7",
   "rescoring": {
     "all_score_bytes_identical": true,
     "created_utc": "2026-10-15T11:51:05.765020+00:00",
