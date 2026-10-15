@@ -32,7 +32,7 @@ def test_manifest_writer_is_available():
 
 
 @pytest.fixture
-def case(tmp_path, monkeypatch):
+def case(tmp_path, monkeypatch, request):
     writer = api()
     config = json.loads((REPO / CONFIG).read_text())
     amendment = (REPO / AMENDMENT).read_bytes()
@@ -47,6 +47,14 @@ def case(tmp_path, monkeypatch):
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(amendment if name == AMENDMENT else b'synthetic committed extra')
     c = inputs(tmp_path)
+    shared_container = getattr(request, 'param', 'dedicated') == 'shared'
+    if shared_container:
+        c['output_dir'] = str(tmp_path / 'artifacts')
+        c['run_dir'] = str(tmp_path / 'artifacts/runs/confirmation')
+        artifact = tmp_path / 'artifacts/models/model.bin'
+        artifact.parent.mkdir(parents=True)
+        artifact.write_bytes(b'synthetic original bound artifact')
+        c['artifact_files'] = [str(artifact)]
     c.update(n=480, population_ids=[str(i) for i in range(7344)],
              tasks=[Task(str(i), 'protected', 'Synthetic question?',
                          [f'doc-{j}' for j in range(10)]) for i in range(7344)],
@@ -82,7 +90,7 @@ def case(tmp_path, monkeypatch):
     ledger.write_bytes(canonical_bytes({'attempt_id': manifest['completion']['attempt_id'],
         'status': 'ok', 'manifest_hash': content_hash(manifest)}) + b'\n')
     selected = Path(c['run_dir']) / 'selected-documents.jsonl'
-    selected.parent.mkdir()
+    selected.parent.mkdir(parents=True)
     selected.write_bytes(b'synthetic selected document projection\n')
     files = {str(path): p.file_hash(path) for path in
              [selected, index / 'manifest.json', ledger, *(index / n for n in payloads)]}
@@ -95,8 +103,8 @@ def case(tmp_path, monkeypatch):
     seal_path = Path(parent['methods']['retrieval']['operational_realization_path'])
     atomic_json(seal_path, seal)
     config.update(expected_parent_protocol_hash=parent['protocol_hash'],
-                  output_dir=str(tmp_path / 'replication-protocol'),
-                  run_dir=str(tmp_path / 'replication-run'))
+                  output_dir=str(tmp_path / ('artifacts/protocol-task17-timing' if shared_container else 'replication-protocol')),
+                  run_dir=str(tmp_path / ('artifacts/runs/task17-timing-replication' if shared_container else 'replication-run')))
     amendment_value = json.loads(amendment)
     amendment_value['parent_protocol_hash'] = parent['protocol_hash']
     atomic_json(Path(AMENDMENT), amendment_value)
@@ -115,6 +123,7 @@ def case(tmp_path, monkeypatch):
     return writer, parent_path, parent, config, seal_path, committed
 
 
+@pytest.mark.parametrize('case', ['dedicated', 'shared'], indirect=True)
 def test_preserves_sample_bytes_settings_and_exact_seven_job_schedule(case):
     writer, parent_path, parent, config, seal_path, _ = case
     original_bytes = {path: path.read_bytes() for root in
@@ -160,6 +169,33 @@ def test_preserves_sample_bytes_settings_and_exact_seven_job_schedule(case):
     assert all(path.read_bytes() == before for path, before in original_bytes.items())
     assert not Path(config['run_dir']).exists()
     assert new['fixture'] is False and new['source_history'] == []
+
+
+@pytest.mark.parametrize('case', ['shared'], indirect=True)
+@pytest.mark.parametrize('collision', ['original-run', 'original-run-child', 'index-child',
+    'scientific-child', 'source-child', 'artifact-child', 'artifact-ancestor',
+    'original-output-ancestor', 'new-roots-nested'])
+def test_shared_container_still_protects_original_files_and_exclusive_roots(case, collision):
+    writer, parent_path, parent, config, _, _ = case
+    if collision == 'original-run': target = Path(parent['run_dir'])
+    elif collision == 'original-run-child': target = Path(parent['run_dir']) / 'new'
+    elif collision == 'index-child': target = Path(parent['methods']['retrieval']['index_dir']) / 'new'
+    elif collision == 'scientific-child': target = parent_path.with_name('sample.json') / 'new'
+    elif collision == 'source-child': target = Path(next(iter(parent['source']['sha256']))) / 'new'
+    elif collision == 'artifact-child': target = Path(next(iter(parent['artifact_sha256']))) / 'new'
+    elif collision == 'artifact-ancestor': target = Path(next(iter(parent['artifact_sha256']))).parent
+    elif collision == 'original-output-ancestor': target = Path(parent['output_dir']).parent
+    else:
+        target = Path(config['output_dir'])
+        config['run_dir'] = str(target / 'nested-run')
+    config['output_dir'] = str(target)
+    originals = {Path(name): Path(name).read_bytes() for name in
+        [*parent['source']['sha256'], *parent['artifact_sha256'],
+         *(str(parent_path.with_name(name)) for name in ('protocol.json', 'methods.json', 'sample.json', 'schedule.json'))]}
+    with pytest.raises(ValueError, match='path|root|exist|overlap|protected'):
+        writer.write_replication(parent_path, config)
+    assert all(path.read_bytes() == payload for path, payload in originals.items())
+    assert not Path(config['run_dir']).exists()
 
 
 def test_rejects_existing_output_without_overwriting_or_resuming(case):

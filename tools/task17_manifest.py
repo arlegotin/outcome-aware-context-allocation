@@ -36,8 +36,13 @@ def _new_roots(parent, config):
         if path.exists() or path.is_symlink():
             raise ValueError('new path already exists: ' + str(path))
         roots.append(path.resolve())
-    old = [Path(parent[key]).resolve() for key in ('output_dir', 'run_dir')]
-    old.append(Path(parent['methods']['retrieval']['index_dir']).resolve())
+    # output_dir can be the shared artifacts container. Protect its scientific
+    # files, not every future child directory; run/index roots remain exclusive.
+    old = [Path(parent['run_dir']), Path(parent['methods']['retrieval']['index_dir'])]
+    old.extend(Path(parent['output_dir']) / name for name in
+               ('protocol.json', 'methods.json', 'sample.json', 'schedule.json'))
+    old.extend(Path(name) for name in {*parent['source']['sha256'], *parent['artifact_sha256']})
+    old = [path.resolve() for path in old]
     for i, root in enumerate(roots):
         if any(root.is_relative_to(other) or other.is_relative_to(root)
                for other in [*old, *roots[:i]]):
