@@ -1,0 +1,21 @@
+{
+  "private_archive_path": "/Users/artemlegotin/.codex-s/worktrees/a840/outcome-aware-context-allocation/artifacts/runs/reader-evidence-first-v1-private-archive.tar.gz",
+  "archive_identity": {
+    "sha256": "80ace70579c7898f9235151187cd810977c79461d3fd1d19327bc0bf88b6116d",
+    "bytes": 2845371
+  },
+  "verified_files": 1095,
+  "source_roots": [
+    "/private/tmp/oaca-reader-evidence-first-v1",
+    "/private/tmp/oaca-evidence-first-audit"
+  ],
+  "public_evidence_closure": {
+    "sha256": "a78f510528eb69fdfd91f708cbc3762743812d947154b1954b25d5ce587b3735"
+  },
+  "prior_private_archive_receipt_identity": {
+    "sha256": "6270869fb9d70f22bc926bde4eafb2f4011cdb4def2688d864d864d860858550",
+    "bytes": 1126
+  },
+  "scope": "Private measured source,128 outputs, cohorts/adjudication packets, attempts and audit logs. Original model/raw/Gold corpus remains in historical storage. Never upload this archive.",
+  "restore": "Verify hashes in fresh private staging; restore original bound paths only if absent. Never overwrite existing sealed roots."
+}

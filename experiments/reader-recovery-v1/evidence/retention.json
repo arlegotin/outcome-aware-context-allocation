@@ -1,0 +1,20 @@
+{
+  "private_archive_path": "/Users/artemlegotin/.codex-s/worktrees/a840/outcome-aware-context-allocation/artifacts/runs/reader-recovery-v1-private-archive.tar.gz",
+  "archive_identity": {
+    "sha256": "f5e06da473a73cf528cba125f2e21dd3b91e31de27455f3121a54e66fe57756f",
+    "bytes": 4594278
+  },
+  "source_roots": [
+    "/private/tmp/oaca-reader-recovery-v1",
+    "/private/tmp/oaca-reader-recovery-v1-attempt2",
+    "/private/tmp/oaca-reader-recovery-v1-attempt3",
+    "/private/tmp/oaca-reader-recovery-v1-attempt4",
+    "/private/tmp/oaca-recovery-evidence"
+  ],
+  "scope": "Complete new setup roots, assigned outputs, qualitative packets and audit logs; model snapshots and original raw/Gold corpus remain in retained historical storage. Never upload this archive.",
+  "public_evidence_closure": {
+    "sha256": "df39278a24762f3ebad9e064b498cbaa3c336de0b9ea2d8b0eef3581a08f425b"
+  },
+  "reproduction": "Preserve original absolute root identities. Extract only into a fresh private staging location, authenticate bytes, and restore original paths only if absent; never overwrite existing sealed roots.",
+  "files": 1579
+}

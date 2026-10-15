@@ -1,0 +1,30 @@
+{
+  "protocol_id": "reader-evidence-first-v1",
+  "historical_checkout": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation",
+  "validation_n": 64,
+  "prior_diagnosis_n": 32,
+  "evaluation_reserved_n": 128,
+  "seed": 20261015,
+  "arms": ["baseline", "evidence-first"],
+  "reader": {
+    "repo_id": "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+    "revision": "50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b",
+    "max_context_tokens": 8192,
+    "max_new_tokens": 256,
+    "timeout_seconds": 120,
+    "prefill_step_size": 512,
+    "temperature": 0
+  },
+  "deadline_utc": "2026-10-15T21:00:00+00:00",
+  "authorization": "User renewed instruction to proceed and finish on 2026-10-15 after the diagnosis; local research only. Administrative cap, not a deployment target.",
+  "candidate_budget": 1,
+  "selection_rule": "Existing four simultaneous zero-margin joint/answer guards versus unchanged natural-ten, which is both selected comparator and fixed-ten, plus strictly positive candidate strict-EM lower bound; invalid/runtime failure count must not exceed control. Complete128-call closure and identities required. Otherwise no admission or allocation-label expansion.",
+  "precision": "One bounded64-question capability validation, not adequate for guaranteed detection of modest effects. Enumerate exact rescue/harm thresholds before any validation outcomes. No interval-method, sample-size or prompt change after outcomes.",
+  "semantic_validity": "Unresolved annotation flags remain reported. No Gold repair or substitute semantic endpoint; strict-benchmark validation only, no human-certified support claim.",
+  "operational_requirements": null,
+  "timing_claim": "descriptive_only",
+  "repetitions": 1,
+  "cache_mode": "none",
+  "semantic_retries": 0,
+  "reuse_indexes": []
+}

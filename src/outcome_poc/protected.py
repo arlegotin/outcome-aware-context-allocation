@@ -259,6 +259,7 @@ def realize_index(protocol, documents, encoder):
     import time
     import sqlite3
     from .retrieval import build_index, _completed_manifest
+    from .index_lineage import capture_lineage, reused_sources
     settings=protocol['methods']['retrieval'];index=Path(settings['index_dir'])
     root=Path(protocol['run_dir']);root.mkdir(parents=True,exist_ok=True)
     seal_path=Path(settings['operational_realization_path'])
@@ -271,6 +272,9 @@ def realize_index(protocol, documents, encoder):
             seal['document_ids_hash']!=protocol['sample']['document_ids_hash'] or
             any(file_hash(name)!=h for name,h in seal['files'].items())):
             raise ValueError('index operational checksum/identity changed')
+        if 'index_lineage' not in seal:
+            raise ValueError('legacy seal has no recursive lineage; preserve it without rebinding')
+        capture_lineage(index,frozen=seal['index_lineage'])
         return _completed_manifest(index)
     if not (index/'manifest.json').exists():
         if index.exists() and any(index.iterdir()):
@@ -288,24 +292,12 @@ def realize_index(protocol, documents, encoder):
     with sqlite3.connect(f'file:{index/"metadata.sqlite3"}?mode=ro',uri=True) as db:
         actual=sorted(r[0] for r in db.execute('SELECT doc_id FROM documents'))
     if actual!=selected: raise ValueError('realized index contains unassigned/missing documents')
-    sources=[];source_files={}
-    for source in manifest.get('reuse_sources',[]):
-        source_root=Path(source['path']);original=_completed_manifest(source_root)
-        if source['manifest_hash']!=content_hash(original): raise ValueError('reused index source identity changed')
-        ledger=Path(original['completion']['attempt_ledger'])
-        records=[r for r in read_jsonl(ledger) if r['attempt_id']==source['attempt_id']]
-        if len(records)!=1: raise ValueError('reused physical index cost identity missing')
-        sources.append({'source_id':'index-attempt:'+source['attempt_id'],'path':str(source_root),
-            'manifest_hash':content_hash(original),'original_elapsed_seconds':records[0]['elapsed_seconds'],
-            'cost_scope':'existing adaptation; do not charge again as new confirmation indexing'})
-        source_files[str(source_root/'manifest.json')]=file_hash(source_root/'manifest.json')
-        source_files[str(ledger)]=file_hash(ledger)
-    paths=[documents.path,index/'manifest.json',*(index/name for name in manifest['files']),
-           Path(manifest['completion']['attempt_ledger'])]
+    lineage=capture_lineage(index)
+    paths=[documents.path,*(Path(p) for p in lineage['files'])]
     seal={'protocol_hash':protocol['protocol_hash'],'scientific_digests':protocol['digests'],
         'algorithm':settings,'document_ids_hash':content_hash(selected),'manifest_hash':content_hash(manifest),
-        'files':{**source_files,**{str(path):file_hash(path) for path in paths}},
-        'reused_physical_sources':sources,'new_physical_source_id':'index-attempt:'+manifest['completion']['attempt_id']}
+        'files':{str(path):file_hash(path) for path in paths},'index_lineage':lineage,
+        'reused_physical_sources':reused_sources(lineage),'new_physical_source_id':'index-attempt:'+manifest['completion']['attempt_id']}
     immutable_json(seal_path,seal)
     return manifest
 

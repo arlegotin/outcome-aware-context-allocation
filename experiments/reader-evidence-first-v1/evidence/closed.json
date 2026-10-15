@@ -1,0 +1,10 @@
+{
+  "evidence-manifest.json": {
+    "bytes": 50218,
+    "sha256": "f0c8ae9f1ee2c6fde17ffa5fb5ef2a4bc306ededf3c14d0883c04cde27f2ae0f"
+  },
+  "results.json": {
+    "bytes": 8744,
+    "sha256": "db13f0cae246592a807652faef15e0defe346524f42c1955c0204fc76d184f4f"
+  }
+}

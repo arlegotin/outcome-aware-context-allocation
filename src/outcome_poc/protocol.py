@@ -20,7 +20,7 @@ FAMILIES = frozenset(('ADAPTIVE-k-published','ADAPTIVE-k-tuned','FIXED','LLM-SUF
     'POST-OUTCOME','PRE-LINEAR','PRE-OUTCOME-GBM','PRE-RF','PROXY-LABEL','QUERY-ONLY','SHUFFLED-LABEL-GBM'))
 POLICY_FIELDS = ('config_id','family','k','buffer','model_name','model_artifact_sha256','threshold_mode','threshold')
 EXECUTION_MODULES = ('__init__','__main__','schemas','storage','data_runtime','retrieval','generation',
-    'protected','assets','environment','features','policies','train','timing','runner','protocol','scoring','statistics')
+    'protected','assets','environment','features','policies','train','timing','runner','protocol','scoring','statistics','index_lineage')
 
 
 def file_hash(path):
