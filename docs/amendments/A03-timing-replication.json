@@ -1,0 +1,49 @@
+{
+  "amendment_id": "A03",
+  "title": "One conditional clean timing replication after host suspension",
+  "registered_utc": "2026-10-15T01:46:12+00:00",
+  "parent_protocol_hash": "415c80344dc3609ee2600a20c63c2502e4fc100cf50c60daee73ebc8a721e100",
+  "registration_state": "Outcome-blind; original and replication quality outcomes remain unopened until replication closure or an explicit wholly-unexecuted decision.",
+  "reason": "Repeated host suspension invalidated the original wall-time endpoint: approximately 300 UTC seconds elapsed while the performance clock advanced approximately 2.4 seconds. No original time is repaired or removed.",
+  "original_wall_time_endpoint": "invalid",
+  "original_data_preservation": "Retain every original manifest, raw attempt, output, assigned question, physical cost and timing observation unchanged. Task14 and Task15 retain their separate original identities.",
+  "previous_settings": {
+    "representatives": "All eleven frozen family representatives, in addition to the frozen anchor, random mixture, oracle source and four primary paired executions.",
+    "jobs_per_question": 18,
+    "assigned_jobs": 8640,
+    "deadline_utc": "2026-10-15T12:12:52+00:00",
+    "operational_realization_path": "Original run's existing index-realization.json; preserve unchanged."
+  },
+  "new_settings": {
+    "representatives": [],
+    "jobs_per_question": 7,
+    "assigned_jobs": 3360,
+    "direct_primary_jobs": 1920,
+    "roster": "Selected A* and B*, two fresh direct/cache-none repetitions each, plus unchanged FIXED-10 anchor, random mixture and FIXED-2 oracle source through the original scheduler.",
+    "deadline_utc": "2026-10-15T10:12:52+00:00",
+    "operational_realization_path": "New run's own index-realization.json, binding its new scientific digests and the unchanged shared physical index."
+  },
+  "unchanged": {
+    "sample": "Copy original sample.json bytes exactly; same 480 questions/order/tasks/document hash, population N=7344, algorithm and seed271828. No resampling or additional independent examples.",
+    "hypothesis": "The frozen PRE-OUTCOME-GBM candidate A* improves complete warm pipeline time per successful answer while preserving the preregistered quality guards against selected B* and FIXED-10.",
+    "comparison": "The original selected B* remains the primary comparator. No superiority-to-all-families claim; this reduced roster is a selected-comparison timing replication.",
+    "settings": "All selected policy identities, local model manifests, reader/model/prompt/chat-template/decoding identities, token caps, timeout, encoder, retrieval algorithm, random probability, seeds, two paired timing repetitions and statistical rules remain exactly equal to the parent.",
+    "inference": "Preserve all four quality guards, repeat-output parity, minimum-success rules, full assigned denominator, finite-population analysis, leave-one-out and documented stationarity/influence requirements. Repetitions and the same questions in another run are not independent new questions. No automatic validity=True."
+  },
+  "operational_gate": {
+    "original_collector_cutoff_utc": "2026-10-15T06:12:52+00:00",
+    "latest_launch_utc": "2026-10-15T08:12:52+00:00",
+    "collection_deadline_utc": "2026-10-15T10:12:52+00:00",
+    "original_project_deadline_utc": "2026-10-15T12:12:52+00:00",
+    "launch": "Source review and manifest verification do not authorize launch. Root must separately record original closure/stop, no concurrent model/index workload, a measured prospective budget including setup/final in-flight job/closure, and established awake conditions. Measured feasibility must fit entirely before the collection deadline and preserve the report reserve; it can impose an earlier actual latest start than the declared 08:12:52 UTC ceiling. The inherited original forecast is provenance only; it does not certify the new schedule's feasibility.",
+    "awake_evidence": "Root audits prospective and continuing UTC, sampler and OS sleep/wake evidence. A request to the user to keep the host awake is not evidence by itself. Unknown awake coverage cannot establish a clean wall-time endpoint. No power setting, privileged memory limit or thermal-protection bypass.",
+    "no_fit_or_awake_evidence": "Wholly unexecuted; no smaller subset, changed sample, one-repeat fallback or extension.",
+    "suspension_after_launch": "Any verified suspension invalidates the new wall-time endpoint. Retain all assigned questions and all physical costs. No selective removal, clock repair, favorable rerun, third attempt or significance-driven extension.",
+    "maximum_conditional_replications": 1
+  },
+  "physical_costs": {
+    "local_work": "Namespace new native launches, setup, worker reloads and jobs by (protocol_hash, resolved_run_dir, local_source_or_job_id), because confirmation run_id, job_id and task14-launch source strings can recur across roots.",
+    "shared_index": "Preserve original index completion attempt and original owner protocol/root. Deduplicate that same physical index construction once across reports. A native seal's new_physical_source_id label alone does not imply a new index build. Charge each new run's actual index load/setup time separately.",
+    "execution_identity": "Use new native environment, source snapshot, execution and launch receipts when actually created by the unchanged runtime. A prospective manifest is not a completed execution receipt."
+  }
+}

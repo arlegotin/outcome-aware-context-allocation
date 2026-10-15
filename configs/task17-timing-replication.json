@@ -1,0 +1,9 @@
+{
+  "expected_parent_protocol_hash": "415c80344dc3609ee2600a20c63c2502e4fc100cf50c60daee73ebc8a721e100",
+  "output_dir": "artifacts/protocol-task17-timing",
+  "run_dir": "artifacts/runs/task17-timing-replication",
+  "latest_launch_utc": "2026-10-15T08:12:52+00:00",
+  "collection_deadline_utc": "2026-10-15T10:12:52+00:00",
+  "original_project_deadline_utc": "2026-10-15T12:12:52+00:00",
+  "original_collector_cutoff_utc": "2026-10-15T06:12:52+00:00"
+}
