@@ -1,6 +1,21 @@
-# Task 17 source handoff — FIX ROUND 1 READY FOR SOURCE REVIEW
+# Task 17 handoff — MANIFESTS VERIFIED, NATIVE EXECUTION HELD
 
-## Latest handoff: shared output-container compatibility
+## Latest handoff: successful manifest-only attempt 2
+
+After root's scoped approval and explicit renewed release, the reviewed writer succeeded at unchanged coordinator HEAD `869b701f4d3d0c23a02a3fe36be66af298d924c4`. New protocol: `ad632aa3f9a37765b62d237abb3782251bb54084e6bc6a8309399f873adfba07`, at `artifacts/protocol-task17-timing/protocol.json`. The canonical source binding hash is `02a4e334af73c6802f441a54bc84ab8578758da1cf80c68799bf1b9a682c11ed` over 26 files.
+
+Existing `verify_protocol` and `plan(dry_run=True)` passed. Exact original sample bytes, 480 questions/N=7344, all 3,360 retained schedule rows and 1,920 direct primary jobs were verified. Only the three declared methods fields differ. Original four manifests and all 22 frozen source files remain byte-identical. Original index source `index-attempt:927ba64d93084cd2a6d43ead0b85ee54` remains owned by original protocol `415c80344dc3609ee2600a20c63c2502e4fc100cf50c60daee73ebc8a721e100` and `artifacts/runs/confirmation`, with no new indexing cost claimed.
+
+All attempt-2 receipts and full hash/settings/index-ownership report are preserved outside scratch at `artifacts/runs/operational-planning/task17-preparation-attempts/attempt-0002/`. Full report: `report.md`; report SHA256: `0c717fef137ad9c7e5249cb506eb46c39c56a3af4ab726ac20237d3aeb1b5c91`; receipt hashes: `receipt-sha256.json`.
+
+- Writer/identity guards: 02:13:08.944674–02:13:29.424858 UTC; 20.480114 wall / 20.480051584 performance-clock seconds.
+- Independent verification: 02:14:40.144523–02:14:45.322061 UTC; 5.177387 wall / 5.177372792 performance-clock seconds.
+- Attempt-2 measured phase sum: 25.657501 wall / 25.657424376 performance-clock seconds. UTC envelope including inspection/communication interval: 96.377387 seconds, not an additive cost.
+- Including the retained failed attempt once: 32.149756 wall / 32.149662584 performance-clock seconds of measured local preparation phases.
+
+The dry-run's inherited original-plan `feasible=True` is explicitly non-certifying for this new roster and current wall budget. Root's measured-budget/awake/original-closure authorization remains separate. The new native run directory and index realization do not exist. No model loading, index construction, generation, Gold/scoring/prediction/raw outcome access or source/config/test/git mutation occurred. New manifest files are untracked; no publication or commit was attempted.
+
+## Fix round 1 source handoff history: shared output-container compatibility
 
 Recorded UTC: `2026-10-15T02:09:05+00:00`. Fix commit: `1ad111e8055aa022787dc1e7a548d497f676a693`, based on coordinator HEAD `27b61596c0b61c49b3493d0a8b99bf9b73f3fad1`. Only the new writer and its tests changed: 47 insertions, 6 deletions. No config/amendment/frozen-core/primary-input changes.
 

@@ -1,0 +1,39 @@
+{
+  "assigned_jobs": 3360,
+  "elapsed_seconds": 8.802580167015549,
+  "finished_utc": "2026-10-15T02:16:53.574699+00:00",
+  "inherited_dry_run_forecast_certifies_feasibility": false,
+  "measured_preparation": {
+    "attempt_1_perf_seconds": 6.492238208,
+    "attempt_1_wall_seconds": 6.492255,
+    "attempt_2_outer_envelope_nonadditive": true,
+    "attempt_2_verification_perf_seconds": 5.177372792,
+    "attempt_2_verification_wall_seconds": 5.177387,
+    "attempt_2_writer_perf_seconds": 20.480051584,
+    "attempt_2_writer_wall_seconds": 20.480114
+  },
+  "methods_changed_keys": [
+    "deadline_utc",
+    "representatives",
+    "retrieval"
+  ],
+  "native_launch_authorized": false,
+  "new_protocol_hash": "ad632aa3f9a37765b62d237abb3782251bb54084e6bc6a8309399f873adfba07",
+  "original_index_reused_not_newly_embedded": true,
+  "parent_protocol_hash": "415c80344dc3609ee2600a20c63c2502e4fc100cf50c60daee73ebc8a721e100",
+  "population": 7344,
+  "previous_failed_root_probe": {
+    "cost_status": "unknown; wrapper interval not retained",
+    "elapsed_seconds": null,
+    "error": "KeyError: population_size",
+    "stage": "after verification, before summary publication"
+  },
+  "quality_opened": false,
+  "same_original_source_hashes": true,
+  "same_task_ids_in_order": true,
+  "sample_bytes_equal": true,
+  "sample_questions": 480,
+  "source_file_count": 26,
+  "started_utc": "2026-10-15T02:16:44.771990+00:00",
+  "status": "verified"
+}
