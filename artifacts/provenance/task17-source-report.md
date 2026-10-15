@@ -1,4 +1,26 @@
-# Task 17 source handoff — READY FOR SOURCE REVIEW
+# Task 17 source handoff — FIX ROUND 1 READY FOR SOURCE REVIEW
+
+## Latest handoff: shared output-container compatibility
+
+Recorded UTC: `2026-10-15T02:09:05+00:00`. Fix commit: `1ad111e8055aa022787dc1e7a548d497f676a693`, based on coordinator HEAD `27b61596c0b61c49b3493d0a8b99bf9b73f3fad1`. Only the new writer and its tests changed: 47 insertions, 6 deletions. No config/amendment/frozen-core/primary-input changes.
+
+**Root cause and ruling:** The live parent uses `artifacts/` as its broad output container. Treating that entire directory as an exclusive root incorrectly rejected the reviewed fresh descendants. The writer now protects the four original scientific files and every original source/artifact binding individually, while retaining exclusive protection of the original run and index roots. Existing or partial destinations, resolved aliases and mutually nested new roots remain rejected. This is the root-authorized actual-container contract correction, not a new output-path workaround.
+
+The real-producer synthetic fixture now covers `output_dir=artifacts`, `run_dir=artifacts/runs/confirmation`, an original bound model artifact under the shared container, and the two approved new descendant paths. Its end-to-end success test verifies original bytes, selected settings, parent/index/source bindings and all 3,360 jobs. Nine negative cases cover original run root/child, index child, scientific/source/artifact file descendants, an artifact ancestor, original-container ancestor and mutually nested new roots.
+
+Verification:
+
+- RED: `.venv/bin/python3.12 -m pytest 'tests/test_task17_manifest.py::test_preserves_sample_bytes_settings_and_exact_seven_job_schedule[shared]' -q` → **1 failed in 2.99s**, the same overlap `ValueError` as the live failure, at 02:04 UTC; `task-17-fix1-red.log`.
+- Layout GREEN: shared-container success plus nine negative cases → **10 passed in 43.22s**; `task-17-fix1-layout.log`.
+- Final focused command: `.venv/bin/python3.12 -m pytest tests/test_task17_manifest.py tests/test_protocol.py -q` → **57 passed in 177.18s**, exit0. Started 02:05:39 UTC; completion observed before 02:08:57 UTC; `task-17-fix1-focused.log`.
+- Diff whitespace checks pass; diff against 27b6159 for frozen `src/outcome_poc`, configs, lockfile, original calibration/native tools is empty. Commit range contains exactly the two new Task17 file modifications. An unrelated root-owned checkpoint edit was left unstaged and untouched.
+- Root's pre-fix integration evidence was 762 passed/0 skips in 183.50s plus clean dependency checks and 22 exact frozen hashes. The full suite was **not rerun after this narrow fix**, per root's explicit instruction; current evidence is the 57 focused tests.
+
+**Failed physical preparation remains accounted:** Copied the five original failed-attempt receipts/report byte for byte into ignored `artifacts/runs/operational-planning/task17-preparation-attempts/attempt-0001/`, with `copy-sha256.json`. Both source and preserved copies were rechecked unchanged. This is duplicate evidence of the same physical attempt, not a second cost. Retain 6.492255 wall seconds / 6.492238208 performance-clock seconds from 02:00:55.000805–02:01:01.493212 UTC. The result receipt SHA256 is `d6c4f4ee9412099ef361b7c2a9fbc09f10cbdba5d25fff1416e0b5f71aa9f692`.
+
+**Hold:** No live writer retry occurred. No original quality/Gold/model/index/runtime data was read during this fix; tests used synthetic fixtures only. Await the original reviewer's scoped approval and a separate root release before another manifest-only attempt. Native launch remains separately held.
+
+## Initial source handoff history
 
 Recorded UTC: 2026-10-15T01:52:41+00:00. Sole implementer release started from `887ca711dc7f1caa0f7425b0be5eaba39ec83cbd` on `main`; source commit is `1f8a30436405afbec7023a809b35ddd1feefd273`.
 
