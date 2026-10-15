@@ -1,0 +1,282 @@
+{
+  "acquisition": {
+    "initial_attempt": {
+      "filesystem_log_last_write_utc": "2026-10-15T14:33:46.974448+00:00",
+      "filesystem_log_start_utc": "2026-10-15T14:31:19.963142+00:00",
+      "filesystem_wall_span_seconds": 147.01130557060242,
+      "hub_reported_fetch_seconds": 146,
+      "log": "artifacts/runs/strong-reader-recon/acquisition.log",
+      "payload_bytes_independently_verified": 8323868950,
+      "status": "failed_after_download_before_manifest",
+      "timing_kind": "filesystem wall timestamp diagnostic; not continuous complete acquisition interval"
+    },
+    "limitations": [
+      "Wire transport bytes unavailable.",
+      "Initial acquisition exact continuous interval was not recorded before failure; success manifest duration does not include that failed attempt.",
+      "No inference occurred during either acquisition."
+    ],
+    "second_attempt": {
+      "helper_seconds": 18.19815729203401,
+      "log": "artifacts/runs/strong-reader-recon/acquisition-attempt2.log",
+      "manifest": "artifacts/runs/reader-capability-preflight-v1/assets.json",
+      "manifest_hash": "7acb8b0504ecebf4c8fc774021e2cc0e2de9c9de2c08b0a35f8d238af21deb94",
+      "newly_materialized_bytes": 28741,
+      "reused_verified_bytes": 8323868950,
+      "status": "verified",
+      "verified_bytes": 8323897691
+    }
+  },
+  "actual_denied_file_count": 8,
+  "authored_calls": [
+    {
+      "active_seconds": 4.566497625,
+      "output_tokens": 43,
+      "prompt_tokens": 183,
+      "repetition": 1,
+      "seconds": 4.566497458,
+      "shape": "short",
+      "status": "ok",
+      "valid": true
+    },
+    {
+      "active_seconds": 2.253416125,
+      "output_tokens": 43,
+      "prompt_tokens": 183,
+      "repetition": 2,
+      "seconds": 2.25341425,
+      "shape": "short",
+      "status": "ok",
+      "valid": true
+    },
+    {
+      "active_seconds": 30.12603125,
+      "output_tokens": 43,
+      "prompt_tokens": 7803,
+      "repetition": 1,
+      "seconds": 30.126030958,
+      "shape": "long",
+      "status": "ok",
+      "valid": true
+    }
+  ],
+  "available_memory": {
+    "first_bytes": 7508819968,
+    "last_bytes": 7363526656,
+    "min_bytes": 3739369472
+  },
+  "benchmark_generations": 0,
+  "closure_hash": "d6872123cd1c64c181dd3705ee7b3d8a24cb46097a64a26658af26d29b1733c7",
+  "controller_trained": false,
+  "conversion_source_revision_known": false,
+  "evidence": {
+    "asset_manifest": {
+      "bytes": 5505,
+      "sha256": "bfe21ceecfe2083ae47265307998ee5c63375f6ff813ad5da5797599bdc1bae6"
+    },
+    "closure": {
+      "bytes": 5711,
+      "sha256": "5158e85308cafc51c6da67793f1980697a2ab30746c744578de9ac7607ce59e1"
+    },
+    "denial_locations": {
+      "bytes": 3118,
+      "sha256": "056cced1ac50a035fab77b404e168556e3b2276292bbc74d73b1e0c7421d28c3"
+    },
+    "historical_before": {
+      "bytes": 1872951,
+      "sha256": "369e0e317a3bdc9193be04cd692542189acc0c302b698988be8aea1610faed17"
+    },
+    "plan": {
+      "bytes": 14166,
+      "sha256": "7435a037130d2881050ff519017952627e51a54998cbe55b5d4869870d07aef3"
+    }
+  },
+  "gate": {
+    "all_passed": true,
+    "bound_kind": "conservative overlapping parent+children RSS plus MLX peak",
+    "boundaries": 5,
+    "limit_bytes": 30923764531,
+    "max_working_set_bound_bytes": 11249072216,
+    "reserve_bytes": 7730941133
+  },
+  "hardware_before_acquisition": {
+    "available_memory_bytes": 9093677056,
+    "cpu_model": "Apple M3 Max",
+    "disk_free_bytes": 60603396096,
+    "global_swap_used_bytes": 6425870336,
+    "machine": "arm64",
+    "macos": "26.7.1",
+    "packages": {
+      "huggingface-hub": "1.33.0",
+      "mlx": "0.32.3",
+      "mlx-lm": "0.32.0",
+      "mlx-metal": "0.32.3",
+      "numpy": "2.5.4",
+      "psutil": "7.2.2",
+      "safetensors": "0.8.0",
+      "scipy": "1.18.1",
+      "transformers": "5.19.0"
+    },
+    "physical_memory_bytes": 38654705664,
+    "python": "3.12.9",
+    "requirements_lock_sha256": "e1bd09c1dc51f39bd53e62df6ce79eb2d726b26fa30d486ac3d584f297c2d8c8"
+  },
+  "historical_preservation": {
+    "checked": 8588,
+    "intentional_reader_documentation_updates": [
+      "README.md",
+      "THIRD_PARTY_NOTICES.md"
+    ],
+    "unchanged": 8586,
+    "unexpected_changes": []
+  },
+  "kernel_and_import_probes": {
+    "coordinator": [
+      {
+        "file_denials": 8,
+        "import_denials": [
+          "outcome_poc.data",
+          "outcome_poc.scoring",
+          "outcome_poc.followup.preparation",
+          "outcome_poc.followup.scoring",
+          "outcome_poc.citation_study.preparation",
+          "outcome_poc.citation_study.scoring",
+          "outcome_poc.reader_study.preparation",
+          "outcome_poc.reader_study.scoring"
+        ],
+        "network_denied": true,
+        "snapshot_origins": true
+      }
+    ],
+    "worker": [
+      {
+        "file_denials": 8,
+        "import_denials": [
+          "outcome_poc.data",
+          "outcome_poc.scoring",
+          "outcome_poc.followup.preparation",
+          "outcome_poc.followup.scoring",
+          "outcome_poc.citation_study.preparation",
+          "outcome_poc.citation_study.scoring",
+          "outcome_poc.reader_study.preparation",
+          "outcome_poc.reader_study.scoring"
+        ],
+        "network_denied": true,
+        "snapshot_origins": true
+      }
+    ]
+  },
+  "kind": "reader-resource-format-preflight-v1",
+  "limits": [
+    "Three authored calls are not benchmark questions or independent task-quality evidence.",
+    "No allocation, quality-preservation, efficiency, provider or customer-value finding.",
+    "RSS and MLX counters overlap; the operational bound is not disjoint physical allocation.",
+    "System-wide swap growth cannot be uniquely attributed to this process.",
+    "Initial acquisition lacks an exact continuous complete-attempt interval; total adaptation/experiment cost and break-even remain unknown.",
+    "Current 14B hybrid lineage differs from the July 4B Instruct lineage; size does not establish capability."
+  ],
+  "model_lifecycle": [
+    {
+      "kind": "load",
+      "seconds": 27.931045834,
+      "status": "ok"
+    },
+    {
+      "kind": "closed",
+      "seconds": 0.092168417,
+      "status": "ok"
+    }
+  ],
+  "plan_hash": "994621af2b04be267f1a370e67fae89a37747cb1af80b51f09a5367042dfb19c",
+  "quiescent_session": {
+    "exact_seconds": 66.165313084,
+    "interrupted_sessions": 0,
+    "lower_seconds": 66.165313084,
+    "open_sessions": 0,
+    "sessions": 1,
+    "status": "complete",
+    "uncertainty": null,
+    "upper_seconds": 66.165313084
+  },
+  "reader_profiles": {
+    "original_reader": {
+      "license": "apache-2.0",
+      "repo_id": "Qwen/Qwen3-14B",
+      "revision": "40c069824f4251a91eefaf281ebe4c544efd3e18",
+      "snapshot_hash": "f90b48cc61ee79aed90869bdb657ebfe924acd3be6e9af5dff6ac58d08ab3f53"
+    },
+    "reader": {
+      "license": "apache-2.0",
+      "repo_id": "mlx-community/Qwen3-14B-4bit",
+      "revision": "a4d9b2df59d2c150bef02fcbe0d91046b7ca33a4",
+      "snapshot_hash": "db6642cc8c8d481f64de506e02f1bef3ab75f07ecbd0ad0d20395bd36aa28414"
+    }
+  },
+  "repeat_token_and_payload_equality": true,
+  "reproduction": {
+    "additional_generations": 0,
+    "exactly_unchanged_after_fresh_verify_and_run": true,
+    "generation_calls": 3,
+    "verified_files": 88
+  },
+  "research_outcome": "inconclusive",
+  "resource_admission": "passed",
+  "resource_counter_summary_convention": "Each first/last is the first/last available observation for that counter; separate peaks are sampled or backend allocator peaks and are not summed as physical allocation.",
+  "resource_samples": 39,
+  "resources": {
+    "peak_mlx_bytes": {
+      "first": 8307800072,
+      "last": 10064214104,
+      "max": 10064214104
+    },
+    "rss_children_bytes": {
+      "first": 0,
+      "last": 5439488,
+      "max": 692813824
+    },
+    "rss_parent_bytes": {
+      "first": 34914304,
+      "last": 579846144,
+      "max": 617005056
+    },
+    "swap_used_bytes": {
+      "first": 7039156224,
+      "last": 13958905856,
+      "max": 13958905856
+    }
+  },
+  "settings": {
+    "batch_size": 1,
+    "cache_mode": "none",
+    "enable_thinking": false,
+    "kv_cache": "default",
+    "max_context_tokens": 8192,
+    "max_new_tokens": 256,
+    "prefill_step_size": 512,
+    "repairs": 0,
+    "repo_id": "mlx-community/Qwen3-14B-4bit",
+    "result_reuse": false,
+    "revision": "a4d9b2df59d2c150bef02fcbe0d91046b7ca33a4",
+    "semantic_retries": 0,
+    "temperature": 0,
+    "timeout_seconds": 120
+  },
+  "software_verification": {
+    "exit_code": 0,
+    "log_identity": {
+      "bytes": 1152,
+      "sha256": "b9a204402b6187ab9073bd085e25fbe3a42505f78a4c450a1e3fecaa4f9877c3"
+    },
+    "passed": 988,
+    "seconds": 218.79,
+    "skipped": 0,
+    "source_commit": "24701ddd3edd1431346834eada6b2ac99a1cf2d6"
+  },
+  "source_commit": "24701ddd3edd1431346834eada6b2ac99a1cf2d6",
+  "unexecuted_plan_v1": {
+    "generation_calls": 0,
+    "plan_hash": "c2c92c6137943474f53bad9d652a3a0995ae3d82002a1844f9d08bbb93003806",
+    "sessions": 0,
+    "source_and_input_files_unchanged": true,
+    "status": "retained-unexecuted-incomplete-denials"
+  }
+}

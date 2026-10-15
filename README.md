@@ -8,7 +8,7 @@ A fresh follow-up found real reading costs and room for better budget choices, b
 
 The next test added one sentence asking the reader to cite every link leading to the answer. On 64 fresh questions with ten paragraphs, strict successes rose from **4 to 6**, while correct answer strings fell from **43 to 42**. That failed the quality screen fixed before the run, so the larger comparison stayed unrun. It's a mixed development result. The project still has no demonstrated controller or efficiency advantage.
 
-[Original findings](artifacts/final_report.md) · [Reader/headroom study](docs/experiments/2026-10-15-reader-headroom-followup.md) · [Citation-chain test](docs/experiments/2026-10-15-citation-chain-reader-study.md) · [Research and prior art](research_poc_plan.md) · [Publication scope](docs/PUBLICATION.md) · [Citation](CITATION.cff)
+[Original findings](artifacts/final_report.md) · [Reader/headroom study](docs/experiments/2026-10-15-reader-headroom-followup.md) · [Citation-chain test](docs/experiments/2026-10-15-citation-chain-reader-study.md) · [14B feasibility](docs/experiments/2026-10-15-reader-capability-preflight.md) · [Research and prior art](research_poc_plan.md) · [Publication scope](docs/PUBLICATION.md) · [Citation](CITATION.cff)
 
 ## The idea
 
@@ -50,6 +50,8 @@ The [citation-chain test](docs/experiments/2026-10-15-citation-chain-reader-stud
 
 The prerequisite remains citation reliability and a useful success target. With the reminder, only 2 of 64 questions had different strict outcomes at two versus ten paragraphs. More expensive controller labels haven't earned their place yet. A stronger reader or a validated measurement change needs its own fresh test before the allocation experiment grows.
 
+A pinned 14B reader has now passed a separate [feasibility check](docs/experiments/2026-10-15-reader-capability-preflight.md) on this 36 GiB Mac: a short authored question, an identical repetition, and a 7,803-token prompt. System-wide swap grew by about 6.44 GiB during the run. The model can execute this configuration; better answers and useful savings still need evidence. It has earned a small benchmark comparison.
+
 ## What you can reuse
 
 You can use the harness to collect paired answers, compare fixed and learned budgets, score sentence-level citations, and account for every paid action. It separates annotations from serving inputs, freezes selection before evaluation, and preserves interrupted work. That gives the next allocation policy a concrete test, with its overhead included.
@@ -74,9 +76,10 @@ python -m pip install --no-deps --no-build-isolation -e .
 python -m pip check
 python -m pytest -q
 python -m outcome_poc --help
+python -m outcome_poc.reader_probe --help
 ```
 
-The final citation-study suite passed **899 tests with zero skips** at `4eaf940`. That last change strengthens an authored test; the measured study's source files remain identical to `14544f6`. The [software review](docs/superpowers/reviews/2026-10-15-citation-chain-software-review.md) records earlier checks. Passing tests doesn't validate the original speed measurements or establish a research win. On non-macOS systems or inside an outer sandbox, the macOS denial-profile checks can skip.
+The latest suite passed **988 tests with zero skips** at `24701dd`, including the new reader preflight. Earlier experiment source and results remain intact. The [preflight software review](docs/superpowers/reviews/2026-10-15-reader-capability-software-review.md) records its checks and fixes. Passing tests doesn't validate the original speed measurements or establish a research win. On non-macOS systems or inside an outer sandbox, the macOS denial-profile checks can skip.
 
 These commands don't start a benchmark experiment. For a new study, follow the [fresh-experiment guide](docs/fresh-experiment.md): use a separate checkout, fresh output roots and attempt-ledger parents, new development outputs, and a newly frozen protocol. Historical configurations record this experiment. Running mutable setup or indexing over the retained evidence can invalidate its bindings.
 

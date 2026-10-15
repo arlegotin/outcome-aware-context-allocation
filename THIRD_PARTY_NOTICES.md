@@ -41,6 +41,14 @@ does not certify truth or logically complete evidence.
 - [BGE-small-en-v1.5](https://huggingface.co/BAAI/bge-small-en-v1.5), by the
   Beijing Academy of Artificial Intelligence, is identified under **MIT** at
   revision `5c38ec7c405ec4b44b94cc5a9bb96e735b38267a`.
+- The separate reader feasibility study uses
+  [Qwen3-14B](https://huggingface.co/Qwen/Qwen3-14B) and its
+  [MLX Community 4-bit conversion](https://huggingface.co/mlx-community/Qwen3-14B-4bit),
+  identified under **Apache-2.0**. Conversion revision:
+  `a4d9b2df59d2c150bef02fcbe0d91046b7ca33a4`; inspected original license/card/config
+  revision: `40c069824f4251a91eefaf281ebe4c544efd3e18`. The conversion's historical
+  original source commit is unknown. Pinned file digests and that distinction
+  remain in the [preflight provenance](artifacts/provenance/reader-capability-preflight-summary.json).
 
 Model weights, tokenizers, upstream model license files and generated embeddings
 remain external assets. This release grants no new rights over them. Preserve
