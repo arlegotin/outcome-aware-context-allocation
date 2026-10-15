@@ -1,0 +1,463 @@
+"""Annotation-free, native sandboxed serving and retained job transactions."""
+from contextlib import contextmanager
+from dataclasses import asdict, replace, dataclass
+from datetime import datetime, timezone
+import fcntl
+import importlib.abc
+import json
+import os
+from pathlib import Path
+import socket
+import subprocess
+import sys
+import threading
+import time
+import uuid
+
+from ..data_runtime import DocumentStore, load_tasks
+from ..generation import (NativeReaderFactory, Reader, offline_network, render_prompt,
+                          prompt_identity, ranking_aliases)
+from ..schemas import Document, GenerationRequest, ReaderResult, validate_record
+from ..storage import append_jsonl, content_hash, atomic_json, read_jsonl
+from .clock import continuous_ns, boot_identity
+from .supervisor import ContinuousBackend, CleanupFailure
+from .study import (read, identity, publish, verify, verify_files, verify_index,
+                    STAGES, ORACLE)
+
+
+class GoldImportGuard(importlib.abc.MetaPathFinder):
+    def find_spec(self, fullname, path=None, target=None):
+        if fullname in {'outcome_poc.scoring','outcome_poc.data','outcome_poc.followup.scoring'}:
+            raise ImportError('annotation-enabled module denied during serving')
+        return None
+
+
+
+def verify_import_origins(root):
+    expected=Path(root)/'source/src/outcome_poc'
+    for name,module in list(sys.modules.items()):
+        if name.startswith('outcome_poc') and getattr(module,'__file__',None):
+            if not Path(module.__file__).resolve().is_relative_to(expected):
+                raise RuntimeError(f'non-snapshot import: {name}')
+    if any(name in sys.modules for name in ('outcome_poc.scoring','outcome_poc.followup.scoring','outcome_poc.data')):
+        raise RuntimeError('annotation-enabled module already imported during serving')
+
+
+@dataclass(frozen=True)
+class IsolatedReaderFactory:
+    """Spawn skips package.__main__; enforce the boundary in the worker itself."""
+    factory: object
+    root: Path
+    plan_hash: str
+
+    def __call__(self):
+        verify_import_origins(self.root)
+        sys.meta_path.insert(0,GoldImportGuard())
+        plan=read(self.root/'plan.json')
+        if plan['plan_hash']!=self.plan_hash:raise ValueError('reader worker plan mismatch')
+        probe_denials(plan['freeze']['denied_probes'])
+        return self.factory()
+
+def sandbox_profile(root, denied):
+    """All writes restricted to new run/tmp; Gold/raw/outcome stores unreadable.
+
+    Seatbelt uses the last matching rule. The root read grant permits the fresh
+    run beneath an otherwise denied historical artifacts parent.
+    """
+    quote=lambda p:json.dumps(str(Path(p).resolve()))
+    root=Path(root).resolve()
+    lines=['(version 1)','(allow default)','(deny network*)','(deny file-write*)',
+           f'(allow file-write* (subpath {quote(root)}))',
+           '(allow file-write* (subpath "/private/tmp"))',
+           f'(allow file-write* (subpath {quote(os.environ.get("TMPDIR","/private/tmp"))}))',
+           '(allow file-write* (literal "/dev/null"))']
+    lines.append(f'(allow file-read* (subpath {quote(root)}))')
+    for path in sorted(set(str(Path(p).resolve()) for p in denied)):
+        if root.is_relative_to(Path(path)):
+            lines.append(f'(deny file-read* (require-all (subpath {quote(path)}) (require-not (subpath {quote(root)}))))')
+        else:
+            lines.append(f'(deny file-read* (subpath {quote(path)}))')
+    lines.append(f'(deny file-read* (subpath {quote(root / "scores")}))')
+    lines.append('(deny file-read* (regex #"[.]gold[.]jsonl$"))')
+    return '\n'.join(lines)+'\n'
+
+
+def probe_denials(paths):
+    """Run inside kernel sandbox, before Python socket guards or paid work."""
+    if not paths:
+        raise ValueError('no actual denial paths supplied')
+    for name in paths:
+        try:
+            with open(name,'rb') as stream:stream.read(1)
+        except PermissionError:
+            continue
+        raise RuntimeError(f'kernel file denial probe did not deny: {name}')
+    connection=socket.socket()
+    try:
+        try: connection.connect(('127.0.0.1',9))
+        except PermissionError: pass
+        else: raise RuntimeError('kernel network denial probe did not deny')
+    finally:connection.close()
+    return {'file_denials':len(paths),'network_denied':True}
+
+
+@contextmanager
+def stage_lock(root):
+    with (Path(root)/'writer.lock').open('a+b') as stream:
+        try:fcntl.flock(stream,fcntl.LOCK_EX|fcntl.LOCK_NB)
+        except BlockingIOError:raise ValueError('another follow-up writer is active')
+        yield
+        fcntl.flock(stream,fcntl.LOCK_UN)
+
+
+def selected_jobs(root, stage):
+    if stage not in STAGES:raise ValueError('unknown stage')
+    return [j for j in read(Path(root)/'schedule.json') if j['stage']==stage]
+
+
+def completion(root, plan, job):
+    directory=Path(root)/'jobs'/job['job_id']
+    marker=directory/'receipt.json'
+    if not marker.exists():return None
+    receipt=read(marker)
+    if (receipt['plan_hash']!=plan['plan_hash'] or receipt['job_hash']!=content_hash(job) or
+            receipt['boot_id']!=plan['freeze']['boot_id'] or receipt['stop_ns']<receipt['start_ns']):
+        raise ValueError('mismatched completion receipt')
+    actual={str(p.relative_to(directory)) for p in directory.rglob('*') if p.is_file() and p.name!='receipt.json'}
+    if set(receipt['files'])!=actual or not {'started.json','terminal.json','attempts.jsonl'}<=actual:
+        raise ValueError('completion receipt file inventory incomplete')
+    verify_files({str(directory/name):value for name,value in receipt['files'].items()})
+    state=read(directory/'started.json')
+    attempts=list(read_jsonl(directory/'attempts.jsonl'))
+    if (state['job_hash']!=content_hash(job) or state['plan_hash']!=plan['plan_hash'] or
+            state['boot_id']!=receipt['boot_id'] or state['start_ns']!=receipt['start_ns'] or
+            not attempts or attempts[-1].get('stop_ns')!=receipt['stop_ns']):
+        raise ValueError('completion start/attempt binding mismatch')
+    payload=read(directory/'terminal.json')
+    if payload['job']!=job or payload['plan_hash']!=plan['plan_hash']:
+        raise ValueError('mismatched completion payload')
+    reconstructed=ReaderResult(**{**payload['result'],'citations':[tuple(c) for c in payload['result']['citations']]})
+    validate_record(reconstructed)
+    if payload['calls'] not in (0,1) or bool(payload['calls'])!=(directory/'paid.json').exists():
+        raise ValueError('completion paid-call binding mismatch')
+    if payload['calls'] and not payload.get('interrupted'):
+        paid=read(directory/'paid.json')
+        if (paid['request']['prompt_hash']!=payload['prompt_hash'] or
+                paid['ranking_hash']!=content_hash(payload['ranking']) or paid['aliases']!=payload['aliases']):
+            raise ValueError('completion prompt/ranking binding mismatch')
+    if (receipt['seconds']!=(receipt['stop_ns']-receipt['start_ns'])/1e9 or
+            receipt['calls']!=payload['calls']):
+        raise ValueError('invalid completion timing/call count')
+    return payload,receipt
+
+
+def close_stage(root, plan, stage):
+    root=Path(root)
+    jobs=selected_jobs(root,stage)
+    if not jobs:raise ValueError('empty assigned schedule')
+    expected={j['job_id'] for j in jobs}
+    stage_dir=root/'stages'/stage
+    files={}
+    for j in jobs:
+        if completion(root,plan,j) is None:raise ValueError('stage schedule incomplete')
+        directory=root/'jobs'/j['job_id']
+        for p in directory.rglob('*'):
+            if p.is_file():files[str(p.relative_to(root))]=identity(p)
+    if stage=='headroom':files['headroom-decision.json']=identity(root/'headroom-decision.json')
+    all_jobs={j['job_id'] for j in read(root/'schedule.json')}
+    if (root/'jobs').exists() and any(p.name not in all_jobs for p in (root/'jobs').iterdir()):
+        raise ValueError('unassigned job directory')
+    for p in stage_dir.rglob('*'):
+        if p.is_file() and p.name!='closed.json': files[str(p.relative_to(root))]=identity(p)
+    closure={'plan_hash':plan['plan_hash'],'stage':stage,'assigned_jobs':len(jobs),
+             'assigned_unique_questions':len({j['task_id'] for j in jobs}),
+             'job_ids_hash':content_hash(sorted(expected)),'files':files}
+    publish(stage_dir/'closed.json',closure)
+    return closure
+
+
+def validate_closed_stage(root, stage, *, privileged=True):
+    root=Path(root)
+    marker=root/'stages'/stage/'closed.json'
+    if not marker.exists():raise ValueError('stage schedule incomplete; scoring forbidden')
+    plan=verify(root,privileged=False)
+    closure=read(marker)
+    if closure['plan_hash']!=plan['plan_hash']:raise ValueError('stage closure plan mismatch')
+    verify_files({str(root/n):v for n,v in closure['files'].items()})
+    if close_stage(root,plan,stage)!=closure:raise ValueError('stage closure mismatch')
+    records=[(j,*completion(root,plan,j)) for j in selected_jobs(root,stage)]
+    if privileged:verify(root,privileged=True)
+    return plan,records
+
+
+def _empty(reason):
+    return ReaderResult('',None,[],'infra_error',0,0,[],[],reason)
+
+
+def _commit(root, plan, job, state, payload, *, clock=continuous_ns, active=time.perf_counter_ns):
+    directory=Path(root)/'jobs'/job['job_id']
+    payload={**payload,'job':job,'plan_hash':plan['plan_hash']}
+    # Payload publication precedes the enclosing stop. The separate receipt follows.
+    publish(directory/'terminal.json',payload)
+    stop=clock(); active_stop=active()
+    append_jsonl(directory/'attempts.jsonl',{'kind':'terminal','stop_ns':stop,'status':payload['result']['status']})
+    receipt={'plan_hash':plan['plan_hash'],'job_hash':content_hash(job),'boot_id':state['boot_id'],
+         'start_ns':state['start_ns'],'stop_ns':stop,'seconds':(stop-state['start_ns'])/1e9,
+         'active_seconds':(active_stop-state['active_start_ns'])/1e9,
+         'drift_seconds':((stop-state['start_ns'])-(active_stop-state['active_start_ns']))/1e9,
+         'calls':payload['calls'],'files':{str(p.relative_to(directory)):identity(p)
+                        for p in directory.rglob('*') if p.is_file() and p.name!='receipt.json'}}
+    publish(directory/'receipt.json',receipt)
+    return payload,receipt
+
+
+def execute_job(root, plan, job, task, documents, retrieval, backend, *, clock=continuous_ns,
+                active=time.perf_counter_ns):
+    """Execute once, or terminalize an interrupted attempt without semantic retry."""
+    root=Path(root); directory=root/'jobs'/job['job_id']
+    if job not in read(root/'schedule.json'):raise ValueError('unassigned job')
+    if task.task_id!=job['task_id']:raise ValueError('job/task mismatch')
+    existing=completion(root,plan,job)
+    if existing:return existing
+    directory.mkdir(parents=True,exist_ok=True)
+    state_path=directory/'started.json'
+    if state_path.exists():
+        state=read(state_path)
+        if state['job_hash']!=content_hash(job) or state['plan_hash']!=plan['plan_hash'] or state['boot_id']!=boot_identity():
+            raise ValueError('interrupted job identity/boot mismatch')
+        # Preserve any payload that reached disk, but never adopt it without its receipt.
+        if (directory/'terminal.json').exists():
+            original=read(directory/'terminal.json')
+            publish(directory/'unreceipted-payload.json',original)
+            (directory/'terminal.json').unlink()
+        progress=read(directory/'progress.json') if (directory/'progress.json').exists() else {}
+        result=replace(_empty('interrupted process; no semantic retry'),raw_output=progress.get('raw_output',''),
+            prompt_tokens=len(progress.get('prompt_token_ids',[])),generated_tokens=len(progress.get('generated_token_ids',[])),
+            prompt_token_ids=progress.get('prompt_token_ids',[]),generated_token_ids=progress.get('generated_token_ids',[]))
+        return _commit(root,plan,job,state,{'result':asdict(result),'calls':int((directory/'paid.json').exists()),
+            'evidence_ids':[],'ranking':[],'prompt_hash':None,'interrupted':True},clock=clock,active=active)
+    backend.synchronize() # resident startup/sync charged in stage setup/lifecycle, outside warm service
+    state={'job_hash':content_hash(job),'plan_hash':plan['plan_hash'],'boot_id':boot_identity(),
+           'start_ns':clock(),'active_start_ns':active(),'started_utc':datetime.now(timezone.utc).isoformat()}
+    publish(state_path,state)
+    append_jsonl(directory/'attempts.jsonl',{'kind':'start',**state})
+    calls=0; evidence=[]; ranking=[]; aliases={}; prompt_hash=None; cleanup=None; result=None; synchronization_error=None
+    try:
+        # No ranking or answer reuse: every assigned serving call performs this query encoding.
+        ranking=retrieval.rank(task.question,task.candidate_ids)
+        if {r.doc_id for r in ranking}!=set(task.candidate_ids) or len(ranking)!=10:
+            raise ValueError('ranking does not cover all candidates')
+        publish(root/'ranking-identities'/f'{content_hash(task.task_id)}.json',{'task_id':task.task_id,
+            'ranking':[asdict(r) for r in ranking]})
+        aliases=ranking_aliases(ranking)
+        if job['arm']==ORACLE:
+            support={r['task_id']:r['support_doc_ids'] for r in read_jsonl(root/'support-doc-ids.jsonl')}
+            chosen=[r.doc_id for r in ranking if r.doc_id in support[task.task_id]]
+        else:chosen=[r.doc_id for r in ranking[:int(job['arm'])]]
+        evidence=[documents.get(i) for i in chosen]
+        prompt=render_prompt(task.question,evidence,aliases,backend.tokenizer)
+        prompt_hash=prompt_identity(prompt,backend.tokenizer)
+        settings=plan['freeze']['settings']['reader']; asset=read(root/'assets.json')['assets']['reader']
+        request=GenerationRequest(asset['revision'],asset['snapshot_hash'],prompt_hash,
+               content_hash({'greedy':True,'max_new_tokens':256,'prefill_step_size':512}),
+               'answer',settings['max_context_tokens'],settings['max_new_tokens'],settings['timeout_seconds'],'none')
+        publish(directory/'paid.json',{'request':asdict(request),'prompt':prompt,
+              'ranking_hash':content_hash([asdict(r) for r in ranking]),'aliases':aliases})
+        def progress(text,prompt_ids,token_ids):
+            atomic_json(directory/'progress.json',{'raw_output':text,'prompt_token_ids':prompt_ids,'generated_token_ids':token_ids})
+        backend.progress_callback=progress
+        calls=1
+        try:generated=backend.generate(prompt,request,rendered=True)
+        except CleanupFailure as error:
+            generated=error.result;cleanup=f'{type(error.cleanup_error).__name__}: {error.cleanup_error}'
+        result=Reader.parse_generated(generated,evidence,aliases)
+        if cleanup is None:backend.synchronize()
+    except (KeyboardInterrupt,SystemExit):
+        raise # resume terminalizes the retained started attempt
+    except Exception as error:
+        reason=f'{type(error).__name__}: {error}'
+        if result is not None:synchronization_error=reason
+        result=replace(result,status='infra_error',stop_reason=reason) if result is not None else _empty(reason)
+    payload={'result':asdict(result),'calls':calls,'evidence_ids':[d.doc_id for d in evidence],
+             'ranking':[asdict(r) for r in ranking],'aliases':aliases,'prompt_hash':prompt_hash,
+             'cleanup_error':cleanup,'synchronization_error':synchronization_error,'resources':getattr(backend,'last_resources',{})}
+    committed=_commit(root,plan,job,state,payload,clock=clock,active=active)
+    if cleanup:raise RuntimeError(f'cleanup failed; terminal result preserved: {cleanup}')
+    if synchronization_error:raise RuntimeError(f'synchronization failed; terminal result preserved: {synchronization_error}')
+    return committed
+
+
+def warmup(root,plan,backend,directory):
+    """One authored, unscored paid warm-up per resident session, outside schedule."""
+    directory.mkdir(exist_ok=False)
+    start=continuous_ns();active_start=time.perf_counter_ns()
+    publish(directory/'started.json',{'start_ns':start,'active_start_ns':active_start,'calls':0,
+        'kind':'authored warmup; never a cohort observation','plan_hash':plan['plan_hash']})
+    sentences=['An invented lantern emits violet light.']
+    doc=Document(content_hash(['Authored warmup',sentences]),'Authored warmup',sentences,sum(map(len,sentences)))
+    backend.synchronize()
+    aliases={'D0':doc.doc_id}
+    prompt=render_prompt('What light does the invented lantern emit?',[doc],aliases,backend.tokenizer)
+    asset=read(Path(root)/'assets.json')['assets']['reader']
+    request=GenerationRequest(asset['revision'],asset['snapshot_hash'],prompt_identity(prompt,backend.tokenizer),
+        content_hash({'greedy':True,'max_new_tokens':256,'prefill_step_size':512}),'answer',8192,256,120.,'none')
+    def progress(text,prompt_ids,token_ids):
+        atomic_json(directory/'progress.json',{'raw_output':text,'prompt_token_ids':prompt_ids,'generated_token_ids':token_ids})
+    backend.progress_callback=progress
+    cleanup=None
+    publish(directory/'paid.json',{'request':asdict(request),'prompt':prompt,'calls':1})
+    try:result=backend.generate(prompt,request,rendered=True)
+    except CleanupFailure as error:
+        result=error.result;cleanup=str(error.cleanup_error)
+    publish(directory/'result.json',{'result':asdict(result),'cleanup_error':cleanup,'calls':1})
+    stop=continuous_ns()
+    publish(directory/'receipt.json',{'start_ns':start,'stop_ns':stop,'seconds':(stop-start)/1e9,
+        'active_seconds':(time.perf_counter_ns()-active_start)/1e9,'result':identity(directory/'result.json'),
+        'plan_hash':plan['plan_hash']})
+    if cleanup or result.status in {'infra_error','timeout','context_overflow'}:
+        raise RuntimeError('authored warmup failed; paid result retained')
+
+
+class ResourceMonitor:
+    """Separate RSS/MLX/swap observations, with explicit unavailable values."""
+    def __init__(self, path, backend=None):
+        self.path=path;self.backend=backend;self.stop_event=threading.Event();self.thread=None
+    def sample(self):
+        values={'continuous_ns':continuous_ns(),'active_ns':time.perf_counter_ns(),
+                'rss_parent_bytes':None,'rss_children_bytes':None,'swap_used_bytes':None,
+                'peak_mlx_bytes':getattr(self.backend,'peak_mlx_bytes',None),'sampling_seconds':2.}
+        try:
+            import psutil
+            parent=psutil.Process()
+            values.update(rss_parent_bytes=parent.memory_info().rss,
+                rss_children_bytes=sum(c.memory_info().rss for c in parent.children(recursive=True)),
+                swap_used_bytes=psutil.swap_memory().used)
+        except Exception as error:values['unavailable']=str(error)
+        append_jsonl(self.path,values)
+        return values
+    def _run(self):
+        while not self.stop_event.wait(2.):self.sample()
+    def start(self):
+        self.sample();self.thread=threading.Thread(target=self._run,daemon=True);self.thread.start()
+    def stop(self):
+        self.stop_event.set()
+        if self.thread:self.thread.join(3.)
+        self.sample()
+
+
+def resource_check(values):
+    from ..environment import resource_gate
+    try:physical=int(subprocess.check_output(['/usr/sbin/sysctl','-n','hw.memsize'],text=True))
+    except Exception:physical=None
+    parts=[values['rss_parent_bytes'],values['rss_children_bytes']]
+    bound=sum(parts)+(values.get('peak_mlx_bytes') or 0) if all(p is not None for p in parts) else None
+    result=resource_gate(physical,bound)
+    return {**result,'bound_kind':'conservative overlapping parent+children RSS plus MLX peak'}
+
+
+def run_stage(root, stage, *, backend_factory=None, encoder_factory=None, max_jobs=None):
+    """Native entry; injectable dependencies exercise exactly this transaction engine."""
+    from ..retrieval import EncoderBackend, Retrieval
+    root=Path(root).resolve()
+    plan=verify(root,privileged=False)
+    if plan['freeze']['boot_id']!=boot_identity():raise ValueError('cross-boot resumption forbidden')
+    verify_index(root/'index-setup')
+    jobs=selected_jobs(root,stage)
+    # Validate every existing completion before loading a model or generating.
+    for job in jobs:completion(root,plan,job)
+    if (root/'stages'/stage/'closed.json').exists():
+        validate_closed_stage(root,stage,privileged=False)
+        return {'status':'closed','jobs':len(jobs)}
+    if stage=='diagnosis':validate_closed_stage(root,'calibration',privileged=False)
+    if stage=='headroom':
+        validate_closed_stage(root,'diagnosis',privileged=False)
+        decision=read(root/'headroom-decision.json')
+        if (decision['plan_hash']!=plan['plan_hash'] or decision['decision']!='admit' or
+                decision['diagnosis_scores']!=identity(root/'scores/diagnosis/closed.json')):
+            raise ValueError('headroom requires explicit admission')
+    assets=read(root/'assets.json')['assets']
+    stage_dir=root/'stages'/stage;stage_dir.mkdir(parents=True,exist_ok=True)
+    session=uuid.uuid4().hex
+    setup_start=continuous_ns();active_start=time.perf_counter_ns()
+    monitor=ResourceMonitor(stage_dir/f'resources-{session}.jsonl')
+    backend=None;error=None
+    with stage_lock(root):
+        monitor.start()
+        try:
+            with offline_network():
+                encoder_start=continuous_ns()
+                encoder=(encoder_factory or EncoderBackend)(Path(assets['encoder']['local_path']))
+                append_jsonl(stage_dir/'setup.jsonl',{'session':session,'kind':'encoder_load','start_ns':encoder_start,
+                    'stop_ns':continuous_ns(),'status':'ok'})
+                if encoder.identity != {k:assets['encoder'][k] for k in ('revision','snapshot_hash')}:
+                    raise ValueError('loaded encoder identity mismatch')
+                docs=DocumentStore(root/'documents.jsonl')
+                retrieval=Retrieval(root/'index-setup/index',docs,encoder)
+                reader_start=continuous_ns()
+                factory=IsolatedReaderFactory(NativeReaderFactory(Path(assets['reader']['local_path']),
+                    {**plan['freeze']['settings']['reader'],'asset':assets['reader']}),root,plan['plan_hash'])
+                backend=(backend_factory or ContinuousBackend)(factory)
+                monitor.backend=backend
+                append_jsonl(stage_dir/'setup.jsonl',{'session':session,'kind':'reader_load',
+                    'start_ns':reader_start,'stop_ns':continuous_ns(),'active_start_ns':active_start,'status':'ok'})
+                tasks={t.task_id:t for t in load_tasks(root/'tasks.jsonl','fit_extension')}
+                gate=resource_check(monitor.sample())
+                append_jsonl(stage_dir/'setup.jsonl',{'session':session,'kind':'memory_gate',**gate})
+                if not gate['passed']:raise RuntimeError('memory gate failed')
+                warmup(root,plan,backend,stage_dir/f'warmup-{session}')
+                gate=resource_check(monitor.sample())
+                append_jsonl(stage_dir/'setup.jsonl',{'session':session,'kind':'post_warmup_memory_gate',**gate})
+                if not gate['passed']:raise RuntimeError('post-warmup memory gate failed')
+                done=0
+                for job in jobs:
+                    if completion(root,plan,job):continue
+                    backend.job_owner=job['job_id']
+                    execute_job(root,plan,job,tasks[job['task_id']],docs,retrieval,backend)
+                    done+=1
+                    if max_jobs is not None and done>=max_jobs:break
+        except BaseException as caught:
+            error=caught
+            append_jsonl(stage_dir/'setup.jsonl',{'session':session,'kind':'stage_failure',
+                'start_ns':setup_start,'stop_ns':continuous_ns(),'status':'failed','error':f'{type(caught).__name__}: {caught}'})
+        finally:
+            close_start=continuous_ns()
+            if backend:
+                try:backend.close()
+                except BaseException as caught:
+                    error=error or caught
+                    append_jsonl(stage_dir/'setup.jsonl',{'session':session,'kind':'cleanup_error','error':str(caught)})
+                for row in backend.lifecycle:append_jsonl(stage_dir/'lifecycle.jsonl',{'session':session,**row})
+            monitor.stop()
+            append_jsonl(stage_dir/'setup.jsonl',{'session':session,'kind':'session_envelope',
+                'start_ns':setup_start,'stop_ns':continuous_ns(),'shutdown_start_ns':close_start,
+                'status':'failed' if error else 'ok','overlaps':'service, setup and lifecycle; never sum'})
+    verify(root,privileged=False)
+    if error:raise error
+    if all(completion(root,plan,j) for j in jobs):
+        close_stage(root,plan,stage)
+        return {'status':'closed','jobs':len(jobs)}
+    return {'status':'incomplete','assigned_jobs':len(jobs)}
+
+
+def native_entry(root,stage):
+    root=Path(root).resolve()
+    # Imports must come from the sealed snapshot, including spawned children.
+    verify_import_origins(root)
+    sys.meta_path.insert(0,GoldImportGuard())
+    plan=verify(root,privileged=False)
+    probe=probe_denials(plan['freeze']['denied_probes'])
+    append_jsonl(root/'denial-probes.jsonl',{'stage':stage,'profile':identity(root/'native.sb'),**probe})
+    return run_stage(root,stage)
+
+
+def launch(root,stage):
+    root=Path(root).resolve()
+    verify(root)
+    env={**os.environ,'PYTHONPATH':str(root/'source/src'),'PYTHONDONTWRITEBYTECODE':'1',
+         'HF_HUB_OFFLINE':'1','TRANSFORMERS_OFFLINE':'1','TOKENIZERS_PARALLELISM':'false',
+         'OUTCOME_FOLLOWUP_SERVING':str(root)}
+    result=subprocess.run(['/usr/bin/sandbox-exec','-f',str(root/'native.sb'),sys.executable,'-B','-m',
+                          'outcome_poc.followup','_serve','--root',str(root),'--stage',stage],env=env)
+    verify(root)
+    if result.returncode:raise RuntimeError(f'native stage failed: exit {result.returncode}')
+    return {'stage':stage,'status':'native process exited successfully'}

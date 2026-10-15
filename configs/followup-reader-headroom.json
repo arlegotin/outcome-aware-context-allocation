@@ -1,0 +1,44 @@
+{
+  "reader": {
+    "repo_id": "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+    "revision": "50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b",
+    "max_context_tokens": 8192,
+    "max_new_tokens": 256,
+    "timeout_seconds": 120,
+    "prefill_step_size": 512
+  },
+  "encoder": {
+    "repo_id": "BAAI/bge-small-en-v1.5",
+    "revision": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+    "dimensions": 384,
+    "device": "cpu",
+    "precision": "float32"
+  },
+  "prepared_dir": "data/prepared",
+  "asset_manifest": "artifacts/provenance/asset-manifest.json",
+  "old_metadata": [
+    "artifacts/runs/confirmation/schedule.json",
+    "artifacts/runs/task10-fit256/schedule.json",
+    "artifacts/runs/task10-fit256/training/fit-origin.json",
+    "artifacts/runs/task11-native/schedule.json",
+    "artifacts/runs/task11-native-repeat/schedule.json",
+    "artifacts/runs/task11-post-training/fit-origin.json",
+    "artifacts/runs/task11-prelaunch/plan.json",
+    "artifacts/runs/task11-repeat-prelaunch/plan.json",
+    "artifacts/runs/task12-learning-curve/fit128/fit-origin.json",
+    "artifacts/runs/task12-prelaunch/plan.json",
+    "artifacts/runs/task12-prelaunch-index/plan.json",
+    "artifacts/runs/task12-prelaunch-retry/plan.json",
+    "artifacts/runs/task12-prelaunch-retry-analysis/plan.json",
+    "artifacts/runs/task12-tune128-retry/schedule.json",
+    "artifacts/runs/task13-calibration-prelaunch/plan.json",
+    "artifacts/runs/task13-calibration-prelaunch-retry/plan.json",
+    "artifacts/runs/task13-calibration-retry/schedule.json",
+    "artifacts/runs/task15-transfer/manifest.json",
+    "artifacts/runs/task17-timing-replication/schedule.json",
+    "artifacts/runs/task5-reader-diagnostic/metadata.json",
+    "artifacts/runs/task9-pilot32/schedule.json",
+    "artifacts/runs/task9-pilot64-extension/schedule.json"
+  ],
+  "deny_paths": []
+}
