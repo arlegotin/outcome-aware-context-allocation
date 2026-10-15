@@ -1,0 +1,50 @@
+{
+  "active_clock_excludes_host_sleep": true,
+  "active_envelope_to_last_completed_block_seconds": 5615.28846625,
+  "captured_utc": "2026-10-15T01:47:33.146731+00:00",
+  "closure_allowance_seconds_assumption_not_measurement": 600,
+  "complete_original_question_blocks": 173,
+  "forecast_active_seconds": 9641.586143588862,
+  "forecast_formula": "1.5 * mean(seven selected complete-pipeline costs per complete original question) * 480 * max(1,(active envelope minus observed setup)/all18 serving) + observed setup + 600s explicit closure allowance",
+  "full_denominator_preserved": true,
+  "includes_all_attempt_serving_and_causal_reload_metadata": true,
+  "known_original_wall_time_inference_invalid": true,
+  "latest_continuous_resource_window": {
+    "duration_seconds": 2649.700902,
+    "max_sample_interval_seconds": 2.188784,
+    "samples": 1312,
+    "start_utc": "2026-10-15T01:03:21.833651+00:00",
+    "stop_utc": "2026-10-15T01:47:31.534553+00:00"
+  },
+  "metadata_files_read": 9345,
+  "metadata_input_digest": "3b2cb514cc33f8f8950e8b77530615257ccb98b33d79aad6db41fc8be8ccf903",
+  "native_active_envelope_factor_excluding_setup": 1.0052215563026905,
+  "observed_shared_setup_seconds": 77.58653425,
+  "operational_gap_threshold_seconds_descriptive_only": 5,
+  "original_all18_serving_seconds_in_complete_blocks": 5508.936708807006,
+  "original_jobs_in_blocks": 3114,
+  "planning_margin": 1.5,
+  "preserved_private_artifact_sha256": {
+    "artifacts/runs/operational-planning/task-17-forecast-notes.md": "1401669221353f2cfc46f6183e0f3b4e92e313aa6b0cd7701cb950728f695b57",
+    "artifacts/runs/operational-planning/task-17-runtime-forecast.json": "1d086927e73b24c7d8d85c3a3ccb09b844f98cffe68cb6740d58760deeb358e4"
+  },
+  "protocol_hash": "415c80344dc3609ee2600a20c63c2502e4fc100cf50c60daee73ebc8a721e100",
+  "purpose": "Pre-outcome runtime planning only, not effect estimation or sample selection",
+  "quality_or_raw_output_files_read": false,
+  "recovery_jobs_per_question": 7,
+  "replication_assigned_jobs": 3360,
+  "replication_assigned_questions": 480,
+  "resource_sample_gap_count": 17,
+  "sample_digest": "fe89db6b1592fcf3ae9bf849187b6ea406b5fe4d20cc1b026b61aeca46be6009",
+  "seven_pipeline_active_seconds_per_question": {
+    "max": 33.398757958,
+    "mean": 12.385328765936416,
+    "p50": 10.527218126000001,
+    "p90": 20.9605590908,
+    "p95": 26.6006563418,
+    "p99": 30.755950735280003
+  },
+  "source_binding_sha256": "9ed0a30a5eccefe5007af6733506b207d21386b29e7998ee2795dc04b7dab745",
+  "source_commit": "5181e5326eb7cc3f22c9ac52bfaacc56cf1b047b",
+  "wall_time_guarantee": false
+}

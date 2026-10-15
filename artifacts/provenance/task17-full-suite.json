@@ -1,0 +1,9 @@
+{
+  "command": ".venv/bin/python -m pytest -q",
+  "started_utc": "2026-10-15T01:55:59.356841+00:00",
+  "stopped_utc": "2026-10-15T01:59:03.260596+00:00",
+  "elapsed_seconds": 183.9030260000145,
+  "returncode": 0,
+  "output_path": "artifacts/provenance/task17-full-suite.txt",
+  "qualification": "CPU/software verification during original timing-invalid run; no clean replication yet"
+}
