@@ -1,0 +1,29 @@
+{
+  "assigned_questions": 480,
+  "metrics": {
+    "answer_em": {
+      "both_fail": 275,
+      "both_success": 111,
+      "fixed10_successes": 173,
+      "fixed2_successes": 143,
+      "full_only": 62,
+      "oracle_gain_over_best_fixed_count": 32,
+      "oracle_successes": 205,
+      "small_only": 32
+    },
+    "joint_em": {
+      "both_fail": 460,
+      "both_success": 7,
+      "fixed10_successes": 11,
+      "fixed2_successes": 16,
+      "full_only": 4,
+      "oracle_gain_over_best_fixed_count": 4,
+      "oracle_successes": 20,
+      "small_only": 9
+    }
+  },
+  "protocol_hash": "ad632aa3f9a37765b62d237abb3782251bb54084e6bc6a8309399f873adfba07",
+  "scope": "Prespecified same480 two-budget quality oracle, scorer-only clairvoyant diagnostic; no deployable policy or valid cost frontier",
+  "score_closure_sha256": "bd59a5d0514f2de272629d77905beab712d3dd63521af87e97143a3018505336",
+  "wall_time_valid": false
+}

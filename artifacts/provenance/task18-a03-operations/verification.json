@@ -1,0 +1,22 @@
+{
+  "hashes": {
+    "artifacts/analysis/task18-a03/action-replay.attempts.jsonl": "3c820185b5ae4fca74071df986a72cd0d174aa6b1a31d67f2f06d26940d6ba8c",
+    "artifacts/analysis/task18-a03/action-replay.closed.json": "7a8d33d1e3abe8a76cd173581aa3b87aa2044e59b48e5a7de88aa4e57cc2e172",
+    "artifacts/analysis/task18-a03/action-replay.json": "7603873f1c45eb932a46f0dc9236eb9a0cc3cd7d7c27c525699f3c490c81fc5f",
+    "artifacts/provenance/task18-a03-operations/analysis.finished.json": "5dd0a91b158dfee852ccd687d8182ff06ebf7ea28d84beb87f0a379f58040a63",
+    "artifacts/provenance/task18-a03-operations/analysis.started.json": "56205de483363e2faf3c2710cffe4c443a4a324496018e42bab39be34c918f55",
+    "artifacts/provenance/task18-a03-operations/analysis.stderr.log": "2a44ee3b2d5dcfc29f41f3797c16f2cad5bfb30d88d9d7e5d2ca27a90cd75824",
+    "artifacts/provenance/task18-a03-operations/analysis.stdout.log": "d7fb6ff2ea1f7211e63dc2ed9385eacc97775e93fa921772ca55ad8ef66f7180",
+    "artifacts/provenance/task18-a03-operations/postpublication-verification.json": "b0aa0d49f6e75ee7e0d6ea344de426dfe73d1c583417946540e5a067dd2d7c83",
+    "artifacts/provenance/task18-a03-operations/report.md": "6bb7e0d419eea6b01ddb6914fc217e1a790960384b59a60fb66d5e036dce7a65",
+    "artifacts/provenance/task18-a03-operations/safe-summary.json": "6c6a19c2b3400e145b06a7f87e1acf87c6c64be1dd9654de1dde5f3a9822c777",
+    "artifacts/provenance/task18-a03-operations/transfer-metadata-preflight-blocked.json": "77783fa4b0989361736eed389c9f6bb9ee82bf50662030e6bb01e68877cfc049",
+    "artifacts/runs/task15-blind-review/manifest.json": "bf9951274a42af64efd067eee4685bfa1f7e0c447f3c33f7896214dad145dbab",
+    "artifacts/runs/task15-blind-review/preparation.finished.json": "9e0dd8ed442a9e2106abcfc37ca302633979649381c962aee37c3b0402791ca8",
+    "artifacts/runs/task15-blind-review/preparation.started.json": "81fbd4b25559e17d8144744d0c6c821c7fea4719c625db79ec3f5c258a5fea13",
+    "artifacts/runs/task15-blind-review/private-key.json": "90d62ce7e5b8fab25a94dc1d096926872756c6c983849c8726bb5cc94395a37e",
+    "artifacts/runs/task15-blind-review/reviewer.json": "9839f9725367c6cf89d5f2d2eea6c9ed16b9a8110eea1eb0d1c5e614c3631473"
+  },
+  "status": "passed",
+  "verified_utc": "2026-10-15T07:16:00.032861+00:00"
+}

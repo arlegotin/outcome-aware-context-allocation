@@ -1,0 +1,15 @@
+{
+  "cause": "Root handoff incorrectly labelled internal manifest_hash as the manifest file SHA256. Original pre-outcome preparation receipt records both distinct values and actual bytes match.",
+  "current_bytes_match_original_output_sha256": true,
+  "internal_canonical_hash_matches": true,
+  "internal_manifest_hash": "c81c662a7540b4119d65989f8f31471bfd0924f8c38f8c50758767a46fdf7e74",
+  "kind": "transfer_manifest_identifier_clarification",
+  "manifest_file_sha256": "75ebb9d431a5c62a8bacdb3f8dd89fe8d56824f2cb47e51483b57d67b5c996f5",
+  "manifest_or_source_or_sample_rewritten": false,
+  "original_preparation_finished_sha256": "fe5a86e40a6f5bdf0afbd241c0ae6336353441c7e67ad73f834728539fb163c6",
+  "original_preparation_started_sha256": "8efc886615901b3b11fc673fb764dbd7241935ad2e7a639d2370fbbcc0fc2382",
+  "original_preparation_utc": "2026-10-15T01:23:09.784094+00:00",
+  "recorded_utc": "2026-10-15T07:13:10.583622+00:00",
+  "scientific_amendment_required": false,
+  "scope": "Identifier clarification only; no new selection/reseal/rebinding or Gold read."
+}

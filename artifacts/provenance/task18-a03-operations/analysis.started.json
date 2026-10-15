@@ -1,0 +1,19 @@
+{
+  "command": [
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/.venv/bin/python3.12",
+    "tools/task18_action_replay.py",
+    "--protocol",
+    "artifacts/protocol-task17-timing/protocol.json",
+    "--output",
+    "artifacts/analysis/task18-a03/action-replay.json",
+    "--release",
+    "artifacts/runs/operational-planning/task18-analysis-release.json"
+  ],
+  "cwd": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation",
+  "release_sha256": "405b43250e92f06b325b620dd561b81812bf8c1a12f60bdd9a4ae65e76797448",
+  "scope": "parent observed tool attempt; excludes receipt persistence and console; no awake wall validity claim",
+  "started_perf_counter_ns": 305958691214000,
+  "started_utc": "2026-10-15T07:06:37.494378+00:00",
+  "sys_executable": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/.venv/bin/python3.12",
+  "sys_version": "3.12.9 (main, Feb  4 2025, 14:38:38) [Clang 16.0.0 (clang-1600.0.26.6)]"
+}

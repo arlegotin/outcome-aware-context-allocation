@@ -1,0 +1,33 @@
+{
+  "a03_assigned_jobs": 3360,
+  "a03_completed_jobs": 3360,
+  "a03_status": "native_closed",
+  "a03_wall_time_valid": false,
+  "all_native_monitor_and_cutoff_sessions_finished": true,
+  "captured_utc": "2026-10-15T07:03:31.934108+00:00",
+  "cost_repair_or_partial_sample_reinterpretation": false,
+  "downstream_scoring_owner": "Task16, separately released by root after complete A03 closure",
+  "evidence_sha256": {
+    "artifacts/runs/confirmation/operational-observations/a04-incomplete-summary.json": "97891b506e11f9a33659063493dae8963241054e5c247460e64f5771c5a65148",
+    "artifacts/runs/confirmation/shared-costs.jsonl": "e9c910713753ce1218f2c7ba839c4ed441742160de13d95281ea8ddcc9ddb9d9",
+    "artifacts/runs/task17-timing-replication/launch.completed.json": "e7c906980c494946bf8684b6c4914b972be1010db60830f58886ea3a61f3bf48",
+    "artifacts/runs/task17-timing-replication/operational-observations/a03-cutoff-control-armed.json": "68291f1dadaa884a91c186903d4c24afa2292e5972d7c76096a02ca4b5709eda",
+    "artifacts/runs/task17-timing-replication/operational-observations/a03-cutoff-control-exit.json": "0942cfb8a059eb00d004ccdf592cd5c50b3a98e900c02ffbb3043b5ab0ad3bb8",
+    "artifacts/runs/task17-timing-replication/operational-observations/a03-native-closure-handoff.json": "067998fa270bf8a46c3946856e777ab1fbe499a4c0ac2a049f7f51658be68b8f",
+    "artifacts/runs/task17-timing-replication/operational-observations/competing-candidate-70319.json": "df557dd9c9ed994251a87f53aa99762f05047a2c87a4f5d9944320b8609367f5",
+    "artifacts/runs/task17-timing-replication/operational-observations/competing-test-20261015T063623Z.json": "892d31b7fbcc67b52b4aa3a87e5201ebae30fc554685b1aa562853aa444a85c7",
+    "artifacts/runs/task17-timing-replication/operational-observations/external-monitor.jsonl": "f9c0bf40ca7da706a10d06123c0d05aa75d7361d3463b1d50443d11104f72041",
+    "artifacts/runs/task17-timing-replication/operational-observations/user-awake-intent.json": "1a20c01dc70f7d0f5cfec1baa1cbdcd82eeec01ad1fd4284fef1b3006a0ff0d6",
+    "artifacts/runs/task17-timing-replication/predictions.closed.json": "398b1cacf14edea95ce0f4d4b51a62e005eb37aec90e31e81b9272bc938662b0",
+    "artifacts/runs/task17-timing-replication/protected-run.closed.json": "193db8de7b4dae109e2b662e8bcf8d84522996e61366094d9199e9121ae94c80",
+    "artifacts/runs/task17-timing-replication/shared-costs.jsonl": "85131ea19543fa7585c9e8982e9048637818bee8e6619862791c4d11e46b0348"
+  },
+  "kind": "operational_execution_final_evidence_manifest",
+  "missing_expected_evidence": [],
+  "operator_read_quality_or_Gold": false,
+  "original_assigned_jobs": 8640,
+  "original_completed_jobs": 6510,
+  "original_status": "incomplete",
+  "original_wall_time_valid": false,
+  "same_unique_questions": 480
+}

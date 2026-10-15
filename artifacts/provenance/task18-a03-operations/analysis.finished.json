@@ -1,0 +1,9 @@
+{
+  "elapsed_seconds": 72.215180958,
+  "error": null,
+  "finished_perf_counter_ns": 306030906394958,
+  "finished_utc": "2026-10-15T07:07:49.708469+00:00",
+  "returncode": 0,
+  "scope": "parent observed tool attempt; excludes receipt persistence and console; no awake wall validity claim",
+  "started_receipt_sha256": "56205de483363e2faf3c2710cffe4c443a4a324496018e42bab39be34c918f55"
+}

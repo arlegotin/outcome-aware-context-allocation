@@ -1,0 +1,19 @@
+{
+  "a03_collection_state": "closed",
+  "authorization": "Task18 analysis only",
+  "authorized_by": "Codex /root",
+  "closed_score_sha256": "bd59a5d0514f2de272629d77905beab712d3dd63521af87e97143a3018505336",
+  "fresh_reproduction_sha256": "974d3937b9d714f94676b4382a58ac56a6650bab731641cf70665e10b148bcc4",
+  "original_collection_state": "stopped_incomplete",
+  "parent_protocol_hash": "415c80344dc3609ee2600a20c63c2502e4fc100cf50c60daee73ebc8a721e100",
+  "protocol_hash": "ad632aa3f9a37765b62d237abb3782251bb54084e6bc6a8309399f873adfba07",
+  "release_utc": "2026-10-15T07:05:51.905423+00:00",
+  "scope": "Explanatory conditional pre-answer action/quality replay and bounded selected-source accounting only. No Gold decoding, original incomplete outcomes, fitting, generation, primary mutation or missing-family direct runtime.",
+  "source_hashes": {
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/src/outcome_poc/action_replay.py": "5e139ab7d1d9f3e415f8d9a73fe5dd8cb0d36fcd2f0a06aae7c5b9cbeba4df86",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/src/outcome_poc/robustness.py": "bb2588e119d09f3ca224e070452d30af97228ae8eabe252b3a3998a47e7c7fbd",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/tools/task18_action_replay.py": "038e0c5e63dd10768cdee015c41299c5f5dcc5ec2200ac38994f0b8c33582565"
+  },
+  "source_review_approved": true,
+  "wall_time_valid": false
+}

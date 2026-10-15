@@ -1,0 +1,11 @@
+{
+  "actual_file_sha256": "75ebb9d431a5c62a8bacdb3f8dd89fe8d56824f2cb47e51483b57d67b5c996f5",
+  "cost_note": "initial standalone checksum-check interval not separately instrumented; unavailable, not zero",
+  "exact_elapsed_seconds": null,
+  "followup": "root clarified supplied value was internal manifest_hash; original preparation receipt already binds actual file SHA; see artifacts/provenance/task15-manifest-identity-clarification.json",
+  "no_repair_reseal_rebind": true,
+  "observation_utc": "2026-10-15T07:16:00.031680+00:00",
+  "path": "artifacts/runs/task15-transfer/manifest.json",
+  "status": "stopped before manifest decode",
+  "supplied_expected_file_sha256": "c81c662a7540b4119d65989f8f31471bfd0924f8c38f8c50758767a46fdf7e74"
+}

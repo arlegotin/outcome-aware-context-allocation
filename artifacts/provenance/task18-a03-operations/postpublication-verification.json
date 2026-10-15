@@ -1,0 +1,13 @@
+{
+  "all2880_source_prediction_score_hashes_match": true,
+  "all480_trace_hashes_match": true,
+  "current_source_hashes_match": true,
+  "first_verification_attempt": "assertion while hashing literal asdict prediction, before any verification report publication; corrected validator to existing Prediction citation encoding, without changing source, analysis, inputs or receipts",
+  "full44974_inputs_rehashed_after_publication": false,
+  "native_adapter_already_rechecked_all_inputs_before_publication": true,
+  "prediction_canonicalization": "Prediction dataclass serializer maps citation tuples to objects; literal asdict citation lists are not its canonical hash representation",
+  "report_digest_matches_closure": true,
+  "single_complete_adapter_attempt": true,
+  "status": "passed",
+  "verified_utc": "2026-10-15T07:16:00.031875+00:00"
+}
