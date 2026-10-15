@@ -51,7 +51,21 @@ def test_factor_requests_pause_resume_close_and_score(tmp_path,documents10,monke
         patch.setattr(runtime.subprocess,'run',lambda *a,**kw:pytest.fail('closed stage dispatched native worker'))
         assert runtime.launch(root,'diagnosis')['status']=='closed'
     assert identity(root/'stages/diagnosis/closed.json')==before
-    summary=scoring.score_stage(root,'diagnosis')
+    # Advance a controlled clock only across real, successful closure validation.
+    # Both the initial and final validation must be inside the scoring envelope.
+    clock=[1_000_000_000]
+    real_validate=scoring.validate_closed_stage
+    def measured_validation(*args,**kwargs):
+        result=real_validate(*args,**kwargs)
+        clock[0]+=7_000_000_000
+        return result
+    with monkeypatch.context() as patch:
+        patch.setattr(scoring,'continuous_ns',lambda:clock[0])
+        patch.setattr(scoring,'validate_closed_stage',measured_validation)
+        summary=scoring.score_stage(root,'diagnosis')
+    attempt=list(read_jsonl(root/'scoring-attempts.jsonl'))[-1]
+    assert attempt['status']=='ok'
+    assert (attempt['start_ns'],attempt['stop_ns'])==(1_000_000_000,15_000_000_000)
     scores=identity(root/'scores/diagnosis/scores.jsonl')
     assert summary['assigned_observations']==384
     assert scoring.score_stage(root,'diagnosis')==summary
@@ -175,3 +189,19 @@ def test_spawn_rejects_session_binding_before_acquisition(tmp_path,documents10,m
     def acquire():pytest.fail('model acquisition before checking session binding')
     with pytest.raises(ValueError,match='session'):
         runtime.IsolatedReaderFactory(acquire,root,plan['plan_hash'],path)()
+
+
+def test_rejected_scoring_closure_retains_failed_attempt_before_gold(tmp_path,monkeypatch):
+    from outcome_poc.citation_study import scoring
+    clock=iter([1_000_000_000,4_000_000_000])
+    monkeypatch.setattr(scoring,'continuous_ns',lambda:next(clock))
+    def forbidden_gold(*args,**kwargs):pytest.fail('Gold opened after rejected closure')
+    monkeypatch.setattr(scoring,'read_jsonl',forbidden_gold)
+    with pytest.raises(ValueError,match='incomplete'):
+        scoring.score_stage(tmp_path,'diagnosis')
+    ledger=tmp_path/'scoring-attempts.jsonl'
+    assert ledger.is_file(), 'rejected validation must retain its failed scoring envelope'
+    [attempt]=list(read_jsonl(ledger))
+    assert attempt['status']=='failed' and 'incomplete' in attempt['error']
+    assert (attempt['start_ns'],attempt['stop_ns'])==(1_000_000_000,4_000_000_000)
+    assert not (tmp_path/'scores').exists()

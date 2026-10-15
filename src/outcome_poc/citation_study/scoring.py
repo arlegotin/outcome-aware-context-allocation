@@ -11,9 +11,9 @@ from .analysis import summarize
 
 def score_stage(root,stage):
     root=Path(root).resolve()
-    plan,records=validate_closed_stage(root,stage) # Always before opening any Gold.
     start=continuous_ns();error=None
     try:
+        plan,records=validate_closed_stage(root,stage) # Timed and retained, always before Gold.
         assigned={j['task_id'] for j,_,_ in records};gold={}
         for row in read_jsonl(Path(plan['gold_input']['path'])):
             if row['task_id'] not in assigned:continue
