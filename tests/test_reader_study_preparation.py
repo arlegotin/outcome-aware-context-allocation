@@ -146,9 +146,13 @@ def test_confirmation_requires_task2_validator_before_input_reads(prepared_study
     with pytest.raises(ValueError,match='admission'):verify_stage(root,'confirmation',plan)
 
 
-def test_production_config_and_mandatory_metadata_cannot_be_weakened():
+def test_production_config_and_mandatory_metadata_cannot_be_weakened(tmp_path,monkeypatch):
     from outcome_poc.reader_study.preparation import validate_config,validate_metadata_inventory
     config=json.loads(Path('configs/reader-quality-comparison.json').read_text())
+    monkeypatch.chdir(tmp_path)
+    # Keep the production inventory intact, with authored files instead of private runs.
+    for name in config['old_metadata']+config['prior_cohorts']+[config['citation_cohorts']]:
+        path=Path(name);path.parent.mkdir(parents=True,exist_ok=True);path.write_text('{}')
     validate_config(config);validate_metadata_inventory(config)
     for key,value in [('development_n',1),('confirmation_n',2),('seed',1),('eligible_count',2),('eligible_hash','wrong')]:
         with pytest.raises(ValueError):validate_config({**config,key:value})
@@ -156,6 +160,9 @@ def test_production_config_and_mandatory_metadata_cannot_be_weakened():
         with pytest.raises(ValueError):validate_metadata_inventory({**config,key:value})
     altered=copy.deepcopy(config);altered['readers']['qwen14b-nonthinking']['settings']['enable_thinking']=True
     with pytest.raises(ValueError):validate_config(altered)
+    missing=Path(config['old_metadata'][0]);missing.unlink()
+    with pytest.raises(FileNotFoundError) as error:validate_metadata_inventory(config)
+    assert str(error.value)==str(missing)
 
 
 def test_fresh_shared_index_and_denial_sentinel_have_separate_seals(prepared_study,monkeypatch):
