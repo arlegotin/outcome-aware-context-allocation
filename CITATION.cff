@@ -5,7 +5,7 @@ title: "Outcome-aware context allocation: a local experiment in pre-answer evide
 authors:
   - family-names: Legotin
     given-names: Artem
-version: 0.1.0
+version: 0.2.0
 date-released: "2026-10-15"
 repository-code: "https://github.com/arlegotin/outcome-aware-context-allocation"
 url: "https://github.com/arlegotin/outcome-aware-context-allocation"
@@ -21,7 +21,12 @@ abstract: >-
   had 17. Sparse
   strict outcomes and invalid wall-time measurements leave the efficiency
   comparison inconclusive. The original full-family assignment is incomplete
-  and unscored. The repository provides the evaluation harness, frozen
+  and unscored. A separately frozen 64-question reader validation found 19
+  strict successes with an authored evidence-first prompt versus 6 with the
+  unchanged reader prompt, at 2.72 versus 2.59 seconds per query. Its strict
+  endpoint interval was positive, but the full reader admission gate failed
+  the answer-preservation guard. No new allocation advantage is established.
+  The repository provides the evaluation harness, frozen
   configuration, aggregate findings and qualified provenance; full raw-result
   authentication requires retained research assets outside the public release.
 keywords:

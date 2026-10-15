@@ -1,0 +1,29 @@
+{
+  "protocol_id": "reader-recovery-v1",
+  "historical_checkout": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation",
+  "diagnosis_n": 32,
+  "validation_reserved_n": 64,
+  "evaluation_reserved_n": 128,
+  "seed": 20261015,
+  "arms": ["2", "5", "10", "support-documents", "support-sentences"],
+  "reader": {
+    "repo_id": "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+    "revision": "50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b",
+    "max_context_tokens": 8192,
+    "max_new_tokens": 256,
+    "timeout_seconds": 120,
+    "prefill_step_size": 512,
+    "temperature": 0
+  },
+  "encoder_revision": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+  "deadline_utc": "2026-10-15T19:30:00+00:00",
+  "candidate_budget": {"one_pass_evidence_first": 1, "conditional_two_pass_selector": 1},
+  "selection_rule": "Diagnosis alone admits no reader. A localization intervention requires clean-support capability, paired localization evidence and blind rubric review. Independent validation must improve natural-ten strict joint EM with a prespecified valid positive interval and simultaneous zero-margin answer/joint guards; otherwise stop or report inconclusive. No automatic candidate search or extra labels.",
+  "precision": "32 paired diagnostic questions are exploratory. Report finite-population harm/rescue bounds and discordance, including wide intervals; no efficiency/preservation claim. Freeze candidate validation and final size/power separately before their outcomes using this diagnosis and measured feasibility. The 128 evaluation IDs are an untouched reservation pool, not a final assignment or power claim.",
+  "operational_requirements": null,
+  "timing_claim": "descriptive_only",
+  "repetitions": 1,
+  "cache_mode": "none",
+  "semantic_retries": 0,
+  "reuse_indexes": []
+}

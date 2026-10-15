@@ -25,7 +25,7 @@ def _sources():
     # Include the separately introduced helper and launcher, plus unchanged helpers
     # that are outside the execution seal (notably robustness).
     root = Path(__file__).resolve().parents[2]
-    paths = [Path(__file__), Path(__file__).with_name('robustness.py'),
+    paths = [Path(__file__), Path(__file__).with_name('robustness.py'), Path(__file__).with_name('index_lineage.py'),
              root/'tools'/'task18_action_replay.py']
     return {str(p.resolve()):file_hash(p) for p in paths}
 
@@ -378,6 +378,9 @@ def _load_observables(a):
     for name,digest in index_seal['files'].items():
         if file_hash(name) != digest: raise ValueError('frozen index realization checksum mismatch')
     document_path = root/'selected-documents.jsonl'; index = Path(settings['index_dir'])
+    if 'index_lineage' in index_seal:
+        from .index_lineage import capture_lineage
+        capture_lineage(index,frozen=index_seal['index_lineage'])
     bound = {Path(name).resolve():digest for name,digest in index_seal['files'].items()}
     if document_path.resolve() not in bound or (index/'manifest.json').resolve() not in bound:
         raise ValueError('projection/index manifest not bound to realization')

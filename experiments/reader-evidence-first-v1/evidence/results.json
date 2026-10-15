@@ -1,0 +1,299 @@
+{
+  "arms": {
+    "baseline": {
+      "Q": 0.09375,
+      "R": 27.647437896166668,
+      "R_reason": null,
+      "answer_f1": 0.6195411076516183,
+      "answer_successes": 33,
+      "correct_answer_without_strict_success": 27,
+      "excess_reference_citations_total": 31,
+      "input_tokens": 105972,
+      "max_seconds": 3.890568583,
+      "mean_T": 2.5919473027656252,
+      "missing_reference_supports_total": 78,
+      "n": 64,
+      "output_tokens": 3195,
+      "p95_seconds": 3.6393183268499993,
+      "p99_seconds": 3.7806756884199992,
+      "statuses": {
+        "invalid_citation": 1,
+        "ok": 62,
+        "parse_error": 1
+      },
+      "strict_successes": 6,
+      "support_em_count": 11,
+      "support_f1": 0.5930431547619047,
+      "support_precision": 0.7778645833333333,
+      "support_recall": 0.5434895833333333,
+      "total_T": 165.88462737700002
+    },
+    "evidence-first": {
+      "Q": 0.296875,
+      "R": 9.161970736842104,
+      "R_reason": null,
+      "answer_f1": 0.7424428104575164,
+      "answer_successes": 44,
+      "correct_answer_without_strict_success": 25,
+      "excess_reference_citations_total": 28,
+      "input_tokens": 121844,
+      "max_seconds": 3.8514395,
+      "mean_T": 2.7199600624999998,
+      "missing_reference_supports_total": 64,
+      "n": 64,
+      "output_tokens": 2274,
+      "p95_seconds": 3.597816368699999,
+      "p99_seconds": 3.81812389229,
+      "statuses": {
+        "abstain": 1,
+        "invalid_citation": 1,
+        "ok": 62
+      },
+      "strict_successes": 19,
+      "support_em_count": 26,
+      "support_f1": 0.6878720238095238,
+      "support_precision": 0.8174479166666667,
+      "support_recall": 0.6403645833333333,
+      "total_T": 174.07744399999999
+    }
+  },
+  "assigned_calls": 128,
+  "assigned_questions": 64,
+  "claims": {
+    "allocation_improvement": false,
+    "operational_usefulness": false,
+    "reader_improvement": false
+  },
+  "costs": {
+    "attributable_incremental_adaptation_seconds": null,
+    "break_even_queries": null,
+    "index_seconds": 13.459223334,
+    "launch_seconds": 352.979874542,
+    "nested_resident_seconds": 352.080760042,
+    "nested_service_seconds": 339.962071377,
+    "observed_disjoint_seconds": 378.379600585,
+    "preflight_seconds": 0.1431295,
+    "preparation_seconds": 10.324837125,
+    "project_engineering_tests_and_historical_seconds": null,
+    "scope": "Preparation/index/launch/scoring/preflight envelopes only; resident, service, warmup, forecasts and paid admissions are nested. Unknown project costs are not zero.",
+    "scoring_seconds": 1.4725360840000001
+  },
+  "operational_requirements": null,
+  "population": 88427,
+  "prompt_forecast": {
+    "assigned_generations_so_far": 0,
+    "boot_id": "E12EFD04-80D7-4050-8757-259027087681",
+    "clock_domain": "mach_continuous_time",
+    "max_context_tokens": 8192,
+    "max_new_tokens": 256,
+    "maximum_input_tokens": 2803,
+    "start_ns": 373249039920083,
+    "stop_ns": 373250473283833
+  },
+  "protocol_id": "reader-evidence-first-v1",
+  "qualitative_review": {
+    "categories": {
+      "answer_supported": {
+        "no": 4,
+        "unclear": 0,
+        "yes": 4
+      },
+      "case_count": 8,
+      "citations_sufficient": {
+        "no": 5,
+        "unclear": 0,
+        "yes": 3
+      },
+      "membership_valid": {
+        "false": 0,
+        "true": 8
+      },
+      "observation_tag_case_counts": {
+        "ambiguous_reference_or_question": 3,
+        "answer_unsupported": 4,
+        "excess_citations": 1,
+        "missing_bridge_relation": 2,
+        "missing_final_relation": 5,
+        "none": 3
+      }
+    },
+    "categories_may_overlap": true,
+    "method": "Auxiliary blind Codex agent; no Gold/key/source access. Not human truth certification or a replacement endpoint.",
+    "sampling": {
+      "limits": "Enriched auxiliary LLM review, not independent human truth certification; categories may overlap; question text/citations can reveal context properties.",
+      "sampling_rule": "Four lowest hash per strict-success/failure stratum; condition, reference and score hidden; hash-shuffled case order. No population semantic rate.",
+      "strata": {
+        "0": {
+          "expansion_weight": 25.75,
+          "population_jobs": 103,
+          "sample_jobs": 4
+        },
+        "1": {
+          "expansion_weight": 6.25,
+          "population_jobs": 25,
+          "sample_jobs": 4
+        }
+      },
+      "unique_questions": 8
+    },
+    "strict_success_outputs_flagged_insufficient": 1,
+    "unique_questions_among_flags": 1
+  },
+  "reader_validation": {
+    "admitted": false,
+    "comparator": "unchanged natural-ten; selected and fixed-ten alias",
+    "cost_acceptability": null,
+    "efficiency_claim": false,
+    "invalid_or_runtime_failures": {
+      "baseline": 2,
+      "evidence-first": 1
+    },
+    "quality_guards": [
+      {
+        "N": 88427,
+        "ci": [
+          0.0009386273423275665,
+          0.369909642982347
+        ],
+        "comparator": "selected",
+        "difference": 0.203125,
+        "harm_bounds": [
+          0.0,
+          0.08615015775724609
+        ],
+        "harm_count": 0,
+        "metric": "joint_em",
+        "n": 64,
+        "preserved": true,
+        "rescue_bounds": [
+          0.08708878509957366,
+          0.369909642982347
+        ],
+        "rescue_count": 13,
+        "sampling_variance": 0.002567429883438626,
+        "sparse": true,
+        "tail_alpha": 0.003125,
+        "variance_reason": null
+      },
+      {
+        "N": 88427,
+        "ci": [
+          -0.057674692118922954,
+          0.3686204439820417
+        ],
+        "comparator": "selected",
+        "difference": 0.171875,
+        "harm_bounds": [
+          0.0012891990003053367,
+          0.1447634772184966
+        ],
+        "harm_count": 2,
+        "metric": "answer_em",
+        "n": 64,
+        "preserved": false,
+        "rescue_bounds": [
+          0.08708878509957366,
+          0.369909642982347
+        ],
+        "rescue_count": 13,
+        "sampling_variance": 0.003248979897745109,
+        "sparse": true,
+        "tail_alpha": 0.003125,
+        "variance_reason": null
+      },
+      {
+        "N": 88427,
+        "ci": [
+          0.0009386273423275665,
+          0.369909642982347
+        ],
+        "comparator": "fixed_ten",
+        "difference": 0.203125,
+        "harm_bounds": [
+          0.0,
+          0.08615015775724609
+        ],
+        "harm_count": 0,
+        "metric": "joint_em",
+        "n": 64,
+        "preserved": true,
+        "rescue_bounds": [
+          0.08708878509957366,
+          0.369909642982347
+        ],
+        "rescue_count": 13,
+        "sampling_variance": 0.002567429883438626,
+        "sparse": true,
+        "tail_alpha": 0.003125,
+        "variance_reason": null
+      },
+      {
+        "N": 88427,
+        "ci": [
+          -0.057674692118922954,
+          0.3686204439820417
+        ],
+        "comparator": "fixed_ten",
+        "difference": 0.171875,
+        "harm_bounds": [
+          0.0012891990003053367,
+          0.1447634772184966
+        ],
+        "harm_count": 2,
+        "metric": "answer_em",
+        "n": 64,
+        "preserved": false,
+        "rescue_bounds": [
+          0.08708878509957366,
+          0.369909642982347
+        ],
+        "rescue_count": 13,
+        "sampling_variance": 0.003248979897745109,
+        "sparse": true,
+        "tail_alpha": 0.003125,
+        "variance_reason": null
+      }
+    ],
+    "reader_improvement_claim": false,
+    "semantic_validity": "unresolved; strict benchmark admission is not semantic/operational certification",
+    "strict_benchmark_quality_improvement": false,
+    "strict_lower_bound": 0.0009386273423275665
+  },
+  "registered_endpoint_results": {
+    "answer_em": {
+      "ci": [
+        -0.057674692118922954,
+        0.3686204439820417
+      ],
+      "difference": 0.171875,
+      "harms": 2,
+      "positive_lower_bound": false,
+      "rescues": 13
+    },
+    "joint_em": {
+      "ci": [
+        0.0009386273423275665,
+        0.369909642982347
+      ],
+      "difference": 0.203125,
+      "harms": 0,
+      "positive_lower_bound": true,
+      "rescues": 13
+    }
+  },
+  "resources": {
+    "all_memory_gates_pass": true,
+    "limit_bytes": 30923764531,
+    "maximum_conservative_overlapping_working_set_bytes": 6716761796,
+    "memory_gate_count": 257,
+    "reserve_bytes": 7730941133,
+    "resource_samples": 435,
+    "scope": "Observed sampled maxima only; missing background samples stay unavailable, never zero; admission gates recorded separately.",
+    "system_swap_range_bytes": [
+      9402580992,
+      9410969600
+    ],
+    "unavailable_resource_samples": 3
+  },
+  "semantic_validity": "Unresolved; no Gold repair or replacement semantic endpoint"
+}

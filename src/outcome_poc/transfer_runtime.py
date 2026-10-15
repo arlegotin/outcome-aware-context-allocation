@@ -203,41 +203,32 @@ def _completed_pilot(m,parents):
 def build_pooled_index(m, documents, encoder):
     """Preserve every attempt; only a separately sealed successful index is usable."""
     from .retrieval import build_index, _completed_manifest
+    from .index_lineage import capture_lineage, reused_sources
     root=Path(m['root'])
     if (root/'index-realization.json').exists():
         seal=_read(root/'index-realization.json');_check_files(root,seal['files'])
         for name,digest in seal['reuse_source_hashes'].items():
             if file_hash(name)!=digest:raise ValueError('reused source changed')
         if seal['manifest_hash']!=m['manifest_hash']:raise ValueError('index realization identity changed')
+        if 'index_lineage' not in seal:
+            raise ValueError('legacy seal has no recursive lineage; preserve it without rebinding')
+        capture_lineage(Path(seal['index_dir']),frozen=seal['index_lineage'])
         return Path(seal['index_dir']),_completed_manifest(Path(seal['index_dir']))
     number=len(list((root/'index').glob('attempt-*')))+1
     index=root/'index'/f'attempt-{number}';started=time.perf_counter();status='failed'
     try:
-        sources=[Path(p) for p in m['reuse_indexes'] if (Path(p)/'manifest.json').exists()]
+        sources=[Path(p) for p in m['reuse_indexes']]
         build_index((documents.get(d) for d in m['corpus']['document_ids']),encoder,index,reuse_indexes=sources)
         manifest=_completed_manifest(index)
         import sqlite3
         with sqlite3.connect(f'file:{index/"metadata.sqlite3"}?mode=ro',uri=True) as db:
             actual=sorted(row[0] for row in db.execute('SELECT doc_id FROM documents'))
         if actual!=m['corpus']['document_ids']:raise ValueError('pooled index document union mismatch')
-        sources_by_id={};source_hashes={}
-        def original_sources(parent):
-            for source in parent.get('reuse_sources',[]):
-                path=Path(source['path']);old=_completed_manifest(path)
-                if content_hash(old)!=source['manifest_hash']:raise ValueError('reused source changed')
-                ledger=Path(old['completion']['attempt_ledger'])
-                rows=[r for r in read_jsonl(ledger) if r['attempt_id']==source['attempt_id']]
-                if len(rows)!=1:raise ValueError('original physical indexing cost missing')
-                identity='index-attempt:'+source['attempt_id']
-                if identity in sources_by_id:continue
-                sources_by_id[identity]={'source_id':identity,'path':str(path),'elapsed_seconds':rows[0]['elapsed_seconds'],
-                    'scope':'existing adaptation, not charged again as new pooled indexing'}
-                source_hashes[str(path/'manifest.json')]=file_hash(path/'manifest.json')
-                source_hashes[str(ledger)]=file_hash(ledger);original_sources(old)
-        original_sources(manifest)
+        lineage=capture_lineage(index)
         seal={'manifest_hash':m['manifest_hash'],'index_dir':str(index),'index_manifest':manifest,
-            'files':_inventory(root,[index/'manifest.json',*(index/name for name in manifest['files']),Path(manifest['completion']['attempt_ledger'])]),
-            'reuse_source_hashes':source_hashes,'reused_physical_sources':list(sources_by_id.values())}
+            'files':_inventory(root,[index/'manifest.json',*(index/name for name in manifest['files'])]),
+            'index_lineage':lineage,'reuse_source_hashes':{p:v['sha256'] for p,v in lineage['files'].items()},
+            'reused_physical_sources':reused_sources(lineage)}
         immutable_json(root/'index-realization.json',seal);status='ok'
         return index,manifest
     finally:
@@ -541,7 +532,7 @@ def seal_manifest(primary_path,root):
         protected=load_tasks(prepared/'tasks.jsonl','protected')
         if {t.task_id for t in dev}!=set(reservations['pilot'])|set(reservations['fit'])|set(reservations['tune']) or {t.task_id for t in protected}!=set(reservations['protected']):
             raise ValueError('selected development/full protected identities differ from prepared declaration')
-        extra=['src/outcome_poc/robustness.py','src/outcome_poc/transfer_runtime.py','tools/task15_transfer_native.py']
+        extra=['src/outcome_poc/robustness.py','src/outcome_poc/transfer_runtime.py','src/outcome_poc/index_lineage.py','tools/task15_transfer_native.py']
         source=_capture_source(subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),sorted(set(primary['source']['sha256'])|set(extra)))
         m=prospective_manifest(primary,dev,protected,source,root)
         inputs=[Path(primary_path),prepared/'manifest.json',prepared/'tasks.jsonl',prepared/'documents.jsonl']
@@ -714,10 +705,7 @@ def _native_work(m,phase,label):
                 raise ValueError('frozen encoder asset identity changed')
             if phase=='pilot':index,index_manifest=build_pooled_index(m,documents,encoder)
             else:
-                seal=_read(root/'index-realization.json');_check_files(root,seal['files'])
-                for path,digest in seal['reuse_source_hashes'].items():
-                    if file_hash(path)!=digest:raise ValueError('reused original source changed')
-                index=Path(seal['index_dir']);index_manifest=_completed_manifest(index)
+                index,index_manifest=build_pooled_index(m,documents,encoder)
             retrieval=PooledRetrieval(index,documents,encoder,batch_rows=m['batch_rows']);guard()
             if phase=='pilot':
                 probe_path=root/f'pilot-queries-{label}.jsonl'

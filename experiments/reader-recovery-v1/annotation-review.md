@@ -1,0 +1,15 @@
+# Required annotation and evidence review
+
+The auxiliary blind agent flagged a necessary bridge as missing in two strict-success outputs on the **same question**, including its annotated-sentences projection. This is a flag for human adjudication, not proof of bad Gold. One strict failure had an answer paraphrase and citations the agent considered adequate. Strict scores remain unchanged. Do not select a prompt to exploit these disagreements or count the agent's judgments as a validated semantic endpoint.
+
+The private completed-run root contains `human-adjudication-packet.json` (8 outputs, 7 unique questions; SHA256 `065b9aa0a086ab5d45f7967370f0b0c20165b30b1e9da64f08bf501fda2a0ef6`). It supplies the question, actual displayed evidence with original indices, output, original ten documents and reference annotation. Keep it private. The sampling key records four hash-selected successes and four failures from 160 calls, with expansion weights 1.75 and 38.25. Repeated questions and outcome enrichment prevent an independent population semantic-quality estimate.
+
+Two independent human reviewers should first receive only the question, displayed evidence and output, with method, strict result and reference hidden. For each output, record:
+
+1. Whether the displayed text supports the complete answer path: yes, no or unclear. Identify the original sentence IDs supporting each entity/bridge/final relation. Distinguish contradiction from absence of evidence.
+2. Whether the cited subset supports that same complete path. Record omitted bridges, omitted final relations, excess citations and invalid membership separately; categories may overlap.
+3. Whether the question admits multiple referents or answers, and what text resolves that ambiguity. Do not infer truth from a plausible answer or model confidence.
+
+In a separate pass reveal the full original packet and reference. Record whether the reference answer is supported, whether its supporting set includes every necessary relation, whether alternative minimal sets are defensible, and whether a difference is paraphrase, omitted evidence or unresolved ambiguity. Preserve each initial judgment and document disagreements and adjudication. External fact checking, if needed, is a separate evidence source with its own citations; it cannot silently repair the frozen benchmark.
+
+This review is not yet performed by humans. If it leaves semantic validity unresolved, report the disagreement and retain the historical strict endpoint. A proposed semantic-support endpoint requires independent validation, its own prospective protocol and parallel strict reporting before model selection. If the strict target remains suitable and citation-generation errors predominate, the next bounded reader test is one authored evidence-first prompt with bridge and comparison examples, followed by independent validation on the reserved 64 questions. Freeze exact prompt/examples, input-token cost, schedule, admission/precision rule and resource forecast first. A two-call selector requires evidence of a localization benefit, which this diagnosis did not establish.
