@@ -1,0 +1,20 @@
+{
+  "utc": "2026-10-15T08:57:58.669501+00:00",
+  "result": "passed",
+  "scope": "Root independent final staging and byte-exact preservation verification; no new scientific execution or native defect repair",
+  "archive_manifest": "artifacts/provenance/process-archive/2026-10-14/20261015T085343993361Z/process-manifest.json",
+  "archive_manifest_sha256": "325239f7ca3efbee027034e3e24824cfdd60057b7ca1ad2b0ad8008d79ea8adb",
+  "archive_payload_files_verified": 383,
+  "all_current_workspace_files_verified": 180,
+  "workspace": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation",
+  "distinct_rulings": 7,
+  "staging_candidates_verified": 21,
+  "dependency_audit_sha256": "faf20d8f250526992346537b2889947dd901f0f76139ada26222256692c51af8",
+  "dependency_bindings": 83207,
+  "native_I1": "Important, unfixed, explicitly qualified and parked after single fix/scoped review",
+  "scientific_source_unchanged_from_full802_suite": true,
+  "outcome": "inconclusive",
+  "elapsed_seconds": 0.10175120801432058,
+  "cleanup_performed": false,
+  "cleanup_gate": "Commit final public records first, then revalidate unchanged workspace copies and remove only the named workspace; raw evidence stays at sealed durable paths"
+}

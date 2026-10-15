@@ -1,0 +1,109 @@
+{
+  "verified_utc": "2026-10-15T08:56:02.353211+00:00",
+  "status": "passed",
+  "scope": "Final administrative copy/hash/link/status/source/dependency audit; no new scientific inference or native-lineage repair",
+  "review_status": {
+    "I1_disposition": "Important native source defect NOT ADDRESSED; explicit seventh-Ruling residual/cap disposition",
+    "M1_disposition": "ADDRESSED; scoped re-review complete",
+    "fix_commit": "efa0ee83be5cfdfeb8faba4597b6ce4f2987c691",
+    "review_paths": [
+      "docs/superpowers/reviews/2026-10-15-final-whole-branch-review.md",
+      "docs/superpowers/reviews/2026-10-15-final-scoped-review.md",
+      "docs/superpowers/reviews/2026-10-15-final-review-disposition.md"
+    ],
+    "scoped_checks": 1,
+    "status": "Complete bounded local inconclusive handoff. Whole-branch review cc1b992..8518465: qualified approval; one documentation fix efa0ee8 and one scoped re-review complete. M1 addressed. Important I1 remains NOT ADDRESSED as a native source defect; retained under the seventh Ruling with reviewed external mitigation, unknown full/adaptation cost and no production or native-lineage readiness claim.",
+    "whole_branch_range": "cc1b992..8518465"
+  },
+  "archive": {
+    "public_root": "artifacts/provenance/process-archive/2026-10-14/20261015T085343993361Z",
+    "private_root": "artifacts/runs/process-archive/2026-10-14/20261015T085343993361Z",
+    "manifest_sha256": "325239f7ca3efbee027034e3e24824cfdd60057b7ca1ad2b0ad8008d79ea8adb",
+    "rulings_sha256": "8badde6416cfb7e2e166ec4ec7a698ef7ba11f241c9cae802b1dadf40c6da969",
+    "files": 383,
+    "bytes": 91423147,
+    "workspace_files": 180,
+    "all_workspace_filetypes_exact": true,
+    "all_copied_bytes_verified": true,
+    "public_payload_files": 3,
+    "distinct_rulings": 7
+  },
+  "metadata_dependency_audit": {
+    "path": "artifacts/provenance/task16-final/final-dependency-audit.json",
+    "sha256": "faf20d8f250526992346537b2889947dd901f0f76139ada26222256692c51af8",
+    "bindings": 83207,
+    "unique_hashed_files": 45796,
+    "missing_or_mismatched": 0,
+    "active_scratch_bindings": 0
+  },
+  "process_custody": {
+    "root_receipt": "artifacts/provenance/final-root-process-custody.json",
+    "root_sha256": "82baab5459d137aa78416df9b9349f4423a622ddd60a292e66080605350bddfd",
+    "agent_receipt": "artifacts/runs/task16-phase2b/final-current-custody.json",
+    "agent_sha256": "d9bb9b5163c515ef9142d63da57b17c4af689d398c2c4e81ac62a58f7e1186e2",
+    "agent_worker_matches": [],
+    "no_signals": true
+  },
+  "historical_reference_mappings": [
+    {
+      "bytes": 6298,
+      "captured_utc": "2026-10-15T08:53:44.026680+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T085343993361Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/asset-source-fallback.md",
+      "sha256": "634223df0bb97872f76e6fab3bb5deb5f378069ec8b880eff21587a022c70320",
+      "source_mtime_ns": 1791981577749517988,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/asset-source-fallback.md"
+    },
+    {
+      "bytes": 95645,
+      "captured_utc": "2026-10-15T08:53:44.031051+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T085343993361Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/progress.md",
+      "sha256": "6d942bf049a1a1ff961145744be288e8fcc3c7510066e521936578bd253c949c",
+      "source_mtime_ns": 1792054423966603596,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/progress.md"
+    }
+  ],
+  "historical_assembly_not_active_reproduction_dependency": true,
+  "reproduction_receipts_unchanged": true,
+  "scientific_values_unchanged_from_fix_commit": true,
+  "source_tests_tools_configs_lock_unchanged": true,
+  "local_links_checked": 56,
+  "verdict": "inconclusive",
+  "claims_all_false": true,
+  "git_diff_check_exit": 0,
+  "remaining_risks": [
+    "Important I1 native lineage defect remains unfixed in both consumers; external mitigation qualifies retained result only.",
+    "Both primary wall clocks invalid, sparse strict outcomes, no preserved-quality or efficiency claim.",
+    "Original full-family assignment incomplete/unscored; pooled32 nested exploratory.",
+    "Full cost/adaptation unknown; failed administrative probes and separate audit/archive intervals retained without zero filling."
+  ],
+  "retained_private_setup_receipts": [
+    {
+      "bytes": 178165,
+      "captured_utc": "2026-10-15T08:53:44.114593+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T085343993361Z/artifacts/provenance/hub-metadata.json",
+      "sha256": "dfd7ce4ddfb9a8150e36dffe6629551c1b0512360ff9d2a467372333b694a1ac",
+      "source_mtime_ns": 1791981411281188091,
+      "source_path": "artifacts/provenance/hub-metadata.json"
+    },
+    {
+      "bytes": 639697,
+      "captured_utc": "2026-10-15T08:53:44.116325+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T085343993361Z/artifacts/provenance/pip-install-report.json",
+      "sha256": "acea401ea254c338c7497f63ee698e8d38510a70d637f72714f95e3684dda6fe",
+      "source_mtime_ns": 1791981319784238215,
+      "source_path": "artifacts/provenance/pip-install-report.json"
+    },
+    {
+      "bytes": 606,
+      "captured_utc": "2026-10-15T08:53:44.116909+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T085343993361Z/artifacts/provenance/prerequisite-probe.json",
+      "sha256": "46d3b9463277f6a0e16e51c3e15191fd5bb57aca849f67e51040dbc164cf3d82",
+      "source_mtime_ns": 1791980283906677315,
+      "source_path": "artifacts/provenance/prerequisite-probe.json"
+    }
+  ],
+  "root_only_cleanup": "Root must independently verify/commit, then remove only this exact archived plan workspace. This receipt does not delete or mutate scientific paths.",
+  "new_tests": 0,
+  "gold_or_model_execution": false,
+  "final_staging_manifest": "artifacts/runs/task16-phase2b/final-safe-staging-manifest.json"
+}

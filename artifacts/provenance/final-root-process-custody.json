@@ -1,0 +1,16 @@
+{
+  "utc": "2026-10-15T08:50:27.392881+00:00",
+  "scope": "Read-only current custody check restricted to four recorded A03/pooled owned PID/group identities; no claims about unrelated processes",
+  "owned_ids_checked": [
+    56013,
+    56077,
+    78545,
+    81262
+  ],
+  "matching_current_processes": [],
+  "all_recorded_owned_identities_gone": true,
+  "processes_stopped": false,
+  "environment_or_power_changed": false,
+  "elapsed_seconds": 0.028163834009319544,
+  "retained_prior_original_monitor_custody": "artifacts/provenance/task14-final-operational-handoff.json"
+}

@@ -1,6 +1,6 @@
 # Outcome-aware context allocation — final report
 
-The fixed main comparison, fresh scoring reproduction, conditional replay, complete failure taxonomy, eight-case diagnostic and pooled-transfer diagnostic are complete. The original full-family assignment remains incomplete and unscored. Whole-branch review: qualified approval; final scoped check/status/archive closure pending.
+The fixed main comparison, fresh scoring reproduction, conditional replay, complete failure taxonomy, eight-case diagnostic and pooled-transfer diagnostic are complete. The original full-family assignment remains incomplete and unscored. The bounded local inconclusive handoff is complete: whole-branch qualified approval, one documentation fix and one scoped check; Important I1 remains explicitly unfixed.
 
 The experiment has **not established an advantage from training the controller on reader outcomes**. On the same 480 questions, the outcome-trained controller achieved 14 strict successes versus 17 for the proxy-label controller. These sparse outcomes do not support the prespecified primary interval. Neither quality preservation nor a supported quality loss is established by the four simultaneous guards. Both native runs also lost host-suspension time from their clocks, so no wall-time efficiency or break-even claim is valid.
 
@@ -17,7 +17,7 @@ A* is the frozen outcome-trained GBM (`PRE-OUTCOME-GBM:17:numeric`, threshold 0.
 | Original full-family run | 480 questions; 8,640 jobs | Stopped at 6,510 jobs under outcome-blind A04 | Incomplete and unscored; no subset or original family-quality table |
 | Separate A03 run | The same 480 questions from N=7,344; 3,360 jobs | All 3,360 jobs closed | Full descriptive quality for A/B, FIXED10, FIXED2 and random; invalid wall timing |
 
-A04 advanced the original operational cutoff from 06:12:52 to 04:30 UTC to preserve the one fixed-size A03 attempt. It did not change either scientific protocol or repair either clock. Original stop was 04:30:00.253260 UTC; A03's last job was 06:59:20.490028 UTC. No third timing attempt, sample enlargement or policy retuning occurred. The six [Rulings and their supersession](provenance/task16-final/rulings-phase2b.json) preserve that history.
+A04 advanced the original operational cutoff from 06:12:52 to 04:30 UTC to preserve the one fixed-size A03 attempt. It did not change either scientific protocol or repair either clock. Original stop was 04:30:00.253260 UTC; A03's last job was 06:59:20.490028 UTC. No third timing attempt, sample enlargement or policy retuning occurred. The seven [Rulings and their supersession/residual disposition](provenance/task16-final/rulings-final.json) preserve that history.
 
 A03 used two fresh repetitions per selected A/B method; other methods ran once. Repetitions remain within each question and do not increase n. All repeated same-arm outputs agreed. Native closure retained 3,360 attempts and matching paid start/finish pairs; network attempts were zero and all six OS-denial probes passed. The original assignment remains 480 even though collection stopped.
 
@@ -143,7 +143,9 @@ It requires retained private datasets, assets and closed run files; sanitized tr
 
 The latest source verification remains **802 native Python 3.12.9 tests, zero skips**, with clean dependencies and no frozen-source mismatch. Documentation and data assembly do not trigger an automatic broad rerun. [Verification receipt](provenance/task18-full-suite.json).
 
-The [machine summary](summary.json), [remaining-risk ledger](remaining-risks.json), complete CSV and technical appendix agree with this conclusion. Exact process records remain private; the [pre-final process archive](provenance/process-archive/2026-10-14/20261015T081649298357Z/README.md) retains public hashes and all six Rulings. Historical scratch references map to byte-verified archive copies without rewriting scientific inputs. Whole-branch review: qualified approval; final scoped check/status/archive closure pending.
+The [machine summary](summary.json), [remaining-risk ledger](remaining-risks.json), complete CSV and technical appendix agree with this conclusion. Exact process records remain private; the [final process archive](provenance/process-archive/2026-10-14/20261015T085343993361Z/README.md) retains public hashes and all seven Rulings. Historical scratch references map to byte-verified archive copies without rewriting scientific inputs. The bounded local inconclusive handoff is complete: whole-branch qualified approval, one documentation fix and one scoped check; Important I1 remains explicitly unfixed.
+
+The [whole-branch review](../docs/superpowers/reviews/2026-10-15-final-whole-branch-review.md), [single scoped re-review](../docs/superpowers/reviews/2026-10-15-final-scoped-review.md) and [explicit residual disposition](../docs/superpowers/reviews/2026-10-15-final-review-disposition.md) retain I1 as an Important native defect and mark M1 addressed. No clean-native-provenance or production-readiness claim follows.
 
 The next useful experiment should first diagnose citation/reader reliability and establish an informative strict learning target on fresh data, then preregister its controller comparison and measure complete wall time on an awake, controlled host. No post-test relabeling, threshold retuning or extra rescue run is warranted by these results.
 

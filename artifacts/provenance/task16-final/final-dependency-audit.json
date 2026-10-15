@@ -1,0 +1,24 @@
+{
+  "scope": "Final active source/input metadata graph and opaque SHA audit for original/A03 protocols/indexes, complete A03 closures, transfer manifest/closures/score inputs, Task18 full input/source closure and external reuse graph. Raw files only hashed, never decoded as Gold or original incomplete semantic outputs. No scientific rebind or native-lineage repair.",
+  "started_utc": "2026-10-15T08:51:43.287160+00:00",
+  "finished_utc": "2026-10-15T08:52:04.152497+00:00",
+  "elapsed_seconds": 20.865228749986272,
+  "binding_observations": 83207,
+  "unique_hashed_files": 45796,
+  "metadata_manifests_read": 21,
+  "mismatches_or_missing": [],
+  "active_bindings_inside_plan_scratch": false,
+  "authorized_mutable_ledger_prefix_verified": {
+    "bytes": 388,
+    "sha256": "9577989b2c8228b348f92fbbd15982eef35e4b1b97397d33195ec36f6d817a98",
+    "terminal_append_reconciliation_receipt": "artifacts/provenance/task15-generation-operations/terminal-metadata-verification.json"
+  },
+  "owned_scientific_worker_matches": [],
+  "private_full_inventory": {
+    "path": "artifacts/runs/task16-phase2b/final-dependency-observations.json",
+    "sha256": "9482d169d53e428983a1d6474d986df1990e2cecc6287b96da24a8ba56ceadec"
+  },
+  "historical_reference_qualification": "Historical A01 evidence_path and initial assembler progress.md read are process provenance only; final archive maps exact bytes. Fresh scoring and final-state rendering do not require the initial assembler or scratch.",
+  "deletion_authorized": false,
+  "result": "passed"
+}
