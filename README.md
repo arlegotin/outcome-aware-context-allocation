@@ -76,7 +76,7 @@ python -m pytest -q
 python -m outcome_poc --help
 ```
 
-The publication suite passed **802 tests with zero skips**; the measured follow-up source at `9ddc4ae` passed **867 with zero skips**. Separate post-study failure-accounting hardening at `c1c1720` passed **869 with zero skips** and was not used for the measured follow-up or its rescoring. Software verification doesn't validate the original speed measurements or establish a research win. On non-macOS systems or inside an outer sandbox, the macOS denial-profile checks can skip.
+The final citation-study suite passed **899 tests with zero skips** at `4eaf940`. That last change strengthens an authored test; the measured study's source files remain identical to `14544f6`. The [software review](docs/superpowers/reviews/2026-10-15-citation-chain-software-review.md) records earlier checks. Passing tests doesn't validate the original speed measurements or establish a research win. On non-macOS systems or inside an outer sandbox, the macOS denial-profile checks can skip.
 
 These commands don't start a benchmark experiment. For a new study, follow the [fresh-experiment guide](docs/fresh-experiment.md): use a separate checkout, fresh output roots and attempt-ledger parents, new development outputs, and a newly frozen protocol. Historical configurations record this experiment. Running mutable setup or indexing over the retained evidence can invalidate its bindings.
 

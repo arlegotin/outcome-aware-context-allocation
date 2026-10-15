@@ -79,6 +79,8 @@ Job service, warmup, model lifecycle and resource intervals are nested; they are
 
 Fresh-process rescoring reproduced all four score/summary/closure files byte-for-byte. Frozen verification passed. A separate audit checked 5,834 historical source/config/test/run files before inference; final preservation evidence accompanies publication. Raw questions, Gold, predictions, resources and detailed process records remain private. The public summary contains aggregates and hashes only.
 
+Final software verification passed 899 tests with no skips at test-only commit `4eaf940`. All measured source/config modules remain identical to `14544f6`; the later fixture change generated no new scientific observations. Software correctness checks do not establish a quality or efficiency finding.
+
 ## Reproduction and next decision
 
 A public clone can run the authored software tests. Authenticating this real run requires the retained private run root `artifacts/runs/citation-chain-reader-v1`, prepared inputs/metadata and pinned assets at their bound paths. Use the recorded source commit or its exact sealed source; never rewrite bindings to accommodate later code changes.

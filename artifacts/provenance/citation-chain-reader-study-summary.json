@@ -812,6 +812,18 @@
     "swap_min_bytes": 6534922240
   },
   "software_checks": {
+    "final_verification": {
+      "commit": "4eaf9402be328646ab11a300a47d1684341f6c2d",
+      "passed": 899,
+      "production_modules_changed_since_measured_source": false,
+      "raw_log": {
+        "bytes": 1072,
+        "sha256": "195377007f802affe1356c46708b8fac89436913b74079a25f998789fec9560e"
+      },
+      "scope": "test-only provenance regression improvement; no scientific rerun",
+      "seconds": 209.61,
+      "skipped": 0
+    },
     "full_suite": {
       "commit": "0db12e1",
       "passed": 898,
