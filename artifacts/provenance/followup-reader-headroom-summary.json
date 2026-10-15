@@ -1,0 +1,968 @@
+{
+  "calibration_repeatability": {
+    "output_id_matches": 24,
+    "pairs": 24,
+    "prompt_id_matches": 24,
+    "raw_output_matches": 24
+  },
+  "claim_scope": "development diagnosis; no trained-policy improvement, confirmatory superiority, quality preservation or production economics",
+  "classification": "inconclusive",
+  "cohorts": {
+    "calibration_executed_unique": 8,
+    "calibration_reserved": 32,
+    "cohorts_hash": "ef707729a2d9e6bfb291ac8a519dc49f80cd08fcb67efafd5ea029a23d35a730",
+    "diagnosis": 64,
+    "eligible_training_representatives": 89131,
+    "headroom": 128,
+    "question_freshness_only": true,
+    "scheduled_generations": 688,
+    "scheduled_unique_questions": 200,
+    "total_reserved": 224
+  },
+  "cost_coverage_exclusions": [
+    "engineering and software tests",
+    "launcher and verification commands outside recorded envelopes",
+    "report generation",
+    "qualitative agent review",
+    "previous acquisition of pinned pretrained assets"
+  ],
+  "created_utc": "2026-10-15T11:55:24.252210+00:00",
+  "decision": "reader/citation and metric-suitability study before more controller training",
+  "encoder": {
+    "device": "cpu",
+    "dimensions": 384,
+    "precision": "float32",
+    "repo_id": "BAAI/bge-small-en-v1.5",
+    "revision": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a"
+  },
+  "historical_source_preservation": {
+    "artifacts/protocol-task17-timing/protocol.json": {
+      "bound_source_count": 26,
+      "file_sha256": "ea24711ece05e6f265a212657cf7f6e2a474360a2e9128aa465f89b09f731bea",
+      "protocol_hash": "ad632aa3f9a37765b62d237abb3782251bb54084e6bc6a8309399f873adfba07",
+      "source_mismatches": []
+    },
+    "artifacts/protocol.json": {
+      "bound_source_count": 22,
+      "file_sha256": "b4a4ba3811c5747fc27928e76e8c4698bdc95c06c36f42ce6ab23d24d2fdf182",
+      "protocol_hash": "415c80344dc3609ee2600a20c63c2502e4fc100cf50c60daee73ebc8a721e100",
+      "source_mismatches": []
+    }
+  },
+  "index": {
+    "documents": 2224,
+    "manifest_hash": "70cf7f872d58bafb2ce1141d0881c5b49fcfdd7ac8cd17dfa2372dc7f600e3f2",
+    "reuse_sources": []
+  },
+  "infrastructure_only_attempt": {
+    "authored_warmup_calls": 2,
+    "headroom_assigned_but_deferred": 384,
+    "plan_hash": "358a558a53df67b835e0d2f6c1af2cf0373c4c7ca3ba246899fad276f356cd3d",
+    "question_generation_calls": 0,
+    "recorded_engine_seconds": 93.24627329200001,
+    "retained_unchanged": true,
+    "source_commit": "a8b4b5cc36dc271c2cc1bec2f8b0a02084b0492f",
+    "terminal_task_records": 304,
+    "zero_call_audit_sha256": "e4a31ac957736b079f81413f8b8c4469fc09d5e770b9cab9ae3bc12cbf0b1bec"
+  },
+  "kind": "aggregate development followup; no benchmark text",
+  "overall_timing_health": {
+    "cost_comparisons": "development descriptive only",
+    "unstable": false
+  },
+  "plan_hash": "c105dfabbdb0611832e55444fc340b201b063986792b338746ea606e42f9bf65",
+  "reader": {
+    "max_context_tokens": 8192,
+    "max_new_tokens": 256,
+    "prefill_step_size": 512,
+    "repo_id": "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+    "revision": "50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b",
+    "timeout_seconds": 120
+  },
+  "recorded_engine_cost_envelopes": {
+    "accounting_status": "complete",
+    "index_setup_seconds": 34.860986709,
+    "preparation_seconds": 22.200801292,
+    "scoring_seconds": 36.792587751,
+    "serving_session_lower_seconds": 1293.649751709,
+    "serving_session_seconds": 1293.649751709,
+    "serving_session_upper_seconds": 1293.649751709,
+    "summing_rule": "Only disjoint preparation, index setup, resident sessions and scoring; service/load/warmup are nested diagnostics.",
+    "total_lower_seconds": 1387.5041274609998,
+    "total_seconds": 1387.5041274609998,
+    "total_upper_seconds": 1387.5041274609998
+  },
+  "report_sha256": "ce9a32059b5f5332c0327c63a2db680620dad4ea7156a5819b32aee3e519bda7",
+  "rescoring": {
+    "all_score_bytes_identical": true,
+    "created_utc": "2026-10-15T11:51:05.765020+00:00",
+    "fresh_processes": [
+      {
+        "exit_code": 0,
+        "stage": "calibration"
+      },
+      {
+        "exit_code": 0,
+        "stage": "diagnosis"
+      },
+      {
+        "exit_code": 0,
+        "stage": "headroom"
+      }
+    ],
+    "score_files_checked": 9
+  },
+  "software_tests": {
+    "log_sha256": "94e4e8ba288149992fa70a819431e281d82475af64b42767d857f913d46ca7ed",
+    "passed": 867,
+    "pytest_seconds": 118.86,
+    "receipt": {
+      "command": ".venv/bin/python3.12 -B -m pytest -q",
+      "elapsed_continuous_seconds": 119.1696275,
+      "exit_code": 0,
+      "source_commit": "9ddc4ae0b50aebf115ccf2679d39d1bf296ba0fb",
+      "start_utc": "2026-10-15T11:22:00.703296+00:00",
+      "stop_utc": "2026-10-15T11:23:59.874261+00:00"
+    },
+    "skipped": 0,
+    "source_commit": "9ddc4ae0b50aebf115ccf2679d39d1bf296ba0fb"
+  },
+  "source_commit": "9ddc4ae0b50aebf115ccf2679d39d1bf296ba0fb",
+  "source_snapshot_commit_checks": {
+    "created_utc": "2026-10-15T11:53:03.781359+00:00",
+    "source_checks": {
+      "failed_v1": {
+        "git_commit_mismatches": [],
+        "snapshot_mismatches": [],
+        "source_commit": "a8b4b5cc36dc271c2cc1bec2f8b0a02084b0492f",
+        "source_count": 37
+      },
+      "measured_v2": {
+        "git_commit_mismatches": [],
+        "snapshot_mismatches": [],
+        "source_commit": "9ddc4ae0b50aebf115ccf2679d39d1bf296ba0fb",
+        "source_count": 37
+      }
+    }
+  },
+  "stages": {
+    "calibration": {
+      "assigned_observations": 48,
+      "authored_warmup_calls": 1,
+      "prediction_closure_sha256": "58c75556f12a62b42b6d2e7810db33f456db6e104235cef076cc4bbbe75ccb53",
+      "reserved_questions": 32,
+      "resources": {
+        "interpretation": "RSS and MLX overlap; maxima are separate observations",
+        "peak_mlx_bytes": 3173293616,
+        "rss_children_bytes": 1658699776,
+        "rss_parent_bytes": 627130368,
+        "sampling_seconds": 2.0,
+        "swap_used_bytes": 6618808320
+      },
+      "score_closure_sha256": "332f3ca6d351b645c2a64d2d373bde1e2727fad69937d1bdddcfb071d11c8825",
+      "session_seconds": 88.808888042,
+      "status": "scored",
+      "summary": {
+        "answer_only_diagnostic_frontier": null,
+        "arms": {
+          "10": {
+            "answer_em": 0.375,
+            "answer_successes": 6,
+            "calls": 16,
+            "correct_answer_invalid_output": 0,
+            "correct_answer_wrong_support": 6,
+            "cost_per_answer_success": 6.582324749833333,
+            "cost_per_joint_success": null,
+            "empty": 0,
+            "generated_tokens": 636,
+            "invalid": 0,
+            "joint_em": 0.0,
+            "joint_successes": 0,
+            "mean_seconds": 2.4683717811875,
+            "observations": 16,
+            "p50_seconds": 2.085668417,
+            "p95_seconds": 3.527929416,
+            "prompt_tokens": 26426,
+            "reference_support_documents_present": 16,
+            "seconds": 39.493948499,
+            "statuses": {
+              "abstain": 4,
+              "ok": 12
+            },
+            "support_em": 0.0,
+            "support_f1": 0.45416666666666666,
+            "truncated": 0,
+            "unique_questions": 8,
+            "zero_success_reason": "zero supported successes across all assigned observations"
+          },
+          "2": {
+            "answer_em": 0.375,
+            "answer_successes": 6,
+            "calls": 16,
+            "correct_answer_invalid_output": 0,
+            "correct_answer_wrong_support": 6,
+            "cost_per_answer_success": 2.3827110345,
+            "cost_per_joint_success": null,
+            "empty": 0,
+            "generated_tokens": 564,
+            "invalid": 0,
+            "joint_em": 0.0,
+            "joint_successes": 0,
+            "mean_seconds": 0.8935166379375,
+            "observations": 16,
+            "p50_seconds": 0.85240925,
+            "p95_seconds": 1.334574,
+            "prompt_tokens": 6302,
+            "reference_support_documents_present": 12,
+            "seconds": 14.296266207,
+            "statuses": {
+              "abstain": 4,
+              "ok": 12
+            },
+            "support_em": 0.0,
+            "support_f1": 0.425,
+            "truncated": 0,
+            "unique_questions": 8,
+            "zero_success_reason": "zero supported successes across all assigned observations"
+          },
+          "5": {
+            "answer_em": 0.5,
+            "answer_successes": 8,
+            "calls": 16,
+            "correct_answer_invalid_output": 0,
+            "correct_answer_wrong_support": 6,
+            "cost_per_answer_success": 2.8345326875,
+            "cost_per_joint_success": 11.33813075,
+            "empty": 0,
+            "generated_tokens": 684,
+            "invalid": 0,
+            "joint_em": 0.125,
+            "joint_successes": 2,
+            "mean_seconds": 1.41726634375,
+            "observations": 16,
+            "p50_seconds": 1.333610208,
+            "p95_seconds": 2.4927945,
+            "prompt_tokens": 12100,
+            "reference_support_documents_present": 16,
+            "seconds": 22.6762615,
+            "statuses": {
+              "abstain": 2,
+              "ok": 14
+            },
+            "support_em": 0.125,
+            "support_f1": 0.5416666666666666,
+            "truncated": 0,
+            "unique_questions": 8,
+            "zero_success_reason": null
+          }
+        },
+        "assigned_observations": 48,
+        "assigned_unique_questions": 8,
+        "claims": "development diagnosis; no quality preservation, production uncertainty or superiority claim",
+        "evaluator": {
+          "parity_method": "source-derived synthetic fixtures; external evaluator never executed",
+          "repository": "hotpotqa/hotpot",
+          "revision": "fa3a36370899e1d85822de61e58c85ea19993154",
+          "source_bytes": 4257,
+          "source_sha256": "d35fc91a6db21d791dbdda11daf3856e9359f5701d54e3eefba20d88fecc02c0",
+          "source_url": "https://raw.githubusercontent.com/hotpotqa/hotpot/fa3a36370899e1d85822de61e58c85ea19993154/hotpot_evaluate_v1.py"
+        },
+        "joint_frontier": null,
+        "joint_harm_rescue_cells": {},
+        "plan_hash": "c105dfabbdb0611832e55444fc340b201b063986792b338746ea606e42f9bf65",
+        "reserved_questions": 32,
+        "stage": "calibration",
+        "timing_health": {
+          "calibration_repeat_ratio_max": 1.0613301809977156,
+          "calibration_repeat_ratio_median": 1.0162435382620383,
+          "continuous_minus_active_seconds": -1.3836000000000001e-05,
+          "cost_comparisons": "development descriptive only",
+          "health_rule": "absolute continuous-active drift >0.25s or calibration repeat max/min >2; raw times unchanged",
+          "max_drift_seconds": 3.374e-06,
+          "sleep_or_drift_flag": false,
+          "unstable": false
+        }
+      },
+      "terminal_observations": 48,
+      "unique_questions": 8
+    },
+    "diagnosis": {
+      "assigned_observations": 256,
+      "authored_warmup_calls": 1,
+      "prediction_closure_sha256": "a9d705ad789c53aec0f1fb81782592ce46a4b0b47f65f98725b2c8e63750c1dc",
+      "reserved_questions": 64,
+      "resources": {
+        "interpretation": "RSS and MLX overlap; maxima are separate observations",
+        "peak_mlx_bytes": 3278940548,
+        "rss_children_bytes": 2968600576,
+        "rss_parent_bytes": 733609984,
+        "sampling_seconds": 2.0,
+        "swap_used_bytes": 6618808320
+      },
+      "score_closure_sha256": "fab22e044e4c8aa9588f642bc258b39dbdebd3e128e97fa011887bad148d30e2",
+      "session_seconds": 493.975653292,
+      "status": "scored",
+      "summary": {
+        "answer_only_diagnostic_frontier": [
+          {
+            "cost_per_success": 2.7242038751785715,
+            "questions": 64,
+            "seconds": 76.277708505,
+            "successes": 28
+          },
+          {
+            "cost_per_success": 2.6332084412758623,
+            "questions": 64,
+            "seconds": 76.363044797,
+            "successes": 29
+          },
+          {
+            "cost_per_success": 2.5565762918333332,
+            "questions": 64,
+            "seconds": 76.697288755,
+            "successes": 30
+          },
+          {
+            "cost_per_success": 2.4862094786451614,
+            "questions": 64,
+            "seconds": 77.072493838,
+            "successes": 31
+          },
+          {
+            "cost_per_success": 2.42576333996875,
+            "questions": 64,
+            "seconds": 77.624426879,
+            "successes": 32
+          },
+          {
+            "cost_per_success": 2.370033770333333,
+            "questions": 64,
+            "seconds": 78.21111442099999,
+            "successes": 33
+          },
+          {
+            "cost_per_success": 2.3179122121176468,
+            "questions": 64,
+            "seconds": 78.80901521199999,
+            "successes": 34
+          },
+          {
+            "cost_per_success": 2.272144045342857,
+            "questions": 64,
+            "seconds": 79.52504158699999,
+            "successes": 35
+          },
+          {
+            "cost_per_success": 2.23154850475,
+            "questions": 64,
+            "seconds": 80.335746171,
+            "successes": 36
+          },
+          {
+            "cost_per_success": 2.1966790676486485,
+            "questions": 64,
+            "seconds": 81.277125503,
+            "successes": 37
+          },
+          {
+            "cost_per_success": 2.1875043059999997,
+            "questions": 64,
+            "seconds": 83.125163628,
+            "successes": 38
+          },
+          {
+            "cost_per_success": 2.1789034295641025,
+            "questions": 64,
+            "seconds": 84.977233753,
+            "successes": 39
+          },
+          {
+            "cost_per_success": 2.173161224025,
+            "questions": 64,
+            "seconds": 86.92644896099999,
+            "successes": 40
+          },
+          {
+            "cost_per_success": 2.182554567146341,
+            "questions": 64,
+            "seconds": 89.48473725299999,
+            "successes": 41
+          }
+        ],
+        "arms": {
+          "10": {
+            "answer_em": 0.53125,
+            "answer_successes": 34,
+            "calls": 64,
+            "correct_answer_invalid_output": 0,
+            "correct_answer_wrong_support": 33,
+            "cost_per_answer_success": 6.021592336882353,
+            "cost_per_joint_success": 204.734139454,
+            "empty": 0,
+            "generated_tokens": 3293,
+            "invalid": 0,
+            "joint_em": 0.015625,
+            "joint_successes": 1,
+            "mean_seconds": 3.19897092896875,
+            "observations": 64,
+            "p50_seconds": 3.020986458,
+            "p95_seconds": 4.551168833,
+            "prompt_tokens": 109025,
+            "reference_support_documents_present": 64,
+            "seconds": 204.734139454,
+            "statuses": {
+              "budget_exhausted": 1,
+              "ok": 63
+            },
+            "support_em": 0.15625,
+            "support_f1": 0.5970734126984127,
+            "truncated": 1,
+            "unique_questions": 64,
+            "zero_success_reason": null
+          },
+          "2": {
+            "answer_em": 0.421875,
+            "answer_successes": 27,
+            "calls": 64,
+            "correct_answer_invalid_output": 0,
+            "correct_answer_wrong_support": 26,
+            "cost_per_answer_success": 2.827311020259259,
+            "cost_per_joint_success": 76.337397547,
+            "empty": 0,
+            "generated_tokens": 2498,
+            "invalid": 2,
+            "joint_em": 0.015625,
+            "joint_successes": 1,
+            "mean_seconds": 1.192771836671875,
+            "observations": 64,
+            "p50_seconds": 1.131732875,
+            "p95_seconds": 1.816678625,
+            "prompt_tokens": 26324,
+            "reference_support_documents_present": 43,
+            "seconds": 76.337397547,
+            "statuses": {
+              "abstain": 4,
+              "invalid_citation": 2,
+              "ok": 58
+            },
+            "support_em": 0.171875,
+            "support_f1": 0.5432291666666667,
+            "truncated": 0,
+            "unique_questions": 64,
+            "zero_success_reason": null
+          },
+          "5": {
+            "answer_em": 0.546875,
+            "answer_successes": 35,
+            "calls": 64,
+            "correct_answer_invalid_output": 0,
+            "correct_answer_wrong_support": 32,
+            "cost_per_answer_success": 3.506692601257143,
+            "cost_per_joint_success": 40.911413681333336,
+            "empty": 0,
+            "generated_tokens": 2999,
+            "invalid": 0,
+            "joint_em": 0.046875,
+            "joint_successes": 3,
+            "mean_seconds": 1.9177225163125,
+            "observations": 64,
+            "p50_seconds": 1.715536459,
+            "p95_seconds": 2.673948959,
+            "prompt_tokens": 54927,
+            "reference_support_documents_present": 58,
+            "seconds": 122.734241044,
+            "statuses": {
+              "ok": 64
+            },
+            "support_em": 0.234375,
+            "support_f1": 0.6062251984126984,
+            "truncated": 0,
+            "unique_questions": 64,
+            "zero_success_reason": null
+          },
+          "ORACLE-SUPPORT-DOCS": {
+            "answer_em": 0.578125,
+            "answer_successes": 37,
+            "calls": 64,
+            "correct_answer_invalid_output": 1,
+            "correct_answer_wrong_support": 33,
+            "cost_per_answer_success": 2.135179336648649,
+            "cost_per_joint_success": 26.333878485333333,
+            "empty": 0,
+            "generated_tokens": 2702,
+            "invalid": 4,
+            "joint_em": 0.046875,
+            "joint_successes": 3,
+            "mean_seconds": 1.234400554,
+            "observations": 64,
+            "p50_seconds": 1.192452375,
+            "p95_seconds": 2.014090208,
+            "prompt_tokens": 26112,
+            "reference_support_documents_present": 64,
+            "seconds": 79.001635456,
+            "statuses": {
+              "invalid_citation": 3,
+              "ok": 60,
+              "parse_error": 1
+            },
+            "support_em": 0.234375,
+            "support_f1": 0.6447916666666667,
+            "truncated": 0,
+            "unique_questions": 64,
+            "zero_success_reason": null
+          }
+        },
+        "assigned_observations": 256,
+        "assigned_unique_questions": 64,
+        "claims": "development diagnosis; no quality preservation, production uncertainty or superiority claim",
+        "evaluator": {
+          "parity_method": "source-derived synthetic fixtures; external evaluator never executed",
+          "repository": "hotpotqa/hotpot",
+          "revision": "fa3a36370899e1d85822de61e58c85ea19993154",
+          "source_bytes": 4257,
+          "source_sha256": "d35fc91a6db21d791dbdda11daf3856e9359f5701d54e3eefba20d88fecc02c0",
+          "source_url": "https://raw.githubusercontent.com/hotpotqa/hotpot/fa3a36370899e1d85822de61e58c85ea19993154/hotpot_evaluate_v1.py"
+        },
+        "joint_frontier": [
+          {
+            "cost_per_success": 38.1388542525,
+            "questions": 64,
+            "seconds": 76.277708505,
+            "successes": 2
+          },
+          {
+            "cost_per_success": 25.675574140333335,
+            "questions": 64,
+            "seconds": 77.026722421,
+            "successes": 3
+          },
+          {
+            "cost_per_success": 19.56341355325,
+            "questions": 64,
+            "seconds": 78.253654213,
+            "successes": 4
+          }
+        ],
+        "joint_harm_rescue_cells": {
+          "10->2": {
+            "00": 62,
+            "01": 1,
+            "10": 1,
+            "11": 0
+          },
+          "10->5": {
+            "00": 61,
+            "01": 2,
+            "10": 0,
+            "11": 1
+          },
+          "10->ORACLE-SUPPORT-DOCS": {
+            "00": 60,
+            "01": 3,
+            "10": 1,
+            "11": 0
+          },
+          "2->5": {
+            "00": 60,
+            "01": 3,
+            "10": 1,
+            "11": 0
+          },
+          "2->ORACLE-SUPPORT-DOCS": {
+            "00": 61,
+            "01": 2,
+            "10": 0,
+            "11": 1
+          },
+          "5->ORACLE-SUPPORT-DOCS": {
+            "00": 58,
+            "01": 3,
+            "10": 3,
+            "11": 0
+          }
+        },
+        "plan_hash": "c105dfabbdb0611832e55444fc340b201b063986792b338746ea606e42f9bf65",
+        "reserved_questions": 64,
+        "stage": "diagnosis",
+        "timing_health": {
+          "calibration_repeat_ratio_max": null,
+          "calibration_repeat_ratio_median": null,
+          "continuous_minus_active_seconds": -0.000177039,
+          "cost_comparisons": "development descriptive only",
+          "health_rule": "absolute continuous-active drift >0.25s or calibration repeat max/min >2; raw times unchanged",
+          "max_drift_seconds": 2.667e-06,
+          "sleep_or_drift_flag": false,
+          "unstable": false
+        }
+      },
+      "terminal_observations": 256,
+      "unique_questions": 64
+    },
+    "headroom": {
+      "assigned_observations": 384,
+      "authored_warmup_calls": 1,
+      "prediction_closure_sha256": "eddc5e74d8b98115f10608ba3fbdd443b9961953c3193043a4347aa56dbfb6d3",
+      "reserved_questions": 128,
+      "resources": {
+        "interpretation": "RSS and MLX overlap; maxima are separate observations",
+        "peak_mlx_bytes": 3367285216,
+        "rss_children_bytes": 1606680576,
+        "rss_parent_bytes": 533872640,
+        "sampling_seconds": 2.0,
+        "swap_used_bytes": 6618808320
+      },
+      "score_closure_sha256": "4e3718c39cfb61ccda377b252761577cff5829e22896c2f35f92193bab1945d1",
+      "session_seconds": 710.865210375,
+      "status": "scored",
+      "summary": {
+        "answer_only_diagnostic_frontier": [
+          {
+            "cost_per_success": 2.1918710279310334,
+            "questions": 128,
+            "seconds": 127.12851961999995,
+            "successes": 58
+          },
+          {
+            "cost_per_success": 2.1548268650338973,
+            "questions": 128,
+            "seconds": 127.13478503699994,
+            "successes": 59
+          },
+          {
+            "cost_per_success": 2.1209942276833322,
+            "questions": 128,
+            "seconds": 127.25965366099994,
+            "successes": 60
+          },
+          {
+            "cost_per_success": 2.089636201409835,
+            "questions": 128,
+            "seconds": 127.46780828599995,
+            "successes": 61
+          },
+          {
+            "cost_per_success": 2.061627610790322,
+            "questions": 128,
+            "seconds": 127.82091186899996,
+            "successes": 62
+          },
+          {
+            "cost_per_success": 2.0371979714761896,
+            "questions": 128,
+            "seconds": 128.34347220299995,
+            "successes": 63
+          },
+          {
+            "cost_per_success": 2.0136178469218744,
+            "questions": 128,
+            "seconds": 128.87154220299996,
+            "successes": 64
+          },
+          {
+            "cost_per_success": 1.991667401846153,
+            "questions": 128,
+            "seconds": 129.45838111999996,
+            "successes": 65
+          },
+          {
+            "cost_per_success": 1.9704780081212114,
+            "questions": 128,
+            "seconds": 130.05154853599996,
+            "successes": 66
+          },
+          {
+            "cost_per_success": 1.9502087175820886,
+            "questions": 128,
+            "seconds": 130.66398407799994,
+            "successes": 67
+          },
+          {
+            "cost_per_success": 1.9315767253970582,
+            "questions": 128,
+            "seconds": 131.34721732699995,
+            "successes": 68
+          },
+          {
+            "cost_per_success": 1.914188724550724,
+            "questions": 128,
+            "seconds": 132.07902199399996,
+            "successes": 69
+          },
+          {
+            "cost_per_success": 1.8989446344428567,
+            "questions": 128,
+            "seconds": 132.92612441099996,
+            "successes": 70
+          },
+          {
+            "cost_per_success": 1.887181570929577,
+            "questions": 128,
+            "seconds": 133.98989153599996,
+            "successes": 71
+          },
+          {
+            "cost_per_success": 1.8769667811666662,
+            "questions": 128,
+            "seconds": 135.14160824399997,
+            "successes": 72
+          },
+          {
+            "cost_per_success": 1.8692318863287665,
+            "questions": 128,
+            "seconds": 136.45392770199996,
+            "successes": 73
+          },
+          {
+            "cost_per_success": 1.8635004852702697,
+            "questions": 128,
+            "seconds": 137.89903590999995,
+            "successes": 74
+          },
+          {
+            "cost_per_success": 1.8604263926799993,
+            "questions": 128,
+            "seconds": 139.53197945099996,
+            "successes": 75
+          },
+          {
+            "cost_per_success": 1.85872519618421,
+            "questions": 128,
+            "seconds": 141.26311490999996,
+            "successes": 76
+          },
+          {
+            "cost_per_success": 1.8606933132337657,
+            "questions": 128,
+            "seconds": 143.27338511899995,
+            "successes": 77
+          },
+          {
+            "cost_per_success": 1.8692697766282045,
+            "questions": 128,
+            "seconds": 145.80304257699996,
+            "successes": 78
+          }
+        ],
+        "arms": {
+          "10": {
+            "answer_em": 0.5390625,
+            "answer_successes": 69,
+            "calls": 128,
+            "correct_answer_invalid_output": 3,
+            "correct_answer_wrong_support": 58,
+            "cost_per_answer_success": 5.157515919695652,
+            "cost_per_joint_success": 44.483574807375,
+            "empty": 0,
+            "generated_tokens": 5767,
+            "invalid": 4,
+            "joint_em": 0.0625,
+            "joint_successes": 8,
+            "mean_seconds": 2.7802234254609375,
+            "observations": 128,
+            "p50_seconds": 2.6612245,
+            "p95_seconds": 3.989534333,
+            "prompt_tokens": 218972,
+            "reference_support_documents_present": 128,
+            "seconds": 355.868598459,
+            "statuses": {
+              "abstain": 4,
+              "invalid_citation": 4,
+              "ok": 120
+            },
+            "support_em": 0.15625,
+            "support_f1": 0.565141369047619,
+            "truncated": 0,
+            "unique_questions": 128,
+            "zero_success_reason": null
+          },
+          "2": {
+            "answer_em": 0.4453125,
+            "answer_successes": 57,
+            "calls": 128,
+            "correct_answer_invalid_output": 0,
+            "correct_answer_wrong_support": 52,
+            "cost_per_answer_success": 2.254499362508772,
+            "cost_per_joint_success": 25.701292732600002,
+            "empty": 0,
+            "generated_tokens": 4533,
+            "invalid": 0,
+            "joint_em": 0.0390625,
+            "joint_successes": 5,
+            "mean_seconds": 1.0039567473671875,
+            "observations": 128,
+            "p50_seconds": 0.963160458,
+            "p95_seconds": 1.456147625,
+            "prompt_tokens": 51860,
+            "reference_support_documents_present": 86,
+            "seconds": 128.506463663,
+            "statuses": {
+              "abstain": 17,
+              "ok": 111
+            },
+            "support_em": 0.1640625,
+            "support_f1": 0.521875,
+            "truncated": 0,
+            "unique_questions": 128,
+            "zero_success_reason": null
+          },
+          "5": {
+            "answer_em": 0.5078125,
+            "answer_successes": 65,
+            "calls": 128,
+            "correct_answer_invalid_output": 3,
+            "correct_answer_wrong_support": 55,
+            "cost_per_answer_success": 3.2888990293538463,
+            "cost_per_joint_success": 30.53977670114286,
+            "empty": 0,
+            "generated_tokens": 5591,
+            "invalid": 7,
+            "joint_em": 0.0546875,
+            "joint_successes": 7,
+            "mean_seconds": 1.67014403834375,
+            "observations": 128,
+            "p50_seconds": 1.572635916,
+            "p95_seconds": 2.466469916,
+            "prompt_tokens": 109279,
+            "reference_support_documents_present": 117,
+            "seconds": 213.778436908,
+            "statuses": {
+              "abstain": 8,
+              "invalid_citation": 6,
+              "ok": 113,
+              "parse_error": 1
+            },
+            "support_em": 0.15625,
+            "support_f1": 0.5372395833333333,
+            "truncated": 0,
+            "unique_questions": 128,
+            "zero_success_reason": null
+          }
+        },
+        "assigned_observations": 384,
+        "assigned_unique_questions": 128,
+        "claims": "development diagnosis; no quality preservation, production uncertainty or superiority claim",
+        "evaluator": {
+          "parity_method": "source-derived synthetic fixtures; external evaluator never executed",
+          "repository": "hotpotqa/hotpot",
+          "revision": "fa3a36370899e1d85822de61e58c85ea19993154",
+          "source_bytes": 4257,
+          "source_sha256": "d35fc91a6db21d791dbdda11daf3856e9359f5701d54e3eefba20d88fecc02c0",
+          "source_url": "https://raw.githubusercontent.com/hotpotqa/hotpot/fa3a36370899e1d85822de61e58c85ea19993154/hotpot_evaluate_v1.py"
+        },
+        "joint_frontier": [
+          {
+            "cost_per_success": 31.782129904999987,
+            "questions": 128,
+            "seconds": 127.12851961999995,
+            "successes": 4
+          },
+          {
+            "cost_per_success": 25.45067764879999,
+            "questions": 128,
+            "seconds": 127.25338824399995,
+            "successes": 5
+          },
+          {
+            "cost_per_success": 21.233054131166657,
+            "questions": 128,
+            "seconds": 127.39832478699995,
+            "successes": 6
+          },
+          {
+            "cost_per_success": 18.274153743285705,
+            "questions": 128,
+            "seconds": 127.91907620299995,
+            "successes": 7
+          },
+          {
+            "cost_per_success": 16.05663196287499,
+            "questions": 128,
+            "seconds": 128.45305570299993,
+            "successes": 8
+          },
+          {
+            "cost_per_success": 14.337501828111105,
+            "questions": 128,
+            "seconds": 129.03751645299994,
+            "successes": 9
+          },
+          {
+            "cost_per_success": 12.971571170299992,
+            "questions": 128,
+            "seconds": 129.71571170299993,
+            "successes": 10
+          },
+          {
+            "cost_per_success": 11.860789454090904,
+            "questions": 128,
+            "seconds": 130.46868399499994,
+            "successes": 11
+          },
+          {
+            "cost_per_success": 11.047808801666662,
+            "questions": 128,
+            "seconds": 132.57370561999994,
+            "successes": 12
+          }
+        ],
+        "joint_harm_rescue_cells": {
+          "10->2": {
+            "00": 118,
+            "01": 2,
+            "10": 5,
+            "11": 3
+          },
+          "10->5": {
+            "00": 118,
+            "01": 2,
+            "10": 3,
+            "11": 5
+          },
+          "2->5": {
+            "00": 117,
+            "01": 6,
+            "10": 4,
+            "11": 1
+          }
+        },
+        "plan_hash": "c105dfabbdb0611832e55444fc340b201b063986792b338746ea606e42f9bf65",
+        "reserved_questions": 128,
+        "stage": "headroom",
+        "timing_health": {
+          "calibration_repeat_ratio_max": null,
+          "calibration_repeat_ratio_median": null,
+          "continuous_minus_active_seconds": -8.009300000000001e-05,
+          "cost_comparisons": "development descriptive only",
+          "health_rule": "absolute continuous-active drift >0.25s or calibration repeat max/min >2; raw times unchanged",
+          "max_drift_seconds": 5.6875e-05,
+          "sleep_or_drift_flag": false,
+          "unstable": false
+        }
+      },
+      "terminal_observations": 384,
+      "unique_questions": 128
+    }
+  },
+  "supplementary_citation_review": {
+    "blind_before_reference_labels": true,
+    "context_dependent_alternative": 1,
+    "eligible_stratum": 33,
+    "limitations": [
+      "Counts describe only the eight selected cases, not prevalence in the selection pool or study.",
+      "Semantic categories are agent reviewer judgments and are distinct from exact annotation agreement.",
+      "Document titles and antecedent context affect sufficiency judgments.",
+      "Question wording and reference granularity leave residual ambiguity.",
+      "No independent factual verification or causal attribution was performed.",
+      "Secondary flags overlap primary categories and must not be added as mutually exclusive counts.",
+      "Zero clearly irrelevant citations is a limited reviewer assessment of the two nonreference citations, not a general error-rate claim."
+    ],
+    "missing_relation_agent_judgments": 6,
+    "plausible_alternative_agent_judgments": 2,
+    "post_hoc_enriched": true,
+    "primary_scores_changed": false,
+    "private_review_sha256": "b0407edc7982a34988fcd146dae1579e4d7a1bf34c23d72465332b0aa6cbc4e4",
+    "selected": 8,
+    "truth_certified": false,
+    "unblinding_receipt_sha256": "b83f5611621be77808a56c2d0482c9b799ce8bb00155c9b69954a3cf3a7f0ab1"
+  }
+}

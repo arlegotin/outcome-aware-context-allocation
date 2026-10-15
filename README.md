@@ -4,7 +4,9 @@ Can a small controller learn how much evidence an AI reader needs **before the r
 
 **The experiment didn't establish an advantage.** On 480 questions, the controller trained on actual answer outcomes produced 14 fully correct, correctly cited answers. A controller trained on cheaper evidence-coverage labels produced 17. Sleep interruptions invalidated the speed measurements, so there's no demonstrated efficiency improvement either.
 
-[Full findings](artifacts/final_report.md) · [Research and prior art](research_poc_plan.md) · [Publication scope](docs/PUBLICATION.md) · [Citation](CITATION.cff)
+A fresh follow-up found real reading costs and room for better budget choices, but also a reader/citation problem that more controller training won't resolve by itself. On 128 new development questions, reading 2, 5 and 10 paragraphs produced **5, 7 and 8 correct answers with the exact reference citations**. A chooser that knew every outcome in advance could reach 12. The next useful step is to study citation reliability and whether the strict benchmark target captures useful task success.
+
+[Original findings](artifacts/final_report.md) · [Fresh reader/headroom study](docs/experiments/2026-10-15-reader-headroom-followup.md) · [Research and prior art](research_poc_plan.md) · [Publication scope](docs/PUBLICATION.md) · [Citation](CITATION.cff)
 
 ## The idea
 
@@ -36,11 +38,21 @@ There is a useful limit hiding in these numbers. Even a chooser that knew both o
 
 A pooled-corpus diagnostic gave 4 versus 3 strict successes on 32 queries drawn from the main 480: exploratory evidence, not independent confirmation. The [report](artifacts/final_report.md) retains that diagnostic, quality intervals, citation review, baseline replay, failures and costs.
 
+## What the follow-up clarified
+
+The separate [reader/headroom study](docs/experiments/2026-10-15-reader-headroom-followup.md) kept the same model and prompt, fixed new questions before outcomes, and used a continuous clock that includes sleep. All 688 assigned generations completed. Timings were stable: on its 128-question headroom set, two paragraphs averaged 1.00 second and ten averaged 2.78 seconds. No new controller was trained, so these timings establish reading costs, not a learned speed improvement.
+
+The reader's evidence handling needs work. Even when given the known supporting documents in a separate 64-question diagnosis, it achieved only 3 exact answer-plus-citation successes. In an enriched eight-case review, an agent judged six citation sets to be missing a necessary relation and two to be plausible alternative sentence choices. That review leaves the primary scores unchanged; exact benchmark agreement and useful evidence support aren't interchangeable.
+
+There is a concrete continuation: make the reader's citations dependable and check the metric on fresh tasks, then measure whether a cheap controller can approach the available frontier against strong tuned baselines. More outcome labels come after that prerequisite.
+
 ## What you can reuse
 
 You can use the harness to collect paired answers, compare fixed and learned budgets, score sentence-level citations, and account for every paid action. It separates annotations from serving inputs, freezes selection before evaluation, and preserves interrupted work. That gives the next allocation policy a concrete test, with its overhead included.
 
 There is a known defect in native index ancestry bookkeeping: `protected.py` and `transfer_runtime.py` read reuse metadata from the wrong manifest level. A separate audit qualifies the recorded run's lineage; the frozen consumers remain unfixed. Correct both in separately versioned source before another experiment relies on native reuse provenance. Full adaptation cost and deployment break-even remain unknown. See the [review disposition](docs/superpowers/reviews/2026-10-15-final-review-disposition.md).
+
+The follow-up has a separate runner with continuous deadlines and a fresh index that reuses no embeddings. It also includes a native regression for a sandbox/SQLite failure discovered during execution. The failed attempt remains recorded separately; none of the original results were repaired or overwritten.
 
 This checkout includes source, tests, configuration, reports and selected provenance. Raw benchmark text, predictions, fitted models, downloaded assets and detailed archives stay external. A clone can run software checks and inspect the findings; authenticating every raw result requires the retained research assets. See [publication scope](docs/PUBLICATION.md).
 
@@ -60,7 +72,7 @@ python -m pytest -q
 python -m outcome_poc --help
 ```
 
-The archived native suite passed **802 tests with zero skips**. Software verification doesn't validate the speed measurements or establish a research win. On non-macOS systems or inside an outer sandbox, the macOS denial-profile checks can skip.
+The publication suite passed **802 tests with zero skips**; the follow-up source at `9ddc4ae` passed **867 with zero skips**. Software verification doesn't validate the original speed measurements or establish a research win. On non-macOS systems or inside an outer sandbox, the macOS denial-profile checks can skip.
 
 These commands don't start a benchmark experiment. For a new study, follow the [fresh-experiment guide](docs/fresh-experiment.md): use a separate checkout, fresh output roots and attempt-ledger parents, new development outputs, and a newly frozen protocol. Historical configurations record this experiment. Running mutable setup or indexing over the retained evidence can invalidate its bindings.
 

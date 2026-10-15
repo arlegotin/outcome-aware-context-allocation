@@ -6,6 +6,12 @@ local result. Publication preparation starts from scientific handoff commit
 change the frozen reader, retriever, scoring code, data, selected controllers,
 sample, predictions or scientific conclusions.
 
+The subsequent [reader/headroom follow-up](experiments/2026-10-15-reader-headroom-followup.md)
+adds separate software, fresh development results and aggregate provenance. Its
+867-test native suite and stable descriptive timings belong to that new study.
+The original source bindings, results and invalid speed endpoints remain unchanged.
+The follow-up's private runs, benchmark text and model assets are not bundled.
+
 ## What a clone contains
 
 The public tree includes original source, authored software fixtures, executable
