@@ -1,0 +1,115 @@
+{
+  "all_copies_match": true,
+  "created_utc": "2026-10-15T15:37:15.888325+00:00",
+  "file_count": 25,
+  "files": {
+    "archive-process.py": {
+      "bytes": 4333,
+      "sha256": "3fd5de26b7fcc75dc9bf22ab342ef28acc7267f3cac747b8cee825a068874210"
+    },
+    "asset-integration-fix-evidence.md": {
+      "bytes": 1236,
+      "sha256": "60422e75cfbf9c87e4ca6670a5b6448742318007e3d543265a5b83f7653d2799"
+    },
+    "asset-integration-fix-review.md": {
+      "bytes": 2444,
+      "sha256": "8f65e33146ded9c67651e84dab56c7f8b3b336be21997dbdab4b6f776b70fada"
+    },
+    "final-review.md": {
+      "bytes": 5466,
+      "sha256": "51c9631deae6ed9cf0efb86fafd9cddf4aad96f73b108a3ded413280e6e1bde3"
+    },
+    "full-suite.log": {
+      "bytes": 1256,
+      "sha256": "e3bb4a8894cedf3cb015f6aabf6460b4b2f70057a39c8af88552e98c12135e47"
+    },
+    "plan-path": {
+      "bytes": 65,
+      "sha256": "45953298440353bd42a22e556b6a6376d40b6bf10e161817751fc33850a28b66"
+    },
+    "progress.md": {
+      "bytes": 9698,
+      "sha256": "8b8ba8fa2e7a2b8053a51e09901ac9d4bd8a219d9822caf52c9ac7a408234130"
+    },
+    "review-061fa1e..a7e720f.diff": {
+      "bytes": 13564,
+      "sha256": "12e5d202f90433363ea8509aa8448f15ab71542d0b093399ef8d8dd25858d298"
+    },
+    "review-7c188e1..8d10e90.diff": {
+      "bytes": 164023,
+      "sha256": "0d7597dadc11f434fbe1efb48671448fbd3603876b564ef0e0976394c79abeab"
+    },
+    "review-a7e720f..24701dd.diff": {
+      "bytes": 19896,
+      "sha256": "77d22627be0b4c5d7db0544379f33b67e2dee29f6d00de2ce7a900c919577fa5"
+    },
+    "review-b94458e..061fa1e.diff": {
+      "bytes": 51242,
+      "sha256": "45e0cdbfed7a58a64b3cff1e52317b46909ad47232126e8831b574bcf5c10dca"
+    },
+    "review-b94458e..cb1d5b2.diff": {
+      "bytes": 6803,
+      "sha256": "9d1e3403e201798ee6c26243d7479947e12f6c211951d638a30530b0fe91602d"
+    },
+    "review-ee1e952..b94458e.diff": {
+      "bytes": 43221,
+      "sha256": "2358f8be42114212345b23aa8bf1a0639a1cbb5048c372c9510b5dc38b912e7d"
+    },
+    "task-1-brief.md": {
+      "bytes": 2923,
+      "sha256": "c32c99cf54f5ea7db4a762411130318d737349bae7a5892d5dbfa9868fa6f5e8"
+    },
+    "task-1-report.md": {
+      "bytes": 9828,
+      "sha256": "612900478288ff320cce35ee8932dbb0b22b390e4a1beda4c835ee5255a28d0d"
+    },
+    "task-1-review.md": {
+      "bytes": 5478,
+      "sha256": "eab2478578236485563c0c9e961421b63a61fe61ca04dead9bfd43b4b7ffecd1"
+    },
+    "task-2-brief.md": {
+      "bytes": 6203,
+      "sha256": "4e7a6d396170b593083822fc8dd314853672126afa6459e7cf36b2639d79296b"
+    },
+    "task-2-fix1-review.md": {
+      "bytes": 2124,
+      "sha256": "7810e11208173352da1919297cd55822b1358d409edee00fe859c5c9d88336a4"
+    },
+    "task-2-fix1-tested-files.json": {
+      "bytes": 437,
+      "sha256": "55656a46c99628f26bb133d8dc35052ecf3da6c4b1f1280cb3a0e0c38a49e768"
+    },
+    "task-2-fix2-review.md": {
+      "bytes": 2277,
+      "sha256": "f2314138704cab42e6c2bb0831878aff6bf8092b91e162d1c45cabacbd1050b3"
+    },
+    "task-2-fix2-tested-files.json": {
+      "bytes": 435,
+      "sha256": "bea6e710f479d5ac2e27b9ac6634cd13341da3c51bd6eeac6288d3d48425ea2f"
+    },
+    "task-2-integration-finding.md": {
+      "bytes": 1793,
+      "sha256": "6aff6bbe2bfb18396645945e07006f9c2c3183251d7aa4cbe0dcfa3579f49676"
+    },
+    "task-2-report.md": {
+      "bytes": 11887,
+      "sha256": "38606de76de179b77c5810c27da5584b288fd399f3ebb1d5ec2bb48dfcaadd44"
+    },
+    "task-2-review.md": {
+      "bytes": 4033,
+      "sha256": "f4f4c7191d59ad598a3f04bb1a3ae8be79172742812d7192ecd3132b50cb58b5"
+    },
+    "task-2-tested-files.json": {
+      "bytes": 1216,
+      "sha256": "d53ec9053a13fe2f47b9ba635b39ca259e8ac383d705ea27b90a6dc7493a60dc"
+    }
+  },
+  "private_archive": "artifacts/runs/process-archive/2026-10-15-reader-capability-preflight/20261015T153715864545Z",
+  "rulings": [
+    "Ruling: Keep the historical overlapping RSS+MLX resource gate unchanged, recording RSS/MLX/availability/swap separately \u2014 avoids silently relaxing the established policy \u2014 a model that physically fits may be conservatively blocked.",
+    "Ruling: Build and review the authored resource preflight before a new benchmark adapter \u2014 model feasibility is the indispensable dependency \u2014 if it passes, a separate plan adds overhead before quality evidence arrives.",
+    "Ruling: Allow root's pinned download after Task 1 approval while Task 2 is built, keeping all model loading after Task 2 approval \u2014 acquisition has independent ignored outputs and an approved verifier \u2014 if later runner work is blocked, the download may have been unnecessary."
+  ],
+  "total_bytes": 371881,
+  "workspace": ".superpowers/sdd/2026-10-15-reader-capability-preflight"
+}

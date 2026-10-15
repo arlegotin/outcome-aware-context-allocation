@@ -1,0 +1,18 @@
+{
+  "all_archive_copies_match": true,
+  "archive": "artifacts/runs/process-archive/2026-10-15-reader-capability-preflight/20261015T153715864545Z",
+  "archive_bytes_verified": 371881,
+  "archive_files_verified": 25,
+  "closure_commit_parent": "8d10e90ba9189bcd073a4c0888afaea74ce5ce0b",
+  "deletion_scope": "only this plan workspace after exact archive verification",
+  "final_test_source": "24701ddd3edd1431346834eada6b2ac99a1cf2d6",
+  "live_protocol_workspace_references": 0,
+  "manifest_sha256": "db421af756a4e4ee27df3464f74cb911be671ab37eb00dc23cb9d97d6fcf74c8",
+  "measured_source": "24701ddd3edd1431346834eada6b2ac99a1cf2d6",
+  "public_manifest": "artifacts/provenance/process-archive/2026-10-15-reader-capability-preflight/20261015T153715864545Z/process-manifest.json",
+  "rulings_retained": 3,
+  "tests_passed": 988,
+  "tests_skipped": 0,
+  "workspace": ".superpowers/sdd/2026-10-15-reader-capability-preflight",
+  "workspace_removed": true
+}

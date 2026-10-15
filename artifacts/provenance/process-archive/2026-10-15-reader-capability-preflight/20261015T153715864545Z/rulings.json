@@ -1,0 +1,7 @@
+{
+  "rulings_in_order": [
+    "Ruling: Keep the historical overlapping RSS+MLX resource gate unchanged, recording RSS/MLX/availability/swap separately \u2014 avoids silently relaxing the established policy \u2014 a model that physically fits may be conservatively blocked.",
+    "Ruling: Build and review the authored resource preflight before a new benchmark adapter \u2014 model feasibility is the indispensable dependency \u2014 if it passes, a separate plan adds overhead before quality evidence arrives.",
+    "Ruling: Allow root's pinned download after Task 1 approval while Task 2 is built, keeping all model loading after Task 2 approval \u2014 acquisition has independent ignored outputs and an approved verifier \u2014 if later runner work is blocked, the download may have been unnecessary."
+  ]
+}
