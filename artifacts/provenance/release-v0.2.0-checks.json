@@ -1,0 +1,126 @@
+{
+  "release_version": "0.2.0",
+  "verified_utc": "2026-10-15T20:19:59.279194+00:00",
+  "scope": "Research software/publication verification; no new benchmark observations or changed scientific gates",
+  "historical_checkpoint_preserved": "ae1706bb1739c1c0a4e724b33feaa8b01289d292",
+  "implementation_commit": "8157b845e4c8667bb4d47aeb8d50082075ee3979",
+  "tested_clean_clone_commit": "2bfbc1508f68333c8661993ba38786b3186ac5e2",
+  "tested_git_object_identities": {
+    "src": "d993806aa8e8fceff1a5ea3e58c872b11efa4764",
+    "tests": "916883171effce35fac3a8ec1fdf8d799926574d",
+    "requirements.lock": "03b25a678824fb9d5c2727de540f5823b37e153a",
+    "pyproject.toml": "7cc6e6c55472e75cc230b18387642a4d31019c6c",
+    "CITATION.cff": "4e90cb9baf492a9ec2de66cbe10c76a4334c3599"
+  },
+  "clean_clone": {
+    "benchmark_model_retained_run_assets_absent": true,
+    "existing_pinned_native_environment_reused": true,
+    "project_imported_from_clone": true,
+    "python": "3.12.9",
+    "platform": "macOS 26.7.1 arm64, Apple M3 Max",
+    "tests_passed": 1119,
+    "tests_skipped": 0,
+    "pytest_seconds": 321.13,
+    "test_log_sha256": "173e32af58d3179ea96edbaf7722bf8ede89ab5483ba840692d10cccec079bbe",
+    "official_evaluator_parity_cases_executed": 7,
+    "evaluator_source_sha256": "d35fc91a6db21d791dbdda11daf3856e9359f5701d54e3eefba20d88fecc02c0",
+    "command": "HOTPOT_EVALUATOR_PATH=<authenticated pinned evaluator> PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src <pinned-python> -m pytest -q -p no:cacheprovider --basetemp=<fresh temporary directory>"
+  },
+  "dependencies": {
+    "lock_sha256": "e1bd09c1dc51f39bd53e62df6ce79eb2d726b26fa30d486ac3d584f297c2d8c8",
+    "pip_check": "No broken requirements found.",
+    "scientific_environment_modified": false
+  },
+  "citation": {
+    "schema_url": "https://citation-file-format.github.io/1.2.0/schema.json",
+    "schema_sha256": "0b8d22140da702d766df318dcff3a91af2f39521298dcf36d76315fd99cc169b",
+    "version": "0.2.0",
+    "validation": "passed",
+    "validator": "jsonschema4.23.0, isolated temporary environment"
+  },
+  "package": {
+    "initial_check_correction": "Legacy email BytesParser.get_payload decoded UTF-8 README as ASCII replacement characters; corrected check compares original metadata body bytes. Package/source unchanged.",
+    "wheel": {
+      "files": 77,
+      "source_modules_exact": 68,
+      "readme_exact": true,
+      "five_license_notice_files_exact": true
+    },
+    "sdist": {
+      "members": 164,
+      "source_modules_exact": 68,
+      "contains_raw_or_model_assets": false
+    },
+    "artifacts": [
+      {
+        "name": "outcome_poc-0.2.0-py3-none-any.whl",
+        "bytes": 331000,
+        "sha256": "a2f8e83120401a7416355208b5ec694762195b986b3bc1bec5f81e7457e1d379"
+      },
+      {
+        "name": "outcome_poc-0.2.0.tar.gz",
+        "bytes": 450391,
+        "sha256": "1c59095ef183fed5164c6b976bd85930644190f8b35d39b733e0cc39d7422893"
+      }
+    ]
+  },
+  "installed_wheel_cli_help": {
+    "outcome_poc": {
+      "exit_code": 0,
+      "usage": "usage: __main__.py [-h]"
+    },
+    "outcome_poc.reader_probe": {
+      "exit_code": 0,
+      "usage": "usage: __main__.py [-h] {assets,prepare,verify,run,_serve} ..."
+    },
+    "outcome_poc.reader_study": {
+      "exit_code": 0,
+      "usage": "usage: __main__.py [-h]"
+    },
+    "outcome_poc.reader_recovery": {
+      "exit_code": 0,
+      "usage": "usage: __main__.py [-h]"
+    },
+    "outcome_poc.reader_recovery prepare-validation": {
+      "exit_code": 0,
+      "usage": "usage: __main__.py prepare-validation [-h] --config CONFIG --root ROOT"
+    }
+  },
+  "public_scope": {
+    "tested_commit": "2bfbc1508f68333c8661993ba38786b3186ac5e2",
+    "public_files": 483,
+    "new_or_changed_public_files": 48,
+    "new_files_all_text": true,
+    "excluded_raw_gold_model_archives": true,
+    "new_experiment_json_has_no_benchmark_task_ids": true
+  },
+  "independent_publication_review": {
+    "review_type": "independent publication scope review",
+    "reviewed_base": "ae1706bb1739c1c0a4e724b33feaa8b01289d292",
+    "implementation_commit": "8157b845e4c8667bb4d47aeb8d50082075ee3979",
+    "release_metadata_commit": "2bfbc1508f68333c8661993ba38786b3186ac5e2",
+    "critical_findings": 0,
+    "important_findings": 0,
+    "files_reviewed": 48,
+    "private_raw_assets_inspected": false,
+    "checks": [
+      "No new private benchmark text, Gold, predictions, model files, archives or credentials found in bounded publication review",
+      "Public evidence closures and delivered source inventories validate",
+      "New local documentation targets resolve and documented CLI help parses",
+      "Versions and claims agree: positive strict endpoint, failed full admission, higher mean latency, no allocation or efficiency win",
+      "Historical source bindings and seals unchanged"
+    ],
+    "condition": "Ready once pending clean-clone, package and citation verification pass"
+  },
+  "release_receipt_followup": "Only this receipt and the release-notes verification paragraph follow the tested commit. Source, tests, lock, package metadata and citation retain the tested identities.",
+  "research_status": {
+    "strict_reader_endpoint": "Positive prespecified interval on64 validation questions;19 versus6 strict successes",
+    "full_reader_admission": false,
+    "answer_preservation": "Inconclusive; simultaneous lower bound below zero",
+    "allocation_advantage_demonstrated": false,
+    "efficiency_advantage_demonstrated": false,
+    "operational_success_demonstrated": false,
+    "final_128_reservation_consumed": false,
+    "native_controlled_suspend_and_reboot": "Not performed"
+  }
+}
