@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "If you use this software or its reported results, please cite this repository and record the commit used."
+type: software
+title: "Outcome-aware context allocation: a local experiment in pre-answer evidence budgets"
+authors:
+  - family-names: Legotin
+    given-names: Artem
+version: 0.1.0
+date-released: "2026-10-15"
+repository-code: "https://github.com/arlegotin/outcome-aware-context-allocation"
+url: "https://github.com/arlegotin/outcome-aware-context-allocation"
+license:
+  - AGPL-3.0-only
+  - CC-BY-4.0
+abstract: >-
+  Research software for selecting two or ten retrieved paragraphs before a
+  local language model answers. A small controller learns the difference in
+  strict answer-and-support success between paired evidence budgets. On 480
+  protected HotpotQA distractor questions, the outcome-trained controller had
+  14 strict successes and a controller trained on cheaper support-coverage labels
+  had 17. Sparse
+  strict outcomes and invalid wall-time measurements leave the efficiency
+  comparison inconclusive. The original full-family assignment is incomplete
+  and unscored. The repository provides the evaluation harness, frozen
+  configuration, aggregate findings and qualified provenance; full raw-result
+  authentication requires retained research assets outside the public release.
+keywords:
+  - retrieval-augmented generation
+  - context allocation
+  - outcome-aware routing
+  - evidence budgets
+  - reproducible research
+  - inconclusive results

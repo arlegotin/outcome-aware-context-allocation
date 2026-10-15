@@ -33,3 +33,8 @@ artifacts/drafts/
 artifacts/provenance/task15-count-attempt2-source.diff
 # This sealed diagnostic kept its original path; its annotations stay local.
 artifacts/provenance/task15-transfer-diagnostics/private-percase.json
+
+# Local setup captures retained outside the public release.
+artifacts/provenance/hub-metadata.json
+artifacts/provenance/pip-install-report.json
+artifacts/provenance/prerequisite-probe.json

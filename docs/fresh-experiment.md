@@ -6,7 +6,7 @@ Before relying on native reuse lineage in a new experiment, correct **both** `pr
 
 ## Use a fresh checkout as the outer isolation boundary
 
-Use a separate checkout with no copied historical `artifacts/`, `data/` or mutable index ledgers. Install using the [README setup commands](../README.md#native-setup-for-a-fresh-checkout). Within that checkout choose an unused root, here `experiments/example-001`, and make separately named editable copies of the base, development, calibration and freeze configs. For example, copy `configs/base.json` to `experiments/example-001/configs/base.json` and edit the copy; repeat for the other three configs. Do not execute any stage until the full configuration and new protocol have been reviewed.
+Use a separate checkout with no copied historical `artifacts/`, `data/` or mutable index ledgers. Install using the [README setup commands](../README.md#run-the-checks). Within that checkout choose an unused root, here `experiments/example-001`, and make separately named editable copies of the base, development, calibration and freeze configs. For example, copy `configs/base.json` to `experiments/example-001/configs/base.json` and edit the copy; repeat for the other three configs. Do not execute any stage until the full configuration and new protocol have been reviewed.
 
 A fresh checkout matters even after configuring output roots: pilot/collection and tuning read the **literal checkout-relative** `artifacts/provenance/execution-window.json`; tuning also writes some checkout-relative prelaunch provenance. The index CLI initially has a checkout-relative default ledger before loading its configuration. Config changes alone do not make those paths safe in the retained checkout.
 

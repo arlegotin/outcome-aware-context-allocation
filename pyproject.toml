@@ -1,13 +1,22 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "outcome-poc"
 version = "0.1.0"
 description = "Local outcome-aware context allocation experiment"
+readme = "README.md"
+authors = [{name = "Artem Legotin"}]
+license = "AGPL-3.0-only AND CC-BY-4.0"
+license-files = ["LICENSE", "NOTICE", "LICENSING.md", "THIRD_PARTY_NOTICES.md", "licenses/CC-BY-4.0.txt"]
 requires-python = ">=3.11,<3.13"
 dependencies = []
+
+[project.urls]
+Repository = "https://github.com/arlegotin/outcome-aware-context-allocation"
+Report = "https://github.com/arlegotin/outcome-aware-context-allocation/blob/main/artifacts/final_report.md"
+Citation = "https://github.com/arlegotin/outcome-aware-context-allocation/blob/main/CITATION.cff"
 
 [tool.setuptools.packages.find]
 where = ["src"]

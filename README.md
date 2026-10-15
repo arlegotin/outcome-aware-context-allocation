@@ -1,50 +1,73 @@
 # Outcome-aware context allocation
 
-**Result: inconclusive.** The fixed experiments and scoring reproduction are complete; the original full-family run remains incomplete and unscored.
+Can a small controller learn how much evidence an AI reader needs **before the reader answers**? This project tests that question with a local language model, a fixed packet of retrieved paragraphs, and a choice between reading two paragraphs or all ten.
 
-This experiment asks whether a cheap controller trained on actual reader outcomes can choose between two and ten retrieved paragraphs better than a controller trained on cheaper proxy labels. Success requires both the correct answer and exact annotated supporting citations. The reader and retriever run locally; this is a HotpotQA distractor-packet experiment, not web search.
+**The experiment didn't establish an advantage.** On 480 questions, the controller trained on actual answer outcomes produced 14 fully correct, correctly cited answers. A controller trained on cheaper evidence-coverage labels produced 17. Sleep interruptions invalidated the speed measurements, so there's no demonstrated efficiency improvement either.
 
-The completed A03 comparison used the same 480 preregistered questions. The outcome-trained controller had **14 strict successes**, the proxy controller **17**, and FIXED10 **11**. These sparse outcomes do not support the frozen primary interval, and none of the four simultaneous quality guards establishes preservation. Both runs excluded host-suspension time from their timers, so no wall-time efficiency or break-even claim is valid. The original full-family run remains incomplete at 6,510/8,640 jobs and is deliberately unscored.
+[Full findings](artifacts/final_report.md) · [Research and prior art](research_poc_plan.md) · [Publication scope](docs/PUBLICATION.md) · [Citation](CITATION.cff)
 
-There is useful answer-level variation in which context budget works, but little observed room under the strict target: a clairvoyant two-budget oracle achieves 20 strict successes versus 16 for the best fixed budget. Eight enriched, agent-reviewed citation disagreements suggest a mixture of real citation gaps and plausible nonexact reference-set penalties. That diagnostic changes no scores and estimates no prevalence. Richer outcome labels have not shown added value here; citation/reader reliability and an informative strict target should be checked in a fresh protocol before expensive label expansion.
+## The idea
 
-Read the [final report](artifacts/final_report.md) for the same-denominator tables, quality guards, timing failures, conditional replay, costs and limitations. The technical appendices preserve machine-readable evidence. The latest unchanged-source verification passed 802 native Python 3.12.9 tests with zero skips; documentation work does not require a broad repeat.
+A retrieval-augmented answering system often gives its reader a fixed amount of evidence. Some questions need less; others need more. Reading everything costs time, but stopping early can lose the sentence that connects the answer.
 
-## Native setup for a fresh checkout
+The proposed controller learns from that difference. During training, the same reader answers each question twice: once with two paragraphs, once with ten. The label is the change in task success. A small gradient-boosted regressor then predicts that change from the question and retrieval metadata. It chooses the budget before any answer is generated; it doesn't get a draft answer or a language-model judging call for free.
 
-The verified platform is arm64 Python 3.12.9 on an Apple M3 Max with 36 GiB RAM and macOS 26.7.1. The hashed lock targets this platform; another platform needs its own explicitly verified environment. In a fresh checkout, install without changing the pinned dependencies:
+The intended objective is **seconds per successful task**, including retrieval, routing, generation, parsing and failed work. Fewer input tokens alone wouldn't settle it. All ten candidate paragraphs are already available in this experiment, so selecting two doesn't save a web search.
+
+Adaptive retrieval and outcome-based routing have substantial prior art. The [research handoff](research_poc_plan.md) explains the overlap. The question here is whether this particular cheap controller earns its overhead against tuned alternatives on one frozen local system.
+
+## What happened
+
+The completed comparison used **480 questions from HotpotQA's distractor development set**, a pinned Qwen3-4B-Instruct-2507 reader running through MLX, and BGE-small-en-v1.5 retrieval. A strict success requires both the reference answer and exactly the annotated supporting sentences. That measures benchmark agreement; it doesn't certify truth or prove the reader used its citations.
+
+Every row has the same 480-question denominator, including abstentions and failures. The two learned controllers each had two timing repetitions, producing identical answers; repetitions don't add independent questions.
+
+| Policy | Correct answers | Correct answers **and** exact supporting citations |
+| --- | ---: | ---: |
+| Outcome-trained controller | 150 / 480 | 14 / 480 |
+| Cheaper coverage-label controller | 155 / 480 | 17 / 480 |
+| Always read ten paragraphs | 173 / 480 | 11 / 480 |
+| Always read two paragraphs | 143 / 480 | 16 / 480 |
+| Random two/ten mixture | 149 / 480 | 16 / 480 |
+
+The differences don't establish quality preservation or a supported quality loss. Strict successes were too sparse for the prespecified primary efficiency interval, independently of the broken timing. The original, larger baseline run remains incomplete and unscored. Its partial results weren't turned into a smaller test set. The completed run contains 3,360 jobs on the same 480 questions.
+
+There is a useful limit hiding in these numbers. Even a chooser that knew both outcomes in advance would get only **20 strict successes**, versus 16 for the better of the two fixed budgets. Answer-only outcomes have more room: that oracle gets 205, versus 173 for always-ten. A better budget choice cannot fix most failures under this strict target. Citation/reader reliability and the usefulness of the training target deserve attention before collecting more expensive outcome labels.
+
+A pooled-corpus diagnostic gave 4 versus 3 strict successes on 32 queries drawn from the main 480: exploratory evidence, not independent confirmation. The [report](artifacts/final_report.md) retains that diagnostic, quality intervals, citation review, baseline replay, failures and costs.
+
+## What you can reuse
+
+You can use the harness to collect paired answers, compare fixed and learned budgets, score sentence-level citations, and account for every paid action. It separates annotations from serving inputs, freezes selection before evaluation, and preserves interrupted work. That gives the next allocation policy a concrete test, with its overhead included.
+
+There is a known defect in native index ancestry bookkeeping: `protected.py` and `transfer_runtime.py` read reuse metadata from the wrong manifest level. A separate audit qualifies the recorded run's lineage; the frozen consumers remain unfixed. Correct both in separately versioned source before another experiment relies on native reuse provenance. Full adaptation cost and deployment break-even remain unknown. See the [review disposition](docs/superpowers/reviews/2026-10-15-final-review-disposition.md).
+
+This checkout includes source, tests, configuration, reports and selected provenance. Raw benchmark text, predictions, fitted models, downloaded assets and detailed archives stay external. A clone can run software checks and inspect the findings; authenticating every raw result requires the retained research assets. See [publication scope](docs/PUBLICATION.md).
+
+## Run the checks
+
+The measured machine was an Apple M3 Max with 36 GiB RAM, macOS 26.7.1 and native Python 3.12.9. The hash lock targets that Python/macOS ARM64 environment. Other platforms need their own dependency resolution and verification.
 
 ```sh
-/opt/homebrew/bin/python3.12 -m venv .venv
-.venv/bin/python -m pip --cache-dir .cache/pip install --require-hashes -r requirements.lock
-.venv/bin/python -m pip --cache-dir .cache/pip install --no-deps --no-build-isolation -e .
-.venv/bin/python -m pip --cache-dir .cache/pip check
-.venv/bin/python -m outcome_poc --help
+git clone https://github.com/arlegotin/outcome-aware-context-allocation.git
+cd outcome-aware-context-allocation
+python3.12 -m venv .venv
+. .venv/bin/activate
+python -m pip install --require-hashes -r requirements.lock
+python -m pip install --no-deps --no-build-isolation -e .
+python -m pip check
+python -m pytest -q
+python -m outcome_poc --help
 ```
 
-These are setup/help instructions, not commands to replay collection over retained evidence. Before any data, asset, index or generation stage, configure fresh isolated output/index roots and a new experiment protocol. Public metadata does not include private raw data or model snapshots.
+The archived native suite passed **802 tests with zero skips**. Software verification doesn't validate the speed measurements or establish a research win. On non-macOS systems or inside an outer sandbox, the macOS denial-profile checks can skip.
 
-- [Implementation specification](docs/superpowers/specs/2026-10-14-outcome-aware-context-allocation-design.md)
-- [Implementation plan and execution status](docs/superpowers/plans/2026-10-14-outcome-aware-context-allocation.md)
-- [Research and attribution handoff](research_poc_plan.md)
-- [Pinned assets and license provenance](artifacts/provenance/asset-manifest.json), [environment](artifacts/provenance/environment.json), and [dataset/source audit](artifacts/provenance/wp1-data.json)
+These commands don't start a benchmark experiment. For a new study, follow the [fresh-experiment guide](docs/fresh-experiment.md): use a separate checkout, fresh output roots and attempt-ledger parents, new development outputs, and a newly frozen protocol. Historical configurations record this experiment. Running mutable setup or indexing over the retained evidence can invalidate its bindings.
 
-## Reproduce retained evidence
+The [implementation specification](docs/superpowers/specs/2026-10-14-outcome-aware-context-allocation-design.md), [execution plan](docs/superpowers/plans/2026-10-14-outcome-aware-context-allocation.md) and [pinned asset manifest](artifacts/provenance/asset-manifest.json) retain the detailed contracts. For raw-score reproduction with the private archive present, use the command in the [final report](artifacts/final_report.md#reproduction-evidence-and-next-steps).
 
-With the original private artifacts retained, fresh scoring reproduction reads the complete A03 evidence and writes a new receipt outside its frozen run:
+## License and citation
 
-```sh
-.venv/bin/python3.12 -m outcome_poc reproduce --scores-only \
-  --protocol artifacts/protocol-task17-timing/protocol.json \
-  --output artifacts/runs/reproduction-check/a03-receipt.json
-```
+Copyright © 2026 Artem Legotin. Original software is **AGPL-3.0-only**; original writing and result presentation are **CC BY 4.0**. [Licensing](LICENSING.md) defines that split. HotpotQA, Qwen, BGE and installed dependencies retain their own terms; see [third-party notices](THIRD_PARTY_NOTICES.md).
 
-The original run's corresponding reproduction returns unavailable/incomplete without opening Gold. Deterministic score reproduction does not validate wall time. Public metadata alone cannot reproduce the run without the retained private datasets, assets and ledgers.
-
-## Start a new experiment safely
-
-Follow the [field-by-field fresh-experiment guide](docs/fresh-experiment.md), including the native-lineage prerequisite. Its examples are nonexecuting and were not run. Use a separate fresh checkout, fresh output/index roots and configuration with a new protocol. A fresh clone contains source and sanitized metadata, not the private datasets, annotation-bearing protocol or closed predictions; it requires a separate new-run data/setup workflow. Do not rerun mutable discovery, asset acquisition, preparation or index commands over retained frozen artifacts. In particular, A03 binds the shared index-attempt ledger; an ordinary index run under that parent can invalidate its binding. Share existing immutable assets read-only only where the new configuration permits it.
-
-The prospectively sealed pooled diagnostic completed 32 queries / 96 jobs: A* achieved 4 strict successes, B* 3 and FIXED10 2. These queries are part of the main 480; the small descriptive difference is not independent confirmation. Original-reference document-ID recall@10 was 0.796875, without certifying sentence-level support. Native reuse provenance remains incomplete in both the protected-index seal (`protected.py`) and pooled-index seal (`transfer_runtime.py`): both read the wrong manifest level. The report links the retained external reconciliation and guards; frozen source/seals were not repaired. Before a new experiment relies on native lineage, both consumers need a separately versioned correction and real-producer integration checks. Current score/vector bindings remain recorded; full cost/adaptation remains unknown. Original full-roster protected POST/LLM results, optimized prefix reuse, MuSiQue and additional stress/generalization tests remain unavailable or unexecuted.
-
-The [machine summary](artifacts/summary.json) and [risk ledger](artifacts/remaining-risks.json) preserve the conclusion and limits. Exact raw evidence remains local; sanitized public metadata and source alone are not a self-contained dataset release. The [final review disposition](docs/superpowers/reviews/2026-10-15-final-review-disposition.md) closes this bounded local inconclusive handoff: whole-branch qualified approval, one documentation fix and one scoped check. M1 is addressed; Important I1 remains an unfixed native source defect under the seventh Ruling. This is not production or complete native-lineage readiness.
+Please cite [CITATION.cff](CITATION.cff) and record the commit you used. Citation is requested separately from the licenses' conditions. Implementation, experiment execution and documentation used AI assistance under the project owner's direction.
