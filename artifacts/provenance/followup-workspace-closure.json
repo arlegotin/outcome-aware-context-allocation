@@ -1,0 +1,19 @@
+{
+  "all_archive_copies_match": true,
+  "archive": "artifacts/runs/process-archive/2026-10-15-reader-headroom-followup/20261015T121834591088Z",
+  "archive_bytes_verified": 665518,
+  "archive_files_verified": 42,
+  "created_utc": "2026-10-15T12:18:34.615336+00:00",
+  "deletion_scope": "only this plan workspace after exact private archive verification",
+  "live_protocol_workspace_references": 0,
+  "manifest_sha256": "07a69baf1774845a0337d043a50a1d0d735dd144371ac743e74eafff03a9653a",
+  "measured_source": "9ddc4ae0b50aebf115ccf2679d39d1bf296ba0fb",
+  "plan": "docs/superpowers/plans/2026-10-15-reader-headroom-followup.md",
+  "public_manifest": "artifacts/provenance/process-archive/2026-10-15-reader-headroom-followup/20261015T121834591088Z/process-manifest.json",
+  "rulings_retained": 6,
+  "tested_hardening_source": "c1c1720264eb0b537645cad6db25ad7be618e58c",
+  "tests_passed": 869,
+  "tests_skipped": 0,
+  "workspace": ".superpowers/sdd/2026-10-15-reader-headroom-followup",
+  "workspace_removed": true
+}
