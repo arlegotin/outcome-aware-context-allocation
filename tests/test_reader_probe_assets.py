@@ -295,3 +295,18 @@ def test_manifest_cannot_route_a_snapshot_through_an_external_symlink(authored):
     reseal(manifest)
     with pytest.raises(ValueError):
         assets.verify_manifest(manifest, config)
+
+
+def test_installed_hub_revision_tree_and_cache_tag_bookkeeping(authored):
+    from huggingface_hub._local_folder import CACHEDIR_TAG_CONTENT
+    config, *_ = authored
+    manifest = acquire(authored)
+    cache = Path(manifest['assets']['reader']['local_path'])/'.cache/huggingface'
+    (cache/'trees').mkdir(parents=True)
+    (cache/'CACHEDIR.TAG').write_text(CACHEDIR_TAG_CONTENT)
+    tree = cache/'trees'/f"{config['reader']['revision']}.json"
+    tree.write_text('{"authored-file":{"size":1,"blob_id":"authored"}}')
+    assets.verify_manifest(manifest, config)
+    wrong = cache/'trees'/('f'*40+'.json')
+    wrong.write_text('{}')
+    with pytest.raises(ValueError):assets.verify_manifest(manifest, config)

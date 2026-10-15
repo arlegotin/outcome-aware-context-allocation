@@ -53,11 +53,19 @@ def _inventory_spec(config, role):
     return inventory
 
 
-def _local_inventory(local, filenames):
+def _local_inventory(local, filenames, revision):
     if local.is_symlink() or not local.is_dir():
         raise ValueError('expected nonsymlink local snapshot directory')
     inventory = set()
     bookkeeping = {'.cache/huggingface/.gitignore', '.cache/huggingface/.gitignore.lock'}
+    bookkeeping.add(f'.cache/huggingface/trees/{revision}.json')
+    tag = local / '.cache/huggingface/CACHEDIR.TAG'
+    expected_tag = ('Signature: 8a477f597d28d172789f06886806bc55\n'
+        '# This file is a cache directory tag created by huggingface_hub.\n'
+        '# For information about cache directory tags, see:\n'
+        '#\thttps://bford.info/cachedir/\n')
+    if tag.exists() and not tag.is_symlink() and tag.read_text() == expected_tag:
+        bookkeeping.add('.cache/huggingface/CACHEDIR.TAG')
     bookkeeping.update(f'.cache/huggingface/download/{name}.{suffix}'
                        for name in filenames for suffix in ('metadata', 'lock'))
     for path in local.rglob('*'):
@@ -93,7 +101,7 @@ def _verify_file(path, pin):
 
 def _verified_files(local, config, role):
     spec = _inventory_spec(config, role)
-    if _local_inventory(local, spec) != set(spec):
+    if _local_inventory(local, spec, config[role]['revision']) != set(spec):
         raise ValueError(f'{role}: extra, missing or unsafe snapshot inventory')
     files = {name: _verify_file(local / name, pin) for name, pin in spec.items()}
     card = (local / 'README.md').read_text(encoding='utf-8')
@@ -215,7 +223,7 @@ def acquire(config_path: Path, asset_root: Path, manifest_path: Path) -> dict:
     for role in ROLES:
         local = asset_root / role / config[role]['revision']
         if local.exists():
-            inventory = _local_inventory(local, inventories[role])
+            inventory = _local_inventory(local, inventories[role], config[role]['revision'])
             if not inventory <= set(inventories[role]):
                 raise ValueError('unrecorded preexisting asset files; refusing overwrite')
             for name in inventory:
