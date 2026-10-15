@@ -1,0 +1,98 @@
+{
+  "readers": {
+    "qwen4b-instruct": {
+      "factory": "NativeReaderFactory",
+      "settings": {
+        "repo_id": "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+        "revision": "50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b",
+        "max_context_tokens": 8192,
+        "max_new_tokens": 256,
+        "timeout_seconds": 120,
+        "prefill_step_size": 512,
+        "temperature": 0
+      }
+    },
+    "qwen14b-nonthinking": {
+      "factory": "ProfileFactory",
+      "settings": {
+        "repo_id": "mlx-community/Qwen3-14B-4bit",
+        "revision": "a4d9b2df59d2c150bef02fcbe0d91046b7ca33a4",
+        "max_context_tokens": 8192,
+        "max_new_tokens": 256,
+        "timeout_seconds": 120,
+        "prefill_step_size": 512,
+        "enable_thinking": false,
+        "temperature": 0,
+        "batch_size": 1,
+        "cache_mode": "none",
+        "kv_cache": "default",
+        "result_reuse": false,
+        "repairs": 0,
+        "semantic_retries": 0
+      }
+    }
+  },
+  "encoder": {
+    "repo_id": "BAAI/bge-small-en-v1.5",
+    "revision": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+    "dimensions": 384,
+    "device": "cpu",
+    "precision": "float32",
+    "normalized": true
+  },
+  "seed": 271829,
+  "development_n": 16,
+  "confirmation_n": 128,
+  "eligible_count": 88587,
+  "eligible_hash": "340ac60b947956a03da43fa0a3bead3d1ceb60d39d648f658404bc8262f9fdc0",
+  "prompt_condition": "baseline",
+  "statistics": {
+    "primary": "confirmation:joint_em:10:14b-minus-4b",
+    "quality_tail_alpha": 0.0125,
+    "answer_guard_tail_alpha": 0.00625,
+    "interval_method": "finite-population-hypergeometric-harm-rescue",
+    "repetitions": 1,
+    "timing_claim": "descriptive-only",
+    "confirmation_population": 88587
+  },
+  "admission": {
+    "complete_healthy_development": true,
+    "natural10_joint_em": "14b-strictly-greater",
+    "natural2_answer_em": "14b-no-lower",
+    "natural10_answer_em": "14b-no-lower"
+  },
+  "prepared_dir": "data/prepared",
+  "asset_manifest": "artifacts/provenance/asset-manifest.json",
+  "strong_asset_manifest": "artifacts/runs/reader-capability-preflight-v2/assets.json",
+  "strong_profile_config": "configs/reader-capability-preflight.json",
+  "old_metadata": [
+    "artifacts/runs/confirmation/schedule.json",
+    "artifacts/runs/task10-fit256/schedule.json",
+    "artifacts/runs/task10-fit256/training/fit-origin.json",
+    "artifacts/runs/task11-native/schedule.json",
+    "artifacts/runs/task11-native-repeat/schedule.json",
+    "artifacts/runs/task11-post-training/fit-origin.json",
+    "artifacts/runs/task11-prelaunch/plan.json",
+    "artifacts/runs/task11-repeat-prelaunch/plan.json",
+    "artifacts/runs/task12-learning-curve/fit128/fit-origin.json",
+    "artifacts/runs/task12-prelaunch/plan.json",
+    "artifacts/runs/task12-prelaunch-index/plan.json",
+    "artifacts/runs/task12-prelaunch-retry/plan.json",
+    "artifacts/runs/task12-prelaunch-retry-analysis/plan.json",
+    "artifacts/runs/task12-tune128-retry/schedule.json",
+    "artifacts/runs/task13-calibration-prelaunch/plan.json",
+    "artifacts/runs/task13-calibration-prelaunch-retry/plan.json",
+    "artifacts/runs/task13-calibration-retry/schedule.json",
+    "artifacts/runs/task15-transfer/manifest.json",
+    "artifacts/runs/task17-timing-replication/schedule.json",
+    "artifacts/runs/task5-reader-diagnostic/metadata.json",
+    "artifacts/runs/task9-pilot32/schedule.json",
+    "artifacts/runs/task9-pilot64-extension/schedule.json"
+  ],
+  "prior_cohorts": [
+    "artifacts/runs/followup-reader-headroom-v1/cohorts.json",
+    "artifacts/runs/followup-reader-headroom-v2/cohorts.json"
+  ],
+  "citation_cohorts": "artifacts/runs/citation-chain-reader-v1/cohorts.json",
+  "deny_paths": []
+}
