@@ -1,0 +1,99 @@
+{
+  "operational_assembly_path": "artifacts/runs/task16-phase2b/assemble_initial_reports.py",
+  "operational_assembly_sha256": "46df309a79e51635ebfdfcdf397ad6e4f30a8fd4874ce7675252c62c5ebce431",
+  "qualification": "Immutable metadata snapshots and actual closed A03 sources; no incomplete-original semantic outputs used. Source hashes are explicit; full final archive refresh remains held.",
+  "sources": {
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/confirmation/launch-1.finished.json": {
+      "bytes": 217,
+      "sha256": "5639ccd0874884c6918ae097a8841bcaa847fe4b988b85369b092b3b9ae4df12"
+    },
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task17-timing-replication/analysis.json": {
+      "bytes": 473105,
+      "sha256": "b286ae0c8086dd545f2261b78aeead31ece0cedc8b6989b2ac274423b44ebc51"
+    },
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task17-timing-replication/operational-observations/a03-native-closure-handoff.json": {
+      "bytes": 4074,
+      "sha256": "067998fa270bf8a46c3946856e777ab1fbe499a4c0ac2a049f7f51658be68b8f"
+    },
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task17-timing-replication/operational-observations/host-suspension-20261015T051616Z.json": {
+      "bytes": 3531,
+      "sha256": "68643307994d9c7070169acd9ab1dc7b0dba043e28f6ec4956a46cd5e775d8d8"
+    },
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task17-timing-replication/scores.jsonl.closed.json": {
+      "bytes": 794,
+      "sha256": "bd59a5d0514f2de272629d77905beab712d3dd63521af87e97143a3018505336"
+    },
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task17-timing-replication/shared-costs.jsonl": {
+      "bytes": 676130,
+      "sha256": "85131ea19543fa7585c9e8982e9048637818bee8e6619862791c4d11e46b0348"
+    },
+    "artifacts/protocol-task17-timing/protocol.json": {
+      "bytes": 3558142,
+      "sha256": "ea24711ece05e6f265a212657cf7f6e2a474360a2e9128aa465f89b09f731bea"
+    },
+    "artifacts/protocol.json": {
+      "bytes": 6375288,
+      "sha256": "b4a4ba3811c5747fc27928e76e8c4698bdc95c06c36f42ce6ab23d24d2fdf182"
+    },
+    "artifacts/provenance/a03-execution-release.json": {
+      "bytes": 3098,
+      "sha256": "0f6b969611dff6300ecf14a971fb8cd6d6cdc4aeec936adea67e740f6f007c24"
+    },
+    "artifacts/provenance/task14-original-incomplete.json": {
+      "bytes": 3470,
+      "sha256": "eff52ac360adac03b0fa9c1f083f44fb18ef6fad093be26c37c5595b17c56a37"
+    },
+    "artifacts/provenance/task16-development/20261015T015117851969Z/report-inputs.json": {
+      "bytes": 421123,
+      "sha256": "e63596f8a54fdea17213948017dd9c26703c366dd0d298b73cd181a5b39f658e"
+    },
+    "artifacts/provenance/task17-full-suite.json": {
+      "bytes": 386,
+      "sha256": "7d7ab41808bdee5ab13019901f7f030aea2d128eeab84d5326f8a958eef29a12"
+    },
+    "artifacts/provenance/task17-manifest-preparation.json": {
+      "bytes": 1438,
+      "sha256": "366fd7c8272fecb11d411b9591dea31b49f8c251970c98a3b86b3146e0630387"
+    },
+    "artifacts/provenance/task18-full-suite.json": {
+      "bytes": 576,
+      "sha256": "13619e89fc740d4c97fa8446fe6df4f09722fbb3a1da804ff6d90a79091633f3"
+    },
+    "artifacts/runs/operational-planning/task17-root-manifest-audit.json": {
+      "bytes": 1571,
+      "sha256": "619a66a7f9702d37f89c1e2be56ee21342fe1fbea45af0ea0d3c338075061344"
+    },
+    "artifacts/runs/task16-phase2b/a03-initial-score-command.json": {
+      "bytes": 619,
+      "sha256": "dedcb2386a799eabe65f60f6963ef85d99702068fda12d0300ad179729c002c1"
+    },
+    "artifacts/runs/task16-phase2b/a03-reproduce-command.json": {
+      "bytes": 701,
+      "sha256": "ce35195051e00ae8be349d0a7db329fb271a605a6736b38bf33992aa114cefe9"
+    },
+    "artifacts/runs/task16-phase2b/original-reproduce-command.json": {
+      "bytes": 689,
+      "sha256": "7608ba4d08da29200ce750426c4ab58b66b9bd06ade719b5ab3ebb16a7ff8593"
+    },
+    "artifacts/runs/task16-phase2b/protocol-verification.json": {
+      "bytes": 1397,
+      "sha256": "85df3dd7de4d281986706eedca2f60eb6a5a21d262cd8e7aaaadaaa1963c401f"
+    },
+    "artifacts/runs/task16-reproduce/a03/receipt.json": {
+      "bytes": 1284,
+      "sha256": "974d3937b9d714f94676b4382a58ac56a6650bab731641cf70665e10b148bcc4"
+    },
+    "artifacts/runs/task16-reproduce/original/receipt.json": {
+      "bytes": 199,
+      "sha256": "ac0fbfe6edc98eb997e6b8096b2354ec72cd8f62aa35da6e0aa584179edeb7bb"
+    },
+    "docs/amendments/A03-timing-replication.json": {
+      "bytes": 5452,
+      "sha256": "7c1380440939982989635868524e5ef02566e0fb83ff8e5d9b8a4e851ee9e58d"
+    },
+    "docs/amendments/A04-earlier-operational-cutoff.json": {
+      "bytes": 3997,
+      "sha256": "35619ce1cd67508e437f6d42c2d6974b1bae8552bd421abd98ee789b0dc64111"
+    }
+  }
+}

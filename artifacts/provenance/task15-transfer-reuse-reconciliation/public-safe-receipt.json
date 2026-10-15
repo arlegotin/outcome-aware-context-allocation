@@ -1,0 +1,23 @@
+{
+  "historical_elapsed_seconds_sum": 175.59180962399114,
+  "historical_physical_source_count": 5,
+  "historical_physical_source_ids": [
+    "index-attempt:3e824ed66e7343dcb4df27826ea41a68",
+    "index-attempt:e78a67ed335d40378a4b339cef781d3b",
+    "index-attempt:27ac30dbb3754ab1a0acce582f590725",
+    "index-attempt:57a3b52fb4954b5b8b303f0178f369d5",
+    "index-attempt:927ba64d93084cd2a6d43ead0b85ee54"
+  ],
+  "index_worker_costs_nested_do_not_double_charge": true,
+  "inventory_file_count": 35,
+  "limitations": "approved traversal reads top-level reuse_sources; actual manifests store offline.reuse_sources; native fields remain unchanged and incomplete",
+  "new_index_source_id": "index-attempt:8fba51bb2562438da8316db35c988e13",
+  "new_pilot_parent_seconds": 874.831993833,
+  "newly_encoded_windows": 61353,
+  "no_gold_or_reader": true,
+  "pilot_closure_sha256": "426b7870c6374d5e7e4dd2c520de55b3993d10f3d146695a103e052d6ced4265",
+  "read_only": true,
+  "reused_windows": 8880,
+  "sidecar_sha256": "151b10bbd9b7f8d4dda2b4e9dd18cb7da3756db8f5e9062eec676ddaa76f39f1",
+  "status": "external provenance reconciled; native missing fields preserved"
+}

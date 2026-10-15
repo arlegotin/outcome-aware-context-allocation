@@ -1,0 +1,83 @@
+from pathlib import Path
+from datetime import datetime,timezone
+import hashlib,json,time
+root=Path.cwd().resolve();out=root/'artifacts/provenance/task15-transfer-reuse-reconciliation'
+if out.exists():raise SystemExit('external provenance output already exists')
+out.mkdir(parents=True);start=time.perf_counter_ns()
+def sha(path):
+ h=hashlib.sha256()
+ with Path(path).open('rb') as f:
+  for block in iter(lambda:f.read(1024*1024),b''):h.update(block)
+ return h.hexdigest()
+def put(path,value):
+ with Path(path).open('x') as f:json.dump(value,f,sort_keys=True,ensure_ascii=False,indent=2);f.write('\n')
+put(out/'started.json',{'started_utc':datetime.now(timezone.utc).isoformat(),'start_ns':start,'authorization':'root explicitly authorized independent read-only recursive reuse provenance reconciliation; no sealed/source edits','scope':'external read-only reconciliation; excludes initial standard-library imports and terminal persistence'})
+status,error='failed',None
+try:
+ from outcome_poc.retrieval import _completed_manifest
+ from outcome_poc.storage import content_hash,read_jsonl
+ from outcome_poc.transfer_runtime import _parent_attempts,_completed_pilot
+ manifest_path=root/'artifacts/runs/task15-transfer/manifest.json';m=json.loads(manifest_path.read_text());run=Path(m['root'])
+ parents=_parent_attempts(m);pilot,label=_completed_pilot(m,parents)
+ seal_path=run/'index-realization.json';seal=json.loads(seal_path.read_text());new_index=Path(seal['index_dir']).resolve();new=_completed_manifest(new_index)
+ assert new['offline']['reused_window_count']==8880 and new['offline']['encoded_window_count']==61353
+ inputs={str(manifest_path):sha(manifest_path),str(seal_path):sha(seal_path),str(run/'pilot.closed.json'):sha(run/'pilot.closed.json')}
+ for name,digest in parents['hashes'].items():inputs[str(run/name)]=digest
+ nodes={};edges=[];visiting=set();paths_by_id={}
+ expected_encoder=new['encoder'];expected_convention=new['query_convention']
+ def visit(path,edge=None):
+  path=Path(path)
+  if not path.is_absolute():path=root/path
+  path=path.resolve();data=_completed_manifest(path);attempt=data['completion']['attempt_id'];identity='index-attempt:'+attempt
+  if data['encoder']!=expected_encoder or data['query_convention']!=expected_convention:raise ValueError('source encoder/convention differs')
+  if edge is not None and (edge['attempt_id']!=attempt or edge['manifest_hash']!=content_hash(data) or edge['vector_sha256']!=data['files']['vectors.f32']['sha256']):raise ValueError('source edge identity differs')
+  inputs[str(path/'manifest.json')]=sha(path/'manifest.json')
+  for name,info in data['files'].items():inputs[str(path/name)]=info['sha256']
+  ledger=Path(data['completion']['attempt_ledger']).resolve();inputs[str(ledger)]=sha(ledger)
+  rows=[row for row in read_jsonl(ledger) if row['attempt_id']==attempt]
+  if len(rows)!=1 or rows[0]['status']!='ok' or rows[0]['manifest_hash']!=content_hash(data):raise ValueError('physical source row not exactly linked')
+  if data['completion']['scope']=='cli':
+   provenance=Path(data['completion']['provenance_path']).resolve();inputs[str(provenance)]=sha(provenance)
+   if json.loads(provenance.read_text())!=data:raise ValueError('CLI provenance differs')
+  paths_by_id.setdefault(identity,set()).add(str(path))
+  if identity in visiting:raise ValueError('reuse provenance cycle')
+  if identity in nodes:
+   if nodes[identity]['manifest_hash']!=content_hash(data):raise ValueError('physical attempt alias differs')
+   return identity
+  nodes[identity]={'source_id':identity,'path':str(path),'attempt_id':attempt,'manifest_hash':content_hash(data),
+   'manifest_file_sha256':inputs[str(path/'manifest.json')],'attempt_ledger':str(ledger),'attempt_ledger_sha256':inputs[str(ledger)],
+   'linked_attempt_row':rows[0],'elapsed_seconds':rows[0]['elapsed_seconds'],'encoder':data['encoder'],
+   'query_convention':data['query_convention'],'files':data['files'],'kind':'new pooled build nested inside native pilot' if path==new_index else 'existing historical adaptation source; not charged again as new transfer work'}
+  visiting.add(identity)
+  for child in data.get('offline',{}).get('reuse_sources',[]):
+   child_id=visit(child['path'],child);edges.append({'parent_source_id':identity,'child_source_id':child_id,'stored_reference':child})
+  visiting.remove(identity)
+  return identity
+ new_id=visit(new_index)
+ historical=[node for identity,node in nodes.items() if identity!=new_id]
+ for identity,node in nodes.items():node['all_resolved_paths']=sorted(paths_by_id[identity])
+ for path,expected in inputs.items():
+  if sha(path)!=expected:raise ValueError('source input changed before external seal: '+path)
+ sidecar={'kind':'external_read_only_pooled_reuse_provenance_reconciliation','created_utc':datetime.now(timezone.utc).isoformat(),
+  'manifest_hash':m['manifest_hash'],'pilot_closure_sha256':sha(run/'pilot.closed.json'),'pilot_parent_finished_sha256':sha(run/f'{label}.finished.json'),
+  'new_index_source_id':new_id,'new_index_manifest_hash':content_hash(new),'direct_reuse_reference_count':len(new['offline']['reuse_sources']),
+  'historical_physical_source_count':len(historical),'source_nodes':list(nodes.values()),'reuse_edges':edges,'input_hashes':inputs,
+  'new_index_encoded_windows':61353,'reused_windows':8880,'native_reuse_source_hashes':seal['reuse_source_hashes'],'native_reused_physical_sources':seal['reused_physical_sources'],
+  'native_field_defect':'approved traversal reads top-level reuse_sources; actual manifests store offline.reuse_sources; native fields remain unchanged and incomplete',
+  'historical_source_elapsed_seconds_sum':sum(node['elapsed_seconds'] for node in historical),
+  'new_pilot_parent_seconds':parents['attempts'][label]['elapsed_seconds'],'new_index_seconds_nested_in_pilot':new['offline']['seconds'],
+  'native_preparation_and_pilot_parent_total_seconds':parents['total_seconds'],
+  'accounting':'historical unique physical source IDs shown once, not charged as new; native pilot charged once, worker/index/query costs nested; this external reconciliation is additional newly metered work',
+  'source_hashes':{str(root/name):sha(root/name) for name in ('src/outcome_poc/retrieval.py','src/outcome_poc/transfer_runtime.py','src/outcome_poc/storage.py')},
+  'future_generation_gate':'rehash this complete external input/source inventory immediately before and after any generation; no native/sealed/source repair'}
+ put(out/'sidecar.json',sidecar)
+ put(out/'public-safe-receipt.json',{'status':'external provenance reconciled; native missing fields preserved','sidecar_sha256':sha(out/'sidecar.json'),
+  'pilot_closure_sha256':sidecar['pilot_closure_sha256'],'new_index_source_id':new_id,'historical_physical_source_count':len(historical),
+  'historical_physical_source_ids':[node['source_id'] for node in historical],'historical_elapsed_seconds_sum':sidecar['historical_source_elapsed_seconds_sum'],
+  'reused_windows':8880,'newly_encoded_windows':61353,'read_only':True,'no_gold_or_reader':True,'inventory_file_count':len(inputs),
+  'limitations':sidecar['native_field_defect'],'new_pilot_parent_seconds':sidecar['new_pilot_parent_seconds'],'index_worker_costs_nested_do_not_double_charge':True})
+ status='complete'
+ print(json.dumps({'status':status,'sidecar_sha256':sha(out/'sidecar.json'),'public_safe_receipt_sha256':sha(out/'public-safe-receipt.json'),'historical_source_count':len(historical),'historical_elapsed_seconds_sum':sidecar['historical_source_elapsed_seconds_sum'],'inventory_file_count':len(inputs),'unique_source_ids':[node['source_id'] for node in historical]},sort_keys=True))
+except BaseException as exc:error=repr(exc);raise
+finally:
+ stop=time.perf_counter_ns();put(out/'finished.json',{'finished_utc':datetime.now(timezone.utc).isoformat(),'stop_ns':stop,'elapsed_seconds':(stop-start)/1e9,'status':status,'error':error,'started_receipt_sha256':sha(out/'started.json'),'scope':'additional external observed reconciliation, not nested inside completed native pilot; excludes final receipt persistence/console'})

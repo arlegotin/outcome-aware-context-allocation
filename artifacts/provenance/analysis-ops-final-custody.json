@@ -1,0 +1,51 @@
+{
+  "active_matching_native_operation_commands": [],
+  "all_local_raw_preserved": true,
+  "both_primary_wall_time_endpoints_remain_invalid": true,
+  "native_observer_sample_gaps": {
+    "pilot": {
+      "all_recorded_resource_gates_passed": true,
+      "first_utc": "2026-10-15T07:32:25.198131+00:00",
+      "last_utc": "2026-10-15T07:46:52.609606+00:00",
+      "max_utc_sample_gap_seconds": 1.081781,
+      "median_utc_sample_gap_seconds": 0.510335,
+      "min_utc_sample_gap_seconds": 0.505017,
+      "negative_utc_gaps": 0,
+      "resource_trace_sha256": "cbded544e9499a4248b9cd070a8e8c3a0141c733d2e7a50ec39a17d83921b97e",
+      "samples": 1694,
+      "scope": "UTC observer sample spacing only; not host-awake/stationarity or wall-time-validity proof"
+    },
+    "run": {
+      "all_recorded_resource_gates_passed": true,
+      "first_utc": "2026-10-15T07:55:02.216903+00:00",
+      "last_utc": "2026-10-15T07:57:54.337578+00:00",
+      "max_utc_sample_gap_seconds": 0.653624,
+      "median_utc_sample_gap_seconds": 0.515491,
+      "min_utc_sample_gap_seconds": 0.505735,
+      "negative_utc_gaps": 0,
+      "resource_trace_sha256": "d81520b8935a50f55167dc59d22933364aa059d613d85c7e64c1b7142c10a0f6",
+      "samples": 332,
+      "scope": "UTC observer sample spacing only; not host-awake/stationarity or wall-time-validity proof"
+    }
+  },
+  "no_new_gold_or_semantic_analysis": true,
+  "no_processes_stopped_or_power_environment_modified_by_this_check": true,
+  "owned_groups": {
+    "fullpilot": {
+      "external_terminal_returncode": 0,
+      "group_exists": false,
+      "original_owned_pid": 78545,
+      "process_group": 78545,
+      "remaining_members": []
+    },
+    "generation": {
+      "external_terminal_returncode": 0,
+      "group_exists": false,
+      "original_owned_pid": 81262,
+      "process_group": 81262,
+      "remaining_members": []
+    }
+  },
+  "source_audit_sha256": "f862ee3510cbda950e64ebb608b0a6254797b593db2b28ff9e567404c63f6dc9",
+  "verified_utc": "2026-10-15T08:10:35.748968+00:00"
+}

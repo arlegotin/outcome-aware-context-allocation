@@ -1,0 +1,951 @@
+{
+  "method_attribution": "Physical joint-experiment spend is separate from deployment adaptation. Shared index aliases are deduplicated; nested generations/setup/analysis components are not summed again. Full adaptation totals remain unknown.",
+  "rows": [
+    {
+      "category": "index",
+      "original_physical_id": "index-attempt:3ad8c0a858a948d4874b01a3f6d3315d",
+      "physical_id": "3ad8c0a858a948d4874b01a3f6d3315d",
+      "run_identity": "development:pilot",
+      "seconds": 19.453162709018216,
+      "source_field": "pilot_index_attempts",
+      "source_path": "artifacts/provenance/task9-acquisition-costs.json"
+    },
+    {
+      "category": "index",
+      "original_physical_id": "index-attempt:c6145bc592094fe3979b8550d1f52ac5",
+      "physical_id": "c6145bc592094fe3979b8550d1f52ac5",
+      "run_identity": "development:pilot",
+      "seconds": 18.282344709004974,
+      "source_field": "pilot_index_attempts",
+      "source_path": "artifacts/provenance/task9-acquisition-costs.json"
+    },
+    {
+      "category": "index",
+      "original_physical_id": "index-attempt:3e824ed66e7343dcb4df27826ea41a68",
+      "physical_id": "3e824ed66e7343dcb4df27826ea41a68",
+      "run_identity": "development:pilot",
+      "seconds": 19.22866433300078,
+      "source_field": "pilot_index_attempts",
+      "source_path": "artifacts/provenance/task9-acquisition-costs.json"
+    },
+    {
+      "category": "index",
+      "original_physical_id": "index-attempt:27ac30dbb3754ab1a0acce582f590725",
+      "physical_id": "27ac30dbb3754ab1a0acce582f590725",
+      "run_identity": "development:pilot",
+      "seconds": 20.054970666009467,
+      "source_field": "pilot_index_attempts",
+      "source_path": "artifacts/provenance/task9-acquisition-costs.json"
+    },
+    {
+      "boundary": "Derived non-index ledger aggregate, not a newly measured contiguous interval",
+      "category": "development",
+      "physical_id": "exclusive-ledger-residual",
+      "run_identity": "development:pilot",
+      "seconds": 476.7747705089665,
+      "source_field": "pilot_totals.experiment_seconds minus pilot_index_seconds_once",
+      "source_path": "artifacts/provenance/task9-acquisition-costs.json"
+    },
+    {
+      "category": "development",
+      "parent_id": "exclusive-ledger-residual",
+      "physical_id": "serving",
+      "run_identity": "development:pilot",
+      "seconds": 435.232398968,
+      "source_field": "pilot_totals.serving_seconds",
+      "source_path": "artifacts/provenance/task9-acquisition-costs.json"
+    },
+    {
+      "category": "development",
+      "parent_id": "serving",
+      "physical_id": "warmup",
+      "run_identity": "development:pilot",
+      "seconds": 89.784132041,
+      "source_field": "pilot_totals.warmup_serving_seconds",
+      "source_path": "artifacts/provenance/task9-acquisition-costs.json"
+    },
+    {
+      "boundary": "observed entire smoke invocation",
+      "category": "development",
+      "physical_id": "wp0-reader-only",
+      "run_identity": "development:wp0-reader-only",
+      "seconds": 9.790772000007564,
+      "source_field": "prior_native_runs/separate_preparation",
+      "source_path": "artifacts/provenance/task9-acquisition-costs.json"
+    },
+    {
+      "boundary": "observed entire smoke invocation",
+      "category": "development",
+      "physical_id": "wp0",
+      "run_identity": "development:wp0",
+      "seconds": 10.45894749998115,
+      "source_field": "prior_native_runs/separate_preparation",
+      "source_path": "artifacts/provenance/task9-acquisition-costs.json"
+    },
+    {
+      "boundary": "whole cold diagnostic invocation: total_diagnostic_seconds, including setup/retrieval/reader/persistence",
+      "category": "development",
+      "physical_id": "wp2-reader-scoring",
+      "run_identity": "development:wp2-reader-scoring",
+      "seconds": 21.949175624991767,
+      "source_field": "prior_native_runs/separate_preparation",
+      "source_path": "artifacts/provenance/task9-acquisition-costs.json"
+    },
+    {
+      "boundary": "sum of two separately retained complete run ledgers",
+      "category": "development",
+      "physical_id": "task8-harness",
+      "run_identity": "development:task8-harness",
+      "seconds": 41.811203707,
+      "source_field": "prior_native_runs/separate_preparation",
+      "source_path": "artifacts/provenance/task9-acquisition-costs.json"
+    },
+    {
+      "boundary": "separate structural/scorer preparation; not native serving or outcome evidence",
+      "category": "development",
+      "physical_id": "pilot-token-length-audit",
+      "run_identity": "development:pilot-token-length-audit",
+      "seconds": 9.789990416000364,
+      "source_field": "prior_native_runs/separate_preparation",
+      "source_path": "artifacts/provenance/task9-acquisition-costs.json"
+    },
+    {
+      "boundary": "separate structural/scorer preparation; not native serving or outcome evidence",
+      "category": "development",
+      "physical_id": "pilot-retrieval-coverage-audit",
+      "run_identity": "development:pilot-retrieval-coverage-audit",
+      "seconds": 14.914878582989331,
+      "source_field": "prior_native_runs/separate_preparation",
+      "source_path": "artifacts/provenance/task9-acquisition-costs.json"
+    },
+    {
+      "boundary": "whole prepared population; once-only project setup, not warm serving",
+      "category": "development",
+      "physical_id": "data-conversion",
+      "run_identity": "development:data-conversion",
+      "seconds": 56.703276291984366,
+      "source_field": "prior_native_runs/separate_preparation",
+      "source_path": "artifacts/provenance/task9-acquisition-costs.json"
+    },
+    {
+      "category": "index",
+      "original_physical_id": "index-attempt:e78a67ed335d40378a4b339cef781d3b",
+      "physical_id": "e78a67ed335d40378a4b339cef781d3b",
+      "run_identity": "development:fit256",
+      "seconds": 45.1715879169642,
+      "source_field": "new_fit_index_attempt_seconds",
+      "source_path": "artifacts/provenance/task10-fit256/acquisition-costs.json"
+    },
+    {
+      "category": "development",
+      "physical_id": "collection_acquisition_wall_seconds",
+      "run_identity": "development:fit256",
+      "seconds": 925.6303293704987,
+      "source_field": "collection_acquisition_wall_seconds",
+      "source_path": "artifacts/provenance/task10-fit256/acquisition-costs.json"
+    },
+    {
+      "category": "development",
+      "physical_id": "actual_scoring_seconds",
+      "run_identity": "development:fit256",
+      "seconds": 70.88125066703651,
+      "source_field": "actual_scoring_seconds",
+      "source_path": "artifacts/provenance/task10-fit256/acquisition-costs.json"
+    },
+    {
+      "category": "development",
+      "physical_id": "actual_pair_merge_proxy_training_and_draft_preparation_seconds",
+      "run_identity": "development:fit256",
+      "seconds": 33.025188166997395,
+      "source_field": "actual_pair_merge_proxy_training_and_draft_preparation_seconds",
+      "source_path": "artifacts/provenance/task10-fit256/acquisition-costs.json"
+    },
+    {
+      "category": "development",
+      "parent_id": "collection_acquisition_wall_seconds",
+      "physical_id": "serving",
+      "run_identity": "development:fit256",
+      "seconds": 869.037530531,
+      "source_field": "complete_ledger_serving_seconds",
+      "source_path": "artifacts/provenance/task10-fit256/acquisition-costs.json"
+    },
+    {
+      "category": "development",
+      "parent_id": "actual_pair_merge_proxy_training_and_draft_preparation_seconds",
+      "physical_id": "training",
+      "run_identity": "development:fit256",
+      "seconds": 0.48465045797638595,
+      "source_field": "training_seconds_subset",
+      "source_path": "artifacts/provenance/task10-fit256/acquisition-costs.json"
+    },
+    {
+      "category": "development",
+      "physical_id": "native_acquisition_seconds",
+      "run_identity": "development:comparators",
+      "seconds": 126.411278916,
+      "source_field": "native_acquisition_seconds",
+      "source_path": "artifacts/provenance/task11/comparator-gate.json"
+    },
+    {
+      "category": "development",
+      "physical_id": "separate_scoring_seconds",
+      "run_identity": "development:comparators",
+      "seconds": 18.225356708979234,
+      "source_field": "separate_scoring_seconds",
+      "source_path": "artifacts/provenance/task11/comparator-gate.json"
+    },
+    {
+      "category": "development",
+      "physical_id": "post_fit_analysis_seconds",
+      "run_identity": "development:comparators",
+      "seconds": 36.057644417,
+      "source_field": "post_fit_analysis_seconds",
+      "source_path": "artifacts/provenance/task11/comparator-gate.json"
+    },
+    {
+      "category": "development",
+      "parent_id": "post_fit_analysis_seconds",
+      "physical_id": "model-fit",
+      "run_identity": "development:comparators",
+      "seconds": 0.08046620804816484,
+      "source_field": "post_model_fit_seconds_subset",
+      "source_path": "artifacts/provenance/task11/comparator-gate.json"
+    },
+    {
+      "category": "development",
+      "physical_id": "native_envelope_seconds",
+      "run_identity": "development:tune128",
+      "seconds": 3436.086341334,
+      "source_field": "native_envelope_seconds",
+      "source_path": "artifacts/provenance/task12-cost-sources.json"
+    },
+    {
+      "category": "development",
+      "physical_id": "legacy_seal_seconds",
+      "run_identity": "development:tune128",
+      "seconds": 17.27881241601426,
+      "source_field": "legacy_seal_seconds",
+      "source_path": "artifacts/provenance/task12-cost-sources.json"
+    },
+    {
+      "category": "development",
+      "physical_id": "scoring_seconds",
+      "run_identity": "development:tune128",
+      "seconds": 14.661938917008229,
+      "source_field": "scoring_seconds",
+      "source_path": "artifacts/provenance/task12-cost-sources.json"
+    },
+    {
+      "category": "development",
+      "physical_id": "selection_analysis_seconds",
+      "run_identity": "development:tune128",
+      "seconds": 14.039366374956444,
+      "source_field": "selection_analysis_seconds",
+      "source_path": "artifacts/provenance/task12-cost-sources.json"
+    },
+    {
+      "category": "development",
+      "physical_id": "optional_curve_seconds",
+      "run_identity": "development:tune128",
+      "seconds": 12.308282374986447,
+      "source_field": "optional_curve_seconds",
+      "source_path": "artifacts/provenance/task12-cost-sources.json"
+    },
+    {
+      "category": "development",
+      "physical_id": "accounting_profile_seconds",
+      "run_identity": "development:tune128",
+      "seconds": 10.958,
+      "source_field": "accounting_profile_seconds",
+      "source_path": "artifacts/provenance/task12-cost-sources.json"
+    },
+    {
+      "category": "development",
+      "physical_id": "original_fit512_scaling_audit_seconds",
+      "run_identity": "development:tune128",
+      "seconds": 3.996456333,
+      "source_field": "original_fit512_scaling_audit_seconds",
+      "source_path": "artifacts/provenance/task12-cost-sources.json"
+    },
+    {
+      "category": "development",
+      "physical_id": "failed_preflight_cli_seconds",
+      "run_identity": "development:tune128",
+      "seconds": 0.281374041,
+      "source_field": "failed_preflight_cli_seconds",
+      "source_path": "artifacts/provenance/task12-cost-sources.json"
+    },
+    {
+      "category": "index",
+      "original_physical_id": "index-attempt:57a3b52fb4954b5b8b303f0178f369d5",
+      "physical_id": "57a3b52fb4954b5b8b303f0178f369d5",
+      "run_identity": "development:tune128",
+      "seconds": 34.082241915981285,
+      "source_field": "index_attempt_seconds",
+      "source_path": "artifacts/provenance/task12-cost-sources.json"
+    },
+    {
+      "category": "development",
+      "parent_id": "native_envelope_seconds",
+      "physical_id": "paid_job_serving_seconds",
+      "run_identity": "development:tune128",
+      "seconds": 3330.785427891,
+      "source_field": "paid_job_serving_seconds",
+      "source_path": "artifacts/provenance/task12-cost-sources.json"
+    },
+    {
+      "category": "development",
+      "parent_id": "native_envelope_seconds",
+      "physical_id": "paid_job_experiment_seconds",
+      "run_identity": "development:tune128",
+      "seconds": 3417.944468275,
+      "source_field": "paid_job_experiment_seconds",
+      "source_path": "artifacts/provenance/task12-cost-sources.json"
+    },
+    {
+      "category": "development",
+      "parent_id": "native_envelope_seconds",
+      "physical_id": "task12-native-setup",
+      "run_identity": "development:tune128",
+      "seconds": 24.727848,
+      "source_field": "shared_sources",
+      "source_path": "artifacts/provenance/task12-cost-sources.json"
+    },
+    {
+      "category": "development",
+      "parent_id": "native_envelope_seconds",
+      "physical_id": "task12-policy-materialization-and-schedule",
+      "run_identity": "development:tune128",
+      "seconds": 0.414402084,
+      "source_field": "shared_sources",
+      "source_path": "artifacts/provenance/task12-cost-sources.json"
+    },
+    {
+      "category": "development",
+      "parent_id": "native_envelope_seconds",
+      "physical_id": "task12-request-routing-measurements-and-receipts",
+      "run_identity": "development:tune128",
+      "seconds": 55.873367209,
+      "source_field": "shared_sources",
+      "source_path": "artifacts/provenance/task12-cost-sources.json"
+    },
+    {
+      "category": "index",
+      "original_physical_id": "index-attempt:3ad8c0a858a948d4874b01a3f6d3315d",
+      "physical_id": "reused:3ad8c0a858a948d4874b01a3f6d3315d",
+      "run_identity": "development:fit256",
+      "seconds": 19.453162709018216,
+      "source_field": "shared_cost_sources/index_reuse_sources",
+      "source_path": "artifacts/provenance/task10-fit256/acquisition-costs.json"
+    },
+    {
+      "category": "index",
+      "original_physical_id": "index-attempt:c6145bc592094fe3979b8550d1f52ac5",
+      "physical_id": "reused:c6145bc592094fe3979b8550d1f52ac5",
+      "run_identity": "development:fit256",
+      "seconds": 18.282344709004974,
+      "source_field": "shared_cost_sources/index_reuse_sources",
+      "source_path": "artifacts/provenance/task10-fit256/acquisition-costs.json"
+    },
+    {
+      "category": "index",
+      "original_physical_id": "index-attempt:3e824ed66e7343dcb4df27826ea41a68",
+      "physical_id": "reused:3e824ed66e7343dcb4df27826ea41a68",
+      "run_identity": "development:fit256",
+      "seconds": 19.22866433300078,
+      "source_field": "shared_cost_sources/index_reuse_sources",
+      "source_path": "artifacts/provenance/task10-fit256/acquisition-costs.json"
+    },
+    {
+      "category": "index",
+      "original_physical_id": "index-attempt:27ac30dbb3754ab1a0acce582f590725",
+      "physical_id": "reused:27ac30dbb3754ab1a0acce582f590725",
+      "run_identity": "development:fit256",
+      "seconds": 20.054970666009467,
+      "source_field": "shared_cost_sources/index_reuse_sources",
+      "source_path": "artifacts/provenance/task10-fit256/acquisition-costs.json"
+    },
+    {
+      "category": "index",
+      "original_physical_id": "index-attempt:3e824ed66e7343dcb4df27826ea41a68",
+      "physical_id": "reused:3e824ed66e7343dcb4df27826ea41a68",
+      "run_identity": "development:tune128",
+      "seconds": 19.22866433300078,
+      "source_field": "shared_cost_sources/index_reuse_sources",
+      "source_path": "artifacts/provenance/task12-cost-sources.json"
+    },
+    {
+      "category": "index",
+      "original_physical_id": "index-attempt:27ac30dbb3754ab1a0acce582f590725",
+      "physical_id": "reused:27ac30dbb3754ab1a0acce582f590725",
+      "run_identity": "development:tune128",
+      "seconds": 20.054970666009467,
+      "source_field": "shared_cost_sources/index_reuse_sources",
+      "source_path": "artifacts/provenance/task12-cost-sources.json"
+    },
+    {
+      "category": "index",
+      "original_physical_id": "index-attempt:e78a67ed335d40378a4b339cef781d3b",
+      "physical_id": "reused:e78a67ed335d40378a4b339cef781d3b",
+      "run_identity": "development:tune128",
+      "seconds": 45.1715879169642,
+      "source_field": "shared_cost_sources/index_reuse_sources",
+      "source_path": "artifacts/provenance/task12-cost-sources.json"
+    },
+    {
+      "category": "development",
+      "physical_id": "capacity-input-audit",
+      "run_identity": "development:capacity-input-audit",
+      "seconds": 26.96328145795269,
+      "source_field": "measurement.elapsed_wall_seconds",
+      "source_path": "artifacts/provenance/capacity-input-audit-summary.json"
+    },
+    {
+      "category": "development",
+      "physical_id": "calibration-prelaunch",
+      "run_identity": "development:calibration-prelaunch",
+      "seconds": 11.07208125,
+      "source_field": "prepare_seconds",
+      "source_path": "artifacts/provenance/task13-calibration-prelaunch.json"
+    },
+    {
+      "category": "development",
+      "physical_id": "calibration-native",
+      "run_identity": "development:calibration-native",
+      "seconds": 473.745710166,
+      "source_field": "native_elapsed_seconds",
+      "source_path": "artifacts/provenance/task13-calibration.json"
+    },
+    {
+      "category": "development",
+      "physical_id": "freeze-dry-run",
+      "run_identity": "development:freeze-dry-run",
+      "seconds": 2.8919876670115627,
+      "source_field": "dry_run_seconds",
+      "source_path": "artifacts/provenance/task13-freeze.json"
+    },
+    {
+      "category": "development",
+      "physical_id": "development-parity",
+      "run_identity": "development:development-parity",
+      "seconds": 73.03529654099839,
+      "source_field": "elapsed_seconds",
+      "source_path": "artifacts/provenance/task14-development-parity.json"
+    },
+    {
+      "category": "development",
+      "parent_id": "calibration-native",
+      "physical_id": "serving",
+      "run_identity": "development:calibration-native",
+      "seconds": 445.307450051,
+      "source_field": "all_serving_seconds",
+      "source_path": "artifacts/provenance/task13-calibration.json"
+    },
+    {
+      "category": "asset-acquisition-subpart",
+      "physical_id": "download_seconds",
+      "run_identity": "asset:hotpot_dev_distractor",
+      "seconds": 5.64313716700417,
+      "source_field": "assets.hotpot_dev_distractor.download_seconds",
+      "source_path": "artifacts/provenance/asset-manifest.json"
+    },
+    {
+      "category": "asset-acquisition-subpart",
+      "physical_id": "validation_seconds",
+      "run_identity": "asset:hotpot_dev_distractor",
+      "seconds": 0.16637133300537243,
+      "source_field": "assets.hotpot_dev_distractor.validation_seconds",
+      "source_path": "artifacts/provenance/asset-manifest.json"
+    },
+    {
+      "category": "asset-acquisition-subpart",
+      "physical_id": "download_seconds",
+      "run_identity": "asset:hotpot_train",
+      "seconds": 68.46416375000263,
+      "source_field": "assets.hotpot_train.download_seconds",
+      "source_path": "artifacts/provenance/asset-manifest.json"
+    },
+    {
+      "category": "asset-acquisition-subpart",
+      "physical_id": "validation_seconds",
+      "run_identity": "asset:hotpot_train",
+      "seconds": 1.745667749986751,
+      "source_field": "assets.hotpot_train.validation_seconds",
+      "source_path": "artifacts/provenance/asset-manifest.json"
+    },
+    {
+      "category": "unknown",
+      "physical_id": "unmetered-assets-environment",
+      "reason": "Remaining asset downloads/install and enclosing acquisition duration were not metered; measured dataset subparts are listed separately.",
+      "run_identity": "unmetered-development",
+      "seconds": null,
+      "source_field": "unknown",
+      "source_path": "artifacts/provenance/task9-acquisition-costs.json"
+    },
+    {
+      "category": "unknown",
+      "physical_id": "preledger-index-publication",
+      "reason": "Historical index work before attempt ledger lacks enclosing measurement.",
+      "run_identity": "unmetered-development",
+      "seconds": null,
+      "source_field": "unknown",
+      "source_path": "artifacts/provenance/task9-acquisition-costs.json"
+    },
+    {
+      "category": "unknown",
+      "physical_id": "unmetered-editing-tests",
+      "reason": "Historical editing, tests and prelaunch work were not comprehensively metered.",
+      "run_identity": "unmetered-development",
+      "seconds": null,
+      "source_field": "unknown",
+      "source_path": "artifacts/provenance/task11/comparator-gate.json"
+    },
+    {
+      "category": "unknown",
+      "physical_id": "failed-native",
+      "reason": "Failed native subprocess envelope unavailable.",
+      "run_identity": "unmetered-development",
+      "seconds": null,
+      "source_field": "unknown",
+      "source_path": "artifacts/provenance/task12-cost-sources.json"
+    },
+    {
+      "category": "unknown",
+      "physical_id": "outer-native",
+      "reason": "Unmeasured outer overhead outside the retained native envelope; not an additional copy of its interior.",
+      "run_identity": "unmetered-development",
+      "seconds": null,
+      "source_field": "unknown",
+      "source_path": "artifacts/provenance/task12-cost-sources.json"
+    },
+    {
+      "category": "unknown",
+      "physical_id": "failed-calibration-launch",
+      "reason": "First failed launch had zero generation calls but unmetered setup, not zero cost.",
+      "run_identity": "unmetered-development",
+      "seconds": null,
+      "source_field": "unknown",
+      "source_path": "artifacts/provenance/task13-calibration.json"
+    },
+    {
+      "category": "unknown",
+      "physical_id": "ancillary-input-audit",
+      "reason": "Ancillary NFC check failure duration unavailable.",
+      "run_identity": "unmetered-development",
+      "seconds": null,
+      "source_field": "unknown",
+      "source_path": "artifacts/provenance/capacity-input-audit-summary.json"
+    },
+    {
+      "category": "unknown",
+      "physical_id": "phase2a-initial-inspection",
+      "reason": "Initial evidence inspection/coordination before timed assembly not comprehensively metered.",
+      "run_identity": "unmetered-development",
+      "seconds": null,
+      "source_field": "unknown",
+      "source_path": "artifacts/provenance/task16-development/20261015T015117851969Z/assembly-receipt.json"
+    }
+  ],
+  "scope": "Known DEVELOPMENT and asset subparts only; excludes protected/transfer execution and later preparation; provisional, not project elapsed wall time. Mixed historical timing boundaries remain qualified.",
+  "summary": {
+    "counted_physical_ids": [
+      "asset:hotpot_dev_distractor:download_seconds",
+      "asset:hotpot_dev_distractor:validation_seconds",
+      "asset:hotpot_train:download_seconds",
+      "asset:hotpot_train:validation_seconds",
+      "development:calibration-native:calibration-native",
+      "development:calibration-prelaunch:calibration-prelaunch",
+      "development:capacity-input-audit:capacity-input-audit",
+      "development:comparators:native_acquisition_seconds",
+      "development:comparators:post_fit_analysis_seconds",
+      "development:comparators:separate_scoring_seconds",
+      "development:data-conversion:data-conversion",
+      "development:development-parity:development-parity",
+      "development:fit256:actual_pair_merge_proxy_training_and_draft_preparation_seconds",
+      "development:fit256:actual_scoring_seconds",
+      "development:fit256:collection_acquisition_wall_seconds",
+      "development:freeze-dry-run:freeze-dry-run",
+      "development:pilot-retrieval-coverage-audit:pilot-retrieval-coverage-audit",
+      "development:pilot-token-length-audit:pilot-token-length-audit",
+      "development:pilot:exclusive-ledger-residual",
+      "development:task8-harness:task8-harness",
+      "development:tune128:accounting_profile_seconds",
+      "development:tune128:failed_preflight_cli_seconds",
+      "development:tune128:legacy_seal_seconds",
+      "development:tune128:native_envelope_seconds",
+      "development:tune128:optional_curve_seconds",
+      "development:tune128:original_fit512_scaling_audit_seconds",
+      "development:tune128:scoring_seconds",
+      "development:tune128:selection_analysis_seconds",
+      "development:wp0-reader-only:wp0-reader-only",
+      "development:wp0:wp0",
+      "development:wp2-reader-scoring:wp2-reader-scoring",
+      "origin:index-attempt:27ac30dbb3754ab1a0acce582f590725",
+      "origin:index-attempt:3ad8c0a858a948d4874b01a3f6d3315d",
+      "origin:index-attempt:3e824ed66e7343dcb4df27826ea41a68",
+      "origin:index-attempt:57a3b52fb4954b5b8b303f0178f369d5",
+      "origin:index-attempt:c6145bc592094fe3979b8550d1f52ac5",
+      "origin:index-attempt:e78a67ed335d40378a4b339cef781d3b",
+      "unmetered-development:ancillary-input-audit",
+      "unmetered-development:failed-calibration-launch",
+      "unmetered-development:failed-native",
+      "unmetered-development:outer-native",
+      "unmetered-development:phase2a-initial-inspection",
+      "unmetered-development:preledger-index-publication",
+      "unmetered-development:unmetered-assets-environment",
+      "unmetered-development:unmetered-editing-tests"
+    ],
+    "known_physical_seconds": 6182.035304001339,
+    "reason": "unknown_costs",
+    "rule": "unique physical roots only; nested components and reused allocations excluded",
+    "sources": {
+      "asset:hotpot_dev_distractor:download_seconds": {
+        "category": "asset-acquisition-subpart",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 5.64313716700417
+      },
+      "asset:hotpot_dev_distractor:validation_seconds": {
+        "category": "asset-acquisition-subpart",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 0.16637133300537243
+      },
+      "asset:hotpot_train:download_seconds": {
+        "category": "asset-acquisition-subpart",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 68.46416375000263
+      },
+      "asset:hotpot_train:validation_seconds": {
+        "category": "asset-acquisition-subpart",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 1.745667749986751
+      },
+      "development:calibration-native:calibration-native": {
+        "category": "development",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 473.745710166
+      },
+      "development:calibration-native:serving": {
+        "category": "development",
+        "parent_id": "development:calibration-native:calibration-native",
+        "reason": null,
+        "seconds": 445.307450051
+      },
+      "development:calibration-prelaunch:calibration-prelaunch": {
+        "category": "development",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 11.07208125
+      },
+      "development:capacity-input-audit:capacity-input-audit": {
+        "category": "development",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 26.96328145795269
+      },
+      "development:comparators:model-fit": {
+        "category": "development",
+        "parent_id": "development:comparators:post_fit_analysis_seconds",
+        "reason": null,
+        "seconds": 0.08046620804816484
+      },
+      "development:comparators:native_acquisition_seconds": {
+        "category": "development",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 126.411278916
+      },
+      "development:comparators:post_fit_analysis_seconds": {
+        "category": "development",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 36.057644417
+      },
+      "development:comparators:separate_scoring_seconds": {
+        "category": "development",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 18.225356708979234
+      },
+      "development:data-conversion:data-conversion": {
+        "category": "development",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 56.703276291984366
+      },
+      "development:development-parity:development-parity": {
+        "category": "development",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 73.03529654099839
+      },
+      "development:fit256:actual_pair_merge_proxy_training_and_draft_preparation_seconds": {
+        "category": "development",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 33.025188166997395
+      },
+      "development:fit256:actual_scoring_seconds": {
+        "category": "development",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 70.88125066703651
+      },
+      "development:fit256:collection_acquisition_wall_seconds": {
+        "category": "development",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 925.6303293704987
+      },
+      "development:fit256:serving": {
+        "category": "development",
+        "parent_id": "development:fit256:collection_acquisition_wall_seconds",
+        "reason": null,
+        "seconds": 869.037530531
+      },
+      "development:fit256:training": {
+        "category": "development",
+        "parent_id": "development:fit256:actual_pair_merge_proxy_training_and_draft_preparation_seconds",
+        "reason": null,
+        "seconds": 0.48465045797638595
+      },
+      "development:freeze-dry-run:freeze-dry-run": {
+        "category": "development",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 2.8919876670115627
+      },
+      "development:pilot-retrieval-coverage-audit:pilot-retrieval-coverage-audit": {
+        "category": "development",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 14.914878582989331
+      },
+      "development:pilot-token-length-audit:pilot-token-length-audit": {
+        "category": "development",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 9.789990416000364
+      },
+      "development:pilot:exclusive-ledger-residual": {
+        "category": "development",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 476.7747705089665
+      },
+      "development:pilot:serving": {
+        "category": "development",
+        "parent_id": "development:pilot:exclusive-ledger-residual",
+        "reason": null,
+        "seconds": 435.232398968
+      },
+      "development:pilot:warmup": {
+        "category": "development",
+        "parent_id": "development:pilot:serving",
+        "reason": null,
+        "seconds": 89.784132041
+      },
+      "development:task8-harness:task8-harness": {
+        "category": "development",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 41.811203707
+      },
+      "development:tune128:accounting_profile_seconds": {
+        "category": "development",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 10.958
+      },
+      "development:tune128:failed_preflight_cli_seconds": {
+        "category": "development",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 0.281374041
+      },
+      "development:tune128:legacy_seal_seconds": {
+        "category": "development",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 17.27881241601426
+      },
+      "development:tune128:native_envelope_seconds": {
+        "category": "development",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 3436.086341334
+      },
+      "development:tune128:optional_curve_seconds": {
+        "category": "development",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 12.308282374986447
+      },
+      "development:tune128:original_fit512_scaling_audit_seconds": {
+        "category": "development",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 3.996456333
+      },
+      "development:tune128:paid_job_experiment_seconds": {
+        "category": "development",
+        "parent_id": "development:tune128:native_envelope_seconds",
+        "reason": null,
+        "seconds": 3417.944468275
+      },
+      "development:tune128:paid_job_serving_seconds": {
+        "category": "development",
+        "parent_id": "development:tune128:native_envelope_seconds",
+        "reason": null,
+        "seconds": 3330.785427891
+      },
+      "development:tune128:scoring_seconds": {
+        "category": "development",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 14.661938917008229
+      },
+      "development:tune128:selection_analysis_seconds": {
+        "category": "development",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 14.039366374956444
+      },
+      "development:tune128:task12-native-setup": {
+        "category": "development",
+        "parent_id": "development:tune128:native_envelope_seconds",
+        "reason": null,
+        "seconds": 24.727848
+      },
+      "development:tune128:task12-policy-materialization-and-schedule": {
+        "category": "development",
+        "parent_id": "development:tune128:native_envelope_seconds",
+        "reason": null,
+        "seconds": 0.414402084
+      },
+      "development:tune128:task12-request-routing-measurements-and-receipts": {
+        "category": "development",
+        "parent_id": "development:tune128:native_envelope_seconds",
+        "reason": null,
+        "seconds": 55.873367209
+      },
+      "development:wp0-reader-only:wp0-reader-only": {
+        "category": "development",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 9.790772000007564
+      },
+      "development:wp0:wp0": {
+        "category": "development",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 10.45894749998115
+      },
+      "development:wp2-reader-scoring:wp2-reader-scoring": {
+        "category": "development",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 21.949175624991767
+      },
+      "origin:index-attempt:27ac30dbb3754ab1a0acce582f590725": {
+        "category": "index",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 20.054970666009467
+      },
+      "origin:index-attempt:3ad8c0a858a948d4874b01a3f6d3315d": {
+        "category": "index",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 19.453162709018216
+      },
+      "origin:index-attempt:3e824ed66e7343dcb4df27826ea41a68": {
+        "category": "index",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 19.22866433300078
+      },
+      "origin:index-attempt:57a3b52fb4954b5b8b303f0178f369d5": {
+        "category": "index",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 34.082241915981285
+      },
+      "origin:index-attempt:c6145bc592094fe3979b8550d1f52ac5": {
+        "category": "index",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 18.282344709004974
+      },
+      "origin:index-attempt:e78a67ed335d40378a4b339cef781d3b": {
+        "category": "index",
+        "parent_id": null,
+        "reason": null,
+        "seconds": 45.1715879169642
+      },
+      "unmetered-development:ancillary-input-audit": {
+        "category": "unknown",
+        "parent_id": null,
+        "reason": "Ancillary NFC check failure duration unavailable.",
+        "seconds": null
+      },
+      "unmetered-development:failed-calibration-launch": {
+        "category": "unknown",
+        "parent_id": null,
+        "reason": "First failed launch had zero generation calls but unmetered setup, not zero cost.",
+        "seconds": null
+      },
+      "unmetered-development:failed-native": {
+        "category": "unknown",
+        "parent_id": null,
+        "reason": "Failed native subprocess envelope unavailable.",
+        "seconds": null
+      },
+      "unmetered-development:outer-native": {
+        "category": "unknown",
+        "parent_id": null,
+        "reason": "Unmeasured outer overhead outside the retained native envelope; not an additional copy of its interior.",
+        "seconds": null
+      },
+      "unmetered-development:phase2a-initial-inspection": {
+        "category": "unknown",
+        "parent_id": null,
+        "reason": "Initial evidence inspection/coordination before timed assembly not comprehensively metered.",
+        "seconds": null
+      },
+      "unmetered-development:preledger-index-publication": {
+        "category": "unknown",
+        "parent_id": null,
+        "reason": "Historical index work before attempt ledger lacks enclosing measurement.",
+        "seconds": null
+      },
+      "unmetered-development:unmetered-assets-environment": {
+        "category": "unknown",
+        "parent_id": null,
+        "reason": "Remaining asset downloads/install and enclosing acquisition duration were not metered; measured dataset subparts are listed separately.",
+        "seconds": null
+      },
+      "unmetered-development:unmetered-editing-tests": {
+        "category": "unknown",
+        "parent_id": null,
+        "reason": "Historical editing, tests and prelaunch work were not comprehensively metered.",
+        "seconds": null
+      }
+    },
+    "total_physical_seconds": null,
+    "unknown_physical_ids": [
+      "unmetered-development:ancillary-input-audit",
+      "unmetered-development:failed-calibration-launch",
+      "unmetered-development:failed-native",
+      "unmetered-development:outer-native",
+      "unmetered-development:phase2a-initial-inspection",
+      "unmetered-development:preledger-index-publication",
+      "unmetered-development:unmetered-assets-environment",
+      "unmetered-development:unmetered-editing-tests"
+    ]
+  }
+}

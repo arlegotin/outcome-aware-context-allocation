@@ -1,0 +1,629 @@
+{
+  "approved_report_source_commit": "a61ab31",
+  "blind_review_selection_metadata_from_ledger": "Prospective n8 blinded disagreement review selection sealed before any quality peek at2026-10-15T01:43:32.649546+00:00 SHA09c364b34b954dff9027ca523fffa358e01d9730b216a842227c527d38180ccb (private artifacts/runs/task15-blind-review/selection-rule.json). Hierarchy completeclean\u2192completeoriginal\u2192unexecuted; A/B directrep1 answercorrect/supportnotexact; independenthashchoice8distincttasks, fresh reviewer anonymousview, notessealedbeforekey/Gold, enricheddiagnostic only/no metricoverride. Root ordinary diagnostic preparation, no model/data/Gold accessed.",
+  "private_exact_files": [
+    {
+      "bytes": 3518,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/asset-access-audit.md",
+      "sha256": "6ef734342e048d8f7047854225543495a8ece7a7f882f20eed827599e8482405",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/asset-access-audit.md"
+    },
+    {
+      "bytes": 6298,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/asset-source-fallback.md",
+      "sha256": "634223df0bb97872f76e6fab3bb5deb5f378069ec8b880eff21587a022c70320",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/asset-source-fallback.md"
+    },
+    {
+      "bytes": 5215,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/capacity-input-audit-report.md",
+      "sha256": "d359669c763235137acb74d44f49c456ea45d3403feeec799b24dd86ac3fd10f",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/capacity-input-audit-report.md"
+    },
+    {
+      "bytes": 15514,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/confirmation-cost-forecast-audit.md",
+      "sha256": "7670164b30dbded1ce2cfc188b12fe889758fb680439f270a0352c6c99c9ed61",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/confirmation-cost-forecast-audit.md"
+    },
+    {
+      "bytes": 2532,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/global-constraints.md",
+      "sha256": "cab2ce0f25c42481696a84adaeca30474ad50f79656f8771c9d9394df76ac191",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/global-constraints.md"
+    },
+    {
+      "bytes": 4306,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/pilot-citation-diagnostic-report.md",
+      "sha256": "937a3d381b2fde9cbd32cae1c8f744dd3afae378cf232a66b9762fcfe55c9644",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/pilot-citation-diagnostic-report.md"
+    },
+    {
+      "bytes": 69321,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/progress.md",
+      "sha256": "13beeeb108020ae056f7e1b0ed49277cfa1b3e6d21e667baa46d20d3022b9f18",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/progress.md"
+    },
+    {
+      "bytes": 3785,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-1-brief.md",
+      "sha256": "e1f5d6f6d8ea6ae98640aaa6df7acd311f98e9d439da4790d8ab4a110c8068d1",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-1-brief.md"
+    },
+    {
+      "bytes": 3658,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-1-fix-review.md",
+      "sha256": "00b7fde7a098f8f42cab3bfd837984d6d72bcaed0a4104b58d8fb3255d561be1",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-1-fix-review.md"
+    },
+    {
+      "bytes": 19344,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-1-report.md",
+      "sha256": "e109d71bab6f81068e56385e823348ee6ca1293fc70f86418dd4c0442ed0aacb",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-1-report.md"
+    },
+    {
+      "bytes": 6862,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-1-review.md",
+      "sha256": "10ba8e9768abf007b84167faf90409891e79ad5b2064f953fc6f64a5b1c58345",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-1-review.md"
+    },
+    {
+      "bytes": 2751,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-10-brief.md",
+      "sha256": "0b5e18bed35b1fc76bb76159a61ea0f0a79f2888126f9c9d22f7bda173124931",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-10-brief.md"
+    },
+    {
+      "bytes": 5720,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-10-integration-context.md",
+      "sha256": "e110710ee89a274b18dc7c368c47661147155c87c63713b27816d90e4a7e2f7c",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-10-integration-context.md"
+    },
+    {
+      "bytes": 15995,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-10-report.md",
+      "sha256": "a338d7da2dc814971c3c1bda29fa8f59214cd0a06ac56b9c1843dba1c9e56a4b",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-10-report.md"
+    },
+    {
+      "bytes": 9820,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-10-review.md",
+      "sha256": "7dcb4aa5d62801dd3ca19117a7b415c31866a16c849dee74f6d7df27f5a73526",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-10-review.md"
+    },
+    {
+      "bytes": 15758,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-11-api-context.md",
+      "sha256": "a0458d5f9741dda52e33740d1e8eb1b9596f715a209d5590f5d9ead8bb173161",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-11-api-context.md"
+    },
+    {
+      "bytes": 2588,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-11-brief.md",
+      "sha256": "93397ca016d5bc602b401b99b81c21bdc28b75765707f17b65db8ff700e43e15",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-11-brief.md"
+    },
+    {
+      "bytes": 15737,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-11-report.md",
+      "sha256": "1e167d2481acb36bd3cac8d57360220b9c273f3f15e3fb978961c7238d0b3344",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-11-report.md"
+    },
+    {
+      "bytes": 9346,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-11-review.md",
+      "sha256": "ce4a80b62e7c6d9e41dd85914887a9d0b4ed1459fbfb064acff60466ba5e4ed9",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-11-review.md"
+    },
+    {
+      "bytes": 2486,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-12-brief.md",
+      "sha256": "7ae91ede19e68043d5d06a71cbc31d9f37cf63e0f85ed869f39676c45bb10250",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-12-brief.md"
+    },
+    {
+      "bytes": 3165,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-12-fix-1-review.md",
+      "sha256": "91bc3587228641af1d2fca2a1dbad898edbef6eb129729c96a5794584b7f7153",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-12-fix-1-review.md"
+    },
+    {
+      "bytes": 4258,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-12-integration-context.md",
+      "sha256": "629205f07305972d881196acd5a70424aa2aa23595ca6eb3f35754bfabb3e405",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-12-integration-context.md"
+    },
+    {
+      "bytes": 69370,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-12-report.md",
+      "sha256": "4d73985e924a8c27eff77693703c5749b18d138f3b0855168824ff68c57e8926",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-12-report.md"
+    },
+    {
+      "bytes": 6465,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-12-review.md",
+      "sha256": "5467e51da7222ba56733df5a6c686046f94bea64f7230c104e68629a0f3fe1c6",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-12-review.md"
+    },
+    {
+      "bytes": 3627,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-13-brief.md",
+      "sha256": "c6fdc22ef272643d6e22fb73370f9a2b7cd6aa60ffa562cdc3927151ee395805",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-13-brief.md"
+    },
+    {
+      "bytes": 8026,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-13-integration-context.md",
+      "sha256": "ad6806f6c33162383fca05028cac962c667fd6560aba39bbe54a4714049af07e",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-13-integration-context.md"
+    },
+    {
+      "bytes": 9848,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-13-preparation.md",
+      "sha256": "32bd8426d2e622e8846e8ce4dc1f762f0e66a6703362aacc61121d7df29c79bc",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-13-preparation.md"
+    },
+    {
+      "bytes": 13780,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-13-report.md",
+      "sha256": "bb30d938d1444b9211a9192c8e391cb60370f9a5e72ef2ab1568e86149c5c639",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-13-report.md"
+    },
+    {
+      "bytes": 5815,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-13-review.md",
+      "sha256": "0a4b0c066c5ff1664c3a172d39c369b0891897528f6e771b37cdc95aafec16a0",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-13-review.md"
+    },
+    {
+      "bytes": 3560,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-14-brief.md",
+      "sha256": "e2b9cb0cfe574521048091607334bf13435be36721979d316ecc6902eacb1df1",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-14-brief.md"
+    },
+    {
+      "bytes": 17687,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-14-preparation.md",
+      "sha256": "fe36230909d0b313fb97ac784428c45c4cc4f585b731320d444faccd0c18cd47",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-14-preparation.md"
+    },
+    {
+      "bytes": 9937,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-14-report.md",
+      "sha256": "0992e2573859ca75cec3a474fe946d92aa755d9fac48ca43de72978e63d9933b",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-14-report.md"
+    },
+    {
+      "bytes": 5930,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-14-review.md",
+      "sha256": "a0db67c06f86fd187885cc0c9001f79792354f0b90a2a400887fab11e5774044",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-14-review.md"
+    },
+    {
+      "bytes": 2916,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-14-statistics-context.md",
+      "sha256": "e9d36277fcf32670eb3a3a7f7e8f77ce6d6c70281c9e78c128064ef42947299f",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-14-statistics-context.md"
+    },
+    {
+      "bytes": 2954,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-15-brief.md",
+      "sha256": "1c72450d320f3a52488bc5389350bf5b04f09aa4988acf01ac8340f0dcf29671",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-15-brief.md"
+    },
+    {
+      "bytes": 3448,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-15-fix-1-review.md",
+      "sha256": "78065781d0c143e253fd10a27f398dcbfade35c9490d0cf3522b1f340ae7dc1d",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-15-fix-1-review.md"
+    },
+    {
+      "bytes": 23455,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-15-preparation.md",
+      "sha256": "1a36899a35bca913e9ff6b23561d9d0cebd42f39fcf8c5919353241533b0291a",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-15-preparation.md"
+    },
+    {
+      "bytes": 26600,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-15-report.md",
+      "sha256": "62124dcef95b39a6532a347dcb9395a9afafdbe9a7ff31179d83a7973919c731",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-15-report.md"
+    },
+    {
+      "bytes": 6887,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-15-review.md",
+      "sha256": "a3ac8f3351143e3c0104afff216b1f85e10bebb86cb98f14870cc3712c4099a3",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-15-review.md"
+    },
+    {
+      "bytes": 5919,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-16-brief.md",
+      "sha256": "96907316955e3f2da5d79abbd6c6a8d9c3f426a81cbf9c42e3501a467a91d0ae",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-16-brief.md"
+    },
+    {
+      "bytes": 3387,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-16-fix-1-review.md",
+      "sha256": "1d09c0c7bcadb6273430aabae27154c6da6530edbac35f86e6764c8542dc14fd",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-16-fix-1-review.md"
+    },
+    {
+      "bytes": 11520,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-16-integration-context.md",
+      "sha256": "c61b7521fb95ce4e161899911993027ab45098b4d0e6cf6f00640e8344612311",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-16-integration-context.md"
+    },
+    {
+      "bytes": 31841,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-16-preparation.md",
+      "sha256": "07158293cd1bc153e8454718a76bc51e5ccea780b0cc56a69c1df1c7fc08879f",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-16-preparation.md"
+    },
+    {
+      "bytes": 11672,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-16-report.md",
+      "sha256": "6a6cc38436509a9d3c27bc9493e0b48e06f09d64c325db7855743b0737465ea8",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-16-report.md"
+    },
+    {
+      "bytes": 7609,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-16-review.md",
+      "sha256": "f27d4cd2a87a31732f87ceb890d859b86cbc84b27750fd711a48367d2d675c35",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-16-review.md"
+    },
+    {
+      "bytes": 2962,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-brief.md",
+      "sha256": "a020fd09f3216619bb39dd833ca10f0ed34b16bb766d08bb5b77572bab5a4456",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-brief.md"
+    },
+    {
+      "bytes": 12134,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-design-notes.md",
+      "sha256": "1643f6b319ef35ef27666beb7375c48dc6db754511d7f3f098da9681bbdaf0bc",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-design-notes.md"
+    },
+    {
+      "bytes": 3071,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-forecast-notes.md",
+      "sha256": "1401669221353f2cfc46f6183e0f3b4e92e313aa6b0cd7701cb950728f695b57",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-forecast-notes.md"
+    },
+    {
+      "bytes": 7880,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-preparation.md",
+      "sha256": "6af27b2aab16ce3ab8ce4726212162ecd573882138cd878f73ddb754f0ccef69",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-preparation.md"
+    },
+    {
+      "bytes": 3569,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-2-brief.md",
+      "sha256": "2ca323f8d957fcdc4d84bba910e0cb9ff30078c0094a96c96c2753ad5cea185f",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-2-brief.md"
+    },
+    {
+      "bytes": 2238,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-2-context.md",
+      "sha256": "6fa4204e85b6b464a95409ab1332c42dd50db9ceeb09d931df2a26bc51ebeca1",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-2-context.md"
+    },
+    {
+      "bytes": 4706,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-2-fix-review.md",
+      "sha256": "6cc4f922d3033b39379f48a9f37fb2dbbab06fdcfe5954095e002c69dda3f815",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-2-fix-review.md"
+    },
+    {
+      "bytes": 28790,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-2-report.md",
+      "sha256": "e37626ada9c4308850d0a628cf5c57b3a49dd9ad94f0c566d7e55598acd1fdc8",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-2-report.md"
+    },
+    {
+      "bytes": 6823,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-2-review.md",
+      "sha256": "cbb20b15df82981c115b98157733da69b38e83880195c6e17b19eea1231c09d7",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-2-review.md"
+    },
+    {
+      "bytes": 2617,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-3-brief.md",
+      "sha256": "aa05dd71d21539e4f03dec19714b35b4aabb579062ab13f7079a4dcd34bda33d",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-3-brief.md"
+    },
+    {
+      "bytes": 2297,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-3-context.md",
+      "sha256": "c7512525c1f08c406b2a2f2483d82064af7030b354c4c5d60c89cb45811b3a5c",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-3-context.md"
+    },
+    {
+      "bytes": 11732,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-3-report.md",
+      "sha256": "0c540a5b0f6cdfbae4e26d541ceff4e6106cd2ad08f58c3f15e86d8da04588c3",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-3-report.md"
+    },
+    {
+      "bytes": 6942,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-3-review.md",
+      "sha256": "379fe29612f180715fbddb3b069ef3afa410a58c22c5a02f228b983e4779687d",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-3-review.md"
+    },
+    {
+      "bytes": 5707,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-4-api-context.md",
+      "sha256": "b6ce97ac7c34131ae049dc976416ddf790135ffc0318f0315869ebd09d8e36c2",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-4-api-context.md"
+    },
+    {
+      "bytes": 2429,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-4-brief.md",
+      "sha256": "6a4344b07ae6dff0fcd1b710c7157de13e954c5078c32924ccc57ff5ea94a05d",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-4-brief.md"
+    },
+    {
+      "bytes": 4771,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-4-fix-review.md",
+      "sha256": "e1e8d4d6fb4e085ccfe03801cad1d3df86954233c1f14a38df70fd6cf97cab14",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-4-fix-review.md"
+    },
+    {
+      "bytes": 3916,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-4-fix2-review.md",
+      "sha256": "98e2dbd03be925e4eb6051da988c20b96a6712fdb0d334151acc95c3abfc5729",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-4-fix2-review.md"
+    },
+    {
+      "bytes": 1898,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-4-integration-context.md",
+      "sha256": "23b477b645b810cc8586db0091740208bc72c6d287aac4735385bc02c897b939",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-4-integration-context.md"
+    },
+    {
+      "bytes": 39032,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-4-report.md",
+      "sha256": "0b00b26212f58484d1a697f7c93c8c2057c1ec1cacf41c8c5249f0bb536e7597",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-4-report.md"
+    },
+    {
+      "bytes": 9151,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-4-review.md",
+      "sha256": "8af4e213249ccbc1c6548c9dd7b482aa876ea94c827f4235116ccb2bcf1d6fe7",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-4-review.md"
+    },
+    {
+      "bytes": 3105,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-5-brief.md",
+      "sha256": "e98f948371b64da0b632dac8d75af1d8e17575b33d53012149292ec2fd63702c",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-5-brief.md"
+    },
+    {
+      "bytes": 2186,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-5-fix1-review.md",
+      "sha256": "3f3c53c78ca2d58158b904d3f2f07b0e344f4f1f99d301f339275b3ebfb801d7",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-5-fix1-review.md"
+    },
+    {
+      "bytes": 1601,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-5-integration-context.md",
+      "sha256": "de3d776a2a48ff0c93cc1846198e9b3ec6903a209d4d63199c5af381da5bec25",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-5-integration-context.md"
+    },
+    {
+      "bytes": 5351,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-5-reference-context.md",
+      "sha256": "d88817526754c8581600ad404b91e6d01c8b8127cf575978859090d93f424c60",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-5-reference-context.md"
+    },
+    {
+      "bytes": 17825,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-5-report.md",
+      "sha256": "85bbd2e388c3b1fc2b3057fe12ad655d057c3adb352a311c693d4bc94ee867f5",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-5-report.md"
+    },
+    {
+      "bytes": 6653,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-5-review.md",
+      "sha256": "942683b964bf25fedf71f769bcf7e395b76e381e9b3a12a471c89c39b8f1dd7a",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-5-review.md"
+    },
+    {
+      "bytes": 2905,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-6-brief.md",
+      "sha256": "98f56f033893c8f5f47014b75c9d6d3d46f2b6305b51b57a8789f9727ff6036f",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-6-brief.md"
+    },
+    {
+      "bytes": 1865,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-6-integration-context.md",
+      "sha256": "a4b4ee1d481de178404dac68bce97a08f6cd00b231c5b8168f2fa1582b301430",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-6-integration-context.md"
+    },
+    {
+      "bytes": 7632,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-6-report.md",
+      "sha256": "53e5bd2f63d413e76fee8d578e524757558af18d453d2eeba3b3676360203658",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-6-report.md"
+    },
+    {
+      "bytes": 5928,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-6-review.md",
+      "sha256": "b8926998a4c6464e34af3dde55ecefde52a5edb48db991bff3bcd8c15a74bdb6",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-6-review.md"
+    },
+    {
+      "bytes": 2577,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-7-brief.md",
+      "sha256": "986677f64815c968a4f880e045db8597d86d9e03f61165680845c8a1cfb88b08",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-7-brief.md"
+    },
+    {
+      "bytes": 2105,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-7-integration-context.md",
+      "sha256": "27dfe74a21fdbe5175088b796ff37a303bf787c481077afa89048221f2028b80",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-7-integration-context.md"
+    },
+    {
+      "bytes": 7299,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-7-report.md",
+      "sha256": "88c437192def7f4ef135b2a131169f90184a18269113aceb630aab342f39c1eb",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-7-report.md"
+    },
+    {
+      "bytes": 7296,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-7-review.md",
+      "sha256": "5e18525b71b456cb483487a84aec862c3f66319140180a0d4c5c2d544e0eaefd",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-7-review.md"
+    },
+    {
+      "bytes": 3161,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-8-brief.md",
+      "sha256": "450e18fa725ebc73709834d09e97b112fb3b5dbd1b08f2fbe760e84986e2e029",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-8-brief.md"
+    },
+    {
+      "bytes": 5732,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-8-fix1-review.md",
+      "sha256": "0d98b744f6fa0a10089c842cd04d76612ff1fdbd918de8ce91e4672cc868a692",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-8-fix1-review.md"
+    },
+    {
+      "bytes": 2899,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-8-fix2-review.md",
+      "sha256": "b3a2f47515d7c03a4eece743fc899919df3247efc8d3c6062a7612807079a75a",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-8-fix2-review.md"
+    },
+    {
+      "bytes": 6611,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-8-integration-context.md",
+      "sha256": "27c5f3f775df45da74a8b3f1f71e56953dbaa4efa32f9a575c972dba1063f9b4",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-8-integration-context.md"
+    },
+    {
+      "bytes": 22019,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-8-report.md",
+      "sha256": "867c2a93cbf845d4cec057b0bf73fbe084175c5a77d2e22e7587333d2af6c085",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-8-report.md"
+    },
+    {
+      "bytes": 8808,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-8-review.md",
+      "sha256": "19f0fcb8567d595d9ac564f0ca91df59b087e92e7ed14b790c5e500ec4b6243b",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-8-review.md"
+    },
+    {
+      "bytes": 2528,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-9-brief.md",
+      "sha256": "8725eb403628d1880a182600ed530a1e001bb98add9823c639a0eef3e23dd411",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-9-brief.md"
+    },
+    {
+      "bytes": 6334,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-9-integration-context.md",
+      "sha256": "6e3bbae3ddd10266f71547b82f8343cc8b596dd166018c33ffd17028d62b0cdc",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-9-integration-context.md"
+    },
+    {
+      "bytes": 15856,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-9-report.md",
+      "sha256": "1ab9a739d461449b007328d05d741437123e9b3d17d851373699bf83a8888030",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-9-report.md"
+    },
+    {
+      "bytes": 10687,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-9-review.md",
+      "sha256": "98a79b9e2e760ac9d3abf4e3f8663f01f2cdf42ea3628a787efb192744a12478",
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-9-review.md"
+    },
+    {
+      "bytes": 5215,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/artifacts/provenance/capacity-input-audit-report.md",
+      "sha256": "d359669c763235137acb74d44f49c456ea45d3403feeec799b24dd86ac3fd10f",
+      "source_path": "artifacts/provenance/capacity-input-audit-report.md"
+    },
+    {
+      "bytes": 13780,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/artifacts/provenance/task13-report.md",
+      "sha256": "bb30d938d1444b9211a9192c8e391cb60370f9a5e72ef2ab1568e86149c5c639",
+      "source_path": "artifacts/provenance/task13-report.md"
+    },
+    {
+      "bytes": 26600,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/artifacts/provenance/task15-source-report.md",
+      "sha256": "62124dcef95b39a6532a347dcb9395a9afafdbe9a7ff31179d83a7973919c731",
+      "source_path": "artifacts/provenance/task15-source-report.md"
+    },
+    {
+      "bytes": 11672,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/artifacts/provenance/task16-source-report.md",
+      "sha256": "6a6cc38436509a9d3c27bc9493e0b48e06f09d64c325db7855743b0737465ea8",
+      "source_path": "artifacts/provenance/task16-source-report.md"
+    },
+    {
+      "bytes": 60463,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/docs/superpowers/plans/2026-10-14-outcome-aware-context-allocation.md",
+      "sha256": "e7785285e852e2f8a6b909d672e11df478e8d51562d6a1ca8f09217824d9b46c",
+      "source_path": "docs/superpowers/plans/2026-10-14-outcome-aware-context-allocation.md"
+    },
+    {
+      "bytes": 3609,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/docs/superpowers/reviews/2026-10-14-planning-review.md",
+      "sha256": "82ecad37c9696ad896071b8594ca6265e692f5b428ef4cf9c8365f76fed7e40e",
+      "source_path": "docs/superpowers/reviews/2026-10-14-planning-review.md"
+    },
+    {
+      "bytes": 3165,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/docs/superpowers/reviews/2026-10-14-task12-fix-1-review.md",
+      "sha256": "91bc3587228641af1d2fca2a1dbad898edbef6eb129729c96a5794584b7f7153",
+      "source_path": "docs/superpowers/reviews/2026-10-14-task12-fix-1-review.md"
+    },
+    {
+      "bytes": 6465,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/docs/superpowers/reviews/2026-10-14-task12-review.md",
+      "sha256": "5467e51da7222ba56733df5a6c686046f94bea64f7230c104e68629a0f3fe1c6",
+      "source_path": "docs/superpowers/reviews/2026-10-14-task12-review.md"
+    },
+    {
+      "bytes": 5815,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/docs/superpowers/reviews/2026-10-14-task13-review.md",
+      "sha256": "0a4b0c066c5ff1664c3a172d39c369b0891897528f6e771b37cdc95aafec16a0",
+      "source_path": "docs/superpowers/reviews/2026-10-14-task13-review.md"
+    },
+    {
+      "bytes": 5930,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/docs/superpowers/reviews/2026-10-14-task14-review.md",
+      "sha256": "a0db67c06f86fd187885cc0c9001f79792354f0b90a2a400887fab11e5774044",
+      "source_path": "docs/superpowers/reviews/2026-10-14-task14-review.md"
+    },
+    {
+      "bytes": 3448,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/docs/superpowers/reviews/2026-10-14-task15-fix-1-review.md",
+      "sha256": "78065781d0c143e253fd10a27f398dcbfade35c9490d0cf3522b1f340ae7dc1d",
+      "source_path": "docs/superpowers/reviews/2026-10-14-task15-fix-1-review.md"
+    },
+    {
+      "bytes": 6887,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/docs/superpowers/reviews/2026-10-14-task15-review.md",
+      "sha256": "a3ac8f3351143e3c0104afff216b1f85e10bebb86cb98f14870cc3712c4099a3",
+      "source_path": "docs/superpowers/reviews/2026-10-14-task15-review.md"
+    },
+    {
+      "bytes": 3387,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/docs/superpowers/reviews/2026-10-14-task16-fix-1-review.md",
+      "sha256": "1d09c0c7bcadb6273430aabae27154c6da6530edbac35f86e6764c8542dc14fd",
+      "source_path": "docs/superpowers/reviews/2026-10-14-task16-fix-1-review.md"
+    },
+    {
+      "bytes": 7609,
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T015117851969Z/docs/superpowers/reviews/2026-10-14-task16-review.md",
+      "sha256": "f27d4cd2a87a31732f87ceb890d859b86cbc84b27750fd711a48367d2d675c35",
+      "source_path": "docs/superpowers/reviews/2026-10-14-task16-review.md"
+    }
+  ],
+  "provisional": true,
+  "qualification": "Exact private snapshots may contain historical development examples. Public archive contains only hashes, paths, decision paragraphs and curated summaries. Later Task17/final-review additions require a new snapshot; scratch remains.",
+  "rulings_path": "artifacts/provenance/process-archive/2026-10-14/20261015T015117851969Z/rulings.json",
+  "snapshot_utc": "2026-10-15T01:51:17.851969+00:00",
+  "source_head_at_resume": "887ca711dc7f1caa0f7425b0be5eaba39ec83cbd"
+}

@@ -1,0 +1,56 @@
+{
+  "authorized_append_only_ledger": {
+    "after_generation_check": "original byte prefix unchanged; complete native _parent_attempts bijection reconciles every newly appended run cost; no rewritten/duplicate/missing/orphan row",
+    "baseline_bytes": 388,
+    "baseline_sha256": "9577989b2c8228b348f92fbbd15982eef35e4b1b97397d33195ec36f6d817a98",
+    "baseline_source_ids": [
+      "preparation-1",
+      "launch-pilot-1"
+    ],
+    "path": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/stage-costs.jsonl"
+  },
+  "external_sidecar_sha256": "151b10bbd9b7f8d4dda2b4e9dd18cb7da3756db8f5e9062eec676ddaa76f39f1",
+  "kind": "read_only_generation_inventory_guard_plan",
+  "reason": "stage-costs.jsonl intentionally receives authorized generation parent row; physical source/parent receipt bytes stay strict. Native authorization likewise excludes this append-only ledger from parent_receipt_hashes. Sidecar original input hash remains its actual observation-time provenance, never rewritten.",
+  "source_hashes": {
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/src/outcome_poc/retrieval.py": "7114865d033c05066651ab9c6e9a8e2baa6d21bd11f8ddf656fa0c05babfd4e1",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/src/outcome_poc/storage.py": "87e645a6baf2ce3c1644df243dbf0f5f978c4e2314c327bb737c75eb8d19e215",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/src/outcome_poc/transfer_runtime.py": "66c7c0a0cbf4b6874eadca7645d5189c715676968eee5450e3ab54581dc2c95c"
+  },
+  "strict_input_hashes": {
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/provenance/index-attempts.jsonl": "a34e23e4ffecd26ad858cae577805b640071323b088625803d3e4317914500f7",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/provenance/task9-index64-attempts.jsonl": "953c3c1ddaf0ca3d2af681142b755bae55ac6751efae440ba142d314de3d8444",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/provenance/wp1-index-fit.json": "46c98600ee7cbdd2811ab8d835937bf53ce6a5035fc51b648f74a683ec5cbcbe",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/provenance/wp1-index-pilot.json": "8be21995414c0da8a7291e237343e119d6d7321620cbfbb3db82be1c6adf04d0",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/provenance/wp1-index-pilot64.json": "692ab1685256cbbe9e837324e065540949d797403e758ea0d5cbb88868a24290",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/provenance/wp1-index-tune.json": "4a5c339d30a032119e16768fa767de0c0661da8062d6b53d223f3273f0258973",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/index-realization.json": "b5f34197fe51acaaec8bd6fa30cec9054aff7b0203b07b7d652d337576210d04",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/index/attempt-1/manifest.json": "ced5b7efac32fc8c806899a117d8e532c3ca8446c70b5db1f52e96b9ccb07848",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/index/attempt-1/metadata.sqlite3": "6c5674628b706e4a810015d5baf12edc8ccff99493f3d690edec4c97bb625fb4",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/index/attempt-1/vectors.f32": "6d2f5b70cb56816e1b50608bacb1c708c83d0dee4d6d914d31193e3f99078dc6",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/index/index-attempts.jsonl": "d051ba9022be6d6d680e392b47165ac93ab3aa350afeb9b2a9c83b3a1ef292a2",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/launch-pilot-1.finished.json": "5ea6e621a0560e7b3308ffd10239922abd91e9fdeb064144fb574a770b792bb3",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/launch-pilot-1.plan.json": "a3100e6e8d70e948859999a861fde92e9c0b9f63a4ca569c5aa06db7c64b515d",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/launch-pilot-1.started.json": "8d30f779f5a1f7cd1f1e4e1021de6307e5e0b4bc2cd24b917f2e78dab482877a",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/manifest.json": "75ebb9d431a5c62a8bacdb3f8dd89fe8d56824f2cb47e51483b57d67b5c996f5",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/pilot.closed.json": "426b7870c6374d5e7e4dd2c520de55b3993d10f3d146695a103e052d6ced4265",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/preparation-1.finished.json": "fe5a86e40a6f5bdf0afbd241c0ae6336353441c7e67ad73f834728539fb163c6",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/preparation-1.started.json": "8efc886615901b3b11fc673fb764dbd7241935ad2e7a639d2370fbbcc0fc2382",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/fit/manifest.json": "46c98600ee7cbdd2811ab8d835937bf53ce6a5035fc51b648f74a683ec5cbcbe",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/fit/metadata.sqlite3": "e89e0ebf045bdfdf705b5df1bcf46c4e5d5a7b333c202fb63a1f9454cf56be09",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/fit/vectors.f32": "687d60aa73636044d63ecaf295b0f858d759b271cb71782b5e63b867b084c7dc",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/index-attempts.jsonl": "83ae73c172d1c78761dc63656b20d6ae8ed40b06ff09afe7995d8fccad40fdf4",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/pilot/manifest.json": "8be21995414c0da8a7291e237343e119d6d7321620cbfbb3db82be1c6adf04d0",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/pilot/metadata.sqlite3": "b7d1e440672ff5bfad81ab484c1078ab9cc9aa0241d910fb2d9e0585f177739c",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/pilot/vectors.f32": "e47b5845faf18af5346690cbcb60801f9e26b74282d9467074ffda10ed207598",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/pilot64/manifest.json": "692ab1685256cbbe9e837324e065540949d797403e758ea0d5cbb88868a24290",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/pilot64/metadata.sqlite3": "33641589e1231445b1d24c49f643fb66f290d55ccf69925c60dde253174e3185",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/pilot64/vectors.f32": "45b2b909f02d55fb4e3b255914dda424bb0a1dc759abf4fdccce919878773fa7",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/protected/manifest.json": "486d7d0e4be7c34872dafaa4f15ef1ac6618cf64c3db1282a4c4b16e464e3aa4",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/protected/metadata.sqlite3": "a660d3fb9f606c8571744da5b6db4d183c1e8be886dead5f4523403cb86699d1",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/protected/vectors.f32": "ce73b89b8dae8d233e75a23097d801a5db6f72afc6b798a91bf1a8d38a9c242c",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/tune/manifest.json": "4a5c339d30a032119e16768fa767de0c0661da8062d6b53d223f3273f0258973",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/tune/metadata.sqlite3": "aadf9a943f35da2864511c0ab1d2f6f8c45409b164657b25ec0f6761f01f01c6",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/tune/vectors.f32": "259f243d203ed329658472de68db48cdaa0e565776a78be4dcb7917c78ab003a"
+  }
+}

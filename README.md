@@ -1,84 +1,50 @@
 # Outcome-aware context allocation
 
-We are testing whether an AI can read less evidence and still answer correctly. A cheap controller chooses two or ten retrieved passages before the answer is generated. Success requires both the correct answer and the correct supporting citations; the cost includes all work, including failures and extra model calls.
+**Result: inconclusive.** The fixed experiments and scoring reproduction are complete; the original full-family run remains incomplete and unscored.
 
-Practice runs are complete. The outcome-trained controller has not beaten the simpler support-label-trained alternative on the development comparison. That finding is preliminary.
+This experiment asks whether a cheap controller trained on actual reader outcomes can choose between two and ten retrieved paragraphs better than a controller trained on cheaper proxy labels. Success requires both the correct answer and exact annotated supporting citations. The reader and retriever run locally; this is a HotpotQA distractor-packet experiment, not web search.
 
-The original 480-question test stopped incomplete after 6,510 of 8,640 pipelines. A separately registered run on the same 480 questions has completed all 3,360 assigned answer runs for the selected comparison and diagnostics; scoring and follow-up analysis are underway. Both runs encountered Mac suspensions that the timer excludes, so neither can establish the intended wall-time efficiency claim. All raw work is retained. Scoring was released only after complete native closure and source/receipt checks. The [execution checkpoint](artifacts/checkpoint_report.md) records current status, remaining work and the deadline. No improvement or preserved-quality claim has been established.
+The completed A03 comparison used the same 480 preregistered questions. The outcome-trained controller had **14 strict successes**, the proxy controller **17**, and FIXED10 **11**. These sparse outcomes do not support the frozen primary interval, and none of the four simultaneous quality guards establishes preservation. Both runs excluded host-suspension time from their timers, so no wall-time efficiency or break-even claim is valid. The original full-family run remains incomplete at 6,510/8,640 jobs and is deliberately unscored.
 
-- [Implementation specification](docs/superpowers/specs/2026-10-14-outcome-aware-context-allocation-design.md)
-- [Implementation plan](docs/superpowers/plans/2026-10-14-outcome-aware-context-allocation.md)
-- [Research and attribution handoff](research_poc_plan.md)
-- [Planning review](docs/superpowers/reviews/2026-10-14-planning-review.md)
+There is useful answer-level variation in which context budget works, but little observed room under the strict target: a clairvoyant two-budget oracle achieves 20 strict successes versus 16 for the best fixed budget. Eight enriched, agent-reviewed citation disagreements suggest a mixture of real citation gaps and plausible nonexact reference-set penalties. That diagnostic changes no scores and estimates no prevalence. Richer outcome labels have not shown added value here; citation/reader reliability and an informative strict target should be checked in a fresh protocol before expensive label expansion.
 
-## Native setup
+Read the [final report](artifacts/final_report.md) for the same-denominator tables, quality guards, timing failures, conditional replay, costs and limitations. The technical appendices preserve machine-readable evidence. The latest unchanged-source verification passed 802 native Python 3.12.9 tests with zero skips; documentation work does not require a broad repeat.
 
-The verified environment is arm64 Python 3.12.9 on an Apple M3 Max with 36 GiB RAM, macOS 26.7.1. The lock contains exact wheel hashes for this platform, including MLX 0.32.3 / MLX-LM 0.32.0, Sentence Transformers 6.1.0, Transformers 5.19.0, and CPU PyTorch 2.14.1. A different platform needs an explicitly resolved and verified environment; do not silently upgrade packages during comparisons.
+## Native setup for a fresh checkout
+
+The verified platform is arm64 Python 3.12.9 on an Apple M3 Max with 36 GiB RAM and macOS 26.7.1. The hashed lock targets this platform; another platform needs its own explicitly verified environment. In a fresh checkout, install without changing the pinned dependencies:
 
 ```sh
 /opt/homebrew/bin/python3.12 -m venv .venv
 .venv/bin/python -m pip --cache-dir .cache/pip install --require-hashes -r requirements.lock
 .venv/bin/python -m pip --cache-dir .cache/pip install --no-deps --no-build-isolation -e .
 .venv/bin/python -m pip --cache-dir .cache/pip check
-.venv/bin/python -m pytest -q
-.venv/bin/python -m outcome_poc discover --config configs/base.json
-.venv/bin/python -m outcome_poc assets --config configs/base.json
-.venv/bin/python -m outcome_poc smoke --config configs/base.json
+.venv/bin/python -m outcome_poc --help
 ```
 
-Model/data downloads stay in ignored `models/pinned`; dependency caches stay in `.cache`. Serving adapters require existing local paths. Downloads resolve commit metadata before fetching safe files, preserve/hash model cards and original licensing, and reject external pickle or executable snapshot files. `assets` retains bounded access failures and returns nonzero if an indispensable asset remains blocked. `discover` leaves denied measurements null and fails its resource gate. On this managed Mac, approved execution outside the ordinary sandbox is required for public downloads, read-only `sysctl`, and Metal access.
+These are setup/help instructions, not commands to replay collection over retained evidence. Before any data, asset, index or generation stage, configure fresh isolated output/index roots and a new experiment protocol. Public metadata does not include private raw data or model snapshots.
 
-`smoke` uses the installed chat template, greedy decoding, one sequence, 8,192 total-token and 256 output-token caps, no speculative decoding, fresh unquantized/nonrotating KV caches, and explicit MLX synchronization. It compares two generated token-ID sequences, validates a short citation JSON example, checks normalized finite CPU float32 384-column encoder vectors, and records load times, RSS/MLX peaks, and swap. It leaves at least the greater of 4 GiB or 20% of physical RAM outside a conservative RSS-plus-MLX bound. The short smoke does not establish capacity for the longest benchmark prompts; those checks remain required before protocol freeze.
+- [Implementation specification](docs/superpowers/specs/2026-10-14-outcome-aware-context-allocation-design.md)
+- [Implementation plan and execution status](docs/superpowers/plans/2026-10-14-outcome-aware-context-allocation.md)
+- [Research and attribution handoff](research_poc_plan.md)
+- [Pinned assets and license provenance](artifacts/provenance/asset-manifest.json), [environment](artifacts/provenance/environment.json), and [dataset/source audit](artifacts/provenance/wp1-data.json)
 
-Offline smoke also denies Python socket connections and sets Hub/Transformers offline flags. The verified run additionally used macOS OS-level network denial:
+## Reproduce retained evidence
+
+With the original private artifacts retained, fresh scoring reproduction reads the complete A03 evidence and writes a new receipt outside its frozen run:
 
 ```sh
-sandbox-exec -p '(version 1)(allow default)(deny network*)' \
-  .venv/bin/python -m outcome_poc smoke --config configs/base.json
+.venv/bin/python3.12 -m outcome_poc reproduce --scores-only \
+  --protocol artifacts/protocol-task17-timing/protocol.json \
+  --output artifacts/runs/reproduction-check/a03-receipt.json
 ```
 
-An unguarded socket probe confirmed this OS policy denied connections. Current gate details are written to `artifacts/provenance/wp0.json`; environment, asset and wheel manifests, package freeze, API signatures, original execution-window record, and failed attempts are preserved separately. A reader-only smoke cannot pass the overall data-required WP0 gate.
+The original run's corresponding reproduction returns unavailable/incomplete without opening Gold. Deterministic score reproduction does not validate wall time. Public metadata alone cannot reproduce the run without the retained private datasets, assets and ledgers.
 
-## Asset provenance and source amendment
+## Start a new experiment safely
 
-The reader is `mlx-community/Qwen3-4B-Instruct-2507-4bit` at `50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b`, declaring Apache-2.0 and linking the original Qwen license. Original `Qwen/Qwen3-4B-Instruct-2507` licensing/configuration is pinned at `cdbee75f17c01a7cc42f958dc650907174af0554`. The CPU encoder is `BAAI/bge-small-en-v1.5` at `5c38ec7c405ec4b44b94cc5a9bb96e735b38267a`; its pinned author card declares MIT. The separately preserved upstream FlagEmbedding license is the file linked by that card, with its provenance recorded explicitly.
+Use fresh output/index roots and configuration with a new protocol. A fresh clone contains source and sanitized metadata, not the private datasets, annotation-bearing protocol or closed predictions; it requires a separate new-run data/setup workflow. Do not rerun mutable discovery, asset acquisition, preparation or index commands over retained frozen artifacts. In particular, A03 binds the shared index-attempt ledger; an ordinary index run under that parent can invalidate its binding. Share existing immutable assets read-only only where the new configuration permits it.
 
-Live official CMU training and distractor-development URLs timed out. Acquisition amendment **A01**, recorded before data collection, permits the unaltered raw Internet Archive replay of those exact author-origin filenames at capture `20250512032701`. The loader from a third-party Hugging Face archive was inspected as text and never executed; transformed records and parquet reconstruction are not used. Full native JSON/schema, expected lengths and row counts, memento/WARC/original response metadata, local SHA-256, and the available training CDX SHA-1 payload digest were checked. No archive digest was independently obtained for dev. The archive distribution has no established author endorsement, and byte equivalence to a separately fetched current author copy cannot presently be established. Any protected population must identify this archived author-origin snapshot.
+The prospectively sealed pooled diagnostic completed 32 queries / 96 jobs: A* achieved 4 strict successes, B* 3 and FIXED10 2. These queries are part of the main 480; the small descriptive difference is not independent confirmation. Original-reference document-ID recall@10 was 0.796875, without certifying sentence-level support. The report discloses the native reuse-provenance extraction defect and verified external reconciliation; the frozen source was not repaired. Original full-roster protected POST/LLM results, optimized prefix reuse, MuSiQue and additional stress/generalization tests remain unavailable or unexecuted.
 
-HotpotQA is the dataset of Yang et al., *HotpotQA: A Dataset for Diverse, Explainable Multi-hop Question Answering* (2018), released under [CC BY-SA 4.0 by its authors](https://hotpotqa.github.io/). Retain attribution and applicable share-alike obligations when distributing data or derivatives. Raw/model/data text and caches are not committed by default.
-
-`discover`, `assets`, `smoke`, `prepare`, `audit-data`, `index`, `reader`, `validate-harness`, `pilot`, `collect`, `fit`, `tune`, `freeze`, `plan`, and `score` currently execute stages. `run`, `ablate`, `transfer`, `reproduce` and `report` also have implementations; execution requires their stated frozen protocol, receipt and release prerequisites. An implemented command does not mean its experiment was executed. Preparation produced a protected population of 7,344 structurally valid representative questions; it has no model outcomes. The current indexes cover 64 reserved pilot questions, 256 separate fit questions and 128 tuning questions, with exact-identity document-vector reuse across stages.
-
-One ten-paragraph development reader diagnostic returned valid JSON/citations but failed answer and support scoring. Its raw output and failure are retained locally. This checks the plumbing, not allocation headroom or efficiency. The accounting/recovery harness has passed its scoped reviews and native checks; its six development calls remain recorded. The paired two/ten pilot has now closed and scored all 64 assigned questions. Nine control models have been fitted; the frozen protected collection is running and its outcomes remain unscored.
-
-Development-only structural checks found top-two prompts of 283–670 tokens and top-ten prompts of 1,203–2,304 across the reserved 32-question pilot, with no initial-cap overflow. Top two contained every annotated support document on 17 questions; all ten did on 32. Support inclusion is a proxy, not observed reader success or a controller advantage. The separate audit costs and counts are retained in `artifacts/provenance/pilot-token-length-audit.json` and `pilot-retrieval-coverage-audit.json`.
-
-The reviewed pilot found two strict joint-EM successes at each budget, with two rescues and two harms from larger context. Answer EM was 23/64 at two paragraphs and 32/64 at ten; mean warm serving time was 0.85 versus 2.49 seconds. The clairvoyant oracle covers four successes, just enough to pass the declared development gate. Missing or mismatched supporting sentences make the learning signal sparse. These are development diagnostics, with no trained-controller or protected superiority finding. Every baseline family completed the disjoint tuning comparison before the protected protocol was frozen. Evidence and complete acquisition costs are in [the experiment state](artifacts/provenance/experiment-state.json) and [the pilot gate](artifacts/provenance/task9-pilot64/wp3-gate.json).
-
-The independent fit batch retained 512 budget observations: 18/256 strict successes at two paragraphs and 12/256 at ten, with 11 harms and five rescues. Answer EM was 112/256 versus 131/256. These are training outcomes; the separate development comparison below measures tuning performance, while protected generalization remains untested. Model fitting took 0.485 seconds, while label acquisition took about 926 seconds. [Fit provenance](artifacts/provenance/task10-fit256/fit-summary.json) records all controls and [the source qualification](artifacts/provenance/task10-fit256/native-source.json) describes retrospectively reconstructed development instrumentation. The tuning implementation now validates complete-ledger accounting once per closed snapshot while retaining exact saved costs; [the scaling checks](artifacts/provenance/task12-accounting-scaling.json) record its boundaries.
-
-Paid-control checks retained 102 native development calls and a separately fitted POST controller using the existing labels. Exact greedy output and scoring matched with prefix reuse, but a declared numerical check failed on two cases. Comparisons therefore use the actual no-reuse POST path and retain an optimistic lower-cost bound to avoid overstating its disadvantage. [The comparator gate](artifacts/provenance/task11/comparator-gate.json) and [development report](artifacts/provenance/task11/report.md) preserve both runs, failures, costs and source hashes. The protected comparison has not yet been scored.
-
-The reviewed 128-question tuning comparison retained all 246 configurations. The chosen outcome-trained GBM produced 10 strict successes and 58 answer-only successes; the chosen support-coverage proxy produced 11 and 60. Their reconstructed serving seconds per strict success were 19.11 and 14.66. Ridge, query-only and random-forest controls also beat the candidate on this development objective. These sparse tuning results do not establish a protected effect. A small held-out 128-versus-256 training check showed no stable progress, so additional labels are not justified now. [Selection and all family representatives](artifacts/provenance/task12-selection.json) preserve the losing rows, common quality rule and optimized-POST sensitivity.
-
-The receipt integrity review found and fixed two forward-closure defects before protected work. New closures require complete paid-call evidence and preserve existing closure bytes; original development v1 closures retain their explicit retrospective qualification. [The scoped approval](docs/superpowers/reviews/2026-10-14-task12-fix-1-review.md) records 570 passing tests and the unchanged original data/model/selection hashes. [The recovery checkpoint](artifacts/checkpoint_report.md) records unfinished work and the original deadline. [Capacity](artifacts/provenance/capacity-input-audit-summary.json) and [complete-roster cost forecasts](artifacts/provenance/confirmation-cost-forecast-audit.md) inform the upcoming freeze without selecting favorable protected questions.
-
-The reviewed confirmation protocol fixes 480 questions, all eleven family representatives, fixed-two/fixed-ten diagnostics and two fresh paired repetitions of the main contenders: 8,640 complete pipeline jobs. Calibration retained 286 paid calls and passed two exact 7,936-input/256-output checks. The 37.0816-second timeout and runtime forecast are measured; timing stationarity remains unverified. [Freeze and calibration evidence](artifacts/provenance/task13-report.md) and [the protocol review](docs/superpowers/reviews/2026-10-14-task13-review.md) preserve the hashes, costs and limitations. Protected execution is underway; original wall-time inference is invalidated by the recorded host-sleep clock discrepancy. Separate scoring remains held.
-
-The experiment tests context allocation on supplied evidence packets. It does not establish open-web search savings, commercial value, algorithmic novelty, or a full reproduction of related papers. Negative, tradeoff, inconclusive and prerequisite-blocked outcomes are valid handoffs.
-
-
-## Reproduction and reporting
-
-`report --state PATH` renders an explicit development-only, blocked or incomplete handoff without loading a model. An incomplete protected assignment retains all 480 questions and 8,640 jobs; it cannot be reported as a smaller scored sample. Known clock failures invalidate the wall-time conclusion even if an active-compute ratio looks favorable.
-
-After a full run has closed and been scored, the scores-only command validates the immutable ledgers, calls the unchanged scorer on every raw prediction, and recomputes the frozen statistics. It never generates an answer or changes the original run. These commands are implemented; actual Task16 execution remains held pending the final closure/cutoff handoff and release:
-
-```sh
-.venv/bin/python -m outcome_poc reproduce --scores-only --protocol artifacts/protocol.json
-.venv/bin/python -m outcome_poc report --protocol artifacts/protocol.json --config PATH_TO_SANITIZED_REPORT_METADATA
-# For a blocked/development-only/incomplete handoff:
-.venv/bin/python -m outcome_poc report --state PATH_TO_SANITIZED_HANDOFF_STATE
-```
-
-The report and `summary.json` share one verdict. Quality preservation requires all four exact guards plus failure/latency clearance; similar measured accuracy is insufficient. The tested mechanism is whether outcome-derived training labels improve pre-answer routing over the learned support-coverage proxy and other frozen alternatives. Existing development results do not demonstrate that added value. The current environmental timing failure does not establish that the mechanism is false.
+The [machine summary](artifacts/summary.json) and [risk ledger](artifacts/remaining-risks.json) preserve the conclusion and limits. Exact raw evidence remains local; sanitized public metadata and source alone are not a self-contained dataset release. Final branch review and a post-review process-archive refresh remain pending.

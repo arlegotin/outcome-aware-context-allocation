@@ -27,3 +27,9 @@ artifacts/schedule.json
 # Private amended protocol and task-level replay traces remain local.
 artifacts/protocol-task17-timing/
 artifacts/analysis/
+
+# Retained local drafts and verbatim operational audit inputs.
+artifacts/drafts/
+artifacts/provenance/task15-count-attempt2-source.diff
+# This sealed diagnostic kept its original path; its annotations stay local.
+artifacts/provenance/task15-transfer-diagnostics/private-percase.json

@@ -1,0 +1,2745 @@
+{
+  "capture_finished_utc": "2026-10-15T08:13:30.968714+00:00",
+  "capture_started_utc": "2026-10-15T08:13:30.824406+00:00",
+  "copy_and_hash_verification_seconds": 0.14485283300746232,
+  "cutoff_qualification": "Per-file captures preserve current bytes; later review/fixes/final reports require another refresh before cleanup. No deletion authorized.",
+  "distinct_rulings": 6,
+  "durable_private_evidence_references": [
+    "artifacts/runs/confirmation",
+    "artifacts/runs/task17-timing-replication",
+    "artifacts/runs/task15-transfer",
+    "artifacts/runs/task15-blind-review",
+    "artifacts/analysis/task18-a03",
+    "artifacts/provenance/task15-transfer-diagnostics/private-percase.json"
+  ],
+  "file_count": 337,
+  "file_suffix_counts": {
+    ".csv": 1,
+    ".diff": 31,
+    ".json": 109,
+    ".jsonl": 1,
+    ".log": 31,
+    ".md": 137,
+    ".py": 8,
+    ".txt": 18,
+    "<none>": 1
+  },
+  "files": [
+    {
+      "bytes": 5400,
+      "captured_utc": "2026-10-15T08:13:30.837483+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/a04-ops-review.md",
+      "sha256": "2606040060a1de1561efd797a721cef2ee0bc42dcad83d8b477ba0ad10ec2183",
+      "source_mtime_ns": 1792037188538138444,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/a04-ops-review.md"
+    },
+    {
+      "bytes": 4831,
+      "captured_utc": "2026-10-15T08:13:30.837835+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/analysis-ops-brief.md",
+      "sha256": "35159e99fd5494d46b095deaf27fd8f49a588b462e8405edd9d5ade86548f13f",
+      "source_mtime_ns": 1792045579292672021,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/analysis-ops-brief.md"
+    },
+    {
+      "bytes": 7472,
+      "captured_utc": "2026-10-15T08:13:30.838021+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/analysis-ops-final-handoff.md",
+      "sha256": "72e5aac2cf0e8bc5fe722f4c9c0b31c081dc4345855bf263cba927311c054453",
+      "source_mtime_ns": 1792051952267150183,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/analysis-ops-final-handoff.md"
+    },
+    {
+      "bytes": 15125,
+      "captured_utc": "2026-10-15T08:13:30.838400+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/analysis-ops-preparation.md",
+      "sha256": "629cbd8912b08070b2f24494515a827c03011ec7a71d501136179f38d680b7cd",
+      "source_mtime_ns": 1792048571418962327,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/analysis-ops-preparation.md"
+    },
+    {
+      "bytes": 7241,
+      "captured_utc": "2026-10-15T08:13:30.838719+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/analysis-ops-report.md",
+      "sha256": "6bb7e0d419eea6b01ddb6914fc217e1a790960384b59a60fb66d5e036dce7a65",
+      "source_mtime_ns": 1792048560032843375,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/analysis-ops-report.md"
+    },
+    {
+      "bytes": 3518,
+      "captured_utc": "2026-10-15T08:13:30.838992+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/asset-access-audit.md",
+      "sha256": "6ef734342e048d8f7047854225543495a8ece7a7f882f20eed827599e8482405",
+      "source_mtime_ns": 1791980402137372285,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/asset-access-audit.md"
+    },
+    {
+      "bytes": 6298,
+      "captured_utc": "2026-10-15T08:13:30.839294+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/asset-source-fallback.md",
+      "sha256": "634223df0bb97872f76e6fab3bb5deb5f378069ec8b880eff21587a022c70320",
+      "source_mtime_ns": 1791981577749517988,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/asset-source-fallback.md"
+    },
+    {
+      "bytes": 5215,
+      "captured_utc": "2026-10-15T08:13:30.839600+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/capacity-input-audit-report.md",
+      "sha256": "d359669c763235137acb74d44f49c456ea45d3403feeec799b24dd86ac3fd10f",
+      "source_mtime_ns": 1792006263781604706,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/capacity-input-audit-report.md"
+    },
+    {
+      "bytes": 15514,
+      "captured_utc": "2026-10-15T08:13:30.839961+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/confirmation-cost-forecast-audit.md",
+      "sha256": "7670164b30dbded1ce2cfc188b12fe889758fb680439f270a0352c6c99c9ed61",
+      "source_mtime_ns": 1792011448153937304,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/confirmation-cost-forecast-audit.md"
+    },
+    {
+      "bytes": 9468,
+      "captured_utc": "2026-10-15T08:13:30.840339+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/final-review-context-template.md",
+      "sha256": "bb985b2fe68e5e27a04f615f4329117986a5b15de9a1fc30b7d76368ff61d493",
+      "source_mtime_ns": 1792050820092841980,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/final-review-context-template.md"
+    },
+    {
+      "bytes": 2532,
+      "captured_utc": "2026-10-15T08:13:30.840642+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/global-constraints.md",
+      "sha256": "cab2ce0f25c42481696a84adaeca30474ad50f79656f8771c9d9394df76ac191",
+      "source_mtime_ns": 1792009178383684158,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/global-constraints.md"
+    },
+    {
+      "bytes": 4306,
+      "captured_utc": "2026-10-15T08:13:30.841081+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/pilot-citation-diagnostic-report.md",
+      "sha256": "937a3d381b2fde9cbd32cae1c8f744dd3afae378cf232a66b9762fcfe55c9644",
+      "source_mtime_ns": 1792000188645399106,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/pilot-citation-diagnostic-report.md"
+    },
+    {
+      "bytes": 70,
+      "captured_utc": "2026-10-15T08:13:30.841600+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/plan-path",
+      "sha256": "d1797fde093652dd66a7ab69fb11abbb870550294bafbce0faf93cbfd4cae2f1",
+      "source_mtime_ns": 1791980028963151597,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/plan-path"
+    },
+    {
+      "bytes": 90510,
+      "captured_utc": "2026-10-15T08:13:30.841970+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/progress.md",
+      "sha256": "f676fc24b3a3549590d52fbd2f890e2914e90224a21bc25e215ebf9e2af6d261",
+      "source_mtime_ns": 1792050802232228818,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/progress.md"
+    },
+    {
+      "bytes": 56428,
+      "captured_utc": "2026-10-15T08:13:30.842438+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-025aa52..0d53645.diff",
+      "sha256": "dddfc4882c228d4a53a86ab647813fa4ccc3f0b22b7ceef3cb14323e1700e800",
+      "source_mtime_ns": 1791988341518446164,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-025aa52..0d53645.diff"
+    },
+    {
+      "bytes": 7803,
+      "captured_utc": "2026-10-15T08:13:30.842830+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-05f65a1..3fec69e.diff",
+      "sha256": "7cea2e6f1699c223cdd23c8d0e16a83a9df9a628f31504d1f952cae4880a35b6",
+      "source_mtime_ns": 1791991570809392471,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-05f65a1..3fec69e.diff"
+    },
+    {
+      "bytes": 53448,
+      "captured_utc": "2026-10-15T08:13:30.843445+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-09ede7c..eb25112.diff",
+      "sha256": "cfdf0277314b9f295eb7a09855b0d41f84b78bea5a43cd6f62a3e4f2772b4ffe",
+      "source_mtime_ns": 1791985049054361082,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-09ede7c..eb25112.diff"
+    },
+    {
+      "bytes": 98503,
+      "captured_utc": "2026-10-15T08:13:30.844108+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-0cdd22a..aaf75a7.diff",
+      "sha256": "38b7ac687d3254738b731364bcf9bdfecddd402d0d998b138f5ce6ac7b3a5a28",
+      "source_mtime_ns": 1792013825203918473,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-0cdd22a..aaf75a7.diff"
+    },
+    {
+      "bytes": 33523,
+      "captured_utc": "2026-10-15T08:13:30.844572+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-0d53645..3f999e6.diff",
+      "sha256": "f857a0da03a83f9ff43206b571ba8c0a2449f9db6bc59188715fcbb83fd191b9",
+      "source_mtime_ns": 1791989784213243638,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-0d53645..3f999e6.diff"
+    },
+    {
+      "bytes": 49677,
+      "captured_utc": "2026-10-15T08:13:30.844992+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-16982e9..45d1d7f.diff",
+      "sha256": "b6d5afa2906d7736293edb976b824713f573fa0a31bf8e1b711a5145f29d3ac5",
+      "source_mtime_ns": 1792027284371376895,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-16982e9..45d1d7f.diff"
+    },
+    {
+      "bytes": 5951,
+      "captured_utc": "2026-10-15T08:13:30.845372+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-17fc726..7e1f05c.diff",
+      "sha256": "bb655b3d13d7aefd4ac6680dd8cb22db48be44944a18b8e1262a6dee314ae52a",
+      "source_mtime_ns": 1791997052978952499,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-17fc726..7e1f05c.diff"
+    },
+    {
+      "bytes": 111172,
+      "captured_utc": "2026-10-15T08:13:30.845919+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-1b52e5d..8814718.diff",
+      "sha256": "ce444d3d278d7ab336e201244de1c2885fbbf6e97caa73a0d3265f5943ad1f13",
+      "source_mtime_ns": 1792015485571554563,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-1b52e5d..8814718.diff"
+    },
+    {
+      "bytes": 25152,
+      "captured_utc": "2026-10-15T08:13:30.846309+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-20c2dc7..71f6e3a.diff",
+      "sha256": "4c34322476bdabb3667c1e6aa9a5863b647360ad97445ed97943d21f3b2c56d7",
+      "source_mtime_ns": 1791983647405876877,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-20c2dc7..71f6e3a.diff"
+    },
+    {
+      "bytes": 10693,
+      "captured_utc": "2026-10-15T08:13:30.846666+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-27b6159..1ad111e.diff",
+      "sha256": "abc3fe84a339a55ca1d0fa0c54cfbda8fc7d0624ff983a6b1c7e168cfdd2c3a3",
+      "source_mtime_ns": 1792030217515655513,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-27b6159..1ad111e.diff"
+    },
+    {
+      "bytes": 418705,
+      "captured_utc": "2026-10-15T08:13:30.847767+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-387bd13..ac559e6.diff",
+      "sha256": "0834e8ddeaba44a263b1bbd6edaaed24bf3dcce9924d72386e52c02f9cb69af6",
+      "source_mtime_ns": 1792011409674481810,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-387bd13..ac559e6.diff"
+    },
+    {
+      "bytes": 33079,
+      "captured_utc": "2026-10-15T08:13:30.848202+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-3fec69e..254598c.diff",
+      "sha256": "d804fa7188639e0d94e7a1636dc69403ae1b099b6cf536d4560b3148a9aa96ce",
+      "source_mtime_ns": 1791992297619407297,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-3fec69e..254598c.diff"
+    },
+    {
+      "bytes": 51546,
+      "captured_utc": "2026-10-15T08:13:30.848633+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-48a67be..05f65a1.diff",
+      "sha256": "4fbbd97947c9085d3202438c5890e12e6eddb390c44683e918b358d90eab0941",
+      "source_mtime_ns": 1791990850369501201,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-48a67be..05f65a1.diff"
+    },
+    {
+      "bytes": 28186,
+      "captured_utc": "2026-10-15T08:13:30.849027+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-587531f..720eb43.diff",
+      "sha256": "0466e60984dec7845382401316bc7b98969148b87cc957e3631d9af538f9bc62",
+      "source_mtime_ns": 1791993024951485269,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-587531f..720eb43.diff"
+    },
+    {
+      "bytes": 101567,
+      "captured_utc": "2026-10-15T08:13:30.849558+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-58b3d72..91a4287.diff",
+      "sha256": "edbcafba53f5b095e09b4808e159e2804d298e2528102ea751bf29faf8a2b48d",
+      "source_mtime_ns": 1792002148056117844,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-58b3d72..91a4287.diff"
+    },
+    {
+      "bytes": 24107,
+      "captured_utc": "2026-10-15T08:13:30.850049+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-5f02525..a61ab31.diff",
+      "sha256": "94da51610e4f8ed177e4256831cc633ef48fc18c3e9f85adb96a5a265b734c4b",
+      "source_mtime_ns": 1792028469504724263,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-5f02525..a61ab31.diff"
+    },
+    {
+      "bytes": 66292,
+      "captured_utc": "2026-10-15T08:13:30.850568+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-63eb922..5f02525.diff",
+      "sha256": "41b8db0f8e71fc368a2836edadbf3d1fbf099834128566b9ab5a889eaacbb213",
+      "source_mtime_ns": 1792028018825790590,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-63eb922..5f02525.diff"
+    },
+    {
+      "bytes": 100115,
+      "captured_utc": "2026-10-15T08:13:30.851207+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-720eb43..e747b7e.diff",
+      "sha256": "5f88bebe485c801ddae87f69a85d212662cfb98617ee30578ee402e1588019b7",
+      "source_mtime_ns": 1791994775169324590,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-720eb43..e747b7e.diff"
+    },
+    {
+      "bytes": 145016,
+      "captured_utc": "2026-10-15T08:13:30.851842+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-7f35c96..6553eee.diff",
+      "sha256": "d05c7d75af0e92de08b922195026ef2d76d4e615d4f0033952d09a57bc7c5a49",
+      "source_mtime_ns": 1792005424540494163,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-7f35c96..6553eee.diff"
+    },
+    {
+      "bytes": 129199,
+      "captured_utc": "2026-10-15T08:13:30.852421+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-8814718..16982e9.diff",
+      "sha256": "84c0b16422ecd6c86ee06d10ff62e1f4be8d5247111a81964b9136ff08c96b07",
+      "source_mtime_ns": 1792026418430930608,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-8814718..16982e9.diff"
+    },
+    {
+      "bytes": 34193,
+      "captured_utc": "2026-10-15T08:13:30.852794+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-887ca71..1f8a304.diff",
+      "sha256": "222790a9a7a071e1fb8c4945f4e74f169e11dcf4fe386444345398cb51805f75",
+      "source_mtime_ns": 1792029235198720909,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-887ca71..1f8a304.diff"
+    },
+    {
+      "bytes": 79038,
+      "captured_utc": "2026-10-15T08:13:30.853265+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-927533e..20c2dc7.diff",
+      "sha256": "e610d5958d1c4a02aabf0b432b452d240c5a5d946489a93dbb7a3886e76bb4e9",
+      "source_mtime_ns": 1791982676941506484,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-927533e..20c2dc7.diff"
+    },
+    {
+      "bytes": 59371,
+      "captured_utc": "2026-10-15T08:13:30.853655+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-92b1fd9..941e51a.diff",
+      "sha256": "731fa61e679afd192004ceda7d27e1049bb2d0d09064bc4523712c2306d85061",
+      "source_mtime_ns": 1792031391936308059,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-92b1fd9..941e51a.diff"
+    },
+    {
+      "bytes": 6447,
+      "captured_utc": "2026-10-15T08:13:30.853988+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-941e51a..f12491c.diff",
+      "sha256": "03e1ba06afd14092b62b471a852a04b52c5e62414d78c9e383248fe1ef3e6d65",
+      "source_mtime_ns": 1792032030161567913,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-941e51a..f12491c.diff"
+    },
+    {
+      "bytes": 20760,
+      "captured_utc": "2026-10-15T08:13:30.854326+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-ac559e6..e22db3a.diff",
+      "sha256": "8347e7d83710357715d19863842cf435f55101d09980ff0ee75aa1f6cac9f694",
+      "source_mtime_ns": 1792011860781927969,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-ac559e6..e22db3a.diff"
+    },
+    {
+      "bytes": 31083,
+      "captured_utc": "2026-10-15T08:13:30.854684+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-cc1b992..d5e1428.diff",
+      "sha256": "c2f310e56fe6b1a72d72ddd241bcc0d56d15f1c71bd4274f184129dc8c6e95a2",
+      "source_mtime_ns": 1791980690174803777,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-cc1b992..d5e1428.diff"
+    },
+    {
+      "bytes": 990219,
+      "captured_utc": "2026-10-15T08:13:30.856718+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-cd98c5b..5f011c1.diff",
+      "sha256": "79291a258c391e213ac08a2bbdd3cdd56feaa066c5bd6ac6a02db811d15db9eb",
+      "source_mtime_ns": 1791999416473176949,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-cd98c5b..5f011c1.diff"
+    },
+    {
+      "bytes": 10566,
+      "captured_utc": "2026-10-15T08:13:30.857094+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-d5e1428..927533e.diff",
+      "sha256": "e1d0cf594e9e224315c5a02b9c7559d452ee2082e7e36a4a7a6ae0fff8e61f8a",
+      "source_mtime_ns": 1791981121573760811,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-d5e1428..927533e.diff"
+    },
+    {
+      "bytes": 50679,
+      "captured_utc": "2026-10-15T08:13:30.857584+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-e747b7e..17fc726.diff",
+      "sha256": "5f8ec90ff53cc37627afff3f41400aa8e6a4ae050bbf587abd2c837d62afceca",
+      "source_mtime_ns": 1791996332873536762,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-e747b7e..17fc726.diff"
+    },
+    {
+      "bytes": 44807,
+      "captured_utc": "2026-10-15T08:13:30.857995+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-eb25112..025aa52.diff",
+      "sha256": "1c85d71dc7c949edcd1cf54531dfa39a29e6d0dd489f8ae6305810bb7a088923",
+      "source_mtime_ns": 1791986383918735418,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/review-eb25112..025aa52.diff"
+    },
+    {
+      "bytes": 648,
+      "captured_utc": "2026-10-15T08:13:30.858425+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/scratch/task18-fix-round1/archive.json",
+      "sha256": "b788504c303cde2b44fb05ed492323b4b19b27b09ac5fc9be20ea3c419ce3b1c",
+      "source_mtime_ns": 1792032014554239262,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/scratch/task18-fix-round1/archive.json"
+    },
+    {
+      "bytes": 100,
+      "captured_utc": "2026-10-15T08:13:30.858721+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/scratch/task18-fix-round1/green-1-raw.log",
+      "sha256": "7d613d6e250d73eb06a8515e328bd0e29f601b1aacc5be7fcc3dfabb0428e9dd",
+      "source_mtime_ns": 1792031957715214023,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/scratch/task18-fix-round1/green-1-raw.log"
+    },
+    {
+      "bytes": 0,
+      "captured_utc": "2026-10-15T08:13:30.858871+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/scratch/task18-fix-round1/green-2-raw.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_mtime_ns": 1792031957796938286,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/scratch/task18-fix-round1/green-2-raw.log"
+    },
+    {
+      "bytes": 1883,
+      "captured_utc": "2026-10-15T08:13:30.859169+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/scratch/task18-fix-round1/green-receipts.json",
+      "sha256": "d729f7b5713ca6da642ad6c86e857f3fa6bb366d20c1c79ac2030937c694307c",
+      "source_mtime_ns": 1792031957848475160,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/scratch/task18-fix-round1/green-receipts.json"
+    },
+    {
+      "bytes": 5908,
+      "captured_utc": "2026-10-15T08:13:30.859465+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/scratch/task18-fix-round1/red-raw.log",
+      "sha256": "d2fca3e09ae8a73fd99ce2a8719a25a634d84cda4cbddf805bf3431c7a45c766",
+      "source_mtime_ns": 1792031897422925905,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/scratch/task18-fix-round1/red-raw.log"
+    },
+    {
+      "bytes": 879,
+      "captured_utc": "2026-10-15T08:13:30.859759+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/scratch/task18-fix-round1/red-receipt.json",
+      "sha256": "0e9965f1108dffe0bb263ad44b0a252d3e79c0da870c25698fcff83c26c2af8e",
+      "source_mtime_ns": 1792031897721040279,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/scratch/task18-fix-round1/red-receipt.json"
+    },
+    {
+      "bytes": 100,
+      "captured_utc": "2026-10-15T08:13:30.860044+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/scratch/task18-native-verification-20261015T023149Z/1-raw.log",
+      "sha256": "089d64abd4cdeadc94080a5f5ee2f5c7259eeacbbc0b897ae7ecf493535ae705",
+      "source_mtime_ns": 1792031554751824007,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/scratch/task18-native-verification-20261015T023149Z/1-raw.log"
+    },
+    {
+      "bytes": 0,
+      "captured_utc": "2026-10-15T08:13:30.860171+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/scratch/task18-native-verification-20261015T023149Z/2-raw.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_mtime_ns": 1792031554999415386,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/scratch/task18-native-verification-20261015T023149Z/2-raw.log"
+    },
+    {
+      "bytes": 495,
+      "captured_utc": "2026-10-15T08:13:30.860448+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/scratch/task18-native-verification-20261015T023149Z/3-raw.log",
+      "sha256": "79e83c57b1d7f7d716e40249cfaa05b82142b4192385d18390f9aa105c9c1480",
+      "source_mtime_ns": 1792031555400010921,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/scratch/task18-native-verification-20261015T023149Z/3-raw.log"
+    },
+    {
+      "bytes": 902,
+      "captured_utc": "2026-10-15T08:13:30.860772+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/scratch/task18-native-verification-20261015T023149Z/archive.json",
+      "sha256": "5fd87cdb1e11f9f755605cc1584705140c4b79ff76704ed895ef8720b3f6aab1",
+      "source_mtime_ns": 1792031583907929159,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/scratch/task18-native-verification-20261015T023149Z/archive.json"
+    },
+    {
+      "bytes": 433,
+      "captured_utc": "2026-10-15T08:13:30.860950+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/scratch/task18-native-verification-20261015T023149Z/default-python-now.json",
+      "sha256": "f3d3720c233db89d1ae9a3f56f67bbf12b9dfa40844f9e211855c30971fd3f4f",
+      "source_mtime_ns": 1792031523394111871,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/scratch/task18-native-verification-20261015T023149Z/default-python-now.json"
+    },
+    {
+      "bytes": 368,
+      "captured_utc": "2026-10-15T08:13:30.861127+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/scratch/task18-native-verification-20261015T023149Z/interpreter.json",
+      "sha256": "2d12446fce0fb34343854b609c55c9b6cd64169ccaa42b60f5aaaa25ae8306e9",
+      "source_mtime_ns": 1792031509953398593,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/scratch/task18-native-verification-20261015T023149Z/interpreter.json"
+    },
+    {
+      "bytes": 1950,
+      "captured_utc": "2026-10-15T08:13:30.861307+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/scratch/task18-native-verification-20261015T023149Z/verification.json",
+      "sha256": "52a81362ce986038f44988e627af043728e5198d4f026e0942a8d01d8aa5b7f0",
+      "source_mtime_ns": 1792031555425898588,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/scratch/task18-native-verification-20261015T023149Z/verification.json"
+    },
+    {
+      "bytes": 3785,
+      "captured_utc": "2026-10-15T08:13:30.861596+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-1-brief.md",
+      "sha256": "e1f5d6f6d8ea6ae98640aaa6df7acd311f98e9d439da4790d8ab4a110c8068d1",
+      "source_mtime_ns": 1791980028997137580,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-1-brief.md"
+    },
+    {
+      "bytes": 3658,
+      "captured_utc": "2026-10-15T08:13:30.861878+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-1-fix-review.md",
+      "sha256": "00b7fde7a098f8f42cab3bfd837984d6d72bcaed0a4104b58d8fb3255d561be1",
+      "source_mtime_ns": 1791981195781559665,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-1-fix-review.md"
+    },
+    {
+      "bytes": 19344,
+      "captured_utc": "2026-10-15T08:13:30.862310+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-1-report.md",
+      "sha256": "e109d71bab6f81068e56385e823348ee6ca1293fc70f86418dd4c0442ed0aacb",
+      "source_mtime_ns": 1791981100534889638,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-1-report.md"
+    },
+    {
+      "bytes": 6862,
+      "captured_utc": "2026-10-15T08:13:30.862655+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-1-review.md",
+      "sha256": "10ba8e9768abf007b84167faf90409891e79ad5b2064f953fc6f64a5b1c58345",
+      "source_mtime_ns": 1791980911422961544,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-1-review.md"
+    },
+    {
+      "bytes": 2751,
+      "captured_utc": "2026-10-15T08:13:30.862933+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-10-brief.md",
+      "sha256": "0b5e18bed35b1fc76bb76159a61ea0f0a79f2888126f9c9d22f7bda173124931",
+      "source_mtime_ns": 1791999853134542449,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-10-brief.md"
+    },
+    {
+      "bytes": 5720,
+      "captured_utc": "2026-10-15T08:13:30.863271+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-10-integration-context.md",
+      "sha256": "e110710ee89a274b18dc7c368c47661147155c87c63713b27816d90e4a7e2f7c",
+      "source_mtime_ns": 1791999774035461333,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-10-integration-context.md"
+    },
+    {
+      "bytes": 15995,
+      "captured_utc": "2026-10-15T08:13:30.863660+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-10-report.md",
+      "sha256": "a338d7da2dc814971c3c1bda29fa8f59214cd0a06ac56b9c1843dba1c9e56a4b",
+      "source_mtime_ns": 1792002091508159159,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-10-report.md"
+    },
+    {
+      "bytes": 9820,
+      "captured_utc": "2026-10-15T08:13:30.863973+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-10-review.md",
+      "sha256": "7dcb4aa5d62801dd3ca19117a7b415c31866a16c849dee74f6d7df27f5a73526",
+      "source_mtime_ns": 1792002613052175907,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-10-review.md"
+    },
+    {
+      "bytes": 15758,
+      "captured_utc": "2026-10-15T08:13:30.864302+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-11-api-context.md",
+      "sha256": "a0458d5f9741dda52e33740d1e8eb1b9596f715a209d5590f5d9ead8bb173161",
+      "source_mtime_ns": 1792001779386249130,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-11-api-context.md"
+    },
+    {
+      "bytes": 2588,
+      "captured_utc": "2026-10-15T08:13:30.864573+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-11-brief.md",
+      "sha256": "93397ca016d5bc602b401b99b81c21bdc28b75765707f17b65db8ff700e43e15",
+      "source_mtime_ns": 1792003978574052184,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-11-brief.md"
+    },
+    {
+      "bytes": 15737,
+      "captured_utc": "2026-10-15T08:13:30.864891+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-11-report.md",
+      "sha256": "1e167d2481acb36bd3cac8d57360220b9c273f3f15e3fb978961c7238d0b3344",
+      "source_mtime_ns": 1792005374519952500,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-11-report.md"
+    },
+    {
+      "bytes": 9346,
+      "captured_utc": "2026-10-15T08:13:30.865192+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-11-review.md",
+      "sha256": "ce4a80b62e7c6d9e41dd85914887a9d0b4ed1459fbfb064acff60466ba5e4ed9",
+      "source_mtime_ns": 1792005691535572397,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-11-review.md"
+    },
+    {
+      "bytes": 2486,
+      "captured_utc": "2026-10-15T08:13:30.865461+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-12-brief.md",
+      "sha256": "7ae91ede19e68043d5d06a71cbc31d9f37cf63e0f85ed869f39676c45bb10250",
+      "source_mtime_ns": 1791991684396424835,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-12-brief.md"
+    },
+    {
+      "bytes": 3165,
+      "captured_utc": "2026-10-15T08:13:30.865755+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-12-fix-1-review.md",
+      "sha256": "91bc3587228641af1d2fca2a1dbad898edbef6eb129729c96a5794584b7f7153",
+      "source_mtime_ns": 1792011900155461855,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-12-fix-1-review.md"
+    },
+    {
+      "bytes": 4258,
+      "captured_utc": "2026-10-15T08:13:30.866065+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-12-integration-context.md",
+      "sha256": "629205f07305972d881196acd5a70424aa2aa23595ca6eb3f35754bfabb3e405",
+      "source_mtime_ns": 1792005495717223965,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-12-integration-context.md"
+    },
+    {
+      "bytes": 69370,
+      "captured_utc": "2026-10-15T08:13:30.866537+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-12-report.md",
+      "sha256": "4d73985e924a8c27eff77693703c5749b18d138f3b0855168824ff68c57e8926",
+      "source_mtime_ns": 1792011838501292236,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-12-report.md"
+    },
+    {
+      "bytes": 6465,
+      "captured_utc": "2026-10-15T08:13:30.866844+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-12-review.md",
+      "sha256": "5467e51da7222ba56733df5a6c686046f94bea64f7230c104e68629a0f3fe1c6",
+      "source_mtime_ns": 1792011590336786629,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-12-review.md"
+    },
+    {
+      "bytes": 3627,
+      "captured_utc": "2026-10-15T08:13:30.867146+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-13-brief.md",
+      "sha256": "c6fdc22ef272643d6e22fb73370f9a2b7cd6aa60ffa562cdc3927151ee395805",
+      "source_mtime_ns": 1791991684449441147,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-13-brief.md"
+    },
+    {
+      "bytes": 8026,
+      "captured_utc": "2026-10-15T08:13:30.867533+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-13-integration-context.md",
+      "sha256": "ad6806f6c33162383fca05028cac962c667fd6560aba39bbe54a4714049af07e",
+      "source_mtime_ns": 1792011337877463955,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-13-integration-context.md"
+    },
+    {
+      "bytes": 9848,
+      "captured_utc": "2026-10-15T08:13:30.868101+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-13-preparation.md",
+      "sha256": "32bd8426d2e622e8846e8ce4dc1f762f0e66a6703362aacc61121d7df29c79bc",
+      "source_mtime_ns": 1792011680687528983,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-13-preparation.md"
+    },
+    {
+      "bytes": 13780,
+      "captured_utc": "2026-10-15T08:13:30.868684+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-13-report.md",
+      "sha256": "bb30d938d1444b9211a9192c8e391cb60370f9a5e72ef2ab1568e86149c5c639",
+      "source_mtime_ns": 1792013791122960631,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-13-report.md"
+    },
+    {
+      "bytes": 5815,
+      "captured_utc": "2026-10-15T08:13:30.869074+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-13-review.md",
+      "sha256": "0a4b0c066c5ff1664c3a172d39c369b0891897528f6e771b37cdc95aafec16a0",
+      "source_mtime_ns": 1792014007979084024,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-13-review.md"
+    },
+    {
+      "bytes": 3560,
+      "captured_utc": "2026-10-15T08:13:30.869388+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-14-brief.md",
+      "sha256": "e2b9cb0cfe574521048091607334bf13435be36721979d316ecc6902eacb1df1",
+      "source_mtime_ns": 1791991684521835774,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-14-brief.md"
+    },
+    {
+      "bytes": 5758,
+      "captured_utc": "2026-10-15T08:13:30.869756+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-14-execution-report.md",
+      "sha256": "fca5610b35c22964735dd0b5e89f5cec4e6cb2b9b778028b6cbea8c88a698c9b",
+      "source_mtime_ns": 1792047811940212593,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-14-execution-report.md"
+    },
+    {
+      "bytes": 17687,
+      "captured_utc": "2026-10-15T08:13:30.870103+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-14-preparation.md",
+      "sha256": "fe36230909d0b313fb97ac784428c45c4cc4f585b731320d444faccd0c18cd47",
+      "source_mtime_ns": 1792013932134301475,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-14-preparation.md"
+    },
+    {
+      "bytes": 9937,
+      "captured_utc": "2026-10-15T08:13:30.870429+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-14-report.md",
+      "sha256": "0992e2573859ca75cec3a474fe946d92aa755d9fac48ca43de72978e63d9933b",
+      "source_mtime_ns": 1792015312845162659,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-14-report.md"
+    },
+    {
+      "bytes": 5930,
+      "captured_utc": "2026-10-15T08:13:30.870738+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-14-review.md",
+      "sha256": "a0db67c06f86fd187885cc0c9001f79792354f0b90a2a400887fab11e5774044",
+      "source_mtime_ns": 1792015651824856016,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-14-review.md"
+    },
+    {
+      "bytes": 2916,
+      "captured_utc": "2026-10-15T08:13:30.871020+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-14-statistics-context.md",
+      "sha256": "e9d36277fcf32670eb3a3a7f7e8f77ce6d6c70281c9e78c128064ef42947299f",
+      "source_mtime_ns": 1792011175105258376,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-14-statistics-context.md"
+    },
+    {
+      "bytes": 11515,
+      "captured_utc": "2026-10-15T08:13:30.871346+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-15-a03-preparation.md",
+      "sha256": "51cf57c562a9ebfa60bcd2f5e304f4a0267f4a82ab9e66c1f3e622948e288d8d",
+      "source_mtime_ns": 1792030523371228626,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-15-a03-preparation.md"
+    },
+    {
+      "bytes": 2954,
+      "captured_utc": "2026-10-15T08:13:30.871610+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-15-brief.md",
+      "sha256": "1c72450d320f3a52488bc5389350bf5b04f09aa4988acf01ac8340f0dcf29671",
+      "source_mtime_ns": 1791991684594399442,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-15-brief.md"
+    },
+    {
+      "bytes": 3448,
+      "captured_utc": "2026-10-15T08:13:30.871863+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-15-fix-1-review.md",
+      "sha256": "78065781d0c143e253fd10a27f398dcbfade35c9490d0cf3522b1f340ae7dc1d",
+      "source_mtime_ns": 1792027345011806007,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-15-fix-1-review.md"
+    },
+    {
+      "bytes": 23455,
+      "captured_utc": "2026-10-15T08:13:30.872193+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-15-preparation.md",
+      "sha256": "1a36899a35bca913e9ff6b23561d9d0cebd42f39fcf8c5919353241533b0291a",
+      "source_mtime_ns": 1792015612209337074,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-15-preparation.md"
+    },
+    {
+      "bytes": 26600,
+      "captured_utc": "2026-10-15T08:13:30.872513+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-15-report.md",
+      "sha256": "62124dcef95b39a6532a347dcb9395a9afafdbe9a7ff31179d83a7973919c731",
+      "source_mtime_ns": 1792027265345501810,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-15-report.md"
+    },
+    {
+      "bytes": 6887,
+      "captured_utc": "2026-10-15T08:13:30.872808+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-15-review.md",
+      "sha256": "a3ac8f3351143e3c0104afff216b1f85e10bebb86cb98f14870cc3712c4099a3",
+      "source_mtime_ns": 1792026624108615059,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-15-review.md"
+    },
+    {
+      "bytes": 5919,
+      "captured_utc": "2026-10-15T08:13:30.873089+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-16-brief.md",
+      "sha256": "96907316955e3f2da5d79abbd6c6a8d9c3f426a81cbf9c42e3501a467a91d0ae",
+      "source_mtime_ns": 1791991684666571818,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-16-brief.md"
+    },
+    {
+      "bytes": 3387,
+      "captured_utc": "2026-10-15T08:13:30.873358+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-16-fix-1-review.md",
+      "sha256": "1d09c0c7bcadb6273430aabae27154c6da6530edbac35f86e6764c8542dc14fd",
+      "source_mtime_ns": 1792028523882348309,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-16-fix-1-review.md"
+    },
+    {
+      "bytes": 11520,
+      "captured_utc": "2026-10-15T08:13:30.873669+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-16-integration-context.md",
+      "sha256": "c61b7521fb95ce4e161899911993027ab45098b4d0e6cf6f00640e8344612311",
+      "source_mtime_ns": 1792016024870741935,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-16-integration-context.md"
+    },
+    {
+      "bytes": 2481,
+      "captured_utc": "2026-10-15T08:13:30.873914+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-16-phase2a2-report.md",
+      "sha256": "a5fda97f5a65c97dce46278a02df2a80b0f6ac6a7b112d33848adddbc1d32f6d",
+      "source_mtime_ns": 1792033680250066004,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-16-phase2a2-report.md"
+    },
+    {
+      "bytes": 19508,
+      "captured_utc": "2026-10-15T08:13:30.874244+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-16-phase2b-preparation.md",
+      "sha256": "bf254c214d740255e9e2707d73bcafe57aa6027ed9c6d71fb937051f56b70686",
+      "source_mtime_ns": 1792030156308614745,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-16-phase2b-preparation.md"
+    },
+    {
+      "bytes": 31841,
+      "captured_utc": "2026-10-15T08:13:30.874605+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-16-preparation.md",
+      "sha256": "07158293cd1bc153e8454718a76bc51e5ccea780b0cc56a69c1df1c7fc08879f",
+      "source_mtime_ns": 1792016024870134268,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-16-preparation.md"
+    },
+    {
+      "bytes": 30698,
+      "captured_utc": "2026-10-15T08:13:30.875009+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-16-report.md",
+      "sha256": "d704ec0f8d6c905e228b92ad13a83e144b44143da59cd29d57c2b516e165edb0",
+      "source_mtime_ns": 1792050995615241016,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-16-report.md"
+    },
+    {
+      "bytes": 7609,
+      "captured_utc": "2026-10-15T08:13:30.875318+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-16-review.md",
+      "sha256": "f27d4cd2a87a31732f87ceb890d859b86cbc84b27750fd711a48367d2d675c35",
+      "source_mtime_ns": 1792028218839594065,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-16-review.md"
+    },
+    {
+      "bytes": 3478,
+      "captured_utc": "2026-10-15T08:13:30.875695+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-amendment-red.log",
+      "sha256": "53e92b208ada1f0ad8f0b498858d4f41b1b7da9eb0ef462a041f06f6574308fc",
+      "source_mtime_ns": 1792028997515517987,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-amendment-red.log"
+    },
+    {
+      "bytes": 2962,
+      "captured_utc": "2026-10-15T08:13:30.875958+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-brief.md",
+      "sha256": "a020fd09f3216619bb39dd833ca10f0ed34b16bb766d08bb5b77572bab5a4456",
+      "source_mtime_ns": 1792027979199148884,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-brief.md"
+    },
+    {
+      "bytes": 12134,
+      "captured_utc": "2026-10-15T08:13:30.876314+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-design-notes.md",
+      "sha256": "1643f6b319ef35ef27666beb7375c48dc6db754511d7f3f098da9681bbdaf0bc",
+      "source_mtime_ns": 1792028113627060553,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-design-notes.md"
+    },
+    {
+      "bytes": 99,
+      "captured_utc": "2026-10-15T08:13:30.878057+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-first-green.log",
+      "sha256": "796dd939e82eb238fa9972e4ef65c4815cc141537bce6a667dd2e2a9ada5d45e",
+      "source_mtime_ns": 1792028942712840551,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-first-green.log"
+    },
+    {
+      "bytes": 4227,
+      "captured_utc": "2026-10-15T08:13:30.879391+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-fix-1-review.md",
+      "sha256": "4ad2bc68adb020902aebfa6f3394e1d0ebc9d951a9eacc29f5e2d73097c1920a",
+      "source_mtime_ns": 1792030306613832532,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-fix-1-review.md"
+    },
+    {
+      "bytes": 111,
+      "captured_utc": "2026-10-15T08:13:30.879671+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-fix1-focused.log",
+      "sha256": "ac4c14c0dea4398b0b444dd8a669ab72d15d2296099719e5239869b6449566e1",
+      "source_mtime_ns": 1792030115965615117,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-fix1-focused.log"
+    },
+    {
+      "bytes": 100,
+      "captured_utc": "2026-10-15T08:13:30.879952+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-fix1-layout.log",
+      "sha256": "5a31d5a5918ee3de69b84dbe3178ac540bde5db721c4b88d546d7b5d37c57a84",
+      "source_mtime_ns": 1792029927125863531,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-fix1-layout.log"
+    },
+    {
+      "bytes": 3175,
+      "captured_utc": "2026-10-15T08:13:30.880239+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-fix1-red.log",
+      "sha256": "2855923cc9859599935f47dc76b0b7d53db75f19adbf7d5735b98f54436a7f3c",
+      "source_mtime_ns": 1792029849747786107,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-fix1-red.log"
+    },
+    {
+      "bytes": 111,
+      "captured_utc": "2026-10-15T08:13:30.880503+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-focused.log",
+      "sha256": "af211fcdab5915818dfabcbb9b6cf490a0ccdaec9f843640c033469f7343770f",
+      "source_mtime_ns": 1792029113669618007,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-focused.log"
+    },
+    {
+      "bytes": 3071,
+      "captured_utc": "2026-10-15T08:13:30.880779+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-forecast-notes.md",
+      "sha256": "1401669221353f2cfc46f6183e0f3b4e92e313aa6b0cd7701cb950728f695b57",
+      "source_mtime_ns": 1792028907054559881,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-forecast-notes.md"
+    },
+    {
+      "bytes": 3284,
+      "captured_utc": "2026-10-15T08:13:30.881079+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-live-prep-before.json",
+      "sha256": "cb52bcdc396977a354fcc8af01c29e1e41e2b16b98744f992853d9d4d1507a19",
+      "source_mtime_ns": 1792029655020830011,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-live-prep-before.json"
+    },
+    {
+      "bytes": 2615,
+      "captured_utc": "2026-10-15T08:13:30.881371+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-live-prep-report.md",
+      "sha256": "201c56db22a299a55fe00a141dbe14c92ee0ea8b69ad7ee05be13bd1f918254e",
+      "source_mtime_ns": 1792029695173231383,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-live-prep-report.md"
+    },
+    {
+      "bytes": 6738,
+      "captured_utc": "2026-10-15T08:13:30.881681+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-live-prep-result.json",
+      "sha256": "d6c4f4ee9412099ef361b7c2a9fbc09f10cbdba5d25fff1416e0b5f71aa9f692",
+      "source_mtime_ns": 1792029661493734876,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-live-prep-result.json"
+    },
+    {
+      "bytes": 984,
+      "captured_utc": "2026-10-15T08:13:30.881968+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-live-prep-writer.stderr.txt",
+      "sha256": "0d0868fcc8512c6c4b1dc6803e8845bc3749402ddd452f468358c01e64dc3847",
+      "source_mtime_ns": 1792029661482199589,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-live-prep-writer.stderr.txt"
+    },
+    {
+      "bytes": 0,
+      "captured_utc": "2026-10-15T08:13:30.882101+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-live-prep-writer.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_mtime_ns": 1792029661481791879,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-live-prep-writer.stdout.txt"
+    },
+    {
+      "bytes": 3563,
+      "captured_utc": "2026-10-15T08:13:30.882424+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-native-preparation.md",
+      "sha256": "bcb001bb9197489bc5b96b00ce9c02a68b6b1dc4e90f20d8b96210b8267e3179",
+      "source_mtime_ns": 1792030828264640109,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-native-preparation.md"
+    },
+    {
+      "bytes": 7880,
+      "captured_utc": "2026-10-15T08:13:30.882771+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-preparation.md",
+      "sha256": "6af27b2aab16ce3ab8ce4726212162ecd573882138cd878f73ddb754f0ccef69",
+      "source_mtime_ns": 1792027765823330701,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-preparation.md"
+    },
+    {
+      "bytes": 71310,
+      "captured_utc": "2026-10-15T08:13:30.883240+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-red-behavior.log",
+      "sha256": "970e2c46811ee54560f21bd2ea9779ceddad095dccd72f7d84ec20b68e664be0",
+      "source_mtime_ns": 1792028851588822880,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-red-behavior.log"
+    },
+    {
+      "bytes": 1081,
+      "captured_utc": "2026-10-15T08:13:30.883544+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-red.log",
+      "sha256": "5e2c2c0348fa31c8225975c7f7df6b7fab36ba33701acf24a8d23e97ce37271e",
+      "source_mtime_ns": 1792028692539051344,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-red.log"
+    },
+    {
+      "bytes": 11868,
+      "captured_utc": "2026-10-15T08:13:30.883884+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-report.md",
+      "sha256": "027913cc0ac41a663bcf0232eb8fac22777d9de65e9bff225cbe810329fc653a",
+      "source_mtime_ns": 1792030657152341564,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-report.md"
+    },
+    {
+      "bytes": 4952,
+      "captured_utc": "2026-10-15T08:13:30.884227+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-review.md",
+      "sha256": "15d04625b8604c42948f70b8b3b94ec2fce14b925c029e1ac5581a6f3f9cddda",
+      "source_mtime_ns": 1792029336427650751,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-review.md"
+    },
+    {
+      "bytes": 4641,
+      "captured_utc": "2026-10-15T08:13:30.884643+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-runtime-forecast.json",
+      "sha256": "1d086927e73b24c7d8d85c3a3ccb09b844f98cffe68cb6740d58760deeb358e4",
+      "source_mtime_ns": 1792028853167860072,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-17-runtime-forecast.json"
+    },
+    {
+      "bytes": 4800,
+      "captured_utc": "2026-10-15T08:13:30.884947+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-18-brief.md",
+      "sha256": "b1db2c3787377618f803927d8738d60e82aed98335605c2744348457c646af16",
+      "source_mtime_ns": 1792030659815782200,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-18-brief.md"
+    },
+    {
+      "bytes": 3691,
+      "captured_utc": "2026-10-15T08:13:30.885216+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-18-fix-1-review.md",
+      "sha256": "cb17b47ced982d7af70b8102e6bd58e7cb503bbe335f89b4a1ab91464abd0cf9",
+      "source_mtime_ns": 1792032096444581890,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-18-fix-1-review.md"
+    },
+    {
+      "bytes": 19173,
+      "captured_utc": "2026-10-15T08:13:30.885545+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-18-report.md",
+      "sha256": "f2839b7e692c3ecd80c2ab2e6ba4521695158c27ee9226749cdcef0010fb41f6",
+      "source_mtime_ns": 1792032014554584055,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-18-report.md"
+    },
+    {
+      "bytes": 6667,
+      "captured_utc": "2026-10-15T08:13:30.885859+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-18-review.md",
+      "sha256": "a034edba07a988d3c42ac2702167518fee9f5fe5a2e67db72022fc4cd0bf3050",
+      "source_mtime_ns": 1792031779872981038,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-18-review.md"
+    },
+    {
+      "bytes": 3569,
+      "captured_utc": "2026-10-15T08:13:30.886130+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-2-brief.md",
+      "sha256": "2ca323f8d957fcdc4d84bba910e0cb9ff30078c0094a96c96c2753ad5cea185f",
+      "source_mtime_ns": 1791980283843798929,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-2-brief.md"
+    },
+    {
+      "bytes": 2238,
+      "captured_utc": "2026-10-15T08:13:30.886393+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-2-context.md",
+      "sha256": "6fa4204e85b6b464a95409ab1332c42dd50db9ceeb09d931df2a26bc51ebeca1",
+      "source_mtime_ns": 1791981048858775883,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-2-context.md"
+    },
+    {
+      "bytes": 4706,
+      "captured_utc": "2026-10-15T08:13:30.886724+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-2-fix-review.md",
+      "sha256": "6cc4f922d3033b39379f48a9f37fb2dbbab06fdcfe5954095e002c69dda3f815",
+      "source_mtime_ns": 1791983747903278371,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-2-fix-review.md"
+    },
+    {
+      "bytes": 28790,
+      "captured_utc": "2026-10-15T08:13:30.887071+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-2-report.md",
+      "sha256": "e37626ada9c4308850d0a628cf5c57b3a49dd9ad94f0c566d7e55598acd1fdc8",
+      "source_mtime_ns": 1791983539925748401,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-2-report.md"
+    },
+    {
+      "bytes": 6823,
+      "captured_utc": "2026-10-15T08:13:30.887407+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-2-review.md",
+      "sha256": "cbb20b15df82981c115b98157733da69b38e83880195c6e17b19eea1231c09d7",
+      "source_mtime_ns": 1791982977393753980,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-2-review.md"
+    },
+    {
+      "bytes": 2617,
+      "captured_utc": "2026-10-15T08:13:30.887679+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-3-brief.md",
+      "sha256": "aa05dd71d21539e4f03dec19714b35b4aabb579062ab13f7079a4dcd34bda33d",
+      "source_mtime_ns": 1791983041588054329,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-3-brief.md"
+    },
+    {
+      "bytes": 2297,
+      "captured_utc": "2026-10-15T08:13:30.887945+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-3-context.md",
+      "sha256": "c7512525c1f08c406b2a2f2483d82064af7030b354c4c5d60c89cb45811b3a5c",
+      "source_mtime_ns": 1791984054241798052,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-3-context.md"
+    },
+    {
+      "bytes": 11732,
+      "captured_utc": "2026-10-15T08:13:30.888259+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-3-report.md",
+      "sha256": "0c540a5b0f6cdfbae4e26d541ceff4e6106cd2ad08f58c3f15e86d8da04588c3",
+      "source_mtime_ns": 1791985028228047516,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-3-report.md"
+    },
+    {
+      "bytes": 6942,
+      "captured_utc": "2026-10-15T08:13:30.888614+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-3-review.md",
+      "sha256": "379fe29612f180715fbddb3b069ef3afa410a58c22c5a02f228b983e4779687d",
+      "source_mtime_ns": 1791985232199061246,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-3-review.md"
+    },
+    {
+      "bytes": 5707,
+      "captured_utc": "2026-10-15T08:13:30.888924+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-4-api-context.md",
+      "sha256": "b6ce97ac7c34131ae049dc976416ddf790135ffc0318f0315869ebd09d8e36c2",
+      "source_mtime_ns": 1791984265119581162,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-4-api-context.md"
+    },
+    {
+      "bytes": 2429,
+      "captured_utc": "2026-10-15T08:13:30.889220+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-4-brief.md",
+      "sha256": "6a4344b07ae6dff0fcd1b710c7157de13e954c5078c32924ccc57ff5ea94a05d",
+      "source_mtime_ns": 1791984082702931767,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-4-brief.md"
+    },
+    {
+      "bytes": 4771,
+      "captured_utc": "2026-10-15T08:13:30.889598+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-4-fix-review.md",
+      "sha256": "e1e8d4d6fb4e085ccfe03801cad1d3df86954233c1f14a38df70fd6cf97cab14",
+      "source_mtime_ns": 1791988503443865924,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-4-fix-review.md"
+    },
+    {
+      "bytes": 3916,
+      "captured_utc": "2026-10-15T08:13:30.889877+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-4-fix2-review.md",
+      "sha256": "98e2dbd03be925e4eb6051da988c20b96a6712fdb0d334151acc95c3abfc5729",
+      "source_mtime_ns": 1791989927827497559,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-4-fix2-review.md"
+    },
+    {
+      "bytes": 1898,
+      "captured_utc": "2026-10-15T08:13:30.890149+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-4-integration-context.md",
+      "sha256": "23b477b645b810cc8586db0091740208bc72c6d287aac4735385bc02c897b939",
+      "source_mtime_ns": 1791985135813002276,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-4-integration-context.md"
+    },
+    {
+      "bytes": 39032,
+      "captured_utc": "2026-10-15T08:13:30.890517+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-4-report.md",
+      "sha256": "0b00b26212f58484d1a697f7c93c8c2057c1ec1cacf41c8c5249f0bb536e7597",
+      "source_mtime_ns": 1791989743154782150,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-4-report.md"
+    },
+    {
+      "bytes": 9151,
+      "captured_utc": "2026-10-15T08:13:30.890810+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-4-review.md",
+      "sha256": "8af4e213249ccbc1c6548c9dd7b482aa876ea94c827f4235116ccb2bcf1d6fe7",
+      "source_mtime_ns": 1791986731377961607,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-4-review.md"
+    },
+    {
+      "bytes": 3105,
+      "captured_utc": "2026-10-15T08:13:30.891096+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-5-brief.md",
+      "sha256": "e98f948371b64da0b632dac8d75af1d8e17575b33d53012149292ec2fd63702c",
+      "source_mtime_ns": 1791984876898334599,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-5-brief.md"
+    },
+    {
+      "bytes": 2186,
+      "captured_utc": "2026-10-15T08:13:30.891369+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-5-fix1-review.md",
+      "sha256": "3f3c53c78ca2d58158b904d3f2f07b0e344f4f1f99d301f339275b3ebfb801d7",
+      "source_mtime_ns": 1791991639447059993,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-5-fix1-review.md"
+    },
+    {
+      "bytes": 1601,
+      "captured_utc": "2026-10-15T08:13:30.891628+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-5-integration-context.md",
+      "sha256": "de3d776a2a48ff0c93cc1846198e9b3ec6903a209d4d63199c5af381da5bec25",
+      "source_mtime_ns": 1791984388738442201,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-5-integration-context.md"
+    },
+    {
+      "bytes": 5351,
+      "captured_utc": "2026-10-15T08:13:30.891937+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-5-reference-context.md",
+      "sha256": "d88817526754c8581600ad404b91e6d01c8b8127cf575978859090d93f424c60",
+      "source_mtime_ns": 1791984312751738735,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-5-reference-context.md"
+    },
+    {
+      "bytes": 17825,
+      "captured_utc": "2026-10-15T08:13:30.892268+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-5-report.md",
+      "sha256": "85bbd2e388c3b1fc2b3057fe12ad655d057c3adb352a311c693d4bc94ee867f5",
+      "source_mtime_ns": 1791991558528913143,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-5-report.md"
+    },
+    {
+      "bytes": 6653,
+      "captured_utc": "2026-10-15T08:13:30.892566+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-5-review.md",
+      "sha256": "942683b964bf25fedf71f769bcf7e395b76e381e9b3a12a471c89c39b8f1dd7a",
+      "source_mtime_ns": 1791991090196084265,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-5-review.md"
+    },
+    {
+      "bytes": 2905,
+      "captured_utc": "2026-10-15T08:13:30.892839+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-6-brief.md",
+      "sha256": "98f56f033893c8f5f47014b75c9d6d3d46f2b6305b51b57a8789f9727ff6036f",
+      "source_mtime_ns": 1791987214480824979,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-6-brief.md"
+    },
+    {
+      "bytes": 420,
+      "captured_utc": "2026-10-15T08:13:30.893116+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-6-full-suite.txt",
+      "sha256": "8b8c3d0d7844ca5c3ab983e48283721dc34c762cb2ffeffa251d8a1a6e58140d",
+      "source_mtime_ns": 1791992194063983388,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-6-full-suite.txt"
+    },
+    {
+      "bytes": 380,
+      "captured_utc": "2026-10-15T08:13:30.893387+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-6-green.txt",
+      "sha256": "cee71aa39c7b6d840fa37307b6ed555f11064d822306c43f77c76059c3389032",
+      "source_mtime_ns": 1791992158311935282,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-6-green.txt"
+    },
+    {
+      "bytes": 1865,
+      "captured_utc": "2026-10-15T08:13:30.893643+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-6-integration-context.md",
+      "sha256": "a4b4ee1d481de178404dac68bce97a08f6cd00b231c5b8168f2fa1582b301430",
+      "source_mtime_ns": 1791990245211456145,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-6-integration-context.md"
+    },
+    {
+      "bytes": 61499,
+      "captured_utc": "2026-10-15T08:13:30.894095+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-6-red.txt",
+      "sha256": "6a08e9f4ec027cd1ddf288f59b9b04982b068dc4954ea2da59bf216184fa00cd",
+      "source_mtime_ns": 1791991888488295870,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-6-red.txt"
+    },
+    {
+      "bytes": 7632,
+      "captured_utc": "2026-10-15T08:13:30.894416+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-6-report.md",
+      "sha256": "53e5bd2f63d413e76fee8d578e524757558af18d453d2eeba3b3676360203658",
+      "source_mtime_ns": 1791992286499771791,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-6-report.md"
+    },
+    {
+      "bytes": 5928,
+      "captured_utc": "2026-10-15T08:13:30.894716+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-6-review.md",
+      "sha256": "b8926998a4c6464e34af3dde55ecefde52a5edb48db991bff3bcd8c15a74bdb6",
+      "source_mtime_ns": 1791992432592651866,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-6-review.md"
+    },
+    {
+      "bytes": 2577,
+      "captured_utc": "2026-10-15T08:13:30.894996+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-7-brief.md",
+      "sha256": "986677f64815c968a4f880e045db8597d86d9e03f61165680845c8a1cfb88b08",
+      "source_mtime_ns": 1791987214560829309,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-7-brief.md"
+    },
+    {
+      "bytes": 500,
+      "captured_utc": "2026-10-15T08:13:30.895276+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-7-full-suite.txt",
+      "sha256": "b9cee09496e04fc032c1cae911b46c4103161c29745886f518d9cb08e89c0955",
+      "source_mtime_ns": 1791992896736467885,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-7-full-suite.txt"
+    },
+    {
+      "bytes": 99,
+      "captured_utc": "2026-10-15T08:13:30.895521+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-7-green.txt",
+      "sha256": "ef3095877c973a03e47858d2dd25bb0784d0fb365a6c042e8721b9d2aa0e3e84",
+      "source_mtime_ns": 1791992893753887772,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-7-green.txt"
+    },
+    {
+      "bytes": 2105,
+      "captured_utc": "2026-10-15T08:13:30.895770+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-7-integration-context.md",
+      "sha256": "27dfe74a21fdbe5175088b796ff37a303bf787c481077afa89048221f2028b80",
+      "source_mtime_ns": 1791991461413369555,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-7-integration-context.md"
+    },
+    {
+      "bytes": 1793,
+      "captured_utc": "2026-10-15T08:13:30.896023+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-7-red.txt",
+      "sha256": "63a5bc3eaabf85db79c7bc7c396c2eb9341c29ded38eae6efb9ce63f8cf921b1",
+      "source_mtime_ns": 1791992621627970333,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-7-red.txt"
+    },
+    {
+      "bytes": 7299,
+      "captured_utc": "2026-10-15T08:13:30.896378+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-7-report.md",
+      "sha256": "88c437192def7f4ef135b2a131169f90184a18269113aceb630aab342f39c1eb",
+      "source_mtime_ns": 1791993009910658670,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-7-report.md"
+    },
+    {
+      "bytes": 7296,
+      "captured_utc": "2026-10-15T08:13:30.896691+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-7-review.md",
+      "sha256": "5e18525b71b456cb483487a84aec862c3f66319140180a0d4c5c2d544e0eaefd",
+      "source_mtime_ns": 1791993188867892443,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-7-review.md"
+    },
+    {
+      "bytes": 3161,
+      "captured_utc": "2026-10-15T08:13:30.896944+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-8-brief.md",
+      "sha256": "450e18fa725ebc73709834d09e97b112fb3b5dbd1b08f2fbe760e84986e2e029",
+      "source_mtime_ns": 1791987214646833234,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-8-brief.md"
+    },
+    {
+      "bytes": 5732,
+      "captured_utc": "2026-10-15T08:13:30.897241+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-8-fix1-review.md",
+      "sha256": "0d98b744f6fa0a10089c842cd04d76612ff1fdbd918de8ce91e4672cc868a692",
+      "source_mtime_ns": 1791996595105549063,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-8-fix1-review.md"
+    },
+    {
+      "bytes": 2899,
+      "captured_utc": "2026-10-15T08:13:30.897503+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-8-fix2-review.md",
+      "sha256": "b3a2f47515d7c03a4eece743fc899919df3247efc8d3c6062a7612807079a75a",
+      "source_mtime_ns": 1791997107645743975,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-8-fix2-review.md"
+    },
+    {
+      "bytes": 6611,
+      "captured_utc": "2026-10-15T08:13:30.897760+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-8-integration-context.md",
+      "sha256": "27c5f3f775df45da74a8b3f1f71e56953dbaa4efa32f9a575c972dba1063f9b4",
+      "source_mtime_ns": 1791993864975456902,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-8-integration-context.md"
+    },
+    {
+      "bytes": 22019,
+      "captured_utc": "2026-10-15T08:13:30.898104+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-8-report.md",
+      "sha256": "867c2a93cbf845d4cec057b0bf73fbe084175c5a77d2e22e7587333d2af6c085",
+      "source_mtime_ns": 1791997004444272507,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-8-report.md"
+    },
+    {
+      "bytes": 8808,
+      "captured_utc": "2026-10-15T08:13:30.898398+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-8-review.md",
+      "sha256": "19f0fcb8567d595d9ac564f0ca91df59b087e92e7ed14b790c5e500ec4b6243b",
+      "source_mtime_ns": 1791995127896668123,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-8-review.md"
+    },
+    {
+      "bytes": 2528,
+      "captured_utc": "2026-10-15T08:13:30.898690+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-9-brief.md",
+      "sha256": "8725eb403628d1880a182600ed530a1e001bb98add9823c639a0eef3e23dd411",
+      "source_mtime_ns": 1791987214734966246,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-9-brief.md"
+    },
+    {
+      "bytes": 6334,
+      "captured_utc": "2026-10-15T08:13:30.898969+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-9-integration-context.md",
+      "sha256": "6e3bbae3ddd10266f71547b82f8343cc8b596dd166018c33ffd17028d62b0cdc",
+      "source_mtime_ns": 1791997208122673147,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-9-integration-context.md"
+    },
+    {
+      "bytes": 15856,
+      "captured_utc": "2026-10-15T08:13:30.899337+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-9-report.md",
+      "sha256": "1ab9a739d461449b007328d05d741437123e9b3d17d851373699bf83a8888030",
+      "source_mtime_ns": 1791999375467761079,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-9-report.md"
+    },
+    {
+      "bytes": 10687,
+      "captured_utc": "2026-10-15T08:13:30.899653+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-9-review.md",
+      "sha256": "98a79b9e2e760ac9d3abf4e3f8663f01f2cdf42ea3628a787efb192744a12478",
+      "source_mtime_ns": 1791999762105017057,
+      "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/task-9-review.md"
+    },
+    {
+      "bytes": 5727,
+      "captured_utc": "2026-10-15T08:13:30.899829+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/README.md",
+      "sha256": "11fdf83c6daddbb034c71e1a480d3d8d40898f301ce60aa07247479911aee1e2",
+      "source_mtime_ns": 1792051877714122660,
+      "source_path": "README.md"
+    },
+    {
+      "bytes": 3055,
+      "captured_utc": "2026-10-15T08:13:30.900025+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/baseline-table.csv",
+      "sha256": "b16ebbee4e6e488e193906ce6b24bc9df7a35d51d02f0ca58c0b2c5b6bde22d0",
+      "source_mtime_ns": 1792051758105671556,
+      "source_path": "artifacts/baseline-table.csv"
+    },
+    {
+      "bytes": 2129,
+      "captured_utc": "2026-10-15T08:13:30.900186+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/checkpoint_report.md",
+      "sha256": "6d9e47f82d8ebc31055ebd0c592ddb0c473319c8837e00c0057ab2820d837fb8",
+      "source_mtime_ns": 1792051877714325703,
+      "source_path": "artifacts/checkpoint_report.md"
+    },
+    {
+      "bytes": 19145,
+      "captured_utc": "2026-10-15T08:13:30.900345+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/final_report.md",
+      "sha256": "eca2f510ad0cbe19b28c1c77e91db18c8684e81feb6479f0f32153e515cc8e4b",
+      "source_mtime_ns": 1792052010826427782,
+      "source_path": "artifacts/final_report.md"
+    },
+    {
+      "bytes": 610,
+      "captured_utc": "2026-10-15T08:13:30.900541+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/pre-final-code-verification.json",
+      "sha256": "c953f1bd579447ef98c37a170da078b270535747f44a2fb7e3aece119bb84a25",
+      "source_mtime_ns": 1792051073325565245,
+      "source_path": "artifacts/provenance/pre-final-code-verification.json"
+    },
+    {
+      "bytes": 2460,
+      "captured_utc": "2026-10-15T08:13:30.900905+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task15-count-attempt-1-report.md",
+      "sha256": "200cc4d4f0d5ce5bdb1673e2d702ce5e3e00d5c118383dc05edba6464b968412",
+      "source_mtime_ns": 1792049078467770077,
+      "source_path": "artifacts/provenance/task15-count-attempt-1-report.md"
+    },
+    {
+      "bytes": 3759,
+      "captured_utc": "2026-10-15T08:13:30.901171+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task15-count-attempt2-source.diff",
+      "sha256": "bb5cb6e2eec2282e6bc7f1ff3f86f6809224e8d1ad32389c7bcd747b8ae6fdb7",
+      "source_mtime_ns": 1792049140956137946,
+      "source_path": "artifacts/provenance/task15-count-attempt2-source.diff"
+    },
+    {
+      "bytes": 898,
+      "captured_utc": "2026-10-15T08:13:30.901492+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task15-count-preflight-resource-snapshot.json",
+      "sha256": "d124e24989b635575c574cc84d87336eb14e7375b09f6a55fd21d80c833c7f56",
+      "source_mtime_ns": 1792048878038692505,
+      "source_path": "artifacts/provenance/task15-count-preflight-resource-snapshot.json"
+    },
+    {
+      "bytes": 604,
+      "captured_utc": "2026-10-15T08:13:30.901683+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task15-fullpilot-operations/external.finished.json",
+      "sha256": "4c218195ef9da03c74a73e511c8af636a870c38f4ab455a1c4c55985aa58688f",
+      "source_mtime_ns": 1792050413688833706,
+      "source_path": "artifacts/provenance/task15-fullpilot-operations/external.finished.json"
+    },
+    {
+      "bytes": 1254,
+      "captured_utc": "2026-10-15T08:13:30.901954+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task15-fullpilot-operations/external.started.json",
+      "sha256": "73010ad9a43f6a63b134f0745fd28a53fef0452f0495be6be1c3547db7db7b63",
+      "source_mtime_ns": 1792049538613982192,
+      "source_path": "artifacts/provenance/task15-fullpilot-operations/external.started.json"
+    },
+    {
+      "bytes": 0,
+      "captured_utc": "2026-10-15T08:13:30.902073+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task15-fullpilot-operations/launcher.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_mtime_ns": 1792049538614106777,
+      "source_path": "artifacts/provenance/task15-fullpilot-operations/launcher.stderr.log"
+    },
+    {
+      "bytes": 0,
+      "captured_utc": "2026-10-15T08:13:30.902208+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task15-fullpilot-operations/launcher.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_mtime_ns": 1792049538614042359,
+      "source_path": "artifacts/provenance/task15-fullpilot-operations/launcher.stdout.log"
+    },
+    {
+      "bytes": 184,
+      "captured_utc": "2026-10-15T08:13:30.902361+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task15-fullpilot-operations/owned-process.json",
+      "sha256": "20d7673c4261b914a359c326b43a7052d679dfa3160f1d3017b9e9500b01c6e0",
+      "source_mtime_ns": 1792049538616214087,
+      "source_path": "artifacts/provenance/task15-fullpilot-operations/owned-process.json"
+    },
+    {
+      "bytes": 522,
+      "captured_utc": "2026-10-15T08:13:30.902630+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task15-generation-operations/authorization-observed.json",
+      "sha256": "ca80e2400465cdc5af95f45d27a41e5270c50dd8f33cb6351cb234797efc511a",
+      "source_mtime_ns": 1792050895787340562,
+      "source_path": "artifacts/provenance/task15-generation-operations/authorization-observed.json"
+    },
+    {
+      "bytes": 724,
+      "captured_utc": "2026-10-15T08:13:30.902765+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task15-generation-operations/external.finished.json",
+      "sha256": "df1da4640e658d9b04378162f704b57bc0d1c393848f45357a3b762963afc0bc",
+      "source_mtime_ns": 1792051075320126823,
+      "source_path": "artifacts/provenance/task15-generation-operations/external.finished.json"
+    },
+    {
+      "bytes": 1338,
+      "captured_utc": "2026-10-15T08:13:30.903106+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task15-generation-operations/external.started.json",
+      "sha256": "6ba856fbf3c8771021dc88d2ea90d08ad390659a9a91c1971219c3fb491aba9e",
+      "source_mtime_ns": 1792050895787638440,
+      "source_path": "artifacts/provenance/task15-generation-operations/external.started.json"
+    },
+    {
+      "bytes": 0,
+      "captured_utc": "2026-10-15T08:13:30.903254+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task15-generation-operations/launcher.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_mtime_ns": 1792050895787728065,
+      "source_path": "artifacts/provenance/task15-generation-operations/launcher.stderr.log"
+    },
+    {
+      "bytes": 0,
+      "captured_utc": "2026-10-15T08:13:30.903382+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task15-generation-operations/launcher.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_mtime_ns": 1792050895787673232,
+      "source_path": "artifacts/provenance/task15-generation-operations/launcher.stdout.log"
+    },
+    {
+      "bytes": 133,
+      "captured_utc": "2026-10-15T08:13:30.903538+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task15-generation-operations/owned-process.json",
+      "sha256": "b749bdbaefc59075b5b11abee9298714bfe275d4d093cd7f946474537cf95a58",
+      "source_mtime_ns": 1792050895789391081,
+      "source_path": "artifacts/provenance/task15-generation-operations/owned-process.json"
+    },
+    {
+      "bytes": 1266,
+      "captured_utc": "2026-10-15T08:13:30.903746+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task15-generation-operations/preflight.json",
+      "sha256": "bb20efcdda1233a88a1692080e6a86f693650d443a17a27f6ea846647cf8d4c8",
+      "source_mtime_ns": 1792050835112560114,
+      "source_path": "artifacts/provenance/task15-generation-operations/preflight.json"
+    },
+    {
+      "bytes": 3981,
+      "captured_utc": "2026-10-15T08:13:30.903911+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task15-generation-operations/terminal-metadata-verification.json",
+      "sha256": "c63c786a2a18b01934c23e4c9e5cf41fc95ec901ba09f315abac97024440a70b",
+      "source_mtime_ns": 1792051166956528974,
+      "source_path": "artifacts/provenance/task15-generation-operations/terminal-metadata-verification.json"
+    },
+    {
+      "bytes": 534,
+      "captured_utc": "2026-10-15T08:13:30.904094+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task15-scoring-operations/finished.json",
+      "sha256": "05147084bc0465450bbdee1b8d90638fbce67ac88a03b41a78fbd74b68b93df8",
+      "source_mtime_ns": 1792051310012465448,
+      "source_path": "artifacts/provenance/task15-scoring-operations/finished.json"
+    },
+    {
+      "bytes": 950,
+      "captured_utc": "2026-10-15T08:13:30.904397+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task15-scoring-operations/started.json",
+      "sha256": "c1ffa6e4d6262a62466fd12fd50cf8e8a5e0c0eeb8649e31ccea921a557405e7",
+      "source_mtime_ns": 1792051305264666844,
+      "source_path": "artifacts/provenance/task15-scoring-operations/started.json"
+    },
+    {
+      "bytes": 0,
+      "captured_utc": "2026-10-15T08:13:30.904531+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task15-scoring-operations/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_mtime_ns": 1792051305264812845,
+      "source_path": "artifacts/provenance/task15-scoring-operations/stderr.log"
+    },
+    {
+      "bytes": 0,
+      "captured_utc": "2026-10-15T08:13:30.904655+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task15-scoring-operations/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_mtime_ns": 1792051305264752303,
+      "source_path": "artifacts/provenance/task15-scoring-operations/stdout.log"
+    },
+    {
+      "bytes": 26600,
+      "captured_utc": "2026-10-15T08:13:30.905201+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task15-source-report.md",
+      "sha256": "62124dcef95b39a6532a347dcb9395a9afafdbe9a7ff31179d83a7973919c731",
+      "source_mtime_ns": 1792027365179874549,
+      "source_path": "artifacts/provenance/task15-source-report.md"
+    },
+    {
+      "bytes": 12977,
+      "captured_utc": "2026-10-15T08:13:30.905416+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task15-transfer-diagnostic-operation-source.txt",
+      "sha256": "038a8a1d7fd2d36e337832071fcd89fb8e10d633d9aa1beed88a9813f00872b5",
+      "source_mtime_ns": 1792051459563876805,
+      "source_path": "artifacts/provenance/task15-transfer-diagnostic-operation-source.txt"
+    },
+    {
+      "bytes": 8057,
+      "captured_utc": "2026-10-15T08:13:30.905657+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task15-transfer-reuse-reconciliation/executed-inline-source.txt",
+      "sha256": "4119800379a40db6ff66fdd083ef6543fbe51fb092d899d06fcd913339557a74",
+      "source_mtime_ns": 1792051791789791062,
+      "source_path": "artifacts/provenance/task15-transfer-reuse-reconciliation/executed-inline-source.txt"
+    },
+    {
+      "bytes": 402,
+      "captured_utc": "2026-10-15T08:13:30.905794+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task15-transfer-reuse-reconciliation/finished.json",
+      "sha256": "d765b581d284e7d4ec1a6aa2a10ef8a6279be9c5bb8b8054fb28e7f05a76e934",
+      "source_mtime_ns": 1792050672969018787,
+      "source_path": "artifacts/provenance/task15-transfer-reuse-reconciliation/finished.json"
+    },
+    {
+      "bytes": 8125,
+      "captured_utc": "2026-10-15T08:13:30.906146+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task15-transfer-reuse-reconciliation/generation-inventory-guard-plan.json",
+      "sha256": "94595ed12890b883eaed4d9e78e302d484570d528012df42a605f1d8a5f0084f",
+      "source_mtime_ns": 1792050710482980009,
+      "source_path": "artifacts/provenance/task15-transfer-reuse-reconciliation/generation-inventory-guard-plan.json"
+    },
+    {
+      "bytes": 1153,
+      "captured_utc": "2026-10-15T08:13:30.906445+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task15-transfer-reuse-reconciliation/public-safe-receipt.json",
+      "sha256": "cb4f955ebace6731f072a0d3136e1ce0d876b77aa2fe249af9e5e30eab0e1d87",
+      "source_mtime_ns": 1792050672968789952,
+      "source_path": "artifacts/provenance/task15-transfer-reuse-reconciliation/public-safe-receipt.json"
+    },
+    {
+      "bytes": 36906,
+      "captured_utc": "2026-10-15T08:13:30.906894+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task15-transfer-reuse-reconciliation/sidecar.json",
+      "sha256": "151b10bbd9b7f8d4dda2b4e9dd18cb7da3756db8f5e9062eec676ddaa76f39f1",
+      "source_mtime_ns": 1792050672968549741,
+      "source_path": "artifacts/provenance/task15-transfer-reuse-reconciliation/sidecar.json"
+    },
+    {
+      "bytes": 340,
+      "captured_utc": "2026-10-15T08:13:30.907155+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task15-transfer-reuse-reconciliation/started.json",
+      "sha256": "fdd7fd942c0cb51dfba22ba12726c43346f577870acdb171ef5d86fe13ff5b8d",
+      "source_mtime_ns": 1792050672447904687,
+      "source_path": "artifacts/provenance/task15-transfer-reuse-reconciliation/started.json"
+    },
+    {
+      "bytes": 1175,
+      "captured_utc": "2026-10-15T08:13:30.907502+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task16-final/a03-failure-analysis-receipt.json",
+      "sha256": "fae04402e2c2ca92e088d7bead629752697d511445c36b6efd9e5df9d3fbf1e5",
+      "source_mtime_ns": 1792050213047788119,
+      "source_path": "artifacts/provenance/task16-final/a03-failure-analysis-receipt.json"
+    },
+    {
+      "bytes": 8603,
+      "captured_utc": "2026-10-15T08:13:30.907828+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task16-final/a03-failure-analysis.json",
+      "sha256": "c6e8b2bbd3ae8f6cb2b9c0d351cbd11319aad967c525979d1834ee7c6ba7300a",
+      "source_mtime_ns": 1792050167039228740,
+      "source_path": "artifacts/provenance/task16-final/a03-failure-analysis.json"
+    },
+    {
+      "bytes": 6573,
+      "captured_utc": "2026-10-15T08:13:30.908154+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task16-final/a03-initial-quality-summary.json",
+      "sha256": "10c1aa7cfda668d57ac5d33dd023639de67e8f91c5776936cb8c3f4516c4e11a",
+      "source_mtime_ns": 1792047819388149289,
+      "source_path": "artifacts/provenance/task16-final/a03-initial-quality-summary.json"
+    },
+    {
+      "bytes": 295740,
+      "captured_utc": "2026-10-15T08:13:30.909159+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task16-final/a03-initial-state.json",
+      "sha256": "fbacaffc90201082cf9e678b29007748995fe028c46ef10e37bd8f6ec096a259",
+      "source_mtime_ns": 1792048278891727272,
+      "source_path": "artifacts/provenance/task16-final/a03-initial-state.json"
+    },
+    {
+      "bytes": 921,
+      "captured_utc": "2026-10-15T08:13:30.909482+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task16-final/a03-two-budget-quality-headroom.json",
+      "sha256": "28ffa9feac959cc7015f3ad8225e5fc59cdf9f99c13ddeedf2bee529c095d2f8",
+      "source_mtime_ns": 1792048239968336198,
+      "source_path": "artifacts/provenance/task16-final/a03-two-budget-quality-headroom.json"
+    },
+    {
+      "bytes": 4898,
+      "captured_utc": "2026-10-15T08:13:30.909809+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task16-final/blinded-disagreement-adjudication.json",
+      "sha256": "58c6808a06057e0996dd7e4c93304ec5f3990d758a7593bcfad7df6ccd8c5c58",
+      "source_mtime_ns": 1792049164357136555,
+      "source_path": "artifacts/provenance/task16-final/blinded-disagreement-adjudication.json"
+    },
+    {
+      "bytes": 71307,
+      "captured_utc": "2026-10-15T08:13:30.910082+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task16-final/final-physical-costs.json",
+      "sha256": "4bf4650d2a4c074380412cbbc125e0c7b3727bc26c8523697ffa2ab7c9dd04ce",
+      "source_mtime_ns": 1792051757994550643,
+      "source_path": "artifacts/provenance/task16-final/final-physical-costs.json"
+    },
+    {
+      "bytes": 332575,
+      "captured_utc": "2026-10-15T08:13:30.910740+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task16-final/final-state.json",
+      "sha256": "c608b247a7a5ef6e01039f4e01a40e9ac1449a3cfc0b0f9640abbfbc9826d72f",
+      "source_mtime_ns": 1792051758091400956,
+      "source_path": "artifacts/provenance/task16-final/final-state.json"
+    },
+    {
+      "bytes": 4948,
+      "captured_utc": "2026-10-15T08:13:30.911108+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task16-final/initial-input-manifest.json",
+      "sha256": "39c0dfd3ae5f597f1b6ac6fe328d5a14b6dc03b8c40df9b17bddb7aead90433d",
+      "source_mtime_ns": 1792048278905237675,
+      "source_path": "artifacts/provenance/task16-final/initial-input-manifest.json"
+    },
+    {
+      "bytes": 57825,
+      "captured_utc": "2026-10-15T08:13:30.911534+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task16-final/initial-physical-costs.json",
+      "sha256": "9d01d3c5e4bc9da6c79060601d1b1474b6f086b9fbc5cce5046df3130ada7757",
+      "source_mtime_ns": 1792048239972255192,
+      "source_path": "artifacts/provenance/task16-final/initial-physical-costs.json"
+    },
+    {
+      "bytes": 168832,
+      "captured_utc": "2026-10-15T08:13:30.912167+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task16-final/original-initial-state.json",
+      "sha256": "628cd6283a4e63bd3df3894b74218e6447ac5b228601de38ed585ac4c06ec8f5",
+      "source_mtime_ns": 1792048239980453254,
+      "source_path": "artifacts/provenance/task16-final/original-initial-state.json"
+    },
+    {
+      "bytes": 67358,
+      "captured_utc": "2026-10-15T08:13:30.912612+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task16-final/provisional-costs-through-pilot.json",
+      "sha256": "2f3a2d218ca37a31c3c6564e31cf55604f633e6175320c9477e01e071ca12b2d",
+      "source_mtime_ns": 1792050909217637658,
+      "source_path": "artifacts/provenance/task16-final/provisional-costs-through-pilot.json"
+    },
+    {
+      "bytes": 6164,
+      "captured_utc": "2026-10-15T08:13:30.912799+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task16-final/rulings-phase2b.json",
+      "sha256": "e0bdffcbd4169914de98eb3a2ecc5022b7c19186ed84f17a1b7d04447f80a9d7",
+      "source_mtime_ns": 1792048239959173825,
+      "source_path": "artifacts/provenance/task16-final/rulings-phase2b.json"
+    },
+    {
+      "bytes": 11672,
+      "captured_utc": "2026-10-15T08:13:30.913327+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task16-source-report.md",
+      "sha256": "6a6cc38436509a9d3c27bc9493e0b48e06f09d64c325db7855743b0737465ea8",
+      "source_mtime_ns": 1792028538827462917,
+      "source_path": "artifacts/provenance/task16-source-report.md"
+    },
+    {
+      "bytes": 386,
+      "captured_utc": "2026-10-15T08:13:30.913707+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task17-full-suite.json",
+      "sha256": "7d7ab41808bdee5ab13019901f7f030aea2d128eeab84d5326f8a958eef29a12",
+      "source_mtime_ns": 1792029543260833440,
+      "source_path": "artifacts/provenance/task17-full-suite.json"
+    },
+    {
+      "bytes": 912,
+      "captured_utc": "2026-10-15T08:13:30.914008+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task17-full-suite.txt",
+      "sha256": "1cacf9d6d3a25ff29421fb9149c840c5961bdf6a74eb07a9bd636b09b5b7a5ad",
+      "source_mtime_ns": 1792029543260541273,
+      "source_path": "artifacts/provenance/task17-full-suite.txt"
+    },
+    {
+      "bytes": 11868,
+      "captured_utc": "2026-10-15T08:13:30.914498+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task17-source-report.md",
+      "sha256": "027913cc0ac41a663bcf0232eb8fac22777d9de65e9bff225cbe810329fc653a",
+      "source_mtime_ns": 1792030722478086801,
+      "source_path": "artifacts/provenance/task17-source-report.md"
+    },
+    {
+      "bytes": 385,
+      "captured_utc": "2026-10-15T08:13:30.914699+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task18-a03-operations/analysis.finished.json",
+      "sha256": "5dd0a91b158dfee852ccd687d8182ff06ebf7ea28d84beb87f0a379f58040a63",
+      "source_mtime_ns": 1792048069708772696,
+      "source_path": "artifacts/provenance/task18-a03-operations/analysis.finished.json"
+    },
+    {
+      "bytes": 988,
+      "captured_utc": "2026-10-15T08:13:30.914974+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task18-a03-operations/analysis.started.json",
+      "sha256": "56205de483363e2faf3c2710cffe4c443a4a324496018e42bab39be34c918f55",
+      "source_mtime_ns": 1792047997494622031,
+      "source_path": "artifacts/provenance/task18-a03-operations/analysis.started.json"
+    },
+    {
+      "bytes": 148,
+      "captured_utc": "2026-10-15T08:13:30.915271+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task18-a03-operations/analysis.stderr.log",
+      "sha256": "2a44ee3b2d5dcfc29f41f3797c16f2cad5bfb30d88d9d7e5d2ca27a90cd75824",
+      "source_mtime_ns": 1792048042305865523,
+      "source_path": "artifacts/provenance/task18-a03-operations/analysis.stderr.log"
+    },
+    {
+      "bytes": 170,
+      "captured_utc": "2026-10-15T08:13:30.915520+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task18-a03-operations/analysis.stdout.log",
+      "sha256": "d7fb6ff2ea1f7211e63dc2ed9385eacc97775e93fa921772ca55ad8ef66f7180",
+      "source_mtime_ns": 1792048069274344015,
+      "source_path": "artifacts/provenance/task18-a03-operations/analysis.stdout.log"
+    },
+    {
+      "bytes": 844,
+      "captured_utc": "2026-10-15T08:13:30.915774+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task18-a03-operations/postpublication-verification.json",
+      "sha256": "b0aa0d49f6e75ee7e0d6ea344de426dfe73d1c583417946540e5a067dd2d7c83",
+      "source_mtime_ns": 1792048560031960812,
+      "source_path": "artifacts/provenance/task18-a03-operations/postpublication-verification.json"
+    },
+    {
+      "bytes": 7241,
+      "captured_utc": "2026-10-15T08:13:30.916075+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task18-a03-operations/report.md",
+      "sha256": "6bb7e0d419eea6b01ddb6914fc217e1a790960384b59a60fb66d5e036dce7a65",
+      "source_mtime_ns": 1792048560032357095,
+      "source_path": "artifacts/provenance/task18-a03-operations/report.md"
+    },
+    {
+      "bytes": 147525,
+      "captured_utc": "2026-10-15T08:13:30.916742+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task18-a03-operations/safe-summary.json",
+      "sha256": "6c6a19c2b3400e145b06a7f87e1acf87c6c64be1dd9654de1dde5f3a9822c777",
+      "source_mtime_ns": 1792048560031617653,
+      "source_path": "artifacts/provenance/task18-a03-operations/safe-summary.json"
+    },
+    {
+      "bytes": 743,
+      "captured_utc": "2026-10-15T08:13:30.917045+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task18-a03-operations/transfer-metadata-preflight-blocked.json",
+      "sha256": "77783fa4b0989361736eed389c9f6bb9ee82bf50662030e6bb01e68877cfc049",
+      "source_mtime_ns": 1792048560031863272,
+      "source_path": "artifacts/provenance/task18-a03-operations/transfer-metadata-preflight-blocked.json"
+    },
+    {
+      "bytes": 2264,
+      "captured_utc": "2026-10-15T08:13:30.917325+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task18-a03-operations/verification.json",
+      "sha256": "e17fc42f1d8fb5965a81534937efffea1af4977ca37059517485ddc9743510d6",
+      "source_mtime_ns": 1792048560088612285,
+      "source_path": "artifacts/provenance/task18-a03-operations/verification.json"
+    },
+    {
+      "bytes": 1455,
+      "captured_utc": "2026-10-15T08:13:30.917566+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task18-analysis-release.json",
+      "sha256": "405b43250e92f06b325b620dd561b81812bf8c1a12f60bdd9a4ae65e76797448",
+      "source_mtime_ns": 1792047951905860559,
+      "source_path": "artifacts/provenance/task18-analysis-release.json"
+    },
+    {
+      "bytes": 196,
+      "captured_utc": "2026-10-15T08:13:30.918067+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task18-frozen-source-check.json",
+      "sha256": "18c26ff9f441d7a8899451dfd5de5095c50c7f5cc2096750d196676e33be0a5d",
+      "source_mtime_ns": 1792032396800564722,
+      "source_path": "artifacts/provenance/task18-frozen-source-check.json"
+    },
+    {
+      "bytes": 576,
+      "captured_utc": "2026-10-15T08:13:30.918419+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task18-full-suite.json",
+      "sha256": "13619e89fc740d4c97fa8446fe6df4f09722fbb3a1da804ff6d90a79091633f3",
+      "source_mtime_ns": 1792032363540537436,
+      "source_path": "artifacts/provenance/task18-full-suite.json"
+    },
+    {
+      "bytes": 992,
+      "captured_utc": "2026-10-15T08:13:30.918865+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task18-full-suite.txt",
+      "sha256": "9a25f6d5e977074d6f4d30bff4387551d3deec78c0f4db18657d3569a764fd9f",
+      "source_mtime_ns": 1792032363431468211,
+      "source_path": "artifacts/provenance/task18-full-suite.txt"
+    },
+    {
+      "bytes": 19879,
+      "captured_utc": "2026-10-15T08:13:30.919324+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task18-source-report.md",
+      "sha256": "6f4ce79cfe8d445b3ee644dde7fbf4fdbd9b19188b949294315641a3cb9690a1",
+      "source_mtime_ns": 1792032428555256299,
+      "source_path": "artifacts/provenance/task18-source-report.md"
+    },
+    {
+      "bytes": 542,
+      "captured_utc": "2026-10-15T08:13:30.919682+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/provenance/task9-verification.json",
+      "sha256": "22155b048367abd375989ab057ce77a303afa644914e1c960b20a86b1d5bc6ac",
+      "source_mtime_ns": 1791999341991257687,
+      "source_path": "artifacts/provenance/task9-verification.json"
+    },
+    {
+      "bytes": 1430,
+      "captured_utc": "2026-10-15T08:13:30.919945+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/remaining-risks.json",
+      "sha256": "4cd21ab29c1093c9e7765b39837b9da8ce4a54e5181d28a57f8b91aaf6be0843",
+      "source_mtime_ns": 1792051758105526347,
+      "source_path": "artifacts/remaining-risks.json"
+    },
+    {
+      "bytes": 4238274,
+      "captured_utc": "2026-10-15T08:13:30.927476+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/a03-prelaunch-20261015T043354Z-input-hashes.json",
+      "sha256": "7e2ce3b939664d10c7781d9609705bf5c5c2f68f94a4befb7a42564b677ff9c0",
+      "source_mtime_ns": 1792038834575163198,
+      "source_path": "artifacts/runs/operational-planning/a03-prelaunch-20261015T043354Z-input-hashes.json"
+    },
+    {
+      "bytes": 5198,
+      "captured_utc": "2026-10-15T08:13:30.928146+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/a03-prelaunch-20261015T043354Z.json",
+      "sha256": "4779b5ed4cc04b15a90adedca4adb26fb47a429b5591f0c4145742e0d0c70b81",
+      "source_mtime_ns": 1792038834583004561,
+      "source_path": "artifacts/runs/operational-planning/a03-prelaunch-20261015T043354Z.json"
+    },
+    {
+      "bytes": 1583,
+      "captured_utc": "2026-10-15T08:13:30.929908+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/a03-prelaunch-supplement-20261015T043619Z.json",
+      "sha256": "a92328dbbd27c449f6529fe9291e16558656864510a8515993ca12ce3a8697ca",
+      "source_mtime_ns": 1792038979096579710,
+      "source_path": "artifacts/runs/operational-planning/a03-prelaunch-supplement-20261015T043619Z.json"
+    },
+    {
+      "bytes": 1365,
+      "captured_utc": "2026-10-15T08:13:30.931651+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/a03-root-closure-audit.json",
+      "sha256": "b27ff83a385397b43e411de12e97b50c495a5024ffac540ca7ef9606fafda1c3",
+      "source_mtime_ns": 1792047638403792784,
+      "source_path": "artifacts/runs/operational-planning/a03-root-closure-audit.json"
+    },
+    {
+      "bytes": 3098,
+      "captured_utc": "2026-10-15T08:13:30.931967+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/a03-root-execution-release.json",
+      "sha256": "0f6b969611dff6300ecf14a971fb8cd6d6cdc4aeec936adea67e740f6f007c24",
+      "source_mtime_ns": 1792039030271827892,
+      "source_path": "artifacts/runs/operational-planning/a03-root-execution-release.json"
+    },
+    {
+      "bytes": 12695,
+      "captured_utc": "2026-10-15T08:13:30.932172+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/prepare-task15-blind-packet.py",
+      "sha256": "e00693f6234205453f140c004e6a7324c186601d1003bf7aec2c021a54042aa6",
+      "source_mtime_ns": 1792048224090099075,
+      "source_path": "artifacts/runs/operational-planning/prepare-task15-blind-packet.py"
+    },
+    {
+      "bytes": 18969,
+      "captured_utc": "2026-10-15T08:13:30.932360+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/prepare-task15-window-count-attempt2.py",
+      "sha256": "d78f034683ea70fbf56824b730f0daf822e4d3515165fdad98ac8dc20596f016",
+      "source_mtime_ns": 1792049122934659736,
+      "source_path": "artifacts/runs/operational-planning/prepare-task15-window-count-attempt2.py"
+    },
+    {
+      "bytes": 18671,
+      "captured_utc": "2026-10-15T08:13:30.932539+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/prepare-task15-window-count.py",
+      "sha256": "dd0d66b1d26796762d5f1e505948daa51f2a726feff91536b199ebc237db9697",
+      "source_mtime_ns": 1792048925260981089,
+      "source_path": "artifacts/runs/operational-planning/prepare-task15-window-count.py"
+    },
+    {
+      "bytes": 564,
+      "captured_utc": "2026-10-15T08:13:30.932843+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/scratch-binding-precheck.json",
+      "sha256": "4833f6818a5323256af8b8c8b2a72950b71cc4d098133adf49e8f7c79328033d",
+      "source_mtime_ns": 1792033573826910173,
+      "source_path": "artifacts/runs/operational-planning/scratch-binding-precheck.json"
+    },
+    {
+      "bytes": 3071,
+      "captured_utc": "2026-10-15T08:13:30.933159+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task-17-forecast-notes.md",
+      "sha256": "1401669221353f2cfc46f6183e0f3b4e92e313aa6b0cd7701cb950728f695b57",
+      "source_mtime_ns": 1792029466781292143,
+      "source_path": "artifacts/runs/operational-planning/task-17-forecast-notes.md"
+    },
+    {
+      "bytes": 4641,
+      "captured_utc": "2026-10-15T08:13:30.933553+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task-17-runtime-forecast.json",
+      "sha256": "1d086927e73b24c7d8d85c3a3ccb09b844f98cffe68cb6740d58760deeb358e4",
+      "source_mtime_ns": 1792029466780564225,
+      "source_path": "artifacts/runs/operational-planning/task-17-runtime-forecast.json"
+    },
+    {
+      "bytes": 2756,
+      "captured_utc": "2026-10-15T08:13:30.933912+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task14-final-operational-handoff.json",
+      "sha256": "167cb2c1ffc349eacfd2837b6990319d3132961faf95355927c2fff447d39366",
+      "source_mtime_ns": 1792047811939794602,
+      "source_path": "artifacts/runs/operational-planning/task14-final-operational-handoff.json"
+    },
+    {
+      "bytes": 1426,
+      "captured_utc": "2026-10-15T08:13:30.934359+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task15-fullpilot-release.json",
+      "sha256": "cec2fedaea1f3a82f26a96c888ec7e3be29d50ae987b4e5c0a1043b2cebed102",
+      "source_mtime_ns": 1792049435537460986,
+      "source_path": "artifacts/runs/operational-planning/task15-fullpilot-release.json"
+    },
+    {
+      "bytes": 1785,
+      "captured_utc": "2026-10-15T08:13:30.934731+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task15-generation-release.json",
+      "sha256": "7ed6eec9b871c4b7ca6d58c210dee9cb022da5eca721426b2f3b47a78cb5cff4",
+      "source_mtime_ns": 1792050762397092406,
+      "source_path": "artifacts/runs/operational-planning/task15-generation-release.json"
+    },
+    {
+      "bytes": 1449,
+      "captured_utc": "2026-10-15T08:13:30.935025+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task15-scoring-release.json",
+      "sha256": "abbad929c54e6aff7cbae92c64bc59abb7b78801f95a3d6ce51edf3b93b410f5",
+      "source_mtime_ns": 1792051223247363237,
+      "source_path": "artifacts/runs/operational-planning/task15-scoring-release.json"
+    },
+    {
+      "bytes": 983,
+      "captured_utc": "2026-10-15T08:13:30.935371+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task15-window-count/attempt-1/launch-plan.json",
+      "sha256": "060a1771bff4d2168d9bd7d80392a88d7a2936a121abc55f6518f02b61ce2f53",
+      "source_mtime_ns": 1792049024914489850,
+      "source_path": "artifacts/runs/operational-planning/task15-window-count/attempt-1/launch-plan.json"
+    },
+    {
+      "bytes": 85,
+      "captured_utc": "2026-10-15T08:13:30.935730+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task15-window-count/attempt-1/os-denials.json",
+      "sha256": "fe71d8478ec5e8e49bdf6d99108522748af910ff4be9c45b19db205823d7dfed",
+      "source_mtime_ns": 1792049024995474525,
+      "source_path": "artifacts/runs/operational-planning/task15-window-count/attempt-1/os-denials.json"
+    },
+    {
+      "bytes": 1321,
+      "captured_utc": "2026-10-15T08:13:30.935914+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task15-window-count/attempt-1/parent.finished.json",
+      "sha256": "74e65dd8e7892b50b2bda0f8612394337f9958c5426af57c94f09ca9d488d9d3",
+      "source_mtime_ns": 1792049030542469417,
+      "source_path": "artifacts/runs/operational-planning/task15-window-count/attempt-1/parent.finished.json"
+    },
+    {
+      "bytes": 363,
+      "captured_utc": "2026-10-15T08:13:30.936109+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task15-window-count/attempt-1/parent.started.json",
+      "sha256": "330444e6af29323923fd48a66aa08a8711dbbe37720e72687f4974446024dee7",
+      "source_mtime_ns": 1792049024896612461,
+      "source_path": "artifacts/runs/operational-planning/task15-window-count/attempt-1/parent.started.json"
+    },
+    {
+      "bytes": 908,
+      "captured_utc": "2026-10-15T08:13:30.936306+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task15-window-count/attempt-1/release-copy.json",
+      "sha256": "b78862e7de4af3c2080fcadc98823a34198c7e31e7cbd626649edb4c1b914f1a",
+      "source_mtime_ns": 1792049024913401416,
+      "source_path": "artifacts/runs/operational-planning/task15-window-count/attempt-1/release-copy.json"
+    },
+    {
+      "bytes": 539,
+      "captured_utc": "2026-10-15T08:13:30.936578+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task15-window-count/attempt-1/worker.finished.json",
+      "sha256": "5d5f647013c2b0ba081e31192d8c30e7bcb9475671f51229d884af7f6f4a108e",
+      "source_mtime_ns": 1792049030230588611,
+      "source_path": "artifacts/runs/operational-planning/task15-window-count/attempt-1/worker.finished.json"
+    },
+    {
+      "bytes": 73,
+      "captured_utc": "2026-10-15T08:13:30.936780+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task15-window-count/attempt-1/worker.started.json",
+      "sha256": "79368104a0604068172fae3f4f2cf64ec99e190d64efe715bba38eea114b0192",
+      "source_mtime_ns": 1792049024974582329,
+      "source_path": "artifacts/runs/operational-planning/task15-window-count/attempt-1/worker.started.json"
+    },
+    {
+      "bytes": 9576,
+      "captured_utc": "2026-10-15T08:13:30.937111+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task15-window-count/attempt-1/worker.stderr.log",
+      "sha256": "43d95dea3b2e924adb6946c01a7e1929953d3bf89c12d1544a1360a68cbd52f3",
+      "source_mtime_ns": 1792049030239263832,
+      "source_path": "artifacts/runs/operational-planning/task15-window-count/attempt-1/worker.stderr.log"
+    },
+    {
+      "bytes": 0,
+      "captured_utc": "2026-10-15T08:13:30.937259+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task15-window-count/attempt-1/worker.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_mtime_ns": 1792049024914584764,
+      "source_path": "artifacts/runs/operational-planning/task15-window-count/attempt-1/worker.stdout.log"
+    },
+    {
+      "bytes": 525,
+      "captured_utc": "2026-10-15T08:13:30.937600+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task15-window-count/attempt-2/count.closed.json",
+      "sha256": "703a4f6d25fd9834ac59f52b7a3930c08c4b8ffb8dc0ba4ced320606c75c4414",
+      "source_mtime_ns": 1792049257702933783,
+      "source_path": "artifacts/runs/operational-planning/task15-window-count/attempt-2/count.closed.json"
+    },
+    {
+      "bytes": 1001,
+      "captured_utc": "2026-10-15T08:13:30.937911+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task15-window-count/attempt-2/launch-plan.json",
+      "sha256": "27d94e7427bdf682661d5f282b4ce5d30f8f1f900182d996612264f64da2b8a5",
+      "source_mtime_ns": 1792049168383497208,
+      "source_path": "artifacts/runs/operational-planning/task15-window-count/attempt-2/launch-plan.json"
+    },
+    {
+      "bytes": 85,
+      "captured_utc": "2026-10-15T08:13:30.938177+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task15-window-count/attempt-2/os-denials.json",
+      "sha256": "fe71d8478ec5e8e49bdf6d99108522748af910ff4be9c45b19db205823d7dfed",
+      "source_mtime_ns": 1792049168455111026,
+      "source_path": "artifacts/runs/operational-planning/task15-window-count/attempt-2/os-denials.json"
+    },
+    {
+      "bytes": 1601,
+      "captured_utc": "2026-10-15T08:13:30.938344+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task15-window-count/attempt-2/parent.finished.json",
+      "sha256": "028fe16ad47589e0d6e23f780309d1699a6e1664d7dd824c58fe54a4e4939cdc",
+      "source_mtime_ns": 1792049258203037940,
+      "source_path": "artifacts/runs/operational-planning/task15-window-count/attempt-2/parent.finished.json"
+    },
+    {
+      "bytes": 363,
+      "captured_utc": "2026-10-15T08:13:30.938606+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task15-window-count/attempt-2/parent.started.json",
+      "sha256": "f0bb4a8c353b73a4b8d551eee16258d1cc1851bb4dac2b6c0042cbc2984e4de5",
+      "source_mtime_ns": 1792049168367522146,
+      "source_path": "artifacts/runs/operational-planning/task15-window-count/attempt-2/parent.started.json"
+    },
+    {
+      "bytes": 1229,
+      "captured_utc": "2026-10-15T08:13:30.938891+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task15-window-count/attempt-2/release-copy.json",
+      "sha256": "5e8cef149fbd7c386be30abfa68a5e3d2155a589c840831980cf4dfa8c984d26",
+      "source_mtime_ns": 1792049168382803368,
+      "source_path": "artifacts/runs/operational-planning/task15-window-count/attempt-2/release-copy.json"
+    },
+    {
+      "bytes": 4990,
+      "captured_utc": "2026-10-15T08:13:30.939225+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task15-window-count/attempt-2/summary.json",
+      "sha256": "6a5327e057d90a62d1f13d883d22860c0e88b0513586af4f5f5423db6791792a",
+      "source_mtime_ns": 1792049257697515108,
+      "source_path": "artifacts/runs/operational-planning/task15-window-count/attempt-2/summary.json"
+    },
+    {
+      "bytes": 318,
+      "captured_utc": "2026-10-15T08:13:30.939485+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task15-window-count/attempt-2/worker.finished.json",
+      "sha256": "aa141c63e24ff9d7f37ff1ecf2b5c27d04a0116c11f751264b0ff1afb045a403",
+      "source_mtime_ns": 1792049257703157285,
+      "source_path": "artifacts/runs/operational-planning/task15-window-count/attempt-2/worker.finished.json"
+    },
+    {
+      "bytes": 73,
+      "captured_utc": "2026-10-15T08:13:30.939751+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task15-window-count/attempt-2/worker.started.json",
+      "sha256": "6ef736b8e52813639d5dcfd791feffcf8b79303e965b2fb3c8a84d7dec7c7540",
+      "source_mtime_ns": 1792049168436033102,
+      "source_path": "artifacts/runs/operational-planning/task15-window-count/attempt-2/worker.started.json"
+    },
+    {
+      "bytes": 261,
+      "captured_utc": "2026-10-15T08:13:30.940034+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task15-window-count/attempt-2/worker.stderr.log",
+      "sha256": "6a698c580d0b99322c74255d9d94393d8c7e2e49564c8cc65fa9b5e24ae122d7",
+      "source_mtime_ns": 1792049177752836616,
+      "source_path": "artifacts/runs/operational-planning/task15-window-count/attempt-2/worker.stderr.log"
+    },
+    {
+      "bytes": 0,
+      "captured_utc": "2026-10-15T08:13:30.940173+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task15-window-count/attempt-2/worker.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_mtime_ns": 1792049168383571000,
+      "source_path": "artifacts/runs/operational-planning/task15-window-count/attempt-2/worker.stdout.log"
+    },
+    {
+      "bytes": 46,
+      "captured_utc": "2026-10-15T08:13:30.940394+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task15-window-count/synthetic-write-denial-probe-attempt-2.txt",
+      "sha256": "8d15237457ea48de11614a23cccda90916909f0ee9c29fb3c77e04c43843b983",
+      "source_mtime_ns": 1792049168383306081,
+      "source_path": "artifacts/runs/operational-planning/task15-window-count/synthetic-write-denial-probe-attempt-2.txt"
+    },
+    {
+      "bytes": 46,
+      "captured_utc": "2026-10-15T08:13:30.940575+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task15-window-count/synthetic-write-denial-probe.txt",
+      "sha256": "8d15237457ea48de11614a23cccda90916909f0ee9c29fb3c77e04c43843b983",
+      "source_mtime_ns": 1792049024914176690,
+      "source_path": "artifacts/runs/operational-planning/task15-window-count/synthetic-write-denial-probe.txt"
+    },
+    {
+      "bytes": 1265,
+      "captured_utc": "2026-10-15T08:13:30.941017+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task15-window-count-attempt2-release.json",
+      "sha256": "abf97afcfbc08c406f0f87f41907f8bf0a972f7a84450deb9127fa4cdaf5ddce",
+      "source_mtime_ns": 1792049149909651787,
+      "source_path": "artifacts/runs/operational-planning/task15-window-count-attempt2-release.json"
+    },
+    {
+      "bytes": 938,
+      "captured_utc": "2026-10-15T08:13:30.941400+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task15-window-count-release.json",
+      "sha256": "255e836ae31a7ea3f7db526e5ed3a2f8b3fba1c3a44dcee871b3e24f02a7fa0e",
+      "source_mtime_ns": 1792048967033637630,
+      "source_path": "artifacts/runs/operational-planning/task15-window-count-release.json"
+    },
+    {
+      "bytes": 528,
+      "captured_utc": "2026-10-15T08:13:30.941840+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task17-preparation-attempts/attempt-0001/copy-sha256.json",
+      "sha256": "87c4229455554615115a8c22bf44176ae86cdf8b603e82b28eb308c3b2b1a8aa",
+      "source_mtime_ns": 1792029796564499856,
+      "source_path": "artifacts/runs/operational-planning/task17-preparation-attempts/attempt-0001/copy-sha256.json"
+    },
+    {
+      "bytes": 3284,
+      "captured_utc": "2026-10-15T08:13:30.942141+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task17-preparation-attempts/attempt-0001/task-17-live-prep-before.json",
+      "sha256": "cb52bcdc396977a354fcc8af01c29e1e41e2b16b98744f992853d9d4d1507a19",
+      "source_mtime_ns": 1792029796563363519,
+      "source_path": "artifacts/runs/operational-planning/task17-preparation-attempts/attempt-0001/task-17-live-prep-before.json"
+    },
+    {
+      "bytes": 2615,
+      "captured_utc": "2026-10-15T08:13:30.942678+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task17-preparation-attempts/attempt-0001/task-17-live-prep-report.md",
+      "sha256": "201c56db22a299a55fe00a141dbe14c92ee0ea8b69ad7ee05be13bd1f918254e",
+      "source_mtime_ns": 1792029796564371439,
+      "source_path": "artifacts/runs/operational-planning/task17-preparation-attempts/attempt-0001/task-17-live-prep-report.md"
+    },
+    {
+      "bytes": 6738,
+      "captured_utc": "2026-10-15T08:13:30.942994+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task17-preparation-attempts/attempt-0001/task-17-live-prep-result.json",
+      "sha256": "d6c4f4ee9412099ef361b7c2a9fbc09f10cbdba5d25fff1416e0b5f71aa9f692",
+      "source_mtime_ns": 1792029796563706520,
+      "source_path": "artifacts/runs/operational-planning/task17-preparation-attempts/attempt-0001/task-17-live-prep-result.json"
+    },
+    {
+      "bytes": 984,
+      "captured_utc": "2026-10-15T08:13:30.943200+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task17-preparation-attempts/attempt-0001/task-17-live-prep-writer.stderr.txt",
+      "sha256": "0d0868fcc8512c6c4b1dc6803e8845bc3749402ddd452f468358c01e64dc3847",
+      "source_mtime_ns": 1792029796564106229,
+      "source_path": "artifacts/runs/operational-planning/task17-preparation-attempts/attempt-0001/task-17-live-prep-writer.stderr.txt"
+    },
+    {
+      "bytes": 0,
+      "captured_utc": "2026-10-15T08:13:30.943354+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task17-preparation-attempts/attempt-0001/task-17-live-prep-writer.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_mtime_ns": 1792029796563805145,
+      "source_path": "artifacts/runs/operational-planning/task17-preparation-attempts/attempt-0001/task-17-live-prep-writer.stdout.txt"
+    },
+    {
+      "bytes": 3359,
+      "captured_utc": "2026-10-15T08:13:30.943686+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task17-preparation-attempts/attempt-0002/before.json",
+      "sha256": "c8d305a08f0a08a75de43493234584f234eb7e868cb1adbc966778368a33f660",
+      "source_mtime_ns": 1792030389014869300,
+      "source_path": "artifacts/runs/operational-planning/task17-preparation-attempts/attempt-0002/before.json"
+    },
+    {
+      "bytes": 529,
+      "captured_utc": "2026-10-15T08:13:30.943958+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task17-preparation-attempts/attempt-0002/receipt-sha256.json",
+      "sha256": "ff6cc9627ccbda818d813529594e7d6d93bd72d8374fb748334f6c9da8df72f5",
+      "source_mtime_ns": 1792030619426655358,
+      "source_path": "artifacts/runs/operational-planning/task17-preparation-attempts/attempt-0002/receipt-sha256.json"
+    },
+    {
+      "bytes": 5532,
+      "captured_utc": "2026-10-15T08:13:30.944297+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task17-preparation-attempts/attempt-0002/report.md",
+      "sha256": "0c717fef137ad9c7e5249cb506eb46c39c56a3af4ab726ac20237d3aeb1b5c91",
+      "source_mtime_ns": 1792030619426025606,
+      "source_path": "artifacts/runs/operational-planning/task17-preparation-attempts/attempt-0002/report.md"
+    },
+    {
+      "bytes": 6815,
+      "captured_utc": "2026-10-15T08:13:30.944628+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task17-preparation-attempts/attempt-0002/result.json",
+      "sha256": "398c3b9af9ee02fad887dee0a1e8775238d89b7c3fdd55410fb0c8b6cdb0ba88",
+      "source_mtime_ns": 1792030409425320830,
+      "source_path": "artifacts/runs/operational-planning/task17-preparation-attempts/attempt-0002/result.json"
+    },
+    {
+      "bytes": 10894,
+      "captured_utc": "2026-10-15T08:13:30.945160+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task17-preparation-attempts/attempt-0002/verification.json",
+      "sha256": "969da11fe3732dbe93285be7bd2da83931adaf2b9b4aeea4cbb998cdbff96c0e",
+      "source_mtime_ns": 1792030485322770217,
+      "source_path": "artifacts/runs/operational-planning/task17-preparation-attempts/attempt-0002/verification.json"
+    },
+    {
+      "bytes": 0,
+      "captured_utc": "2026-10-15T08:13:30.945335+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task17-preparation-attempts/attempt-0002/writer.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_mtime_ns": 1792030409414185878,
+      "source_path": "artifacts/runs/operational-planning/task17-preparation-attempts/attempt-0002/writer.stderr.txt"
+    },
+    {
+      "bytes": 418,
+      "captured_utc": "2026-10-15T08:13:30.945679+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task17-preparation-attempts/attempt-0002/writer.stdout.txt",
+      "sha256": "bb2032a3e736045035615e43c6c925c54a174a0f0c601fad68aec30e8c3dee48",
+      "source_mtime_ns": 1792030409413905377,
+      "source_path": "artifacts/runs/operational-planning/task17-preparation-attempts/attempt-0002/writer.stdout.txt"
+    },
+    {
+      "bytes": 1571,
+      "captured_utc": "2026-10-15T08:13:30.946043+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task17-root-manifest-audit.json",
+      "sha256": "619a66a7f9702d37f89c1e2be56ee21342fe1fbea45af0ea0d3c338075061344",
+      "source_mtime_ns": 1792030613575435406,
+      "source_path": "artifacts/runs/operational-planning/task17-root-manifest-audit.json"
+    },
+    {
+      "bytes": 3815090,
+      "captured_utc": "2026-10-15T08:13:30.952880+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task17-runtime-forecast-20261015T040133Z-input-hashes.json",
+      "sha256": "eed443b7ab6a7c5095a58c78c376af00e507189955ef619fa11b1fb8ba8977d9",
+      "source_mtime_ns": 1792036893749081446,
+      "source_path": "artifacts/runs/operational-planning/task17-runtime-forecast-20261015T040133Z-input-hashes.json"
+    },
+    {
+      "bytes": 5983,
+      "captured_utc": "2026-10-15T08:13:30.953421+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task17-runtime-forecast-20261015T040133Z.json",
+      "sha256": "e7c7fccc5cf12e26bb95a6ebc35de27168cc861b4b59afa8b9684433497835d1",
+      "source_mtime_ns": 1792036893768815339,
+      "source_path": "artifacts/runs/operational-planning/task17-runtime-forecast-20261015T040133Z.json"
+    },
+    {
+      "bytes": 1455,
+      "captured_utc": "2026-10-15T08:13:30.953741+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/operational-planning/task18-analysis-release.json",
+      "sha256": "405b43250e92f06b325b620dd561b81812bf8c1a12f60bdd9a4ae65e76797448",
+      "source_mtime_ns": 1792047951905731354,
+      "source_path": "artifacts/runs/operational-planning/task18-analysis-release.json"
+    },
+    {
+      "bytes": 825832,
+      "captured_utc": "2026-10-15T08:13:30.955563+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/task16-failure-analysis/all-lost-jobs.jsonl",
+      "sha256": "218e2a03f71964b3517edad05b421c6bf0964710fd4c2c9a49091885b4302f1e",
+      "source_mtime_ns": 1792050167002074609,
+      "source_path": "artifacts/runs/task16-failure-analysis/all-lost-jobs.jsonl"
+    },
+    {
+      "bytes": 1175,
+      "captured_utc": "2026-10-15T08:13:30.955875+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/task16-failure-analysis/analysis.closed.json",
+      "sha256": "fae04402e2c2ca92e088d7bead629752697d511445c36b6efd9e5df9d3fbf1e5",
+      "source_mtime_ns": 1792050213047660451,
+      "source_path": "artifacts/runs/task16-failure-analysis/analysis.closed.json"
+    },
+    {
+      "bytes": 6011,
+      "captured_utc": "2026-10-15T08:13:30.956175+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/task16-failure-analysis/analyze.py",
+      "sha256": "d9199a9396af8380b5559bcc3dc2932b5b84c0cc831f5909b69792fd47d7e86e",
+      "source_mtime_ns": 1792050166504156846,
+      "source_path": "artifacts/runs/task16-failure-analysis/analyze.py"
+    },
+    {
+      "bytes": 600,
+      "captured_utc": "2026-10-15T08:13:30.956517+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/task16-failure-analysis/parent.finished.json",
+      "sha256": "2125dc5faf18364085ac54e2ff020ea7a54c69e2f9ac49ebe4bcebe8f3a20a21",
+      "source_mtime_ns": 1792050167071407118,
+      "source_path": "artifacts/runs/task16-failure-analysis/parent.finished.json"
+    },
+    {
+      "bytes": 160,
+      "captured_utc": "2026-10-15T08:13:30.956806+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/task16-failure-analysis/parent.started.json",
+      "sha256": "ab320d70389925cd59f01da261bff23e95bb25cb657e1646ffac31fd4dcd913f",
+      "source_mtime_ns": 1792050166541754898,
+      "source_path": "artifacts/runs/task16-failure-analysis/parent.started.json"
+    },
+    {
+      "bytes": 0,
+      "captured_utc": "2026-10-15T08:13:30.956932+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/task16-failure-analysis/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_mtime_ns": 1792050166541919233,
+      "source_path": "artifacts/runs/task16-failure-analysis/stderr.log"
+    },
+    {
+      "bytes": 4063,
+      "captured_utc": "2026-10-15T08:13:30.957110+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/task16-failure-analysis/stdout.log",
+      "sha256": "6aafdd6f1801bf9c8227261edd979e69cb1be161aa1f5cb332fe0a0037abdb15",
+      "source_mtime_ns": 1792050167039411700,
+      "source_path": "artifacts/runs/task16-failure-analysis/stdout.log"
+    },
+    {
+      "bytes": 619,
+      "captured_utc": "2026-10-15T08:13:30.957435+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/task16-phase2b/a03-initial-score-command.json",
+      "sha256": "dedcb2386a799eabe65f60f6963ef85d99702068fda12d0300ad179729c002c1",
+      "source_mtime_ns": 1792047777749610208,
+      "source_path": "artifacts/runs/task16-phase2b/a03-initial-score-command.json"
+    },
+    {
+      "bytes": 146,
+      "captured_utc": "2026-10-15T08:13:30.957715+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/task16-phase2b/a03-initial-score.log",
+      "sha256": "c2c7927bfa2cb2af33fbd04c8176615c608a8c658447c4637ef85f89e71d868a",
+      "source_mtime_ns": 1792047777715365981,
+      "source_path": "artifacts/runs/task16-phase2b/a03-initial-score.log"
+    },
+    {
+      "bytes": 701,
+      "captured_utc": "2026-10-15T08:13:30.957975+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/task16-phase2b/a03-reproduce-command.json",
+      "sha256": "ce35195051e00ae8be349d0a7db329fb271a605a6736b38bf33992aa114cefe9",
+      "source_mtime_ns": 1792047869429380551,
+      "source_path": "artifacts/runs/task16-phase2b/a03-reproduce-command.json"
+    },
+    {
+      "bytes": 1321,
+      "captured_utc": "2026-10-15T08:13:30.958243+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/task16-phase2b/a03-reproduce.log",
+      "sha256": "7e52eaf4522a206a6eedb78918ebe65baab07487a9266eb693f1afca4267fbd4",
+      "source_mtime_ns": 1792047869391132242,
+      "source_path": "artifacts/runs/task16-phase2b/a03-reproduce.log"
+    },
+    {
+      "bytes": 6585,
+      "captured_utc": "2026-10-15T08:13:30.958426+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/task16-phase2b/archive_prefinal.py",
+      "sha256": "03ee112a1065cb987dcb146e672f444aefbc078a2521c11a174a1e81351e7e24",
+      "source_mtime_ns": 1792052010796956328,
+      "source_path": "artifacts/runs/task16-phase2b/archive_prefinal.py"
+    },
+    {
+      "bytes": 7670,
+      "captured_utc": "2026-10-15T08:13:30.958603+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/task16-phase2b/assemble_final_report.py",
+      "sha256": "919157f3f94454445aeace0543673aca14efe81bebb431bee82a021dd5f290cc",
+      "source_mtime_ns": 1792051757932046887,
+      "source_path": "artifacts/runs/task16-phase2b/assemble_final_report.py"
+    },
+    {
+      "bytes": 20451,
+      "captured_utc": "2026-10-15T08:13:30.958931+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/task16-phase2b/assemble_initial_reports.py",
+      "sha256": "46df309a79e51635ebfdfcdf397ad6e4f30a8fd4874ce7675252c62c5ebce431",
+      "source_mtime_ns": 1792048235483696016,
+      "source_path": "artifacts/runs/task16-phase2b/assemble_initial_reports.py"
+    },
+    {
+      "bytes": 1145,
+      "captured_utc": "2026-10-15T08:13:30.959195+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/task16-phase2b/final-assembly-receipt.json",
+      "sha256": "874f106a04b284ef654c85eeb7db5d2580dc4e25c26f63ceffd4b82cd9988da9",
+      "source_mtime_ns": 1792051758106321476,
+      "source_path": "artifacts/runs/task16-phase2b/final-assembly-receipt.json"
+    },
+    {
+      "bytes": 837,
+      "captured_utc": "2026-10-15T08:13:30.959459+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/task16-phase2b/initial-output-validation.json",
+      "sha256": "3b0a4433706f121bed505b53979e62e814c624b7eca0cbd27f3d5230ce7d5bae",
+      "source_mtime_ns": 1792048380409224502,
+      "source_path": "artifacts/runs/task16-phase2b/initial-output-validation.json"
+    },
+    {
+      "bytes": 1676,
+      "captured_utc": "2026-10-15T08:13:30.959875+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/task16-phase2b/initial-report-assembly-receipt.json",
+      "sha256": "864670026e5b0f5254d5839ce0f198c3842a83ea776935a6adc231c801a3f717",
+      "source_mtime_ns": 1792048278905367381,
+      "source_path": "artifacts/runs/task16-phase2b/initial-report-assembly-receipt.json"
+    },
+    {
+      "bytes": 689,
+      "captured_utc": "2026-10-15T08:13:30.960221+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/task16-phase2b/original-reproduce-command.json",
+      "sha256": "7608ba4d08da29200ce750426c4ab58b66b9bd06ade719b5ab3ebb16a7ff8593",
+      "source_mtime_ns": 1792047818367708164,
+      "source_path": "artifacts/runs/task16-phase2b/original-reproduce-command.json"
+    },
+    {
+      "bytes": 211,
+      "captured_utc": "2026-10-15T08:13:30.960553+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/task16-phase2b/original-reproduce.log",
+      "sha256": "4a097b0e428d63a31ab63252d5241b10e3fe02fffd876f27f152f2dc78a87003",
+      "source_mtime_ns": 1792047818361577795,
+      "source_path": "artifacts/runs/task16-phase2b/original-reproduce.log"
+    },
+    {
+      "bytes": 4794,
+      "captured_utc": "2026-10-15T08:13:30.960881+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/task16-phase2b/pre-final-archive-reference-audit.json",
+      "sha256": "1acac2ebc06d127ec52334ad79ad7c3f65742176abf8d460477a961b20344961",
+      "source_mtime_ns": 1792050970295375500,
+      "source_path": "artifacts/runs/task16-phase2b/pre-final-archive-reference-audit.json"
+    },
+    {
+      "bytes": 1397,
+      "captured_utc": "2026-10-15T08:13:30.961189+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/task16-phase2b/protocol-verification.json",
+      "sha256": "85df3dd7de4d281986706eedca2f60eb6a5a21d262cd8e7aaaadaaa1963c401f",
+      "source_mtime_ns": 1792047711438273480,
+      "source_path": "artifacts/runs/task16-phase2b/protocol-verification.json"
+    },
+    {
+      "bytes": 12308,
+      "captured_utc": "2026-10-15T08:13:30.961422+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/task16-phase2b/publish_readable_docs.py",
+      "sha256": "63318b1078965b1f1c4e29f3532378b700ecd5ba155106ea7ad4b1fbe59012fc",
+      "source_mtime_ns": 1792051877689286683,
+      "source_path": "artifacts/runs/task16-phase2b/publish_readable_docs.py"
+    },
+    {
+      "bytes": 601,
+      "captured_utc": "2026-10-15T08:13:30.961685+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/task16-phase2b/readable-draft-polish-validation.json",
+      "sha256": "c402f713f26cda93f382b7eed6dccb411f5b81d07afc1ffb791c048a16b623c6",
+      "source_mtime_ns": 1792049994022113004,
+      "source_path": "artifacts/runs/task16-phase2b/readable-draft-polish-validation.json"
+    },
+    {
+      "bytes": 796,
+      "captured_utc": "2026-10-15T08:13:30.962051+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/runs/task16-phase2b/readable-draft-validation.json",
+      "sha256": "314d1767b08200d250ccc340253d5be76908b331d179706bfbc523b463a81544",
+      "source_mtime_ns": 1792049857885486148,
+      "source_path": "artifacts/runs/task16-phase2b/readable-draft-validation.json"
+    },
+    {
+      "bytes": 238725,
+      "captured_utc": "2026-10-15T08:13:30.962617+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/artifacts/summary.json",
+      "sha256": "d6c43bbee0afe44dfbb98bae4fcf6c55d5f377577326e179ddd79830d75d1bac",
+      "source_mtime_ns": 1792051758105377347,
+      "source_path": "artifacts/summary.json"
+    },
+    {
+      "bytes": 5452,
+      "captured_utc": "2026-10-15T08:13:30.963020+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/docs/amendments/A03-timing-replication.json",
+      "sha256": "7c1380440939982989635868524e5ef02566e0fb83ff8e5d9b8a4e851ee9e58d",
+      "source_mtime_ns": 1792029008943215974,
+      "source_path": "docs/amendments/A03-timing-replication.json"
+    },
+    {
+      "bytes": 3997,
+      "captured_utc": "2026-10-15T08:13:30.963423+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/docs/amendments/A04-earlier-operational-cutoff.json",
+      "sha256": "35619ce1cd67508e437f6d42c2d6974b1bae8552bd421abd98ee789b0dc64111",
+      "source_mtime_ns": 1792037084226161182,
+      "source_path": "docs/amendments/A04-earlier-operational-cutoff.json"
+    },
+    {
+      "bytes": 69515,
+      "captured_utc": "2026-10-15T08:13:30.963760+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/docs/superpowers/plans/2026-10-14-outcome-aware-context-allocation.md",
+      "sha256": "494e33a7a1547576a2d7de0afa2b0bb2f345286681cbcb50c8d7f9335b4e7c7b",
+      "source_mtime_ns": 1792051877714767704,
+      "source_path": "docs/superpowers/plans/2026-10-14-outcome-aware-context-allocation.md"
+    },
+    {
+      "bytes": 3609,
+      "captured_utc": "2026-10-15T08:13:30.964162+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/docs/superpowers/reviews/2026-10-14-planning-review.md",
+      "sha256": "82ecad37c9696ad896071b8594ca6265e692f5b428ef4cf9c8365f76fed7e40e",
+      "source_mtime_ns": 1791979873257180368,
+      "source_path": "docs/superpowers/reviews/2026-10-14-planning-review.md"
+    },
+    {
+      "bytes": 3165,
+      "captured_utc": "2026-10-15T08:13:30.964433+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/docs/superpowers/reviews/2026-10-14-task12-fix-1-review.md",
+      "sha256": "91bc3587228641af1d2fca2a1dbad898edbef6eb129729c96a5794584b7f7153",
+      "source_mtime_ns": 1792011938306885247,
+      "source_path": "docs/superpowers/reviews/2026-10-14-task12-fix-1-review.md"
+    },
+    {
+      "bytes": 6465,
+      "captured_utc": "2026-10-15T08:13:30.964740+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/docs/superpowers/reviews/2026-10-14-task12-review.md",
+      "sha256": "5467e51da7222ba56733df5a6c686046f94bea64f7230c104e68629a0f3fe1c6",
+      "source_mtime_ns": 1792011938306688955,
+      "source_path": "docs/superpowers/reviews/2026-10-14-task12-review.md"
+    },
+    {
+      "bytes": 5815,
+      "captured_utc": "2026-10-15T08:13:30.965036+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/docs/superpowers/reviews/2026-10-14-task13-review.md",
+      "sha256": "0a4b0c066c5ff1664c3a172d39c369b0891897528f6e771b37cdc95aafec16a0",
+      "source_mtime_ns": 1792014044985530638,
+      "source_path": "docs/superpowers/reviews/2026-10-14-task13-review.md"
+    },
+    {
+      "bytes": 5930,
+      "captured_utc": "2026-10-15T08:13:30.965434+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/docs/superpowers/reviews/2026-10-14-task14-review.md",
+      "sha256": "a0db67c06f86fd187885cc0c9001f79792354f0b90a2a400887fab11e5774044",
+      "source_mtime_ns": 1792016027283064329,
+      "source_path": "docs/superpowers/reviews/2026-10-14-task14-review.md"
+    },
+    {
+      "bytes": 3448,
+      "captured_utc": "2026-10-15T08:13:30.965700+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/docs/superpowers/reviews/2026-10-14-task15-fix-1-review.md",
+      "sha256": "78065781d0c143e253fd10a27f398dcbfade35c9490d0cf3522b1f340ae7dc1d",
+      "source_mtime_ns": 1792027365179627049,
+      "source_path": "docs/superpowers/reviews/2026-10-14-task15-fix-1-review.md"
+    },
+    {
+      "bytes": 6887,
+      "captured_utc": "2026-10-15T08:13:30.965992+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/docs/superpowers/reviews/2026-10-14-task15-review.md",
+      "sha256": "a3ac8f3351143e3c0104afff216b1f85e10bebb86cb98f14870cc3712c4099a3",
+      "source_mtime_ns": 1792027365179353381,
+      "source_path": "docs/superpowers/reviews/2026-10-14-task15-review.md"
+    },
+    {
+      "bytes": 3387,
+      "captured_utc": "2026-10-15T08:13:30.966251+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/docs/superpowers/reviews/2026-10-14-task16-fix-1-review.md",
+      "sha256": "1d09c0c7bcadb6273430aabae27154c6da6530edbac35f86e6764c8542dc14fd",
+      "source_mtime_ns": 1792028538827294999,
+      "source_path": "docs/superpowers/reviews/2026-10-14-task16-fix-1-review.md"
+    },
+    {
+      "bytes": 7609,
+      "captured_utc": "2026-10-15T08:13:30.966560+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/docs/superpowers/reviews/2026-10-14-task16-review.md",
+      "sha256": "f27d4cd2a87a31732f87ceb890d859b86cbc84b27750fd711a48367d2d675c35",
+      "source_mtime_ns": 1792028538827136207,
+      "source_path": "docs/superpowers/reviews/2026-10-14-task16-review.md"
+    },
+    {
+      "bytes": 5400,
+      "captured_utc": "2026-10-15T08:13:30.966947+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/docs/superpowers/reviews/2026-10-15-a04-ops-review.md",
+      "sha256": "2606040060a1de1561efd797a721cef2ee0bc42dcad83d8b477ba0ad10ec2183",
+      "source_mtime_ns": 1792037419358824715,
+      "source_path": "docs/superpowers/reviews/2026-10-15-a04-ops-review.md"
+    },
+    {
+      "bytes": 4227,
+      "captured_utc": "2026-10-15T08:13:30.967314+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/docs/superpowers/reviews/2026-10-15-task17-fix-1-review.md",
+      "sha256": "4ad2bc68adb020902aebfa6f3394e1d0ebc9d951a9eacc29f5e2d73097c1920a",
+      "source_mtime_ns": 1792030332200952974,
+      "source_path": "docs/superpowers/reviews/2026-10-15-task17-fix-1-review.md"
+    },
+    {
+      "bytes": 4952,
+      "captured_utc": "2026-10-15T08:13:30.967593+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/docs/superpowers/reviews/2026-10-15-task17-review.md",
+      "sha256": "15d04625b8604c42948f70b8b3b94ec2fce14b925c029e1ac5581a6f3f9cddda",
+      "source_mtime_ns": 1792029377505125886,
+      "source_path": "docs/superpowers/reviews/2026-10-15-task17-review.md"
+    },
+    {
+      "bytes": 3691,
+      "captured_utc": "2026-10-15T08:13:30.967797+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/docs/superpowers/reviews/2026-10-15-task18-fix-1-review.md",
+      "sha256": "cb17b47ced982d7af70b8102e6bd58e7cb503bbe335f89b4a1ab91464abd0cf9",
+      "source_mtime_ns": 1792032135472217193,
+      "source_path": "docs/superpowers/reviews/2026-10-15-task18-fix-1-review.md"
+    },
+    {
+      "bytes": 6667,
+      "captured_utc": "2026-10-15T08:13:30.968106+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/docs/superpowers/reviews/2026-10-15-task18-review.md",
+      "sha256": "a034edba07a988d3c42ac2702167518fee9f5fe5a2e67db72022fc4cd0bf3050",
+      "source_mtime_ns": 1792032135471620983,
+      "source_path": "docs/superpowers/reviews/2026-10-15-task18-review.md"
+    },
+    {
+      "bytes": 43807,
+      "captured_utc": "2026-10-15T08:13:30.968506+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/docs/superpowers/specs/2026-10-14-outcome-aware-context-allocation-design.md",
+      "sha256": "8135e9f3fcb654744dfc3ab4ef6b2ba71ab180915e3c760066daaefa718f0fbb",
+      "source_mtime_ns": 1791981744139301410,
+      "source_path": "docs/superpowers/specs/2026-10-14-outcome-aware-context-allocation-design.md"
+    },
+    {
+      "bytes": 13118,
+      "captured_utc": "2026-10-15T08:13:30.968706+00:00",
+      "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z/research_poc_plan.md",
+      "sha256": "971eef659979b9a4342296f0a0bc6ae14b76d252dd1a54650d08bdc4102a8cb5",
+      "source_mtime_ns": 1792051877715212040,
+      "source_path": "research_poc_plan.md"
+    }
+  ],
+  "initial_inspection_seconds": null,
+  "prior_snapshot_retained": [
+    "20261015T015117851969Z",
+    "20261015T030800136052Z"
+  ],
+  "private_archive_root": "artifacts/runs/process-archive/2026-10-14/20261015T081330824406Z",
+  "provisional": true,
+  "qualification": "Referenced raw scientific evidence remains at original sealed durable paths; no raw dataset/model dump is newly tracked. This process snapshot is not a scientific rebind.",
+  "rulings_file": "artifacts/provenance/process-archive/2026-10-14/20261015T081330824406Z/rulings.json",
+  "rulings_sha256": "149799b43d46d5a6040211fd52fc844f63c32605ad1f96f80247bc962377dd70",
+  "schema_version": 1,
+  "scope": "Pre-final whole-branch review process archive; all scratch file types and selected durable metadata/ops/source records; exact payload private, public metadata only",
+  "total_bytes": 15017843,
+  "verification": {
+    "all_copied_bytes_match": true,
+    "all_scratch_filetypes_included": true,
+    "public_raw_payloads_copied": false,
+    "scratch_deleted": false,
+    "source_bytes_unchanged_during_each_copy": true
+  }
+}

@@ -1,0 +1,145 @@
+from pathlib import Path
+from datetime import datetime,timezone
+from collections import Counter
+import hashlib,json,time,math,sys
+root=Path.cwd().resolve();out=root/'artifacts/provenance/task15-transfer-diagnostics'
+if out.exists():raise SystemExit('diagnostic operation already exists')
+out.mkdir(parents=True);start=time.perf_counter_ns()
+def sha(path):
+ h=hashlib.sha256()
+ with Path(path).open('rb') as stream:
+  for block in iter(lambda:stream.read(1024*1024),b''):h.update(block)
+ return h.hexdigest()
+def put(path,value):
+ with Path(path).open('x') as stream:json.dump(value,stream,ensure_ascii=False,sort_keys=True,indent=2);stream.write('\n')
+release=root/'artifacts/runs/operational-planning/task15-scoring-release.json'
+assert sha(release)=='abbad929c54e6aff7cbae92c64bc59abb7b78801f95a3d6ce51edf3b93b410f5'
+source_receipt=root/'artifacts/provenance/task15-transfer-diagnostic-operation-source.txt'
+put(out/'started.json',{'started_utc':datetime.now(timezone.utc).isoformat(),'start_ns':start,'sys_executable':sys.executable,'sys_version':sys.version,'command':['.venv/bin/python3.12','-'],'stdin_source_path':str(source_receipt),'stdin_source_sha256':sha(source_receipt),'external_release_sha256':sha(release),'scope':'read-only assigned32 scored diagnostic; includes runtime helper imports and publication, excludes initial standard imports and terminal persistence'})
+status,error='failed',None
+try:
+ from outcome_poc.data_runtime import DocumentStore
+ from outcome_poc.storage import read_jsonl
+ from outcome_poc.transfer_runtime import validate_transfer
+ run=root/'artifacts/runs/task15-transfer';m=json.loads((run/'manifest.json').read_text())
+ # Unchanged full acquisition admission before any scored assigned Gold is opened.
+ validated,_,_=validate_transfer(m)
+ assert len(validated)==96
+ inputs={str(release):sha(release),str(run/'manifest.json'):sha(run/'manifest.json'),str(source_receipt):sha(source_receipt)}
+ def read_bound(path):
+  path=Path(path).resolve();inputs[str(path)]=sha(path);return json.loads(path.read_text())
+ marker=read_bound(run/'scoring/scores.closed.json')
+ assert marker['manifest_hash']==m['manifest_hash'] and marker['scorer_source_sha256']==sha(root/'src/outcome_poc/transfer_runtime.py')
+ for name,expected in marker['hashes'].items():
+  path=run/name;assert sha(path)==expected;inputs[str(path.resolve())]=expected
+ native=read_bound(run/'scoring/summary.json')
+ scores=list(read_jsonl(run/'scoring/scores.jsonl'));predictions=list(read_jsonl(run/'predictions.jsonl'))
+ inputs[str((run/'predictions.jsonl').resolve())]=sha(run/'predictions.jsonl')
+ jobs=m['jobs'];assert len(scores)==len(predictions)==len(jobs)==96
+ assert [s['job_id'] for s in scores]==[j['job_id'] for j in jobs]
+ byscore={s['job_id']:s for s in scores};bypred={p['job_id']:p for p in predictions}
+ queries=m['queries'];query_ids=[q['task_id'] for q in queries];assert len(query_ids)==len(set(query_ids))==32
+ gold_rows=list(read_jsonl(run/'scoring/scores.gold.jsonl'));gold={g['task_id']:g for g in gold_rows}
+ assert len(gold_rows)==len(gold)==32 and set(gold)==set(query_ids)
+ document_path=run/'corpus-documents.jsonl';inputs[str(document_path.resolve())]=sha(document_path)
+ documents=DocumentStore(document_path)
+ a03closure=read_bound(root/'artifacts/analysis/task18-a03/action-replay.closed.json')
+ a03protocol_path=root/'artifacts/protocol-task17-timing/protocol.json'
+ assert sha(a03protocol_path)==a03closure['input_hashes'][str(a03protocol_path.resolve())]
+ a03protocol=read_bound(a03protocol_path);a03run=Path(a03protocol['run_dir']);a03scores_path=a03run/'scores.jsonl'
+ assert sha(a03scores_path)==a03closure['input_hashes'][str(a03scores_path.resolve())]
+ inputs[str(a03scores_path.resolve())]=sha(a03scores_path)
+ a03scores={s['job_id']:s for s in read_jsonl(a03scores_path)}
+ packet={}
+ for job in a03protocol['schedule']['jobs']:
+  if job['task_id'] not in gold:continue
+  arm=None
+  if job['scope']=='primary' and job['arm'] in ('A','B') and job['mode']=='direct' and job['repetition_id']==1:arm=job['arm']
+  elif job['scope']=='anchor' and job['method']==m['policies']['FIXED10']:arm='FIXED10'
+  if arm is not None:
+   assert job['method']==m['policies'][arm]
+   key=(job['task_id'],arm);assert key not in packet;packet[key]=a03scores[job['job_id']]
+ assert len(packet)==96
+ private=[];per_task=[];pooled={};statuses={arm:Counter() for arm in ('A','B','FIXED10')}
+ for query in queries:
+  tid=query['task_id'];facts=gold[tid]['supporting_facts'];support_titles=sorted({title for title,index in facts})
+  original=[documents.get(doc_id) for doc_id in query['candidate_ids']]
+  mappings=[]
+  for title in support_titles:
+   matches=[d for d in original if d.title==title]
+   if len(matches)!=1:
+    mappings.append({'title':title,'reference_doc_id':None,'reason':'ambiguous_original_title_map' if matches else 'missing_original_title_map','candidate_matches':[d.doc_id for d in matches]})
+   elif any(type(index) is not int or not 0<=index<len(matches[0].sentences) for fact_title,index in facts if fact_title==title):
+    mappings.append({'title':title,'reference_doc_id':None,'reason':'original_fact_sentence_index_unavailable','candidate_matches':[matches[0].doc_id]})
+   else:mappings.append({'title':title,'reference_doc_id':matches[0].doc_id,'reason':None,'candidate_matches':[matches[0].doc_id]})
+  task_rows=[];sequences=[]
+  for arm in ('A','B','FIXED10'):
+   assigned=[j for j in jobs if j['task_id']==tid and j['arm']==arm];assert len(assigned)==1;job=assigned[0]
+   prediction=bypred[job['job_id']];score=byscore[job['job_id']]
+   assert prediction['task_id']==score['task_id']==tid
+   decision_path=run/'jobs'/job['job_id']/'attempt-1/decision.json';decision=read_bound(decision_path);top=decision['top_ten']
+   ids=[d['doc_id'] for d in top];assert len(ids)==len(set(ids))==10
+   assert all(documents.get(d['doc_id']).title==d['title'] for d in top)
+   sequences.append(ids);titles={d['title'] for d in top};unknown=sum(v['reference_doc_id'] is None for v in mappings)
+   hits=sum(v['reference_doc_id'] in ids for v in mappings if v['reference_doc_id'] is not None);denom=len(support_titles)
+   lower=hits/denom if denom else 1.;upper=(hits+unknown)/denom if denom else 1.
+   title_recall=len(titles&set(support_titles))/denom if denom else 1.
+   fact_title=sum(title in titles for title,index in facts)/len(facts) if facts else 1.
+   row={'task_id':tid,'arm':arm,'job_id':job['job_id'],'status':prediction['status'],'joint_em':score['joint_em'],'answer_em':score['answer_em'],
+    'support_em':score['support_em'],'effective_budget':decision['decision']['effective_budget'],'top_ten_doc_ids':ids,
+    'title_overlap_recall_at10':title_recall,'fact_title_coverage_at10':fact_title,'reference_support_mappings':mappings,
+    'original_reference_document_id_recall_at10':lower if unknown==0 else None,'original_reference_document_id_recall_lower_bound':lower,
+    'original_reference_document_id_recall_upper_bound':upper,'unknown_reference_title_count':unknown,
+    'packet_a03_job_id':packet[(tid,arm)]['job_id'],'packet_a03_joint_em':packet[(tid,arm)]['joint_em'],'packet_a03_answer_em':packet[(tid,arm)]['answer_em']}
+   private.append(row);task_rows.append(row);pooled[(tid,arm)]=row;statuses[arm][prediction['status']]+=1
+  parity=all(sequence==sequences[0] for sequence in sequences)
+  per_task.append({'task_id':tid,'all_three_top10_id_sequences_identical':parity,'mapping_unknowns':sum(v['reference_doc_id'] is None for v in mappings),
+   'mapping_reasons':dict(Counter(v['reason'] for v in mappings if v['reason']))})
+ def paired(candidate,reference):
+  counts={'both_success':0,'candidate_rescue':0,'candidate_harm':0,'both_failure':0}
+  for tid in query_ids:
+   x,y=candidate(tid),reference(tid)
+   assert x in (0,1) and y in (0,1)
+   counts['both_success' if x and y else 'candidate_rescue' if x else 'candidate_harm' if y else 'both_failure']+=1
+  assert sum(counts.values())==32
+  return {'n':32,**counts,'candidate_minus_reference_joint_em':(counts['candidate_rescue']-counts['candidate_harm'])/32}
+ families={}
+ for arm in ('A','B','FIXED10'):
+  rows=[r for r in private if r['arm']==arm];assert len(rows)==32
+  joint=sum(r['joint_em'] for r in rows);answer=sum(r['answer_em'] for r in rows)
+  assert joint==native['families'][arm]['joint_successes'] and math.isclose(answer/32,native['families'][arm]['answer_em'],abs_tol=1e-12)
+  families[arm]={'n':32,'joint_successes':joint,'joint_em':joint/32,'answer_successes':answer,'answer_em':answer/32,'statuses':dict(statuses[arm]),
+   'effective_budget_counts':dict(Counter(str(r['effective_budget']) for r in rows)),
+   'mean_title_overlap_recall_at10':sum(r['title_overlap_recall_at10'] for r in rows)/32,
+   'mean_fact_title_coverage_at10':sum(r['fact_title_coverage_at10'] for r in rows)/32,
+   'original_reference_id_complete_tasks':sum(r['unknown_reference_title_count']==0 for r in rows),
+   'original_reference_id_unknown_tasks':sum(r['unknown_reference_title_count']>0 for r in rows),
+   'mean_original_reference_id_recall_lower_bound':sum(r['original_reference_document_id_recall_lower_bound'] for r in rows)/32,
+   'mean_original_reference_id_recall_upper_bound':sum(r['original_reference_document_id_recall_upper_bound'] for r in rows)/32}
+ assert math.isclose(sum(r['title_overlap_recall_at10'] for r in private)/96,native['supporting_document_recall_at10'],abs_tol=1e-12)
+ assert math.isclose(sum(r['fact_title_coverage_at10'] for r in private)/96,native['supporting_fact_title_coverage_at10'],abs_tol=1e-12)
+ within={f'{a}_vs_{b}':paired(lambda tid,a=a:pooled[(tid,a)]['joint_em'],lambda tid,b=b:pooled[(tid,b)]['joint_em']) for a,b in (('A','B'),('A','FIXED10'),('B','FIXED10'))}
+ shifts={arm:paired(lambda tid,arm=arm:pooled[(tid,arm)]['joint_em'],lambda tid,arm=arm:packet[(tid,arm)]['joint_em']) for arm in ('A','B','FIXED10')}
+ public={'status':'complete read-only diagnostic after full96 builtin scoring','manifest_hash':m['manifest_hash'],'assigned_unique_tasks':32,'assigned_jobs':96,
+  'unit':'same32 prespecified questions nested in480;96 policy jobs are not independent n96','families':families,
+  'within_pooled_joint_harm_rescue':within,'packet_a03_rep1_or_anchor_to_pooled_joint_shift':shifts,
+  'all_three_top10_id_sequence_parity_tasks':sum(t['all_three_top10_id_sequences_identical'] for t in per_task),
+  'top10_id_sequence_disagreement_tasks':sum(not t['all_three_top10_id_sequences_identical'] for t in per_task),
+  'reference_mapping_unknown_tasks':sum(t['mapping_unknowns']>0 for t in per_task),
+  'reference_mapping_reason_counts':dict(sum((Counter(t['mapping_reasons']) for t in per_task),Counter())),
+  'native_field_supporting_document_recall_at10_is_TITLE_overlap':native['supporting_document_recall_at10'],
+  'native_field_supporting_fact_title_coverage_at10_is_TITLE_coverage':native['supporting_fact_title_coverage_at10'],
+  'limits':['original-reference content-hash document recall is not semantic truth or sentence-support certification','unknown/ambiguous title mappings retain all32 with explicit lower/upper bounds, no silent dropping','all comparisons exploratory/descriptive; no new independent sample/retune/score override','both primary wall-time endpoints remain invalid; native seconds_per_success fields are process diagnostics, not wall-time efficiency evidence','native reused-source summary defect persists; external immutable provenance reconciliation supplies missing historical lineage']}
+ for path,expected in inputs.items():assert sha(path)==expected
+ put(out/'private-percase.json',{'cases':private,'per_task':per_task,'reviewer_exposure':'private scored diagnostic; never blind reviewer input'})
+ put(out/'public-summary.json',public)
+ sources={str(root/name):sha(root/name) for name in ('src/outcome_poc/data_runtime.py','src/outcome_poc/storage.py','src/outcome_poc/schemas.py','src/outcome_poc/transfer_runtime.py','src/outcome_poc/scoring.py')}
+ put(out/'diagnostic.closed.json',{'external_release_sha256':sha(release),'code_receipt_sha256':sha(source_receipt),'input_hashes':inputs,'source_hashes':sources,
+  'hashes':{name:sha(out/name) for name in ('private-percase.json','public-summary.json')},'native_scored_files_unchanged':True,'no_further_generation':True})
+ status='complete'
+ print(json.dumps({'public_summary':public,'public_summary_sha256':sha(out/'public-summary.json'),'private_percase_sha256':sha(out/'private-percase.json'),'diagnostic_closure_sha256':sha(out/'diagnostic.closed.json')},sort_keys=True))
+except BaseException as exc:error=repr(exc);raise
+finally:
+ stop=time.perf_counter_ns();put(out/'finished.json',{'finished_utc':datetime.now(timezone.utc).isoformat(),'stop_ns':stop,'elapsed_seconds':(stop-start)/1e9,
+  'status':status,'error':error,'started_receipt_sha256':sha(out/'started.json'),'scope':'new read-only diagnostic including helper imports, publication and result console before terminal; excludes initial standard imports and terminal persistence'})
+

@@ -1,0 +1,14 @@
+{
+  "command": [
+    ".venv/bin/python3.12",
+    "-"
+  ],
+  "external_release_sha256": "abbad929c54e6aff7cbae92c64bc59abb7b78801f95a3d6ce51edf3b93b410f5",
+  "scope": "read-only assigned32 scored diagnostic; includes runtime helper imports and publication, excludes initial standard imports and terminal persistence",
+  "start_ns": 309420781005125,
+  "started_utc": "2026-10-15T08:04:19.639259+00:00",
+  "stdin_source_path": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/provenance/task15-transfer-diagnostic-operation-source.txt",
+  "stdin_source_sha256": "038a8a1d7fd2d36e337832071fcd89fb8e10d633d9aa1beed88a9813f00872b5",
+  "sys_executable": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/.venv/bin/python3.12",
+  "sys_version": "3.12.9 (main, Feb  4 2025, 14:38:38) [Clang 16.0.0 (clang-1600.0.26.6)]"
+}

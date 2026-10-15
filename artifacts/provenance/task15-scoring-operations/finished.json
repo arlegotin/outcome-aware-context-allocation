@@ -1,0 +1,10 @@
+{
+  "elapsed_seconds": 4.747704917,
+  "error": null,
+  "external_release_sha256": "abbad929c54e6aff7cbae92c64bc59abb7b78801f95a3d6ce51edf3b93b410f5",
+  "finished_utc": "2026-10-15T08:01:50.012077+00:00",
+  "returncode": 0,
+  "scope": "external observed builtin scorer invocation; includes start receipt and process startup/return; excludes initial standard-library imports and terminal persistence/console",
+  "started_receipt_sha256": "c1ffa6e4d6262a62466fd12fd50cf8e8a5e0c0eeb8649e31ccea921a557405e7",
+  "stop_ns": 309271154640708
+}

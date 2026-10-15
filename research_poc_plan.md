@@ -1,3 +1,5 @@
+> Final execution handoff (2026-10-15): [report](artifacts/final_report.md), [machine summary](artifacts/summary.json) and [baseline CSV](artifacts/baseline-table.csv). The result is inconclusive: complete A03 quality14/17 strict successes, invalid wall timing, no quality-preservation claim. Pooled32 diagnostics completed but are nested/exploratory. The original480/8640 assignment remains incomplete and unscored. The research plan below preserves design/development context; statements about future work are historical, not additional completed findings.
+
 # Research and attribution handoff
 
 Research brief date: 14 October 2026. Execution status: validated foundation and native asset/inference prerequisites implemented; experimental improvement remains untested.

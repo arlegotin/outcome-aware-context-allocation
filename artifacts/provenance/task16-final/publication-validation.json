@@ -1,0 +1,81 @@
+{
+  "verified_utc": "2026-10-15T08:18:01.484507+00:00",
+  "result": "passed",
+  "readable_documents": [
+    {
+      "path": "README.md",
+      "sha256": "11fdf83c6daddbb034c71e1a480d3d8d40898f301ce60aa07247479911aee1e2",
+      "local_links": 9
+    },
+    {
+      "path": "artifacts/final_report.md",
+      "sha256": "0ddb64e1ce9c69f130e5979fa8cf41541a7368490db533a28f45a3bff7d19aa1",
+      "local_links": 23
+    },
+    {
+      "path": "artifacts/checkpoint_report.md",
+      "sha256": "521270f63838f9bc19e05b086109864be28b220a1b2d5f874df9a112dc76aa8a",
+      "local_links": 3
+    },
+    {
+      "path": "research_poc_plan.md",
+      "sha256": "971eef659979b9a4342296f0a0bc6ae14b76d252dd1a54650d08bdc4102a8cb5",
+      "local_links": 5
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-14-outcome-aware-context-allocation.md",
+      "sha256": "494e33a7a1547576a2d7de0afa2b0bb2f345286681cbcb50c8d7f9335b4e7c7b",
+      "local_links": 4
+    }
+  ],
+  "summary_sha256": "c3bb2816a55f65bc060b0b6fcd7acf79c85c193ec9505aafac2b0f38d623b907",
+  "baseline_table_sha256": "b16ebbee4e6e488e193906ce6b24bc9df7a35d51d02f0ca58c0b2c5b6bde22d0",
+  "risk_ledger_sha256": "4cd21ab29c1093c9e7765b39837b9da8ce4a54e5181d28a57f8b91aaf6be0843",
+  "outcome": "inconclusive",
+  "claims_all_false": true,
+  "complete_a03_no_original_subset": true,
+  "transfer_nested32_complete96": true,
+  "source_bindings": [
+    {
+      "path": "artifacts/protocol.json",
+      "sha256": "b4a4ba3811c5747fc27928e76e8c4698bdc95c06c36f42ce6ab23d24d2fdf182",
+      "source_files_verified": 22,
+      "direct_scratch_refs": 0
+    },
+    {
+      "path": "artifacts/protocol-task17-timing/protocol.json",
+      "sha256": "ea24711ece05e6f265a212657cf7f6e2a474360a2e9128aa465f89b09f731bea",
+      "source_files_verified": 26,
+      "direct_scratch_refs": 0
+    }
+  ],
+  "transfer_and_task18_source_custody": {
+    "path": "artifacts/provenance/analysis-ops-code-audit/source-audit.json",
+    "sha256": "f862ee3510cbda950e64ebb608b0a6254797b593db2b28ff9e567404c63f6dc9",
+    "outside_scratch": true
+  },
+  "runtime_scientific_source_bindings_in_scratch": false,
+  "historical_a01_reference_mapping": {
+    "bytes": 6298,
+    "captured_utc": "2026-10-15T08:16:49.308931+00:00",
+    "private_archive_path": "artifacts/runs/process-archive/2026-10-14/20261015T081649298357Z/.superpowers/sdd/2026-10-14-outcome-aware-context-allocation/asset-source-fallback.md",
+    "sha256": "634223df0bb97872f76e6fab3bb5deb5f378069ec8b880eff21587a022c70320",
+    "source_mtime_ns": 1791981577749517988,
+    "source_path": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation/asset-source-fallback.md"
+  },
+  "historical_assembly_script": "Initial assemble_initial_reports.py read process ledger; preserved exact in archive and is not required for fresh scoring or final-state report rendering. Do not rerun after cleanup.",
+  "archive_manifest": {
+    "path": "artifacts/provenance/process-archive/2026-10-14/20261015T081649298357Z/process-manifest.json",
+    "sha256": "ec84b390b7d2bf7b07997ca8167abdbfafadca5d0bce5ba1d30d15e38b2274a0",
+    "files": 346,
+    "bytes_verified": true
+  },
+  "staging_manifest": {
+    "path": "artifacts/runs/task16-phase2b/selected-staging-manifest.json",
+    "sha256": "98a9c326643200db47b144a947e9f2b0100ca60d6f0481bdda67afa94d8c7a63",
+    "files": 50
+  },
+  "unmetered_validation_seconds": null,
+  "remaining": "Final whole-branch review and post-review archive refresh/cleanup remain root owned; this validation does not authorize deletion.",
+  "new_tests_run": false
+}

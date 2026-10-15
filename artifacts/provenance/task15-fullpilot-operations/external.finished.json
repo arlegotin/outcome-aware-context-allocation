@@ -1,0 +1,11 @@
+{
+  "cutoff_interruption": false,
+  "elapsed_seconds": 875.066226208,
+  "error": null,
+  "external_release_sha256": "cec2fedaea1f3a82f26a96c888ec7e3be29d50ae987b4e5c0a1043b2cebed102",
+  "finished_utc": "2026-10-15T07:46:53.687975+00:00",
+  "returncode": 0,
+  "scope": "external observed launcher interval including start persistence and child startup/return; excludes initial imports before start and terminal persistence/console; not added again to nested native parent cost",
+  "started_receipt_sha256": "73010ad9a43f6a63b134f0745fd28a53fef0452f0495be6be1c3547db7db7b63",
+  "stop_ns": 308374821060041
+}

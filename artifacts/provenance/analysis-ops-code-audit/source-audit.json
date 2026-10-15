@@ -1,0 +1,46 @@
+{
+  "all_audits_outside_scratch": true,
+  "diagnostic_inline_code_custody": "exact stdin archived before its execution and hash recorded in diagnostic started/closed receipts",
+  "no_bound_source_outputs_or_private_percase_moved_or_modified": true,
+  "operational_code_hashes": {
+    "artifacts/provenance/task15-transfer-diagnostic-operation-source.txt": "038a8a1d7fd2d36e337832071fcd89fb8e10d633d9aa1beed88a9813f00872b5",
+    "artifacts/provenance/task15-transfer-reuse-reconciliation/executed-inline-source.txt": "4119800379a40db6ff66fdd083ef6543fbe51fb092d899d06fcd913339557a74",
+    "artifacts/runs/operational-planning/prepare-task15-blind-packet.py": "e00693f6234205453f140c004e6a7324c186601d1003bf7aec2c021a54042aa6",
+    "artifacts/runs/operational-planning/prepare-task15-window-count-attempt2.py": "d78f034683ea70fbf56824b730f0daf822e4d3515165fdad98ac8dc20596f016",
+    "artifacts/runs/operational-planning/prepare-task15-window-count.py": "dd0d66b1d26796762d5f1e505948daa51f2a726feff91536b199ebc237db9697"
+  },
+  "recorded_utc": "2026-10-15T08:10:35.692921+00:00",
+  "reuse_inline_code_custody": "executed tool-input text archived from recorded command after execution; no execution-time inline SHA was captured; approved validator/source and input/output hashes were captured during operation",
+  "task15_exact_native_snapshot_25_sources": {
+    "artifacts/runs/task15-transfer/execution-snapshot/configs/frozen.json": "81f62ce1c6128a35a59230624604a2efad0129750700f17e72c50cc95314b662",
+    "artifacts/runs/task15-transfer/execution-snapshot/requirements.lock": "e1bd09c1dc51f39bd53e62df6ce79eb2d726b26fa30d486ac3d584f297c2d8c8",
+    "artifacts/runs/task15-transfer/execution-snapshot/src/outcome_poc/__init__.py": "b8d2507d09fc68e6a0db97322619f7686bcaa0c6b99dacd276e7e0ece04f0e7a",
+    "artifacts/runs/task15-transfer/execution-snapshot/src/outcome_poc/__main__.py": "24ead4009facd23ae679a65757ea5ca1f51b36e868f122fe6416975280e410b3",
+    "artifacts/runs/task15-transfer/execution-snapshot/src/outcome_poc/assets.py": "d77314a45f16b506bc67c1b40ae805c7fc528507b55640801119db713b6d07ce",
+    "artifacts/runs/task15-transfer/execution-snapshot/src/outcome_poc/data_runtime.py": "fa0382c0b38867e8e3a5d863db01dc5b2a08a081355093650850d8e89535f87e",
+    "artifacts/runs/task15-transfer/execution-snapshot/src/outcome_poc/environment.py": "fee0f1ebd28f59f4f510b2bb74f5f8e1a83177ce17b38a3bc5d5089d253798c9",
+    "artifacts/runs/task15-transfer/execution-snapshot/src/outcome_poc/features.py": "31441203d79f2e7e98194254e62e93bad8bc2af0ea71b64371b66aea4c456ba0",
+    "artifacts/runs/task15-transfer/execution-snapshot/src/outcome_poc/generation.py": "d7bd43ee780d097982d01a7bd504758e3dba350e50f072ed1d0e98131c996cd6",
+    "artifacts/runs/task15-transfer/execution-snapshot/src/outcome_poc/policies.py": "4fc9d5738c6f379238a13facb204f714a7773f659dcf56b58504e7812809796b",
+    "artifacts/runs/task15-transfer/execution-snapshot/src/outcome_poc/protected.py": "e1cd734c61b0ec29f3aa2a17ea9124502d1c4ef5f3233005f8271d3c2fddee40",
+    "artifacts/runs/task15-transfer/execution-snapshot/src/outcome_poc/protocol.py": "9046d6ceae657c86078a218fee0eb378e0ad9e272a868b84ebfc3d7aa384c541",
+    "artifacts/runs/task15-transfer/execution-snapshot/src/outcome_poc/retrieval.py": "7114865d033c05066651ab9c6e9a8e2baa6d21bd11f8ddf656fa0c05babfd4e1",
+    "artifacts/runs/task15-transfer/execution-snapshot/src/outcome_poc/robustness.py": "bb2588e119d09f3ca224e070452d30af97228ae8eabe252b3a3998a47e7c7fbd",
+    "artifacts/runs/task15-transfer/execution-snapshot/src/outcome_poc/runner.py": "36b5bd8f9381a8530c74e25ec618ed2bdde7aa8ae0d1a4c827487f463b5c141c",
+    "artifacts/runs/task15-transfer/execution-snapshot/src/outcome_poc/schemas.py": "67da95ad64be9bed963d9954b44f151d7110cf1ae6106dcb3cb23ca49071c8a5",
+    "artifacts/runs/task15-transfer/execution-snapshot/src/outcome_poc/scoring.py": "912eb951565aeb6e71d8b215eedfa5b108c1a4332b5020460d80a6bb8ed6469f",
+    "artifacts/runs/task15-transfer/execution-snapshot/src/outcome_poc/statistics.py": "2c60606424cd26f87b84479a8b7cbfdaca21f7c2fc2601c9e39066f76efc277a",
+    "artifacts/runs/task15-transfer/execution-snapshot/src/outcome_poc/storage.py": "87e645a6baf2ce3c1644df243dbf0f5f978c4e2314c327bb737c75eb8d19e215",
+    "artifacts/runs/task15-transfer/execution-snapshot/src/outcome_poc/timing.py": "046746943f77cd7688f55f4407be33b0adcd4952c292944255e6afb0e6680f5c",
+    "artifacts/runs/task15-transfer/execution-snapshot/src/outcome_poc/train.py": "c26cbddeab0143ec122f7ed3a338fe525553aa741d7174f6427598e1e828ac04",
+    "artifacts/runs/task15-transfer/execution-snapshot/src/outcome_poc/transfer_runtime.py": "66c7c0a0cbf4b6874eadca7645d5189c715676968eee5450e3ab54581dc2c95c",
+    "artifacts/runs/task15-transfer/execution-snapshot/tools/task13_calibrate.py": "224d70b5901502cede0cf207ce3ee8a3592928828932d138dbc41303547ee50b",
+    "artifacts/runs/task15-transfer/execution-snapshot/tools/task14_native.py": "459e4e301e78a931fb33f50005920383b1f1defde5e5425c22583b19af5fba94",
+    "artifacts/runs/task15-transfer/execution-snapshot/tools/task15_transfer_native.py": "a503092b087f55e565f4b9ffed6c9f5de6e1e3bb67b63d0f243e3f779d70c724"
+  },
+  "task18_frozen_actual_source_copies": {
+    "artifacts/provenance/analysis-ops-code-audit/task18/src/outcome_poc/action_replay.py": "5e139ab7d1d9f3e415f8d9a73fe5dd8cb0d36fcd2f0a06aae7c5b9cbeba4df86",
+    "artifacts/provenance/analysis-ops-code-audit/task18/src/outcome_poc/robustness.py": "bb2588e119d09f3ca224e070452d30af97228ae8eabe252b3a3998a47e7c7fbd",
+    "artifacts/provenance/analysis-ops-code-audit/task18/tools/task18_action_replay.py": "038e0c5e63dd10768cdee015c41299c5f5dcc5ec2200ac38994f0b8c33582565"
+  }
+}

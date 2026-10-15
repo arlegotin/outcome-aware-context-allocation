@@ -1,0 +1,6 @@
+{
+  "authorization": "root explicitly authorized independent read-only recursive reuse provenance reconciliation; no sealed/source edits",
+  "scope": "external read-only reconciliation; excludes initial standard-library imports and terminal persistence",
+  "start_ns": 308633578402875,
+  "started_utc": "2026-10-15T07:51:12.447685+00:00"
+}

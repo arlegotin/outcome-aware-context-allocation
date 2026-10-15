@@ -1,0 +1,46 @@
+{
+  "boundary": "Resumed metadata assembly and verification, excluding this receipt publication and earlier inspection.",
+  "cost_category": "Separate report preparation, excluded from historical acquisition subtotal.",
+  "final_verdict_generated": false,
+  "finished_utc": "2026-10-15T01:52:39.706247+00:00",
+  "first_assembly_attempt": {
+    "internal_perf_seconds": null,
+    "started_utc": "2026-10-15T01:51:17.851969+00:00",
+    "status": "stopped at assertion before publication; ledger summary was a line within a paragraph; existing exact private snapshot and two public data files preserved",
+    "tool_command_wall_seconds": 0.435651708
+  },
+  "initial_inspection_reason": "Not comprehensively metered; never assumed zero.",
+  "initial_inspection_seconds": null,
+  "known_development_physical_seconds": 6182.035304001339,
+  "models_initialized": false,
+  "observed_datetime_seconds": 0.116828,
+  "perf_counter_seconds": 0.11677050002617761,
+  "phase2b_required": true,
+  "private_archive_file_count": 103,
+  "protected_runs_opened": false,
+  "public_outputs": {
+    "README.md": {
+      "bytes": 1156,
+      "sha256": "f6c64009d8550ff9eae0d3e17b67e846ad6f6f4e55e9d5765f1d56a1f46a3071"
+    },
+    "cost-inventory.json": {
+      "bytes": 37432,
+      "sha256": "a3592dc2014740cfaaa832ddca3fb2ba5ca1190fa92357b0468c1919eeb77763"
+    },
+    "report-inputs.json": {
+      "bytes": 421123,
+      "sha256": "e63596f8a54fdea17213948017dd9c26703c366dd0d298b73cd181a5b39f658e"
+    },
+    "source-manifest.json": {
+      "bytes": 3816,
+      "sha256": "d560f613a88d37d6583ee0a54136338660aa9f36818eb7b8029d23e6583a515c"
+    },
+    "tuning-configurations.json": {
+      "bytes": 271334,
+      "sha256": "2ada91030ab13239785f8576d910e168f4491d278d7d58e71df14e74478e4ee7"
+    }
+  },
+  "public_process_manifest_sha256": "7d3aefd934bef586df2f9dcff44971ad3938ee17a0fe987e554d2dd336545510",
+  "started_utc": "2026-10-15T01:52:39.589419+00:00",
+  "total_development_physical_seconds": null
+}

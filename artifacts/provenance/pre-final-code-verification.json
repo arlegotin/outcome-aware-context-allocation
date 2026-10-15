@@ -1,0 +1,15 @@
+{
+  "code_and_tests_byte_unchanged": true,
+  "compared_paths": [
+    "src",
+    "tests",
+    "tools",
+    "pyproject.toml",
+    "requirements.lock"
+  ],
+  "current_head": "50aac8342b9872d354e83ffdd22f3699a2e52b64",
+  "full_suite_receipt_sha256": "13619e89fc740d4c97fa8446fe6df4f09722fbb3a1da804ff6d90a79091633f3",
+  "full_suite_source_commit": "f12491c6f684250fa2b9ea0df10b6b46368042fd",
+  "qualification": "Existing802-pass native verification applies to identical source/test tree; no additional broad suite run performed or inferred from documentation edits.",
+  "utc": "2026-10-15T07:57:53.317635+00:00"
+}

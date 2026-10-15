@@ -1,0 +1,138 @@
+{
+  "all_three_top10_id_sequence_parity_tasks": 32,
+  "assigned_jobs": 96,
+  "assigned_unique_tasks": 32,
+  "families": {
+    "A": {
+      "answer_em": 0.28125,
+      "answer_successes": 9,
+      "effective_budget_counts": {
+        "10": 4,
+        "2": 28
+      },
+      "joint_em": 0.125,
+      "joint_successes": 4,
+      "mean_fact_title_coverage_at10": 0.796875,
+      "mean_original_reference_id_recall_lower_bound": 0.796875,
+      "mean_original_reference_id_recall_upper_bound": 0.796875,
+      "mean_title_overlap_recall_at10": 0.796875,
+      "n": 32,
+      "original_reference_id_complete_tasks": 32,
+      "original_reference_id_unknown_tasks": 0,
+      "statuses": {
+        "abstain": 5,
+        "invalid_citation": 1,
+        "ok": 26
+      }
+    },
+    "B": {
+      "answer_em": 0.25,
+      "answer_successes": 8,
+      "effective_budget_counts": {
+        "10": 4,
+        "2": 28
+      },
+      "joint_em": 0.09375,
+      "joint_successes": 3,
+      "mean_fact_title_coverage_at10": 0.796875,
+      "mean_original_reference_id_recall_lower_bound": 0.796875,
+      "mean_original_reference_id_recall_upper_bound": 0.796875,
+      "mean_title_overlap_recall_at10": 0.796875,
+      "n": 32,
+      "original_reference_id_complete_tasks": 32,
+      "original_reference_id_unknown_tasks": 0,
+      "statuses": {
+        "abstain": 5,
+        "invalid_citation": 1,
+        "ok": 26
+      }
+    },
+    "FIXED10": {
+      "answer_em": 0.28125,
+      "answer_successes": 9,
+      "effective_budget_counts": {
+        "10": 32
+      },
+      "joint_em": 0.0625,
+      "joint_successes": 2,
+      "mean_fact_title_coverage_at10": 0.796875,
+      "mean_original_reference_id_recall_lower_bound": 0.796875,
+      "mean_original_reference_id_recall_upper_bound": 0.796875,
+      "mean_title_overlap_recall_at10": 0.796875,
+      "n": 32,
+      "original_reference_id_complete_tasks": 32,
+      "original_reference_id_unknown_tasks": 0,
+      "statuses": {
+        "abstain": 4,
+        "ok": 28
+      }
+    }
+  },
+  "limits": [
+    "original-reference content-hash document recall is not semantic truth or sentence-support certification",
+    "unknown/ambiguous title mappings retain all32 with explicit lower/upper bounds, no silent dropping",
+    "all comparisons exploratory/descriptive; no new independent sample/retune/score override",
+    "both primary wall-time endpoints remain invalid; native seconds_per_success fields are process diagnostics, not wall-time efficiency evidence",
+    "native reused-source summary defect persists; external immutable provenance reconciliation supplies missing historical lineage"
+  ],
+  "manifest_hash": "c81c662a7540b4119d65989f8f31471bfd0924f8c38f8c50758767a46fdf7e74",
+  "native_field_supporting_document_recall_at10_is_TITLE_overlap": 0.796875,
+  "native_field_supporting_fact_title_coverage_at10_is_TITLE_coverage": 0.796875,
+  "packet_a03_rep1_or_anchor_to_pooled_joint_shift": {
+    "A": {
+      "both_failure": 28,
+      "both_success": 2,
+      "candidate_harm": 0,
+      "candidate_minus_reference_joint_em": 0.0625,
+      "candidate_rescue": 2,
+      "n": 32
+    },
+    "B": {
+      "both_failure": 29,
+      "both_success": 3,
+      "candidate_harm": 0,
+      "candidate_minus_reference_joint_em": 0.0,
+      "candidate_rescue": 0,
+      "n": 32
+    },
+    "FIXED10": {
+      "both_failure": 30,
+      "both_success": 1,
+      "candidate_harm": 0,
+      "candidate_minus_reference_joint_em": 0.03125,
+      "candidate_rescue": 1,
+      "n": 32
+    }
+  },
+  "reference_mapping_reason_counts": {},
+  "reference_mapping_unknown_tasks": 0,
+  "status": "complete read-only diagnostic after full96 builtin scoring",
+  "top10_id_sequence_disagreement_tasks": 0,
+  "unit": "same32 prespecified questions nested in480;96 policy jobs are not independent n96",
+  "within_pooled_joint_harm_rescue": {
+    "A_vs_B": {
+      "both_failure": 28,
+      "both_success": 3,
+      "candidate_harm": 0,
+      "candidate_minus_reference_joint_em": 0.03125,
+      "candidate_rescue": 1,
+      "n": 32
+    },
+    "A_vs_FIXED10": {
+      "both_failure": 28,
+      "both_success": 2,
+      "candidate_harm": 0,
+      "candidate_minus_reference_joint_em": 0.0625,
+      "candidate_rescue": 2,
+      "n": 32
+    },
+    "B_vs_FIXED10": {
+      "both_failure": 28,
+      "both_success": 1,
+      "candidate_harm": 1,
+      "candidate_minus_reference_joint_em": 0.03125,
+      "candidate_rescue": 2,
+      "n": 32
+    }
+  }
+}

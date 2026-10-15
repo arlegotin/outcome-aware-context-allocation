@@ -1,0 +1,21 @@
+{
+  "collection_cutoff_utc": "2026-10-15T10:12:52+00:00",
+  "command": [
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/.venv/bin/python3.12",
+    "tools/task15_transfer_native.py",
+    "--stage",
+    "pilot",
+    "--manifest",
+    "artifacts/runs/task15-transfer/manifest.json"
+  ],
+  "cwd": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation",
+  "external_release_path": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/operational-planning/task15-fullpilot-release.json",
+  "external_release_sha256": "cec2fedaea1f3a82f26a96c888ec7e3be29d50ae987b4e5c0a1043b2cebed102",
+  "forecast_is_not_hard_runtime_bound": true,
+  "forecast_seconds": 3300,
+  "scope": "external observed launcher interval including start persistence and child startup/return; excludes initial imports before start and terminal persistence/console; not added again to nested native parent cost",
+  "start_ns": 307499754833833,
+  "started_utc": "2026-10-15T07:32:18.613659+00:00",
+  "sys_executable": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/.venv/bin/python3.12",
+  "sys_version": "3.12.9 (main, Feb  4 2025, 14:38:38) [Clang 16.0.0 (clang-1600.0.26.6)]"
+}

@@ -1,0 +1,710 @@
+{
+  "accounting": "historical unique physical source IDs shown once, not charged as new; native pilot charged once, worker/index/query costs nested; this external reconciliation is additional newly metered work",
+  "created_utc": "2026-10-15T07:51:12.966187+00:00",
+  "direct_reuse_reference_count": 4,
+  "future_generation_gate": "rehash this complete external input/source inventory immediately before and after any generation; no native/sealed/source repair",
+  "historical_physical_source_count": 5,
+  "historical_source_elapsed_seconds_sum": 175.59180962399114,
+  "input_hashes": {
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/provenance/index-attempts.jsonl": "a34e23e4ffecd26ad858cae577805b640071323b088625803d3e4317914500f7",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/provenance/task9-index64-attempts.jsonl": "953c3c1ddaf0ca3d2af681142b755bae55ac6751efae440ba142d314de3d8444",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/provenance/wp1-index-fit.json": "46c98600ee7cbdd2811ab8d835937bf53ce6a5035fc51b648f74a683ec5cbcbe",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/provenance/wp1-index-pilot.json": "8be21995414c0da8a7291e237343e119d6d7321620cbfbb3db82be1c6adf04d0",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/provenance/wp1-index-pilot64.json": "692ab1685256cbbe9e837324e065540949d797403e758ea0d5cbb88868a24290",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/provenance/wp1-index-tune.json": "4a5c339d30a032119e16768fa767de0c0661da8062d6b53d223f3273f0258973",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/index-realization.json": "b5f34197fe51acaaec8bd6fa30cec9054aff7b0203b07b7d652d337576210d04",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/index/attempt-1/manifest.json": "ced5b7efac32fc8c806899a117d8e532c3ca8446c70b5db1f52e96b9ccb07848",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/index/attempt-1/metadata.sqlite3": "6c5674628b706e4a810015d5baf12edc8ccff99493f3d690edec4c97bb625fb4",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/index/attempt-1/vectors.f32": "6d2f5b70cb56816e1b50608bacb1c708c83d0dee4d6d914d31193e3f99078dc6",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/index/index-attempts.jsonl": "d051ba9022be6d6d680e392b47165ac93ab3aa350afeb9b2a9c83b3a1ef292a2",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/launch-pilot-1.finished.json": "5ea6e621a0560e7b3308ffd10239922abd91e9fdeb064144fb574a770b792bb3",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/launch-pilot-1.plan.json": "a3100e6e8d70e948859999a861fde92e9c0b9f63a4ca569c5aa06db7c64b515d",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/launch-pilot-1.started.json": "8d30f779f5a1f7cd1f1e4e1021de6307e5e0b4bc2cd24b917f2e78dab482877a",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/manifest.json": "75ebb9d431a5c62a8bacdb3f8dd89fe8d56824f2cb47e51483b57d67b5c996f5",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/pilot.closed.json": "426b7870c6374d5e7e4dd2c520de55b3993d10f3d146695a103e052d6ced4265",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/preparation-1.finished.json": "fe5a86e40a6f5bdf0afbd241c0ae6336353441c7e67ad73f834728539fb163c6",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/preparation-1.started.json": "8efc886615901b3b11fc673fb764dbd7241935ad2e7a639d2370fbbcc0fc2382",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/stage-costs.jsonl": "9577989b2c8228b348f92fbbd15982eef35e4b1b97397d33195ec36f6d817a98",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/fit/manifest.json": "46c98600ee7cbdd2811ab8d835937bf53ce6a5035fc51b648f74a683ec5cbcbe",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/fit/metadata.sqlite3": "e89e0ebf045bdfdf705b5df1bcf46c4e5d5a7b333c202fb63a1f9454cf56be09",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/fit/vectors.f32": "687d60aa73636044d63ecaf295b0f858d759b271cb71782b5e63b867b084c7dc",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/index-attempts.jsonl": "83ae73c172d1c78761dc63656b20d6ae8ed40b06ff09afe7995d8fccad40fdf4",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/pilot/manifest.json": "8be21995414c0da8a7291e237343e119d6d7321620cbfbb3db82be1c6adf04d0",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/pilot/metadata.sqlite3": "b7d1e440672ff5bfad81ab484c1078ab9cc9aa0241d910fb2d9e0585f177739c",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/pilot/vectors.f32": "e47b5845faf18af5346690cbcb60801f9e26b74282d9467074ffda10ed207598",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/pilot64/manifest.json": "692ab1685256cbbe9e837324e065540949d797403e758ea0d5cbb88868a24290",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/pilot64/metadata.sqlite3": "33641589e1231445b1d24c49f643fb66f290d55ccf69925c60dde253174e3185",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/pilot64/vectors.f32": "45b2b909f02d55fb4e3b255914dda424bb0a1dc759abf4fdccce919878773fa7",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/protected/manifest.json": "486d7d0e4be7c34872dafaa4f15ef1ac6618cf64c3db1282a4c4b16e464e3aa4",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/protected/metadata.sqlite3": "a660d3fb9f606c8571744da5b6db4d183c1e8be886dead5f4523403cb86699d1",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/protected/vectors.f32": "ce73b89b8dae8d233e75a23097d801a5db6f72afc6b798a91bf1a8d38a9c242c",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/tune/manifest.json": "4a5c339d30a032119e16768fa767de0c0661da8062d6b53d223f3273f0258973",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/tune/metadata.sqlite3": "aadf9a943f35da2864511c0ab1d2f6f8c45409b164657b25ec0f6761f01f01c6",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/tune/vectors.f32": "259f243d203ed329658472de68db48cdaa0e565776a78be4dcb7917c78ab003a"
+  },
+  "kind": "external_read_only_pooled_reuse_provenance_reconciliation",
+  "manifest_hash": "c81c662a7540b4119d65989f8f31471bfd0924f8c38f8c50758767a46fdf7e74",
+  "native_field_defect": "approved traversal reads top-level reuse_sources; actual manifests store offline.reuse_sources; native fields remain unchanged and incomplete",
+  "native_preparation_and_pilot_parent_total_seconds": 897.690462875,
+  "native_reuse_source_hashes": {},
+  "native_reused_physical_sources": [],
+  "new_index_encoded_windows": 61353,
+  "new_index_manifest_hash": "ced5b7efac32fc8c806899a117d8e532c3ca8446c70b5db1f52e96b9ccb07848",
+  "new_index_seconds_nested_in_pilot": 845.7890910829883,
+  "new_index_source_id": "index-attempt:8fba51bb2562438da8316db35c988e13",
+  "new_pilot_parent_seconds": 874.831993833,
+  "pilot_closure_sha256": "426b7870c6374d5e7e4dd2c520de55b3993d10f3d146695a103e052d6ced4265",
+  "pilot_parent_finished_sha256": "5ea6e621a0560e7b3308ffd10239922abd91e9fdeb064144fb574a770b792bb3",
+  "reuse_edges": [
+    {
+      "child_source_id": "index-attempt:3e824ed66e7343dcb4df27826ea41a68",
+      "parent_source_id": "index-attempt:8fba51bb2562438da8316db35c988e13",
+      "stored_reference": {
+        "attempt_id": "3e824ed66e7343dcb4df27826ea41a68",
+        "manifest_hash": "8be21995414c0da8a7291e237343e119d6d7321620cbfbb3db82be1c6adf04d0",
+        "path": "data/index/pilot",
+        "vector_sha256": "e47b5845faf18af5346690cbcb60801f9e26b74282d9467074ffda10ed207598"
+      }
+    },
+    {
+      "child_source_id": "index-attempt:3e824ed66e7343dcb4df27826ea41a68",
+      "parent_source_id": "index-attempt:e78a67ed335d40378a4b339cef781d3b",
+      "stored_reference": {
+        "attempt_id": "3e824ed66e7343dcb4df27826ea41a68",
+        "manifest_hash": "8be21995414c0da8a7291e237343e119d6d7321620cbfbb3db82be1c6adf04d0",
+        "path": "data/index/pilot",
+        "vector_sha256": "e47b5845faf18af5346690cbcb60801f9e26b74282d9467074ffda10ed207598"
+      }
+    },
+    {
+      "child_source_id": "index-attempt:3e824ed66e7343dcb4df27826ea41a68",
+      "parent_source_id": "index-attempt:27ac30dbb3754ab1a0acce582f590725",
+      "stored_reference": {
+        "attempt_id": "3e824ed66e7343dcb4df27826ea41a68",
+        "manifest_hash": "8be21995414c0da8a7291e237343e119d6d7321620cbfbb3db82be1c6adf04d0",
+        "path": "data/index/pilot",
+        "vector_sha256": "e47b5845faf18af5346690cbcb60801f9e26b74282d9467074ffda10ed207598"
+      }
+    },
+    {
+      "child_source_id": "index-attempt:27ac30dbb3754ab1a0acce582f590725",
+      "parent_source_id": "index-attempt:e78a67ed335d40378a4b339cef781d3b",
+      "stored_reference": {
+        "attempt_id": "27ac30dbb3754ab1a0acce582f590725",
+        "manifest_hash": "692ab1685256cbbe9e837324e065540949d797403e758ea0d5cbb88868a24290",
+        "path": "data/index/pilot64",
+        "vector_sha256": "45b2b909f02d55fb4e3b255914dda424bb0a1dc759abf4fdccce919878773fa7"
+      }
+    },
+    {
+      "child_source_id": "index-attempt:e78a67ed335d40378a4b339cef781d3b",
+      "parent_source_id": "index-attempt:8fba51bb2562438da8316db35c988e13",
+      "stored_reference": {
+        "attempt_id": "e78a67ed335d40378a4b339cef781d3b",
+        "manifest_hash": "46c98600ee7cbdd2811ab8d835937bf53ce6a5035fc51b648f74a683ec5cbcbe",
+        "path": "data/index/fit",
+        "vector_sha256": "687d60aa73636044d63ecaf295b0f858d759b271cb71782b5e63b867b084c7dc"
+      }
+    },
+    {
+      "child_source_id": "index-attempt:3e824ed66e7343dcb4df27826ea41a68",
+      "parent_source_id": "index-attempt:57a3b52fb4954b5b8b303f0178f369d5",
+      "stored_reference": {
+        "attempt_id": "3e824ed66e7343dcb4df27826ea41a68",
+        "manifest_hash": "8be21995414c0da8a7291e237343e119d6d7321620cbfbb3db82be1c6adf04d0",
+        "path": "data/index/pilot",
+        "vector_sha256": "e47b5845faf18af5346690cbcb60801f9e26b74282d9467074ffda10ed207598"
+      }
+    },
+    {
+      "child_source_id": "index-attempt:27ac30dbb3754ab1a0acce582f590725",
+      "parent_source_id": "index-attempt:57a3b52fb4954b5b8b303f0178f369d5",
+      "stored_reference": {
+        "attempt_id": "27ac30dbb3754ab1a0acce582f590725",
+        "manifest_hash": "692ab1685256cbbe9e837324e065540949d797403e758ea0d5cbb88868a24290",
+        "path": "data/index/pilot64",
+        "vector_sha256": "45b2b909f02d55fb4e3b255914dda424bb0a1dc759abf4fdccce919878773fa7"
+      }
+    },
+    {
+      "child_source_id": "index-attempt:e78a67ed335d40378a4b339cef781d3b",
+      "parent_source_id": "index-attempt:57a3b52fb4954b5b8b303f0178f369d5",
+      "stored_reference": {
+        "attempt_id": "e78a67ed335d40378a4b339cef781d3b",
+        "manifest_hash": "46c98600ee7cbdd2811ab8d835937bf53ce6a5035fc51b648f74a683ec5cbcbe",
+        "path": "data/index/fit",
+        "vector_sha256": "687d60aa73636044d63ecaf295b0f858d759b271cb71782b5e63b867b084c7dc"
+      }
+    },
+    {
+      "child_source_id": "index-attempt:57a3b52fb4954b5b8b303f0178f369d5",
+      "parent_source_id": "index-attempt:8fba51bb2562438da8316db35c988e13",
+      "stored_reference": {
+        "attempt_id": "57a3b52fb4954b5b8b303f0178f369d5",
+        "manifest_hash": "4a5c339d30a032119e16768fa767de0c0661da8062d6b53d223f3273f0258973",
+        "path": "data/index/tune",
+        "vector_sha256": "259f243d203ed329658472de68db48cdaa0e565776a78be4dcb7917c78ab003a"
+      }
+    },
+    {
+      "child_source_id": "index-attempt:3e824ed66e7343dcb4df27826ea41a68",
+      "parent_source_id": "index-attempt:927ba64d93084cd2a6d43ead0b85ee54",
+      "stored_reference": {
+        "attempt_id": "3e824ed66e7343dcb4df27826ea41a68",
+        "manifest_hash": "8be21995414c0da8a7291e237343e119d6d7321620cbfbb3db82be1c6adf04d0",
+        "path": "data/index/pilot",
+        "vector_sha256": "e47b5845faf18af5346690cbcb60801f9e26b74282d9467074ffda10ed207598"
+      }
+    },
+    {
+      "child_source_id": "index-attempt:e78a67ed335d40378a4b339cef781d3b",
+      "parent_source_id": "index-attempt:927ba64d93084cd2a6d43ead0b85ee54",
+      "stored_reference": {
+        "attempt_id": "e78a67ed335d40378a4b339cef781d3b",
+        "manifest_hash": "46c98600ee7cbdd2811ab8d835937bf53ce6a5035fc51b648f74a683ec5cbcbe",
+        "path": "data/index/fit",
+        "vector_sha256": "687d60aa73636044d63ecaf295b0f858d759b271cb71782b5e63b867b084c7dc"
+      }
+    },
+    {
+      "child_source_id": "index-attempt:57a3b52fb4954b5b8b303f0178f369d5",
+      "parent_source_id": "index-attempt:927ba64d93084cd2a6d43ead0b85ee54",
+      "stored_reference": {
+        "attempt_id": "57a3b52fb4954b5b8b303f0178f369d5",
+        "manifest_hash": "4a5c339d30a032119e16768fa767de0c0661da8062d6b53d223f3273f0258973",
+        "path": "data/index/tune",
+        "vector_sha256": "259f243d203ed329658472de68db48cdaa0e565776a78be4dcb7917c78ab003a"
+      }
+    },
+    {
+      "child_source_id": "index-attempt:927ba64d93084cd2a6d43ead0b85ee54",
+      "parent_source_id": "index-attempt:8fba51bb2562438da8316db35c988e13",
+      "stored_reference": {
+        "attempt_id": "927ba64d93084cd2a6d43ead0b85ee54",
+        "manifest_hash": "486d7d0e4be7c34872dafaa4f15ef1ac6618cf64c3db1282a4c4b16e464e3aa4",
+        "path": "data/index/protected",
+        "vector_sha256": "ce73b89b8dae8d233e75a23097d801a5db6f72afc6b798a91bf1a8d38a9c242c"
+      }
+    }
+  ],
+  "reused_windows": 8880,
+  "source_hashes": {
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/src/outcome_poc/retrieval.py": "7114865d033c05066651ab9c6e9a8e2baa6d21bd11f8ddf656fa0c05babfd4e1",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/src/outcome_poc/storage.py": "87e645a6baf2ce3c1644df243dbf0f5f978c4e2314c327bb737c75eb8d19e215",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/src/outcome_poc/transfer_runtime.py": "66c7c0a0cbf4b6874eadca7645d5189c715676968eee5450e3ab54581dc2c95c"
+  },
+  "source_nodes": [
+    {
+      "all_resolved_paths": [
+        "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/index/attempt-1"
+      ],
+      "attempt_id": "8fba51bb2562438da8316db35c988e13",
+      "attempt_ledger": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/index/index-attempts.jsonl",
+      "attempt_ledger_sha256": "d051ba9022be6d6d680e392b47165ac93ab3aa350afeb9b2a9c83b3a1ef292a2",
+      "elapsed_seconds": 845.7924758329755,
+      "encoder": {
+        "device": "cpu",
+        "dimensions": 384,
+        "normalized": true,
+        "precision": "float32",
+        "revision": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+        "snapshot_hash": "0883c9ca2b589beb4d2ad6150d9c96e7c9400d2f1eadf29ad9542af82601f54a"
+      },
+      "files": {
+        "metadata.sqlite3": {
+          "bytes": 48558080,
+          "sha256": "6c5674628b706e4a810015d5baf12edc8ccff99493f3d690edec4c97bb625fb4"
+        },
+        "vectors.f32": {
+          "bytes": 107877888,
+          "sha256": "6d2f5b70cb56816e1b50608bacb1c708c83d0dee4d6d914d31193e3f99078dc6"
+        }
+      },
+      "kind": "new pooled build nested inside native pilot",
+      "linked_attempt_row": {
+        "attempt_id": "8fba51bb2562438da8316db35c988e13",
+        "elapsed_seconds": 845.7924758329755,
+        "excluded_after_boundary": [
+          "attempt_telemetry_publication",
+          "console_summary"
+        ],
+        "manifest_hash": "ced5b7efac32fc8c806899a117d8e532c3ca8446c70b5db1f52e96b9ccb07848",
+        "partial_bytes": {
+          "index_files": {
+            "manifest.json": 3297,
+            "metadata.sqlite3": 48558080,
+            "vectors.f32": 107877888
+          },
+          "index_total": 156439265,
+          "measurement_errors": [],
+          "required_provenance": 0
+        },
+        "scope": "selected_documents",
+        "split": null,
+        "stage_seconds": {
+          "calibration": 1.392088041990064,
+          "document_validation": 0.8753138055908494,
+          "encoding": 782.7314723329619,
+          "manifest_publication": 0.0007097080233506858,
+          "metadata_finalization": 0.5814012920018286,
+          "output_validation": 0.04161999997450039,
+          "payload_fingerprints": 0.06936012499500066,
+          "setup": 3.462500171735883e-05,
+          "windows": 60.1004759024363
+        },
+        "started_utc": "2026-10-15T07:32:42.271171+00:00",
+        "status": "ok",
+        "terminal_stage": "manifest_publication"
+      },
+      "manifest_file_sha256": "ced5b7efac32fc8c806899a117d8e532c3ca8446c70b5db1f52e96b9ccb07848",
+      "manifest_hash": "ced5b7efac32fc8c806899a117d8e532c3ca8446c70b5db1f52e96b9ccb07848",
+      "path": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/runs/task15-transfer/index/attempt-1",
+      "query_convention": {
+        "document_prefix": "",
+        "fragment_convention": "original_character_offsets_recount_composed_single_text",
+        "lengths_include_special_tokens": true,
+        "max_tokens": 512,
+        "prefix": "Represent this sentence for searching relevant passages: ",
+        "special_tokens": [
+          101,
+          102
+        ],
+        "strategy": "single_text_right_truncation_preserving_special_tokens",
+        "tokenizer_class": "BertTokenizer",
+        "truncation_side": "right",
+        "window_max_tokens": 480,
+        "window_separator": "\n"
+      },
+      "source_id": "index-attempt:8fba51bb2562438da8316db35c988e13"
+    },
+    {
+      "all_resolved_paths": [
+        "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/pilot"
+      ],
+      "attempt_id": "3e824ed66e7343dcb4df27826ea41a68",
+      "attempt_ledger": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/provenance/index-attempts.jsonl",
+      "attempt_ledger_sha256": "a34e23e4ffecd26ad858cae577805b640071323b088625803d3e4317914500f7",
+      "elapsed_seconds": 19.22866433300078,
+      "encoder": {
+        "device": "cpu",
+        "dimensions": 384,
+        "normalized": true,
+        "precision": "float32",
+        "revision": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+        "snapshot_hash": "0883c9ca2b589beb4d2ad6150d9c96e7c9400d2f1eadf29ad9542af82601f54a"
+      },
+      "files": {
+        "metadata.sqlite3": {
+          "bytes": 241664,
+          "sha256": "b7d1e440672ff5bfad81ab484c1078ab9cc9aa0241d910fb2d9e0585f177739c"
+        },
+        "vectors.f32": {
+          "bytes": 491520,
+          "sha256": "e47b5845faf18af5346690cbcb60801f9e26b74282d9467074ffda10ed207598"
+        }
+      },
+      "kind": "existing historical adaptation source; not charged again as new transfer work",
+      "linked_attempt_row": {
+        "attempt_id": "3e824ed66e7343dcb4df27826ea41a68",
+        "elapsed_seconds": 19.22866433300078,
+        "excluded_after_boundary": [
+          "attempt_telemetry_publication",
+          "console_summary"
+        ],
+        "manifest_hash": "8be21995414c0da8a7291e237343e119d6d7321620cbfbb3db82be1c6adf04d0",
+        "partial_bytes": {
+          "index_files": {
+            "manifest.json": 2828,
+            "metadata.sqlite3": 241664,
+            "vectors.f32": 491520
+          },
+          "index_total": 736012,
+          "measurement_errors": [],
+          "required_provenance": 2828
+        },
+        "scope": "cli",
+        "split": "pilot",
+        "stage_seconds": {
+          "calibration": 0.8254952080023941,
+          "document_validation": 0.0043967631354462355,
+          "encoding": 3.3589032919844612,
+          "manifest_publication": 0.000547624978935346,
+          "metadata_finalization": 0.0025007080112118274,
+          "model_load": 5.1494321250065695,
+          "output_validation": 0.0015326249995268881,
+          "payload_fingerprints": 0.0005557090044021606,
+          "provenance_publication": 0.0010786670027300715,
+          "setup": 9.422301624988904,
+          "source_fingerprints": 0.18013766600051895,
+          "split_validation": 1.4580145943909883e-06,
+          "windows": 0.2817808618710842
+        },
+        "started_utc": "2026-10-14T14:45:29.938444+00:00",
+        "status": "ok",
+        "terminal_stage": "manifest_publication"
+      },
+      "manifest_file_sha256": "8be21995414c0da8a7291e237343e119d6d7321620cbfbb3db82be1c6adf04d0",
+      "manifest_hash": "8be21995414c0da8a7291e237343e119d6d7321620cbfbb3db82be1c6adf04d0",
+      "path": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/pilot",
+      "query_convention": {
+        "document_prefix": "",
+        "fragment_convention": "original_character_offsets_recount_composed_single_text",
+        "lengths_include_special_tokens": true,
+        "max_tokens": 512,
+        "prefix": "Represent this sentence for searching relevant passages: ",
+        "special_tokens": [
+          101,
+          102
+        ],
+        "strategy": "single_text_right_truncation_preserving_special_tokens",
+        "tokenizer_class": "BertTokenizer",
+        "truncation_side": "right",
+        "window_max_tokens": 480,
+        "window_separator": "\n"
+      },
+      "source_id": "index-attempt:3e824ed66e7343dcb4df27826ea41a68"
+    },
+    {
+      "all_resolved_paths": [
+        "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/fit"
+      ],
+      "attempt_id": "e78a67ed335d40378a4b339cef781d3b",
+      "attempt_ledger": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/provenance/index-attempts.jsonl",
+      "attempt_ledger_sha256": "a34e23e4ffecd26ad858cae577805b640071323b088625803d3e4317914500f7",
+      "elapsed_seconds": 45.1715879169642,
+      "encoder": {
+        "device": "cpu",
+        "dimensions": 384,
+        "normalized": true,
+        "precision": "float32",
+        "revision": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+        "snapshot_hash": "0883c9ca2b589beb4d2ad6150d9c96e7c9400d2f1eadf29ad9542af82601f54a"
+      },
+      "files": {
+        "metadata.sqlite3": {
+          "bytes": 1773568,
+          "sha256": "e89e0ebf045bdfdf705b5df1bcf46c4e5d5a7b333c202fb63a1f9454cf56be09"
+        },
+        "vectors.f32": {
+          "bytes": 3930624,
+          "sha256": "687d60aa73636044d63ecaf295b0f858d759b271cb71782b5e63b867b084c7dc"
+        }
+      },
+      "kind": "existing historical adaptation source; not charged again as new transfer work",
+      "linked_attempt_row": {
+        "attempt_id": "e78a67ed335d40378a4b339cef781d3b",
+        "elapsed_seconds": 45.1715879169642,
+        "excluded_after_boundary": [
+          "attempt_telemetry_publication",
+          "console_summary"
+        ],
+        "manifest_hash": "46c98600ee7cbdd2811ab8d835937bf53ce6a5035fc51b648f74a683ec5cbcbe",
+        "partial_bytes": {
+          "index_files": {
+            "manifest.json": 3389,
+            "metadata.sqlite3": 1773568,
+            "vectors.f32": 3930624
+          },
+          "index_total": 5707581,
+          "measurement_errors": [],
+          "required_provenance": 3389
+        },
+        "scope": "cli",
+        "split": "fit",
+        "stage_seconds": {
+          "calibration": 1.0496173329884186,
+          "document_validation": 0.030410568579100072,
+          "encoding": 28.574430583044887,
+          "manifest_publication": 0.00037808396155014634,
+          "metadata_finalization": 0.01450983399990946,
+          "model_load": 4.2980492080096155,
+          "output_validation": 0.024241000006441027,
+          "payload_fingerprints": 0.002748790953774005,
+          "provenance_publication": 0.0006174580194056034,
+          "setup": 8.919832874962594,
+          "source_fingerprints": 0.18831929203588516,
+          "split_validation": 1.8749851733446121e-06,
+          "windows": 2.0684310154174455
+        },
+        "started_utc": "2026-10-14T17:49:24.540545+00:00",
+        "status": "ok",
+        "terminal_stage": "manifest_publication"
+      },
+      "manifest_file_sha256": "46c98600ee7cbdd2811ab8d835937bf53ce6a5035fc51b648f74a683ec5cbcbe",
+      "manifest_hash": "46c98600ee7cbdd2811ab8d835937bf53ce6a5035fc51b648f74a683ec5cbcbe",
+      "path": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/fit",
+      "query_convention": {
+        "document_prefix": "",
+        "fragment_convention": "original_character_offsets_recount_composed_single_text",
+        "lengths_include_special_tokens": true,
+        "max_tokens": 512,
+        "prefix": "Represent this sentence for searching relevant passages: ",
+        "special_tokens": [
+          101,
+          102
+        ],
+        "strategy": "single_text_right_truncation_preserving_special_tokens",
+        "tokenizer_class": "BertTokenizer",
+        "truncation_side": "right",
+        "window_max_tokens": 480,
+        "window_separator": "\n"
+      },
+      "source_id": "index-attempt:e78a67ed335d40378a4b339cef781d3b"
+    },
+    {
+      "all_resolved_paths": [
+        "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/pilot64"
+      ],
+      "attempt_id": "27ac30dbb3754ab1a0acce582f590725",
+      "attempt_ledger": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/provenance/task9-index64-attempts.jsonl",
+      "attempt_ledger_sha256": "953c3c1ddaf0ca3d2af681142b755bae55ac6751efae440ba142d314de3d8444",
+      "elapsed_seconds": 20.054970666009467,
+      "encoder": {
+        "device": "cpu",
+        "dimensions": 384,
+        "normalized": true,
+        "precision": "float32",
+        "revision": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+        "snapshot_hash": "0883c9ca2b589beb4d2ad6150d9c96e7c9400d2f1eadf29ad9542af82601f54a"
+      },
+      "files": {
+        "metadata.sqlite3": {
+          "bytes": 471040,
+          "sha256": "33641589e1231445b1d24c49f643fb66f290d55ccf69925c60dde253174e3185"
+        },
+        "vectors.f32": {
+          "bytes": 984576,
+          "sha256": "45b2b909f02d55fb4e3b255914dda424bb0a1dc759abf4fdccce919878773fa7"
+        }
+      },
+      "kind": "existing historical adaptation source; not charged again as new transfer work",
+      "linked_attempt_row": {
+        "attempt_id": "27ac30dbb3754ab1a0acce582f590725",
+        "elapsed_seconds": 20.054970666009467,
+        "excluded_after_boundary": [
+          "attempt_telemetry_publication",
+          "console_summary"
+        ],
+        "manifest_hash": "692ab1685256cbbe9e837324e065540949d797403e758ea0d5cbb88868a24290",
+        "partial_bytes": {
+          "index_files": {
+            "manifest.json": 3183,
+            "metadata.sqlite3": 471040,
+            "vectors.f32": 984576
+          },
+          "index_total": 1458799,
+          "measurement_errors": [],
+          "required_provenance": 3183
+        },
+        "scope": "cli",
+        "split": "pilot",
+        "stage_seconds": {
+          "calibration": 1.031180999998469,
+          "document_validation": 0.007537806581240147,
+          "encoding": 4.630216041987296,
+          "manifest_publication": 0.000397083000279963,
+          "metadata_finalization": 0.0033699999912641943,
+          "model_load": 3.5734136250102893,
+          "output_validation": 0.009737708023749292,
+          "payload_fingerprints": 0.15865191700868309,
+          "provenance_publication": 0.000855332997161895,
+          "setup": 10.106142083008308,
+          "windows": 0.5334680684027262
+        },
+        "started_utc": "2026-10-14T17:17:14.689386+00:00",
+        "status": "ok",
+        "terminal_stage": "manifest_publication"
+      },
+      "manifest_file_sha256": "692ab1685256cbbe9e837324e065540949d797403e758ea0d5cbb88868a24290",
+      "manifest_hash": "692ab1685256cbbe9e837324e065540949d797403e758ea0d5cbb88868a24290",
+      "path": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/pilot64",
+      "query_convention": {
+        "document_prefix": "",
+        "fragment_convention": "original_character_offsets_recount_composed_single_text",
+        "lengths_include_special_tokens": true,
+        "max_tokens": 512,
+        "prefix": "Represent this sentence for searching relevant passages: ",
+        "special_tokens": [
+          101,
+          102
+        ],
+        "strategy": "single_text_right_truncation_preserving_special_tokens",
+        "tokenizer_class": "BertTokenizer",
+        "truncation_side": "right",
+        "window_max_tokens": 480,
+        "window_separator": "\n"
+      },
+      "source_id": "index-attempt:27ac30dbb3754ab1a0acce582f590725"
+    },
+    {
+      "all_resolved_paths": [
+        "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/tune"
+      ],
+      "attempt_id": "57a3b52fb4954b5b8b303f0178f369d5",
+      "attempt_ledger": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/provenance/index-attempts.jsonl",
+      "attempt_ledger_sha256": "a34e23e4ffecd26ad858cae577805b640071323b088625803d3e4317914500f7",
+      "elapsed_seconds": 34.082241915981285,
+      "encoder": {
+        "device": "cpu",
+        "dimensions": 384,
+        "normalized": true,
+        "precision": "float32",
+        "revision": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+        "snapshot_hash": "0883c9ca2b589beb4d2ad6150d9c96e7c9400d2f1eadf29ad9542af82601f54a"
+      },
+      "files": {
+        "metadata.sqlite3": {
+          "bytes": 880640,
+          "sha256": "aadf9a943f35da2864511c0ab1d2f6f8c45409b164657b25ec0f6761f01f01c6"
+        },
+        "vectors.f32": {
+          "bytes": 1967616,
+          "sha256": "259f243d203ed329658472de68db48cdaa0e565776a78be4dcb7917c78ab003a"
+        }
+      },
+      "kind": "existing historical adaptation source; not charged again as new transfer work",
+      "linked_attempt_row": {
+        "attempt_id": "57a3b52fb4954b5b8b303f0178f369d5",
+        "elapsed_seconds": 34.082241915981285,
+        "excluded_after_boundary": [
+          "attempt_telemetry_publication",
+          "console_summary"
+        ],
+        "manifest_hash": "4a5c339d30a032119e16768fa767de0c0661da8062d6b53d223f3273f0258973",
+        "partial_bytes": {
+          "index_files": {
+            "manifest.json": 3629,
+            "metadata.sqlite3": 880640,
+            "vectors.f32": 1967616
+          },
+          "index_total": 2851885,
+          "measurement_errors": [],
+          "required_provenance": 3629
+        },
+        "scope": "cli",
+        "split": "tune",
+        "stage_seconds": {
+          "calibration": 1.1283549169893377,
+          "document_validation": 0.01617616933071986,
+          "encoding": 16.368070625001565,
+          "manifest_publication": 0.00045733299339190125,
+          "metadata_finalization": 0.009750250028446317,
+          "model_load": 5.970715791976545,
+          "output_validation": 0.058719374996144325,
+          "payload_fingerprints": 0.001975333027075976,
+          "provenance_publication": 0.0009331670007668436,
+          "setup": 9.27368275000481,
+          "source_fingerprints": 0.18519583297893405,
+          "split_validation": 1.7909915186464787e-06,
+          "windows": 1.0682085806620307
+        },
+        "started_utc": "2026-10-14T19:38:15.059146+00:00",
+        "status": "ok",
+        "terminal_stage": "manifest_publication"
+      },
+      "manifest_file_sha256": "4a5c339d30a032119e16768fa767de0c0661da8062d6b53d223f3273f0258973",
+      "manifest_hash": "4a5c339d30a032119e16768fa767de0c0661da8062d6b53d223f3273f0258973",
+      "path": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/tune",
+      "query_convention": {
+        "document_prefix": "",
+        "fragment_convention": "original_character_offsets_recount_composed_single_text",
+        "lengths_include_special_tokens": true,
+        "max_tokens": 512,
+        "prefix": "Represent this sentence for searching relevant passages: ",
+        "special_tokens": [
+          101,
+          102
+        ],
+        "strategy": "single_text_right_truncation_preserving_special_tokens",
+        "tokenizer_class": "BertTokenizer",
+        "truncation_side": "right",
+        "window_max_tokens": 480,
+        "window_separator": "\n"
+      },
+      "source_id": "index-attempt:57a3b52fb4954b5b8b303f0178f369d5"
+    },
+    {
+      "all_resolved_paths": [
+        "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/protected"
+      ],
+      "attempt_id": "927ba64d93084cd2a6d43ead0b85ee54",
+      "attempt_ledger": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/index-attempts.jsonl",
+      "attempt_ledger_sha256": "83ae73c172d1c78761dc63656b20d6ae8ed40b06ff09afe7995d8fccad40fdf4",
+      "elapsed_seconds": 57.05434479203541,
+      "encoder": {
+        "device": "cpu",
+        "dimensions": 384,
+        "normalized": true,
+        "precision": "float32",
+        "revision": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+        "snapshot_hash": "0883c9ca2b589beb4d2ad6150d9c96e7c9400d2f1eadf29ad9542af82601f54a"
+      },
+      "files": {
+        "metadata.sqlite3": {
+          "bytes": 3338240,
+          "sha256": "a660d3fb9f606c8571744da5b6db4d183c1e8be886dead5f4523403cb86699d1"
+        },
+        "vectors.f32": {
+          "bytes": 7352832,
+          "sha256": "ce73b89b8dae8d233e75a23097d801a5db6f72afc6b798a91bf1a8d38a9c242c"
+        }
+      },
+      "kind": "existing historical adaptation source; not charged again as new transfer work",
+      "linked_attempt_row": {
+        "attempt_id": "927ba64d93084cd2a6d43ead0b85ee54",
+        "elapsed_seconds": 57.05434479203541,
+        "excluded_after_boundary": [
+          "attempt_telemetry_publication",
+          "console_summary"
+        ],
+        "manifest_hash": "486d7d0e4be7c34872dafaa4f15ef1ac6618cf64c3db1282a4c4b16e464e3aa4",
+        "partial_bytes": {
+          "index_files": {
+            "manifest.json": 3016,
+            "metadata.sqlite3": 3338240,
+            "vectors.f32": 7352832
+          },
+          "index_total": 10694088,
+          "measurement_errors": [],
+          "required_provenance": 0
+        },
+        "scope": "selected_documents",
+        "split": null,
+        "stage_seconds": {
+          "calibration": 1.0225939999800175,
+          "document_validation": 0.05303677264600992,
+          "encoding": 52.24177529098233,
+          "manifest_publication": 0.000457917049061507,
+          "metadata_finalization": 0.03168179205385968,
+          "output_validation": 0.039304915990214795,
+          "payload_fingerprints": 0.005676624947227538,
+          "setup": 5.441700341179967e-05,
+          "windows": 3.6597630613832735
+        },
+        "started_utc": "2026-10-14T22:09:43.100497+00:00",
+        "status": "ok",
+        "terminal_stage": "manifest_publication"
+      },
+      "manifest_file_sha256": "486d7d0e4be7c34872dafaa4f15ef1ac6618cf64c3db1282a4c4b16e464e3aa4",
+      "manifest_hash": "486d7d0e4be7c34872dafaa4f15ef1ac6618cf64c3db1282a4c4b16e464e3aa4",
+      "path": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/index/protected",
+      "query_convention": {
+        "document_prefix": "",
+        "fragment_convention": "original_character_offsets_recount_composed_single_text",
+        "lengths_include_special_tokens": true,
+        "max_tokens": 512,
+        "prefix": "Represent this sentence for searching relevant passages: ",
+        "special_tokens": [
+          101,
+          102
+        ],
+        "strategy": "single_text_right_truncation_preserving_special_tokens",
+        "tokenizer_class": "BertTokenizer",
+        "truncation_side": "right",
+        "window_max_tokens": 480,
+        "window_separator": "\n"
+      },
+      "source_id": "index-attempt:927ba64d93084cd2a6d43ead0b85ee54"
+    }
+  ]
+}

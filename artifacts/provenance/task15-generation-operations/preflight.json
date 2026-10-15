@@ -1,0 +1,21 @@
+{
+  "append_only_stage_cost_baseline_bytes": 388,
+  "baseline_parent_source_ids": [
+    "launch-pilot-1",
+    "preparation-1"
+  ],
+  "baseline_parent_total_seconds": 897.690462875,
+  "external_guard_plan_sha256": "94595ed12890b883eaed4d9e78e302d484570d528012df42a605f1d8a5f0084f",
+  "external_release_sha256": "7ed6eec9b871c4b7ca6d58c210dee9cb022da5eca721426b2f3b47a78cb5cff4",
+  "external_sidecar_sha256": "151b10bbd9b7f8d4dda2b4e9dd18cb7da3756db8f5e9062eec676ddaa76f39f1",
+  "forecast_seconds": 2100,
+  "scoring_gold_and_semantic_peek_held_until_full_native96_closure": true,
+  "source_hashes": {
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/src/outcome_poc/retrieval.py": "7114865d033c05066651ab9c6e9a8e2baa6d21bd11f8ddf656fa0c05babfd4e1",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/src/outcome_poc/storage.py": "87e645a6baf2ce3c1644df243dbf0f5f978c4e2314c327bb737c75eb8d19e215",
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/src/outcome_poc/transfer_runtime.py": "66c7c0a0cbf4b6874eadca7645d5189c715676968eee5450e3ab54581dc2c95c"
+  },
+  "status": "pre-generation guards passed",
+  "strict_input_files": 34,
+  "verified_utc": "2026-10-15T07:53:55.112194+00:00"
+}

@@ -1,0 +1,75 @@
+{
+  "all_native_parent_seconds": 1076.859363125,
+  "all_parent_attempts": {
+    "launch-pilot-1": {
+      "boundary": "observed parent attempt through child return/output publication; excludes terminal and cost-receipt persistence",
+      "elapsed_seconds": 874.831993833,
+      "manifest_hash": "c81c662a7540b4119d65989f8f31471bfd0924f8c38f8c50758767a46fdf7e74",
+      "output_sha256": "426b7870c6374d5e7e4dd2c520de55b3993d10f3d146695a103e052d6ced4265",
+      "plan_sha256": "a3100e6e8d70e948859999a861fde92e9c0b9f63a4ca569c5aa06db7c64b515d",
+      "returncode": 0,
+      "source_id": "launch-pilot-1",
+      "stage": "pilot",
+      "started_receipt_sha256": "8d30f779f5a1f7cd1f1e4e1021de6307e5e0b4bc2cd24b917f2e78dab482877a",
+      "status": "ok",
+      "stop_ns": 308374804649166
+    },
+    "launch-run-1": {
+      "boundary": "observed parent attempt through child return/output publication; excludes terminal and cost-receipt persistence",
+      "elapsed_seconds": 179.16890025,
+      "manifest_hash": "c81c662a7540b4119d65989f8f31471bfd0924f8c38f8c50758767a46fdf7e74",
+      "output_sha256": "5b2fe2fc9b4f4b3b81fcf9fd2d7fcf8793675f0c3de679b2acd169f3f8a9b32d",
+      "plan_sha256": "d9b453295e665dd85f9238ef327c24675ff38f691782d05c4f694aaf66a7c8b5",
+      "returncode": 0,
+      "source_id": "launch-run-1",
+      "stage": "run",
+      "started_receipt_sha256": "14ec6fe426f21938cfd5b0b4d1a2064e1d48bb40d47a93f5b014f35318ff3416",
+      "status": "ok",
+      "stop_ns": 309036305041500
+    },
+    "preparation-1": {
+      "boundary": "observed parent attempt through child return/output publication; excludes terminal and cost-receipt persistence",
+      "elapsed_seconds": 22.858469042,
+      "manifest_hash": "c81c662a7540b4119d65989f8f31471bfd0924f8c38f8c50758767a46fdf7e74",
+      "output_sha256": "75ebb9d431a5c62a8bacdb3f8dd89fe8d56824f2cb47e51483b57d67b5c996f5",
+      "plan_sha256": null,
+      "returncode": null,
+      "source_id": "preparation-1",
+      "stage": "prospective-preparation",
+      "started_receipt_sha256": "8efc886615901b3b11fc673fb764dbd7241935ad2e7a639d2370fbbcc0fc2382",
+      "status": "ok",
+      "stop_ns": 287253033441708
+    }
+  },
+  "assigned_jobs": 96,
+  "assigned_unique_tasks": 32,
+  "authorized_appended_parent_rows": [
+    {
+      "elapsed_seconds": 179.16890025,
+      "finished_receipt_sha256": "c223c3c8f2e3aa3f11256bc10b18160c55d29cc4f731a8727b32c304c0acac7f",
+      "source_id": "launch-run-1",
+      "stage": "run",
+      "status": "ok"
+    }
+  ],
+  "execution_authorization_sha256": "4eb807898123a5011cfff0dfd65cd6f2ee9f5b6ad9eb5443e93403ac6d51bb9c",
+  "external_source_hashes_verified": 3,
+  "external_source_native_empty_fields_preserved": true,
+  "first_verification_attempt_note": "opaque closure/source/parent/prefix checks passed; metadata paid-file count asserted because glob omitted existing attempt-* directory. Corrected only the verifier path pattern, no source/data/output/receipt changes.",
+  "inherited_ledgers_unchanged": true,
+  "native_completion_sha256": "74247cdf85c75b3e07fa73650489ea13039d065e5856b863de65f658adc05dd5",
+  "original_stage_cost_prefix_bytes": 388,
+  "original_stage_cost_prefix_unchanged": true,
+  "paid_finished_files": 96,
+  "paid_started_files": 96,
+  "pilot_closure_sha256": "426b7870c6374d5e7e4dd2c520de55b3993d10f3d146695a103e052d6ced4265",
+  "prediction_record_count_opaque_newline_count": 96,
+  "scope": "read-only terminal/denominator/source/opaque-hash verification before semantic peek; native run costs separately nested in parent",
+  "scoring_held_for_separate_root_release": true,
+  "semantic_responses_predictions_scores_and_gold_decoded": false,
+  "status": "full native96 acquisition closure and external provenance postguard passed",
+  "strict_inventory_paths_verified": 34,
+  "transfer_closure_sha256": "5b2fe2fc9b4f4b3b81fcf9fd2d7fcf8793675f0c3de679b2acd169f3f8a9b32d",
+  "verification_elapsed_seconds": 0.287736625,
+  "verified_utc": "2026-10-15T07:59:26.956069+00:00"
+}

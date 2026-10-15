@@ -1,0 +1,12 @@
+{
+  "cutoff_interruption": false,
+  "elapsed_seconds": 179.53113875,
+  "error": null,
+  "execution_authorization_sha256": "4eb807898123a5011cfff0dfd65cd6f2ee9f5b6ad9eb5443e93403ac6d51bb9c",
+  "external_release_sha256": "7ed6eec9b871c4b7ca6d58c210dee9cb022da5eca721426b2f3b47a78cb5cff4",
+  "finished_utc": "2026-10-15T07:57:55.319480+00:00",
+  "returncode": 0,
+  "scope": "external observed authorization-link/native-run interval including start receipt and child startup/return; excludes initial imports before start and terminal persistence/console; not added again to nested native parent cost",
+  "started_receipt_sha256": "6ba856fbf3c8771021dc88d2ea90d08ad390659a9a91c1971219c3fb491aba9e",
+  "stop_ns": 309036446509208
+}

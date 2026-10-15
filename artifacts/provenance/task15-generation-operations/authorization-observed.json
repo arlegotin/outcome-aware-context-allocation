@@ -1,0 +1,9 @@
+{
+  "command": "tools/task15_transfer_native.py --stage authorize --manifest artifacts/runs/task15-transfer/manifest.json --forecast-seconds 2100",
+  "elapsed_seconds": null,
+  "execution_authorization_sha256": "4eb807898123a5011cfff0dfd65cd6f2ee9f5b6ad9eb5443e93403ac6d51bb9c",
+  "observed_utc": "2026-10-15T07:54:55.787170+00:00",
+  "returncode": 0,
+  "scope": "separate authorize invocation not independently metered; unknown interval, not zero; native parent stage costs begin at run launch",
+  "tool_session": 19755
+}

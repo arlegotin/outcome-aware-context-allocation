@@ -1,0 +1,194 @@
+{
+  "active_owned_pilot_generation_groups": 0,
+  "all_local_raw_retained": true,
+  "both_primary_wall_time_endpoints_remain_invalid": true,
+  "count_both_parent_seconds_once": 95.473664042,
+  "custody_path": "artifacts/provenance/analysis-ops-final-custody.json",
+  "custody_sha256": "8b8a6d71e268027d4639156d24b32a9196786315d9ab49e2614080040af712a6",
+  "diagnostic_closure_sha256": "b4656e7f54def3e7239990330b22b412d9e897774fa7e91fe4de428d288e4c2d",
+  "historical_adaptation_seconds_not_new": 175.59180962399114,
+  "historical_unique_physical_sources": 5,
+  "interval_inventory": [
+    {
+      "name": "Task18 external analysis parent",
+      "nested_inside": null,
+      "note": null,
+      "receipt": "artifacts/provenance/task18-a03-operations/analysis.finished.json",
+      "receipt_sha256": "5dd0a91b158dfee852ccd687d8182ff06ebf7ea28d84beb87f0a379f58040a63",
+      "seconds": 72.215180958
+    },
+    {
+      "name": "Task18 adapter attempt",
+      "nested_inside": "Task18 external analysis parent",
+      "note": null,
+      "receipt": "artifacts/analysis/task18-a03/action-replay.attempts.jsonl",
+      "receipt_sha256": "3c820185b5ae4fca74071df986a72cd0d174aa6b1a31d67f2f06d26940d6ba8c",
+      "seconds": 70.63899908401072
+    },
+    {
+      "name": "Blinded-packet preparation",
+      "nested_inside": null,
+      "note": null,
+      "receipt": "artifacts/runs/task15-blind-review/preparation.finished.json",
+      "receipt_sha256": "9e0dd8ed442a9e2106abcfc37ca302633979649381c962aee37c3b0402791ca8",
+      "seconds": 1.067067292
+    },
+    {
+      "name": "Count failed attempt1 parent",
+      "nested_inside": null,
+      "note": null,
+      "receipt": "artifacts/runs/operational-planning/task15-window-count/attempt-1/parent.finished.json",
+      "receipt_sha256": "74e65dd8e7892b50b2bda0f8612394337f9958c5426af57c94f09ca9d488d9d3",
+      "seconds": 5.645440459
+    },
+    {
+      "name": "Count successful attempt2 parent",
+      "nested_inside": null,
+      "note": null,
+      "receipt": "artifacts/runs/operational-planning/task15-window-count/attempt-2/parent.finished.json",
+      "receipt_sha256": "028fe16ad47589e0d6e23f780309d1699a6e1664d7dd824c58fe54a4e4939cdc",
+      "seconds": 89.828223583
+    },
+    {
+      "name": "Transfer prospective preparation native parent",
+      "nested_inside": null,
+      "note": "Use any root-recorded enclosing preparation wrapper as alternative boundary, not an additive row",
+      "receipt": "artifacts/runs/task15-transfer/preparation-1.finished.json",
+      "receipt_sha256": "fe5a86e40a6f5bdf0afbd241c0ae6336353441c7e67ad73f834728539fb163c6",
+      "seconds": 22.858469042
+    },
+    {
+      "name": "Transfer pilot external parent",
+      "nested_inside": null,
+      "note": null,
+      "receipt": "artifacts/provenance/task15-fullpilot-operations/external.finished.json",
+      "receipt_sha256": "4c218195ef9da03c74a73e511c8af636a870c38f4ab455a1c4c55985aa58688f",
+      "seconds": 875.066226208
+    },
+    {
+      "name": "Transfer pilot native parent",
+      "nested_inside": "Transfer pilot external parent",
+      "note": null,
+      "receipt": "artifacts/runs/task15-transfer/launch-pilot-1.finished.json",
+      "receipt_sha256": "5ea6e621a0560e7b3308ffd10239922abd91e9fdeb064144fb574a770b792bb3",
+      "seconds": 874.831993833
+    },
+    {
+      "name": "Transfer pilot worker",
+      "nested_inside": "Transfer pilot native parent",
+      "note": null,
+      "receipt": "artifacts/runs/task15-transfer/worker-launch-pilot-1.json",
+      "receipt_sha256": "8ee7dcbe713596b31ec14b733d29715a32fb899ebdf58c83bc3e563d6fd8dd86",
+      "seconds": 868.4215261249919
+    },
+    {
+      "name": "Pooled index build",
+      "nested_inside": "Transfer pilot worker",
+      "note": null,
+      "receipt": "artifacts/runs/task15-transfer/index-realization.json",
+      "receipt_sha256": "b5f34197fe51acaaec8bd6fa30cec9054aff7b0203b07b7d652d337576210d04",
+      "seconds": 845.7890910829883
+    },
+    {
+      "name": "External reuse provenance reconciliation",
+      "nested_inside": null,
+      "note": "Interval includes sidecar publication/result print; original generic scope exclusion of console was overbroad",
+      "receipt": "artifacts/provenance/task15-transfer-reuse-reconciliation/finished.json",
+      "receipt_sha256": "d765b581d284e7d4ec1a6aa2a10ef8a6279be9c5bb8b8054fb28e7f05a76e934",
+      "seconds": 0.521195958
+    },
+    {
+      "name": "Transfer generation external parent",
+      "nested_inside": null,
+      "note": null,
+      "receipt": "artifacts/provenance/task15-generation-operations/external.finished.json",
+      "receipt_sha256": "df1da4640e658d9b04378162f704b57bc0d1c393848f45357a3b762963afc0bc",
+      "seconds": 179.53113875
+    },
+    {
+      "name": "Transfer generation native parent",
+      "nested_inside": "Transfer generation external parent",
+      "note": null,
+      "receipt": "artifacts/runs/task15-transfer/launch-run-1.finished.json",
+      "receipt_sha256": "c223c3c8f2e3aa3f11256bc10b18160c55d29cc4f731a8727b32c304c0acac7f",
+      "seconds": 179.16890025
+    },
+    {
+      "name": "Builtin scoring external parent",
+      "nested_inside": null,
+      "note": null,
+      "receipt": "artifacts/provenance/task15-scoring-operations/finished.json",
+      "receipt_sha256": "05147084bc0465450bbdee1b8d90638fbce67ac88a03b41a78fbd74b68b93df8",
+      "seconds": 4.747704917
+    },
+    {
+      "name": "Builtin scoring native interval",
+      "nested_inside": "Builtin scoring external parent",
+      "note": null,
+      "receipt": "artifacts/runs/task15-transfer/scoring-attempts.jsonl",
+      "receipt_sha256": "270544d003a255434e796d398f3c2359a90f17a0b917155bd9b59762b44208e9",
+      "seconds": 4.623535291000735
+    },
+    {
+      "name": "Read-only assigned32 ID/paired/status diagnostic",
+      "nested_inside": null,
+      "note": null,
+      "receipt": "artifacts/provenance/task15-transfer-diagnostics/finished.json",
+      "receipt_sha256": "54630b9cd9d26012336ad58cc5091fc66089b5682738e12b6d67e5f03010d6a2",
+      "seconds": 4.648148625
+    },
+    {
+      "name": "Successful pre-semantic terminal metadata verification",
+      "nested_inside": null,
+      "note": null,
+      "receipt": "artifacts/provenance/task15-generation-operations/terminal-metadata-verification.json",
+      "receipt_sha256": "c63c786a2a18b01934c23e4c9e5cf41fc95ec901ba09f315abac97024440a70b",
+      "seconds": 0.287736625
+    }
+  ],
+  "native_preparation_pilot_run_seconds": 1076.859363125,
+  "native_provenance_field_defect_preserved_and_externally_reconciled": true,
+  "native_summary_sha256": "64fa976cf990fcd7ffddcecc7c57748564430d31a650f2dae0ae97baafd9bd21",
+  "no_bound_private_paths_moved_or_rewritten": true,
+  "no_new_source_config_test_git_or_primary_score_changes_by_this_agent": true,
+  "observer_gaps": {
+    "pilot": {
+      "all_recorded_resource_gates_passed": true,
+      "first_utc": "2026-10-15T07:32:25.198131+00:00",
+      "last_utc": "2026-10-15T07:46:52.609606+00:00",
+      "max_utc_sample_gap_seconds": 1.081781,
+      "median_utc_sample_gap_seconds": 0.510335,
+      "min_utc_sample_gap_seconds": 0.505017,
+      "negative_utc_gaps": 0,
+      "resource_trace_sha256": "cbded544e9499a4248b9cd070a8e8c3a0141c733d2e7a50ec39a17d83921b97e",
+      "samples": 1694,
+      "scope": "UTC observer sample spacing only; not host-awake/stationarity or wall-time-validity proof"
+    },
+    "run": {
+      "all_recorded_resource_gates_passed": true,
+      "first_utc": "2026-10-15T07:55:02.216903+00:00",
+      "last_utc": "2026-10-15T07:57:54.337578+00:00",
+      "max_utc_sample_gap_seconds": 0.653624,
+      "median_utc_sample_gap_seconds": 0.515491,
+      "min_utc_sample_gap_seconds": 0.505735,
+      "negative_utc_gaps": 0,
+      "resource_trace_sha256": "d81520b8935a50f55167dc59d22933364aa059d613d85c7e64c1b7142c10a0f6",
+      "samples": 332,
+      "scope": "UTC observer sample spacing only; not host-awake/stationarity or wall-time-validity proof"
+    }
+  },
+  "public_summary_path": "artifacts/provenance/task15-transfer-diagnostics/public-summary.json",
+  "public_summary_sha256": "70e3fbcad1ddce2b95153f06196ba13786888e994c7123222c78657bd75aca7b",
+  "score_closure_sha256": "b579577cf2fec7d90d2dfdca9fa35ab1cec8d92cbe80e136f333c4ef7e4e1879",
+  "score_rows_sha256": "fff639c9075f6690a61e3b05bd11fa86dae611deabb187f569389e4b694d5f4b",
+  "sealed_utc": "2026-10-15T08:12:32.265952+00:00",
+  "source_audit_path": "artifacts/provenance/analysis-ops-code-audit/source-audit.json",
+  "source_audit_sha256": "f862ee3510cbda950e64ebb608b0a6254797b593db2b28ff9e567404c63f6dc9",
+  "status": "all authorized stages complete; no further experiment/Gold work",
+  "unknown_intervals_not_zero": [
+    "separate authorize CLI invocation",
+    "metadata identity-stop/resource-denial probes",
+    "failed verifier attempts",
+    "unmetered resource/source/hash/admin checks and initial imports/terminal persistence outside named scopes"
+  ]
+}

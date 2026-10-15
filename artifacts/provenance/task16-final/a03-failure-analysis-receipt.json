@@ -1,0 +1,18 @@
+{
+  "verified_utc": "2026-10-15T07:43:33.046227+00:00",
+  "status": "complete",
+  "input_source_hashes_unchanged": true,
+  "lost_job_count": 3255,
+  "successful_job_count": 105,
+  "gold_opened": false,
+  "causal_attribution_unknown_all": true,
+  "files": {
+    "artifacts/provenance/task16-final/a03-failure-analysis.json": "c6e8b2bbd3ae8f6cb2b9c0d351cbd11319aad967c525979d1834ee7c6ba7300a",
+    "artifacts/runs/task16-failure-analysis/all-lost-jobs.jsonl": "218e2a03f71964b3517edad05b421c6bf0964710fd4c2c9a49091885b4302f1e",
+    "artifacts/runs/task16-failure-analysis/analyze.py": "d9199a9396af8380b5559bcc3dc2932b5b84c0cc831f5909b69792fd47d7e86e",
+    "artifacts/runs/task16-failure-analysis/parent.started.json": "ab320d70389925cd59f01da261bff23e95bb25cb657e1646ffac31fd4dcd913f",
+    "artifacts/runs/task16-failure-analysis/parent.finished.json": "2125dc5faf18364085ac54e2ff020ea7a54c69e2f9ac49ebe4bcebe8f3a20a21",
+    "artifacts/runs/task16-failure-analysis/stdout.log": "6aafdd6f1801bf9c8227261edd979e69cb1be161aa1f5cb332fe0a0037abdb15",
+    "artifacts/runs/task16-failure-analysis/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

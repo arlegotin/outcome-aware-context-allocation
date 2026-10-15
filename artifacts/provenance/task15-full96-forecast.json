@@ -1,0 +1,54 @@
+{
+  "96_timeout_request_component_seconds": 3559.829343936,
+  "a_b_routing_calls": 64,
+  "available_until_collection_cutoff_seconds": 8397.287516,
+  "forecast_formula": "1.5 * [96*(max complete selected A03 serving9.736258 + max full pooled retrieval0.17343750002328306) +120 fresh setup +60 parent/resource/closure] +300 recovery",
+  "forecast_is_not_guarantee": true,
+  "full_96_forecast_seconds": 2100,
+  "generation_requests": 96,
+  "limitations": [
+    "pooled evidence/prompt lengths may differ from packet observations",
+    "uniform timeouts/reloads can exceed measured-tail forecast",
+    "no generation/scoring release in this receipt",
+    "both primary wall-time endpoints remain invalid",
+    "support metric in approved transfer scorer is title overlap/fact-title coverage, not original content-hash document or sentence recall"
+  ],
+  "pilot_queries": {
+    "full_retrieval_seconds": {
+      "max": 0.17343750002328306,
+      "mean": 0.14357402327368618,
+      "median": 0.14108660450438038,
+      "min": 0.13104091596323997,
+      "n": 32,
+      "p95_nearest_rank": 0.15964737499598414,
+      "sum": 4.594368744757958
+    },
+    "query_encoding_seconds": {
+      "max": 0.0163717910181731,
+      "mean": 0.009866384092674707,
+      "median": 0.009633645502617583,
+      "min": 0.008241790987085551,
+      "n": 32,
+      "p95_nearest_rank": 0.012455042044166476,
+      "sum": 0.3157242909655906
+    }
+  },
+  "prepared_utc": "2026-10-15T07:52:54.712484+00:00",
+  "remaining_queries": 96,
+  "request_timeout_seconds": 37.081555666,
+  "resources": {
+    "available_memory_bytes": 10442915840,
+    "disk_free_bytes": 60465283072,
+    "load_average": [
+      3.6982421875,
+      5.908203125,
+      6.85693359375
+    ],
+    "physical_memory_bytes": 38654705664,
+    "swap_used_bytes": 6803357696
+  },
+  "scope": "measured pilot aggregate and fresh system metadata only; no reader/generation/Gold",
+  "timeout_component_is_not_total_upper_bound": true,
+  "total_successful_planned_queries": 128,
+  "unrounded_forecast_seconds": 1996.9961520033526
+}
