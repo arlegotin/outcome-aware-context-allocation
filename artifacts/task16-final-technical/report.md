@@ -6866,7 +6866,7 @@ The interval includes finite-population sampling and paired timing uncertainty; 
     "path": "artifacts/provenance/task15-transfer-diagnostics/public-summary.json",
     "sha256": "70e3fbcad1ddce2b95153f06196ba13786888e994c7123222c78657bd75aca7b"
   },
-  "native_provenance_defect": "Expected top-level reuse_sources; actual sealed manifests use offline.reuse_sources. Native missing fields preserved; externally reconciled, not a source fix.",
+  "native_provenance_defect": "Native reuse provenance is incomplete in both protected.py (protected-index seal) and transfer_runtime.py (pooled-index seal): both read top-level reuse_sources, while real producer manifests store offline.reuse_sources. The retained external reconciliation and pre/post guards cover four direct parents plus one ancestor, including the protected index; native fields/source/manifests remain unchanged and the defect is not fixed. Before a new experiment relies on native lineage, correct both consumers in separately versioned source with fail-closed recursive original identities and real-producer synthetic integration checks. Current vector/score bindings remain as recorded; full cost and method adaptation remain unknown.",
   "external_reconciliation": {
     "path": "artifacts/provenance/task15-transfer-reuse-reconciliation/public-safe-receipt.json",
     "sha256": "cb4f955ebace6731f072a0d3136e1ce0d876b77aa2fe249af9e5e30eab0e1d87"
@@ -7748,9 +7748,9 @@ The interval includes finite-population sampling and paired timing uncertainty; 
   "Legacy v1 development paid-receipt sealing is retrospective, not historical completion-time attestation.",
   "Archived dataset source qualification, pretrained contamination, citation annotation limits, packet retrieval and single hardware remain.",
   "Transfer32 is nested exploratory evidence, not independent confirmation; no cross-dataset/open-web/business claim.",
-  "Native pooled reuse-source extraction is incomplete; verified external reconciliation preserves manifests/source and qualifies lineage.",
+  "Native reuse provenance is incomplete in both protected.py (protected-index seal) and transfer_runtime.py (pooled-index seal): both read top-level reuse_sources, while real producer manifests store offline.reuse_sources. The retained external reconciliation and pre/post guards cover four direct parents plus one ancestor, including the protected index; native fields/source/manifests remain unchanged and the defect is not fixed. Before a new experiment relies on native lineage, correct both consumers in separately versioned source with fail-closed recursive original identities and real-producer synthetic integration checks. Current vector/score bindings remain as recorded; full cost and method adaptation remain unknown.",
   "All3255lostjob causal attributions remain unknown; n8 agent diagnostic is enriched and changes no scores.",
-  "Final branch review and post-review process archive refresh remain pending."
+  "Whole-branch review: qualified approval; final scoped check/status/archive closure pending."
 ]
 ```
 

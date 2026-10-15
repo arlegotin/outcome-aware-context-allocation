@@ -1,0 +1,416 @@
+{
+  "utc": "2026-10-15T08:26:42.009718+00:00",
+  "scope": "Root independent source-only binding audit; no raw output or Gold semantic access; not a general transitive dependency proof or deletion authorization",
+  "rows": [
+    {
+      "manifest_path": "artifacts/protocol.json",
+      "manifest_sha256": "b4a4ba3811c5747fc27928e76e8c4698bdc95c06c36f42ce6ab23d24d2fdf182",
+      "source_files": [
+        {
+          "path": "configs/frozen.json",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "requirements.lock",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/__init__.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/__main__.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/assets.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/data_runtime.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/environment.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/features.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/generation.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/policies.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/protected.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/protocol.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/retrieval.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/runner.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/schemas.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/scoring.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/statistics.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/storage.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/timing.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/train.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "tools/task13_calibrate.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "tools/task14_native.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        }
+      ],
+      "direct_scratch_references": 0
+    },
+    {
+      "manifest_path": "artifacts/protocol-task17-timing/protocol.json",
+      "manifest_sha256": "ea24711ece05e6f265a212657cf7f6e2a474360a2e9128aa465f89b09f731bea",
+      "source_files": [
+        {
+          "path": "configs/frozen.json",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "configs/task17-timing-replication.json",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "docs/amendments/A03-timing-replication.json",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "requirements.lock",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/__init__.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/__main__.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/assets.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/data_runtime.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/environment.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/features.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/generation.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/policies.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/protected.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/protocol.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/retrieval.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/runner.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/schemas.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/scoring.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/statistics.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/storage.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/timing.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/train.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "tests/test_task17_manifest.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "tools/task13_calibrate.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "tools/task14_native.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "tools/task17_manifest.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        }
+      ],
+      "direct_scratch_references": 0
+    },
+    {
+      "manifest_path": "artifacts/runs/task15-transfer/manifest.json",
+      "manifest_sha256": "75ebb9d431a5c62a8bacdb3f8dd89fe8d56824f2cb47e51483b57d67b5c996f5",
+      "source_files": [
+        {
+          "path": "configs/frozen.json",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "requirements.lock",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/__init__.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/__main__.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/assets.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/data_runtime.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/environment.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/features.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/generation.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/policies.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/protected.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/protocol.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/retrieval.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/robustness.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/runner.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/schemas.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/scoring.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/statistics.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/storage.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/timing.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/train.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "src/outcome_poc/transfer_runtime.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "tools/task13_calibrate.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "tools/task14_native.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "tools/task15_transfer_native.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        }
+      ],
+      "direct_scratch_references": 0
+    },
+    {
+      "manifest_path": "artifacts/analysis/task18-a03/action-replay.closed.json",
+      "manifest_sha256": "7a8d33d1e3abe8a76cd173581aa3b87aa2044e59b48e5a7de88aa4e57cc2e172",
+      "source_files": [
+        {
+          "path": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/src/outcome_poc/action_replay.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/src/outcome_poc/robustness.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        },
+        {
+          "path": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/tools/task18_action_replay.py",
+          "matches": true,
+          "outside_plan_scratch": true
+        }
+      ],
+      "direct_scratch_references": 0
+    }
+  ],
+  "elapsed_seconds": 0.13356029201531783,
+  "result": "passed"
+}
