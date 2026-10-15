@@ -52,7 +52,7 @@ def prospective_manifest(primary, development, protected, source, root, *, fixtu
         'models':methods['models'],'source':source,'artifact_sha256':primary.get('artifact_sha256',{}),
         'parent_task_ids':parent,'queries':[tasks[tid] for tid in ids],'jobs':jobs,
         'corpus':pooled_corpus_manifest(development,protected),'selection_rule':RULE,'selection_reads_scores':False,
-        'deadline_utc':primary['deadline_utc'],'report_reserve_seconds':7200,'batch_rows':4096,
+        'deadline_utc':methods['deadline_utc'],'report_reserve_seconds':7200,'batch_rows':4096,
         'timing_domain':'perf_counter_ns; host suspension may be excluded; uninterrupted-awake/stationarity evidence remains unverified',
         'reuse_indexes':list(dict.fromkeys([*methods['retrieval'].get('reuse_indexes',[]),methods['retrieval']['index_dir']])),
         'new_index_cost':'all new build/load/query-pilot work charged; reused original adaptation sources identified separately'}
@@ -72,7 +72,7 @@ def verify_manifest(m, *, verify_source=True):
     expected={'A':m['frozen_methods']['selected']['A'],'B':m['frozen_methods']['selected']['B'],'FIXED10':m['frozen_methods']['anchor']}
     if m['policies']!=expected or m['policies']['A']['family']!='PRE-OUTCOME-GBM' or m['policies']['B']['family']!='PROXY-LABEL' or m['policies']['FIXED10'].get('k')!=10:
         raise ValueError('frozen A/B/FIXED10 roster changed')
-    if m['report_reserve_seconds']!=7200 or m['batch_rows']!=4096 or m['selection_rule']!=RULE or m['selection_reads_scores'] is not False:
+    if m['deadline_utc']!=m['frozen_methods']['deadline_utc'] or m['report_reserve_seconds']!=7200 or m['batch_rows']!=4096 or m['selection_rule']!=RULE or m['selection_reads_scores'] is not False:
         raise ValueError('diagnostic settings changed')
     expected_jobs=[]
     for tid in ids:
@@ -101,6 +101,103 @@ def _check_files(root, hashes):
         path=root/name
         if not path.resolve().is_relative_to(root.resolve()) or file_hash(path)!=digest:
             raise ValueError('transfer receipt checksum/path mismatch')
+
+
+def _parent_attempts(m, *, active_attempt=None, require_preparation=True):
+    """Require a bijection of durable parent starts, terminals and charged rows.
+
+    A worker may observe its own one active parent. Authorization and scoring
+    never use that exception. Unknown/orphan intervals are never reconstructed.
+    """
+    import math,re
+    root=Path(m['root']);starts={};finishes={};plans={};paths=[]
+    prefixes=('preparation-','launch-pilot-','launch-run-')
+    if any(root.glob('.*.started.json.*.tmp')):raise ValueError('interrupted parent attempt start publication')
+    for prefix in prefixes:
+        numbers=[]
+        for path in root.glob(prefix+'*.started.json'):
+            label=path.name.removesuffix('.started.json')
+            if not re.fullmatch(re.escape(prefix)+r'[1-9][0-9]*',label):raise ValueError('invalid parent attempt label')
+            starts[label]=_read(path);paths.append(path);numbers.append(int(label[len(prefix):]))
+        if sorted(numbers)!=list(range(1,len(numbers)+1)):raise ValueError('missing earlier parent attempt')
+        for path in root.glob(prefix+'*.finished.json'):
+            finishes[path.name.removesuffix('.finished.json')]=_read(path);paths.append(path)
+        for path in root.glob(prefix+'*.plan.json'):
+            plans[path.name.removesuffix('.plan.json')]=_read(path);paths.append(path)
+    ledger=root/'stage-costs.jsonl';rows=list(read_jsonl(ledger)) if ledger.exists() else []
+    costs={r['source_id']:r for r in rows}
+    if len(costs)!=len(rows):raise ValueError('duplicate parent stage-cost ownership')
+    if not starts and not finishes and not plans and not rows and m.get('fixture'):
+        return {'total_seconds':None,'attempts':{},'hashes':{}}
+    closed=set(starts)-({active_attempt} if active_attempt is not None else set())
+    if active_attempt is not None and active_attempt not in starts:raise ValueError('active parent attempt absent')
+    if set(finishes)!=closed or set(costs)!=closed or not set(plans)<=set(starts):
+        raise ValueError('incomplete parent start/finish/stage-cost reconciliation')
+    records={};total=0.;prepared=[]
+    for label,start in starts.items():
+        stage='prospective-preparation' if label.startswith('preparation-') else 'pilot' if label.startswith('launch-pilot-') else 'run'
+        if start.get('source_id')!=label or start.get('stage')!=stage or type(start.get('start_ns')) is not int or start['start_ns']<0:
+            raise ValueError('parent attempt start identity invalid')
+        if stage!='prospective-preparation' and (start.get('manifest_hash')!=m['manifest_hash'] or start.get('phase')!=stage):
+            raise ValueError('parent native attempt identity changed')
+        if stage=='prospective-preparation' and m.get('primary_protocol_path') and start.get('primary_protocol_path')!=m['primary_protocol_path']:
+            raise ValueError('parent preparation input identity changed')
+        if label==active_attempt:
+            if stage=='prospective-preparation' or label not in plans or plans[label].get('manifest_hash')!=m['manifest_hash'] or plans[label].get('started_receipt_sha256')!=file_hash(root/f'{label}.started.json'):
+                raise ValueError('active native parent plan identity invalid')
+            continue
+        finish=finishes[label];cost=costs[label]
+        if finish.get('source_id')!=label or finish.get('stage')!=stage or finish.get('status') not in ('ok','failed'):
+            raise ValueError('parent attempt terminal identity invalid')
+        if finish.get('started_receipt_sha256')!=file_hash(root/f'{label}.started.json') or cost.get('finished_receipt_sha256')!=file_hash(root/f'{label}.finished.json'):
+            raise ValueError('parent attempt receipt linkage changed')
+        stop=finish.get('stop_ns');elapsed=finish.get('elapsed_seconds')
+        if type(stop) is not int or stop<start['start_ns'] or type(elapsed) not in (int,float) or not math.isfinite(elapsed) or elapsed!=(stop-start['start_ns'])/1e9:
+            raise ValueError('parent attempt observed cost interval invalid')
+        if any(canonical_bytes(cost.get(k))!=canonical_bytes(finish.get(k)) for k in ('source_id','stage','status','elapsed_seconds')):
+            raise ValueError('parent stage-cost row differs from terminal')
+        if stage!='prospective-preparation' and finish.get('manifest_hash')!=m['manifest_hash']:
+            raise ValueError('parent native terminal manifest changed')
+        plan_path=root/f'{label}.plan.json'
+        if finish.get('plan_sha256')!=(file_hash(plan_path) if label in plans else None):
+            raise ValueError('parent launch plan linkage changed')
+        if label in plans and (plans[label].get('manifest_hash')!=m['manifest_hash'] or plans[label].get('started_receipt_sha256')!=finish['started_receipt_sha256']):
+            raise ValueError('parent launch plan identity changed')
+        if finish['status']=='ok':
+            output=root/('manifest.json' if stage=='prospective-preparation' else 'pilot.closed.json' if stage=='pilot' else 'transfer.closed.json')
+            if finish.get('manifest_hash')!=m['manifest_hash'] or finish.get('output_sha256')!=file_hash(output):
+                raise ValueError('successful parent output identity changed')
+            if stage!='prospective-preparation' and (label not in plans or finish.get('returncode')!=0):
+                raise ValueError('successful native parent completion missing')
+            if stage=='prospective-preparation':prepared.append(label)
+        records[label]=finish;total+=elapsed
+    if require_preparation and len(prepared)!=1:raise ValueError('one complete parent preparation required')
+    if not require_preparation and prepared:raise ValueError('parent preparation already completed')
+    if ledger.exists():paths.append(ledger)
+    return {'total_seconds':total,'attempts':records,'hashes':_inventory(root,paths)}
+
+
+def _finish_parent(root,label,start,status,*,manifest_hash=None,returncode=None):
+    stop=time.perf_counter_ns();stage=start['stage'];plan=root/f'{label}.plan.json'
+    output=root/('manifest.json' if stage=='prospective-preparation' else 'pilot.closed.json' if stage=='pilot' else 'transfer.closed.json')
+    terminal={'source_id':label,'stage':stage,'manifest_hash':manifest_hash,'status':status,'returncode':returncode,
+        'stop_ns':stop,'elapsed_seconds':(stop-start['start_ns'])/1e9,
+        'started_receipt_sha256':file_hash(root/f'{label}.started.json'),
+        'plan_sha256':file_hash(plan) if plan.exists() else None,'output_sha256':file_hash(output) if status=='ok' else None,
+        'boundary':'observed parent attempt through child return/output publication; excludes terminal and cost-receipt persistence'}
+    immutable_json(root/f'{label}.finished.json',terminal)
+    append_jsonl(root/'stage-costs.jsonl',{k:terminal[k] for k in ('source_id','stage','status','elapsed_seconds')}|
+        {'finished_receipt_sha256':file_hash(root/f'{label}.finished.json')})
+
+
+def _completed_pilot(m,parents):
+    root=Path(m['root']);pilot=_read(root/'pilot.closed.json')
+    if pilot['manifest_hash']!=m['manifest_hash']:raise ValueError('measured pilot identity changed')
+    _check_files(root,pilot['hashes'])
+    label=pilot.get('parent_attempt');parent=parents['attempts'].get(label)
+    if not parent or parent['stage']!='pilot' or parent['status']!='ok' or parent.get('returncode')!=0:
+        raise ValueError('successful measured pilot parent completion required')
+    return pilot,label
 
 
 def build_pooled_index(m, documents, encoder):
@@ -280,11 +377,13 @@ def validate_transfer(m):
     predictions=[_prediction(row) for row in read_jsonl(root/'predictions.jsonl')]
     if [p.job_id for p in predictions]!=marker['assigned_job_ids']:raise ValueError('missing/duplicate diagnostic prediction')
     costs={};bindings={**marker['hashes'],'transfer.closed.json':file_hash(root/'transfer.closed.json')}
-    acquisition=sum(r['elapsed_seconds'] for r in read_jsonl(root/'stage-costs.jsonl')) if (root/'stage-costs.jsonl').exists() else None
-    if not m['fixture']:
+    parents=_parent_attempts(m);acquisition=parents['total_seconds'];bindings.update(parents['hashes'])
+    if not m['fixture'] or (root/'launch-run.completed.json').exists():
         launch=_read(root/'launch-run.completed.json');_check_files(root,launch['hashes'])
         if launch['returncode']!=0 or launch['manifest_hash']!=m['manifest_hash']:raise ValueError('native diagnostic not completed')
         bindings.update(launch['hashes']);bindings['launch-run.completed.json']=file_hash(root/'launch-run.completed.json')
+        resources={str(p.relative_to(root)) for p in root.glob('worker-*-resources.jsonl')}
+        if not resources or not resources<=set(launch['hashes']):raise ValueError('native parent resource evidence not sealed')
     warm=sum(p.elapsed_seconds for p in predictions)
     if acquisition is None:
         if not m['fixture']:raise ValueError('complete measured acquisition costs required')
@@ -396,14 +495,15 @@ def capture_snapshot(m):
 
 def authorize_execution(m,*,forecast_seconds):
     import math
-    verify_manifest(m);root=Path(m['root']);pilot=_read(root/'pilot.closed.json')
-    if pilot['manifest_hash']!=m['manifest_hash']:raise ValueError('measured pilot identity changed')
-    _check_files(root,pilot['hashes'])
+    verify_manifest(m);root=Path(m['root']);parents=_parent_attempts(m)
+    pilot,label=_completed_pilot(m,parents)
     available=(datetime.fromisoformat(m['deadline_utc'])-datetime.now(timezone.utc)).total_seconds()
     if type(forecast_seconds) not in (int,float) or not math.isfinite(forecast_seconds) or forecast_seconds<=0 or forecast_seconds+m['report_reserve_seconds']>available:
         raise ValueError('complete diagnostic forecast does not fit deadline/report reserve')
     result={'manifest_hash':m['manifest_hash'],'queries':COUNT,'assigned_jobs':len(m['jobs']),
         'pilot_closure_hash':file_hash(root/'pilot.closed.json'),'forecast_seconds':forecast_seconds,
+        'pilot_parent_finished_sha256':file_hash(root/f'{label}.finished.json'),
+        'parent_receipt_hashes':{name:digest for name,digest in parents['hashes'].items() if name!='stage-costs.jsonl'},
         'report_reserve_seconds':m['report_reserve_seconds'],'available_seconds':available,
         'utc':datetime.now(timezone.utc).isoformat(),'decision':'execute entire fixed32 or do not execute; no resizing'}
     immutable_json(root/'execution-authorization.json',result)
@@ -427,8 +527,13 @@ def seal_manifest(primary_path,root):
     """Phase2 preparation: seal selection before reading any protected scores."""
     import subprocess
     from .protocol import verify_protocol,_capture_source
-    started=time.perf_counter();root=Path(root).resolve();root.mkdir(parents=True,exist_ok=True);status='failed'
+    root=Path(root).resolve();root.mkdir(parents=True,exist_ok=True);status='failed';m=None
     if (root/'manifest.json').exists():raise ValueError('prospective manifest already sealed; do not resample')
+    _parent_attempts({'root':str(root),'fixture':True,'manifest_hash':None},require_preparation=False)
+    number=len(list(root.glob('preparation-*.started.json')))+1;label=f'preparation-{number}'
+    start={'source_id':label,'stage':'prospective-preparation','manifest_hash':None,'start_ns':time.perf_counter_ns(),
+        'primary_protocol_path':str(Path(primary_path).resolve()),'utc':datetime.now(timezone.utc).isoformat()}
+    immutable_json(root/f'{label}.started.json',start)
     try:
         primary=verify_protocol(Path(primary_path));prepared=Path(primary['methods']['retrieval']['prepared_dir'])
         meta=_read(prepared/'manifest.json');reservations=meta['reservations']
@@ -445,13 +550,12 @@ def seal_manifest(primary_path,root):
             if not path.exists():raise ValueError('prospective reuse source unavailable: '+str(path))
             inputs.append(path)
         m['input_sha256']={str(p.resolve()):file_hash(p) for p in inputs}
+        m['primary_protocol_path']=str(Path(primary_path).resolve())
         m['sealed_utc']=datetime.now(timezone.utc).isoformat();m['manifest_hash']=_digest(m)
         immutable_json(root/'manifest.json',m);status='ok'
         return m
     finally:
-        append_jsonl(root/'stage-costs.jsonl',{'stage':'prospective-preparation','status':status,
-            'elapsed_seconds':time.perf_counter()-started,'source_id':'preparation-'+str(time.time_ns()),
-            'boundary':'command preparation through prospective publication; excludes cost-receipt persistence'})
+        _finish_parent(root,label,start,status,manifest_hash=m['manifest_hash'] if m is not None else None)
 
 
 def _probe_denials(m,phase):
@@ -469,23 +573,28 @@ def launch(m,phase):
     import os,subprocess
     if m['fixture']:raise ValueError('fixture cannot launch native diagnostic')
     if phase not in ('pilot','run'):raise ValueError('unknown native diagnostic phase')
-    verify_manifest(m);root=Path(m['root'])
+    root=Path(m['root']);verify_manifest(m,verify_source=False)
     if _read(root/'manifest.json')!=m:raise ValueError('prospective manifest file changed')
     if (root/'launch-run.completed.json').exists() or (phase=='run' and (root/'run.started.json').exists()):
         raise ValueError('native diagnostic already attempted/closed')
     if phase=='pilot' and (root/'pilot.closed.json').exists():raise ValueError('measured pilot already closed')
-    if phase=='run':_check_authorization(m)
-    started=time.perf_counter();number=len(list(root.glob(f'launch-{phase}-*.started.json')))+1
+    _parent_attempts(m)
+    number=len(list(root.glob(f'launch-{phase}-*.started.json')))+1
     label=f'launch-{phase}-{number}';status='failed';returncode=None
+    start={'source_id':label,'stage':phase,'manifest_hash':m['manifest_hash'],'phase':phase,
+        'start_ns':time.perf_counter_ns(),'utc':datetime.now(timezone.utc).isoformat()}
+    immutable_json(root/f'{label}.started.json',start)
     try:
+        verify_manifest(m)
         snapshot=capture_snapshot(m)
         profile=root/'native.sb';immutable_profile=diagnostic_profile(Path.cwd(),Path(m['prepared_dir']))
         if profile.exists() and profile.read_text()!=immutable_profile:raise ValueError('diagnostic OS profile changed')
         profile.write_text(immutable_profile)
         (root/'denial-probe.gold.jsonl').write_text('synthetic OS-denial probe\n')
-        immutable_json(root/f'{label}.started.json',{'manifest_hash':m['manifest_hash'],'phase':phase,
-            'utc':datetime.now(timezone.utc).isoformat(),'snapshot_hash':file_hash(snapshot/'snapshot.json'),
+        immutable_json(root/f'{label}.plan.json',{'manifest_hash':m['manifest_hash'],
+            'started_receipt_sha256':file_hash(root/f'{label}.started.json'),'snapshot_hash':file_hash(snapshot/'snapshot.json'),
             'profile_hash':file_hash(profile)})
+        if phase=='run':_check_authorization(m,active_attempt=label)
         env={**os.environ,'PYTHONPATH':str(snapshot/'src'),'TASK15_TRANSFER_SNAPSHOT':str(snapshot),
             'HF_HUB_OFFLINE':'1','TRANSFORMERS_OFFLINE':'1','TOKENIZERS_PARALLELISM':'false'}
         cmd=['/usr/bin/sandbox-exec','-f',str(profile),str(Path('.venv/bin/python3.12').absolute()),
@@ -494,24 +603,35 @@ def launch(m,phase):
             process=subprocess.run(cmd,env=env,stdout=log,stderr=subprocess.STDOUT)
         returncode=process.returncode
         if returncode:raise RuntimeError('independent native diagnostic incomplete; receipts retained')
+        output=_read(root/('pilot.closed.json' if phase=='pilot' else 'transfer.closed.json'))
+        if output['manifest_hash']!=m['manifest_hash'] or (phase=='pilot' and output.get('parent_attempt')!=label):
+            raise ValueError('native parent output identity changed')
         status='ok'
     finally:
-        elapsed=time.perf_counter()-started
-        atomic_json(root/f'{label}.finished.json',{'manifest_hash':m['manifest_hash'],'returncode':returncode,
-            'status':status,'elapsed_seconds':elapsed,'boundary':'parent command envelope; includes nested worker/setup/index/jobs, not additive'})
-        append_jsonl(root/'stage-costs.jsonl',{'stage':phase,'status':status,'elapsed_seconds':elapsed,'source_id':label})
-    if phase=='run':
-        paths=[root/'transfer.closed.json',root/'stage-costs.jsonl',root/'pilot.closed.json',root/'execution-authorization.json',
-            root/'native.sb',snapshot/'snapshot.json',*root.glob('launch-*.json'),*root.glob('worker-*.json'),*root.glob('os-denials-*.json')]
-        immutable_json(root/'launch-run.completed.json',{'manifest_hash':m['manifest_hash'],'returncode':0,'hashes':_inventory(root,paths)})
+        _finish_parent(root,label,start,status,manifest_hash=m['manifest_hash'],returncode=returncode)
+    if phase=='run':_seal_native_completion(m)
     return 0
 
 
-def _check_authorization(m):
+def _seal_native_completion(m):
+    root=Path(m['root']);parents=_parent_attempts(m);_completed_pilot(m,parents)
+    if not any(row['stage']=='run' and row['status']=='ok' for row in parents['attempts'].values()):
+        raise ValueError('successful native parent run completion required')
+    paths=[root/'transfer.closed.json',root/'pilot.closed.json',root/'execution-authorization.json',
+        root/'native.sb',root/'execution-snapshot/snapshot.json',*root.glob('launch-*.json'),
+        *root.glob('worker-*.json'),*root.glob('worker-*-resources.jsonl'),*root.glob('os-denials-*.json')]
+    hashes={**parents['hashes'],**_inventory(root,paths)}
+    immutable_json(root/'launch-run.completed.json',{'manifest_hash':m['manifest_hash'],'returncode':0,'hashes':hashes})
+
+
+def _check_authorization(m,*,active_attempt=None):
     root=Path(m['root']);decision=_read(root/'execution-authorization.json')
     if (decision['manifest_hash']!=m['manifest_hash'] or decision['assigned_jobs']!=96 or decision['queries']!=COUNT or
             decision['pilot_closure_hash']!=file_hash(root/'pilot.closed.json')):raise ValueError('whole diagnostic authorization changed')
-    pilot=_read(root/'pilot.closed.json');_check_files(root,pilot['hashes'])
+    parents=_parent_attempts(m,active_attempt=active_attempt);pilot,label=_completed_pilot(m,parents)
+    _check_files(root,decision['parent_receipt_hashes'])
+    if decision['pilot_parent_finished_sha256']!=file_hash(root/f'{label}.finished.json'):
+        raise ValueError('successful pilot parent authorization changed')
     available=(datetime.fromisoformat(m['deadline_utc'])-datetime.now(timezone.utc)).total_seconds()
     if decision['forecast_seconds']+m['report_reserve_seconds']>available:raise ValueError('diagnostic no longer fits deadline/report reserve')
 
@@ -533,13 +653,15 @@ def native_main(manifest_path,phase):
             raise ValueError('native diagnostic snapshot source changed')
     verify_manifest(m)
     entries=list(root.glob(f'launch-{phase}-*.started.json'))
-    latest=max(entries,key=lambda p:int(p.name.split('-')[-1].split('.')[0]));launch_plan=_read(latest)
+    latest=max(entries,key=lambda p:int(p.name.split('-')[-1].split('.')[0]))
+    label=latest.name.removesuffix('.started.json');launch_plan=_read(root/f'{label}.plan.json')
+    if launch_plan['started_receipt_sha256']!=file_hash(latest):raise ValueError('native parent start linkage changed')
     if launch_plan['manifest_hash']!=m['manifest_hash'] or launch_plan['profile_hash']!=file_hash(root/'native.sb') or launch_plan['snapshot_hash']!=file_hash(snapshot/'snapshot.json'):
         raise ValueError('native diagnostic launch identity changed')
-    label=latest.name.removesuffix('.started.json')
     if datetime.now(timezone.utc)>=datetime.fromisoformat(m['deadline_utc'])-timedelta(seconds=m['report_reserve_seconds']):
         raise ValueError('native diagnostic would consume report reserve')
-    if phase=='run':_check_authorization(m)
+    _parent_attempts(m,active_attempt=label)
+    if phase=='run':_check_authorization(m,active_attempt=label)
     _probe_denials(m,label)
     return _native_work(m,phase,label)
 
@@ -569,6 +691,7 @@ def _native_work(m,phase,label):
         while not stop.wait(.5):
             try:append_jsonl(resource_path,measure())
             except (psutil.NoSuchProcess,psutil.AccessDenied):pass
+    append_jsonl(resource_path,measure())
     observer=threading.Thread(target=observe,daemon=True);observer.start();summary=None
     def guard():
         state=measure()
@@ -631,7 +754,7 @@ def _native_work(m,phase,label):
         paths=[root/'manifest.json',root/'corpus-documents.jsonl',root/'index-realization.json',root/'index-attempts.jsonl',
             root/f'pilot-queries-{label}.jsonl',root/f'worker-{label}.json',root/f'os-denials-{label}.json',resource_path]
         hashes={**index_seal['files'],**_inventory(root,paths)}
-        immutable_json(root/'pilot.closed.json',{'manifest_hash':m['manifest_hash'],'hashes':hashes,
+        immutable_json(root/'pilot.closed.json',{'manifest_hash':m['manifest_hash'],'hashes':hashes,'parent_attempt':label,
             'document_count':summary['document_count'],'window_count':summary['window_count'],'query_count':COUNT,'generation_calls':0})
     return summary
 

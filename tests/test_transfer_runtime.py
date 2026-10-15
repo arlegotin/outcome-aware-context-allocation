@@ -9,11 +9,11 @@ import numpy as np
 import pytest
 
 from outcome_poc.schemas import Task,RankedDocument,ReaderResult,GoldRecord
-from outcome_poc.storage import append_jsonl,atomic_json,content_hash,read_jsonl
+from outcome_poc.storage import append_jsonl,atomic_json,content_hash,read_jsonl,canonical_bytes
 from outcome_poc.data_runtime import DocumentStore
-from outcome_poc.protocol import file_hash
+from outcome_poc.protocol import file_hash,freeze
 from retrieval_helpers import document
-from test_ablations import synthetic
+from test_protocol import inputs
 from test_prompt import Tokenizer
 
 
@@ -23,17 +23,18 @@ def api():
 
 
 def fixture(tmp_path):
-    primary,*_=synthetic(tmp_path)
+    config=inputs(tmp_path)
     docs=[document('Fixture '+str(i),['Evidence '+str(i)+'.']) for i in range(12)]
     protected=[Task('query'+str(i),'protected','Fixture?', [d.doc_id for d in docs[:10]]) for i in range(50)]
     dev=[Task('development','pilot','Development?',[d.doc_id for d in docs[2:]])]
-    primary['sample']={'task_ids':[t.task_id for t in protected[:40]],'tasks':[asdict(t) for t in protected[:40]],'n':40,'N':50}
-    primary['deadline_utc']='2099-01-01T00:00:00+00:00'
     prepared=tmp_path/'prepared';prepared.mkdir()
     for d in docs:append_jsonl(prepared/'documents.jsonl',d)
     for t in [*dev,*protected]:append_jsonl(prepared/'tasks.jsonl',t)
-    primary['methods']['retrieval']={'prepared_dir':str(prepared),'reuse_indexes':[],'index_dir':str(tmp_path/'primary-index')}
-    primary['artifact_sha256']={}
+    config.update(tasks=protected,population_ids=[t.task_id for t in protected],n=40)
+    config['development']['forecast']['available_seconds']=1000000.
+    config['development']['retrieval']={'prepared_dir':str(prepared),'reuse_indexes':[],'index_dir':str(tmp_path/'primary-index')}
+    primary=freeze(config)
+    assert 'deadline_utc' not in primary
     source=tmp_path/'fixture-source.py';source.write_text('synthetic source')
     sources={'commit':'a'*40,'sha256':{str(source):file_hash(source)}}
     manifest=api().prospective_manifest(primary,dev,protected,sources,tmp_path/'transfer',fixture=True)
@@ -73,6 +74,7 @@ def test_fixed_32_queries_are_hash_selected_without_outcomes_and_full_union(tmp_
     assert m['policies']=={'A':p['methods']['selected']['A'],'B':p['methods']['selected']['B'],'FIXED10':p['methods']['anchor']}
     assert m['primary_protocol_hash']==p['protocol_hash'] and m['selection_reads_scores'] is False
     assert m['scope']=='nested exploratory pooled transfer; not confirmation'
+    assert m['deadline_utc']==p['methods']['deadline_utc']
 
 
 def test_manifest_rejects_resizing_or_changed_reader_and_snapshot_bytes(tmp_path):
@@ -171,16 +173,20 @@ def test_source_snapshot_refuses_mutation_and_is_not_primary_snapshot(tmp_path):
     with pytest.raises(ValueError,match='snapshot|source'):api().capture_snapshot(m)
 
 
-def test_measured_pilot_and_remaining_report_reserve_gate_whole_diagnostic(tmp_path):
+def test_measured_pilot_and_remaining_report_reserve_gate_whole_diagnostic(tmp_path,monkeypatch):
     m,_,_,_=fixture(tmp_path);root=Path(m['root'])
-    atomic_json(root/'pilot.closed.json',{'manifest_hash':m['manifest_hash'],'hashes':{}})
+    parent_attempt(m,'preparation-1','prospective-preparation')
+    atomic_json(root/'pilot.closed.json',{'manifest_hash':m['manifest_hash'],'hashes':{},'parent_attempt':'launch-pilot-1'})
+    parent_attempt(m,'launch-pilot-1','pilot')
     result=api().authorize_execution(m,forecast_seconds=300.)
     assert result['assigned_jobs']==96 and result['queries']==32
     assert result['pilot_closure_hash']==file_hash(root/'pilot.closed.json')
-    bad=deepcopy(m);bad['deadline_utc']='2000-01-01T00:00:00+00:00'
-    bad['manifest_hash']=content_hash({k:v for k,v in bad.items() if k!='manifest_hash'})
-    atomic_json(root/'pilot.closed.json',{'manifest_hash':bad['manifest_hash'],'hashes':{}})
-    with pytest.raises(ValueError,match='reserve|budget|deadline'):api().authorize_execution(bad,forecast_seconds=300.)
+    from datetime import datetime,timezone
+    class Late(datetime):
+        @classmethod
+        def now(cls,tz=None):return datetime(2100,1,1,tzinfo=timezone.utc)
+    monkeypatch.setattr(api(),'datetime',Late)
+    with pytest.raises(ValueError,match='reserve|budget|deadline'):api().authorize_execution(m,forecast_seconds=300.)
 
 
 def test_real_os_profile_denies_synthetic_gold_raw_and_network(tmp_path):
@@ -247,3 +253,104 @@ def test_completed_receipts_still_reject_changed_frozen_request_settings(tmp_pat
     for changed in (path,terminal):marker['hashes'][str(changed.relative_to(root))]=file_hash(changed)
     atomic_json(root/'transfer.closed.json',marker)
     with pytest.raises(ValueError,match='request|settings'):api().validate_transfer(m)
+
+
+def parent_attempt(m,label,stage,*,status='ok',finish=True,cost=True,seconds=2.):
+    """Independent hand-written parent receipts; no process/model is launched."""
+    root=Path(m['root']);start={'source_id':label,'stage':stage,'manifest_hash':m['manifest_hash'],
+        'start_ns':1_000_000_000,'utc':'2026-10-15T00:00:00+00:00'}
+    if stage!='prospective-preparation':start['phase']=stage
+    atomic_json(root/f'{label}.started.json',start)
+    if stage!='prospective-preparation':
+        atomic_json(root/f'{label}.plan.json',{'manifest_hash':m['manifest_hash'],
+            'started_receipt_sha256':file_hash(root/f'{label}.started.json'),'snapshot_hash':'synthetic','profile_hash':'synthetic'})
+    if not finish:return
+    output=root/('manifest.json' if stage=='prospective-preparation' else 'pilot.closed.json' if stage=='pilot' else 'transfer.closed.json')
+    terminal={'source_id':label,'stage':stage,'manifest_hash':m['manifest_hash'],'status':status,
+        'returncode':0 if status=='ok' and stage!='prospective-preparation' else None,
+        'stop_ns':1_000_000_000+round(seconds*1e9),'elapsed_seconds':seconds,
+        'started_receipt_sha256':file_hash(root/f'{label}.started.json'),
+        'plan_sha256':file_hash(root/f'{label}.plan.json') if stage!='prospective-preparation' else None,
+        'output_sha256':file_hash(output) if status=='ok' else None}
+    atomic_json(root/f'{label}.finished.json',terminal)
+    if cost:append_jsonl(root/'stage-costs.jsonl',{'source_id':label,'stage':stage,'status':status,
+        'elapsed_seconds':seconds,'finished_receipt_sha256':file_hash(root/f'{label}.finished.json')})
+
+
+def test_post_pilot_worker_seal_without_parent_terminal_cannot_authorize(tmp_path):
+    m,_,_,_=fixture(tmp_path);root=Path(m['root'])
+    parent_attempt(m,'preparation-1','prospective-preparation')
+    parent_attempt(m,'launch-pilot-1','pilot',finish=False)
+    atomic_json(root/'pilot.closed.json',{'manifest_hash':m['manifest_hash'],'hashes':{},'parent_attempt':'launch-pilot-1'})
+    before={str(p):p.read_bytes() for p in root.rglob('*') if p.is_file()}
+    with pytest.raises(ValueError,match='parent|attempt|cost'):api().authorize_execution(m,forecast_seconds=300.)
+    assert not (root/'execution-authorization.json').exists()
+    assert before=={str(p):p.read_bytes() for p in root.rglob('*') if p.is_file()}
+
+
+@pytest.mark.parametrize('orphan_stage',['pilot','prospective-preparation'])
+def test_earlier_orphan_parent_cannot_disappear_behind_successful_retry(tmp_path,orphan_stage):
+    m,_,_,runtime=fixture(tmp_path);root=Path(m['root'])
+    if orphan_stage=='prospective-preparation':
+        parent_attempt(m,'preparation-1',orphan_stage,finish=False)
+        parent_attempt(m,'preparation-2',orphan_stage)
+    else:
+        parent_attempt(m,'preparation-1','prospective-preparation')
+        parent_attempt(m,'launch-pilot-1','pilot',finish=False)
+    pilot_label='launch-pilot-2' if orphan_stage=='pilot' else 'launch-pilot-1'
+    atomic_json(root/'pilot.closed.json',{'manifest_hash':m['manifest_hash'],'hashes':{},'parent_attempt':pilot_label})
+    parent_attempt(m,pilot_label,'pilot')
+    with pytest.raises(ValueError,match='parent|attempt|cost'):api().authorize_execution(m,forecast_seconds=300.)
+    # Even a complete worker's 96 outputs cannot make unknown parent work free.
+    api().run_diagnostic(m,*runtime)
+    parent_attempt(m,'launch-run-1','run',seconds=1000.)
+    with pytest.raises(ValueError,match='parent|attempt|cost'):api().validate_transfer(m)
+
+
+@pytest.mark.parametrize('corrupt',['missing_cost','duplicate_cost','wrong_seconds'])
+def test_parent_start_finish_cost_rows_must_reconcile_exactly(tmp_path,corrupt):
+    m,_,_,_=fixture(tmp_path);root=Path(m['root'])
+    parent_attempt(m,'preparation-1','prospective-preparation',cost=corrupt!='missing_cost')
+    atomic_json(root/'pilot.closed.json',{'manifest_hash':m['manifest_hash'],'hashes':{},'parent_attempt':'launch-pilot-1'})
+    parent_attempt(m,'launch-pilot-1','pilot')
+    rows=list(read_jsonl(root/'stage-costs.jsonl'))
+    if corrupt=='duplicate_cost':append_jsonl(root/'stage-costs.jsonl',rows[0])
+    if corrupt=='wrong_seconds':
+        rows[0]['elapsed_seconds']=.5
+        (root/'stage-costs.jsonl').write_bytes(b''.join(canonical_bytes(r)+b'\n' for r in rows))
+    with pytest.raises(ValueError,match='parent|attempt|cost'):api().authorize_execution(m,forecast_seconds=300.)
+
+
+def test_failed_parent_costs_are_retained_and_run_resource_trace_is_sealed(tmp_path):
+    m,_,_,runtime=fixture(tmp_path);root=Path(m['root'])
+    parent_attempt(m,'preparation-1','prospective-preparation',status='failed',seconds=3.)
+    parent_attempt(m,'preparation-2','prospective-preparation',seconds=2.)
+    parent_attempt(m,'launch-pilot-1','pilot',status='failed',seconds=5.)
+    atomic_json(root/'pilot.closed.json',{'manifest_hash':m['manifest_hash'],'hashes':{},'parent_attempt':'launch-pilot-2'})
+    parent_attempt(m,'launch-pilot-2','pilot',seconds=4.)
+    api().authorize_execution(m,forecast_seconds=300.)
+    api().run_diagnostic(m,*runtime)
+    resource=root/'worker-launch-run-1-resources.jsonl';append_jsonl(resource,{'synthetic':True})
+    parent_attempt(m,'launch-run-1','run',seconds=1000.)
+    api()._seal_native_completion(m)
+    marker=json.loads((root/'launch-run.completed.json').read_text())
+    assert str(resource.relative_to(root)) in marker['hashes']
+    predictions,costs,_=api().validate_transfer(m)
+    assert sum(costs[p.job_id]['total_experiment_seconds'] for p in predictions)==pytest.approx(1014.)
+    append_jsonl(resource,{'changed':True})
+    with pytest.raises(ValueError,match='checksum'):api().validate_transfer(m)
+
+
+def test_failed_preparation_is_journaled_and_unknown_terminal_is_never_repaired(tmp_path):
+    root=tmp_path/'independent-failed-preparation'
+    with pytest.raises(FileNotFoundError):api().seal_manifest(tmp_path/'missing-primary.json',root)
+    start=json.loads((root/'preparation-1.started.json').read_text())
+    finish=json.loads((root/'preparation-1.finished.json').read_text())
+    costs=list(read_jsonl(root/'stage-costs.jsonl'))
+    assert finish['status']=='failed' and costs[0]['status']=='failed'
+    assert costs[0]['elapsed_seconds']==(finish['stop_ns']-start['start_ns'])/1e9>0
+    assert costs[0]['finished_receipt_sha256']==file_hash(root/'preparation-1.finished.json')
+    (root/'preparation-1.finished.json').unlink()
+    before={str(p):p.read_bytes() for p in root.rglob('*') if p.is_file()}
+    with pytest.raises(ValueError,match='parent'):api().seal_manifest(tmp_path/'missing-primary.json',root)
+    assert before=={str(p):p.read_bytes() for p in root.rglob('*') if p.is_file()}
