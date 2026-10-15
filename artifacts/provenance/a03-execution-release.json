@@ -1,0 +1,51 @@
+{
+  "a03_protocol_hash": "ad632aa3f9a37765b62d237abb3782251bb54084e6bc6a8309399f873adfba07",
+  "amendment_id": "A04",
+  "amendment_sha256": "35619ce1cd67508e437f6d42c2d6974b1bae8552bd421abd98ee789b0dc64111",
+  "assigned_jobs": 3360,
+  "assigned_unique_tasks": 480,
+  "authorization": "Execute one independently frozen same-480 A03 timing comparison through the reviewed native launcher. Scoring and Gold remain held until closure or explicit unexecuted decision.",
+  "authorized_by": "Codex /root",
+  "collection_deadline_utc": "2026-10-15T10:12:52+00:00",
+  "concurrent_work": "Latest clean scan; earlier unidentified Python3.14 pytest process exited naturally and is preserved, never signalled or attributed. No new source tests/model/index work during collection.",
+  "conditional_end_from_release_utc": "2026-10-15T08:51:35.029469+00:00",
+  "current_budget_seconds": 15264.758102348502,
+  "historical_operational_metadata": "Original/A03 registration bytes retain06:12:52UTC. ExternalA04 supersedes only original cutoff to04:30UTC; actualstop occurred04:30:00.253260UTC. No scientific identity was changed.",
+  "index_reuse": "Original physical index source retained, not charged as new. New load/setup/execution costs remain real and namespaced.",
+  "invariants": [
+    "No sample shrinkage or new independent questions",
+    "No selected-policy/prompt/model/statistical changes",
+    "Every attempt and failure retained",
+    "Verified new suspension invalidates wall-time endpoint",
+    "No selective time repair or third timing experiment",
+    "No power changes or battery stop",
+    "No quality/Gold/scoring before closure or explicit wholly-unexecuted decision"
+  ],
+  "kind": "root_explicit_A03_execution_release",
+  "minimum_report_reserve_seconds": 7200,
+  "original_state": "incomplete;6510/8640terminal jobs;full480assignment retained/unscored",
+  "original_stop_record": {
+    "path": "artifacts/provenance/original-collection-stop.json",
+    "sha256": "463185677ba2ab300ffec4cc1ebd71f62901014ebd7257e3036dd1bc6360f8f0"
+  },
+  "parent_protocol_hash": "415c80344dc3609ee2600a20c63c2502e4fc100cf50c60daee73ebc8a721e100",
+  "preflight_receipts": [
+    {
+      "path": "artifacts/runs/operational-planning/a03-prelaunch-20261015T043354Z.json",
+      "sha256": "4779b5ed4cc04b15a90adedca4adb26fb47a429b5591f0c4145742e0d0c70b81"
+    },
+    {
+      "path": "artifacts/runs/operational-planning/a03-prelaunch-supplement-20261015T043619Z.json",
+      "sha256": "a92328dbbd27c449f6529fe9291e16558656864510a8515993ca12ce3a8697ca"
+    }
+  ],
+  "primary_jobs": 1920,
+  "project_deadline_utc": "2026-10-15T12:12:52+00:00",
+  "qualification": "Measured active-clock forecast with1.5margin, actualsetup/finalinflight and assumed600secclosure; no future wall-time or stationarity guarantee. Preflight observations are retrospective.",
+  "release_utc": "2026-10-15T04:37:10.271367+00:00",
+  "repetitions": 2,
+  "source_commit": "869b701f4d3d0c23a02a3fe36be66af298d924c4",
+  "status": "execution authorized; launch not yet evidenced",
+  "verified_bound_source_files": 26,
+  "wall_time_valid": null
+}

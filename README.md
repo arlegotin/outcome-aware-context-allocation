@@ -4,7 +4,7 @@ We are testing whether an AI can read less evidence and still answer correctly. 
 
 Practice runs are complete. The outcome-trained controller has not beaten the simpler support-label-trained alternative on the development comparison. That finding is preliminary.
 
-The frozen 480-question test is running. Repeated Mac sleep interruptions exposed a timer that excludes suspended time, so the original run cannot establish the intended wall-time efficiency claim. Its raw work is retained. The [execution checkpoint](artifacts/checkpoint_report.md) records current status, remaining work and the deadline. No improvement or preserved-quality claim has been established.
+The original 480-question test stopped incomplete after 6,510 of 8,640 pipelines. A separately registered run on the same 480 questions has completed all 3,360 assigned answer runs for the selected comparison and diagnostics; scoring and follow-up analysis are underway. Both runs encountered Mac suspensions that the timer excludes, so neither can establish the intended wall-time efficiency claim. All raw work is retained. Scoring was released only after complete native closure and source/receipt checks. The [execution checkpoint](artifacts/checkpoint_report.md) records current status, remaining work and the deadline. No improvement or preserved-quality claim has been established.
 
 - [Implementation specification](docs/superpowers/specs/2026-10-14-outcome-aware-context-allocation-design.md)
 - [Implementation plan](docs/superpowers/plans/2026-10-14-outcome-aware-context-allocation.md)

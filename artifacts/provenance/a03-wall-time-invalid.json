@@ -1,0 +1,48 @@
+{
+  "assigned_jobs": 3360,
+  "assigned_questions": 480,
+  "captured_utc": "2026-10-15T05:16:16.077459+00:00",
+  "completed_jobs": 308,
+  "incidents": [
+    {
+      "completed_jobs": 76,
+      "excluded_wall_seconds": 940.6608232080383,
+      "perf_interval": 60.02923879196169,
+      "sampler_gaps": [
+        {
+          "from": "2026-10-15T04:38:57.050056+00:00",
+          "seconds": 942.683842,
+          "to": "2026-10-15T04:54:39.733898+00:00"
+        }
+      ],
+      "utc": "2026-10-15T04:55:08.702442+00:00",
+      "utc_interval": 1000.690062
+    },
+    {
+      "completed_jobs": 158,
+      "excluded_wall_seconds": 936.509858999996,
+      "perf_interval": 60.01957000000402,
+      "sampler_gaps": [
+        {
+          "from": "2026-10-15T04:57:01.444519+00:00",
+          "seconds": 937.827964,
+          "to": "2026-10-15T05:12:39.272483+00:00"
+        }
+      ],
+      "utc": "2026-10-15T05:12:45.251859+00:00",
+      "utc_interval": 996.529429
+    }
+  ],
+  "interpretation": "End-to-end wall-time efficiency and break-even remain withheld. Continue only the full fixed quality assignment under unchangeddeadline; incomplete staysunscored.",
+  "protocol_hash": "ad632aa3f9a37765b62d237abb3782251bb54084e6bc6a8309399f873adfba07",
+  "quality_or_raw_outputs_or_Gold_read": false,
+  "raw_cost_repaired_or_excluded": false,
+  "reason": "Two sampler gaps corroborated by UTC versus performance-clock monitor intervals; performance clock excludes host suspension.",
+  "scoring_held": true,
+  "source_receipt": {
+    "path": "artifacts/runs/task17-timing-replication/operational-observations/host-suspension-20261015T051616Z.json",
+    "sha256": "68643307994d9c7070169acd9ab1dc7b0dba043e28f6ec4956a46cd5e775d8d8"
+  },
+  "third_timing_experiment_authorized": false,
+  "wall_time_valid": false
+}

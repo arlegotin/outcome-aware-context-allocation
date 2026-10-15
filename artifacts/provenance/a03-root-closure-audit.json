@@ -1,0 +1,33 @@
+{
+  "assigned_jobs": 3360,
+  "assigned_questions": 480,
+  "closure_receipts": {
+    "launch-1.finished.json": "1adf393a62145d9c7cf0c1cd9189d6a84bac28a0e172568715cac51a9ab77ec6",
+    "launch.completed.json": "e7c906980c494946bf8684b6c4914b972be1010db60830f58886ea3a61f3bf48",
+    "native-summary.json": "c8c5f7f120715cdbbbb2184a8528ee639d6b9feced07166b252b6a35c5739471",
+    "predictions.closed.json": "398b1cacf14edea95ce0f4d4b51a62e005eb37aec90e31e81b9272bc938662b0",
+    "protected-run.closed.json": "193db8de7b4dae109e2b662e8bcf8d84522996e61366094d9199e9121ae94c80"
+  },
+  "completed_jobs": 3360,
+  "kind": "root_A03_completed_collection_metadata_audit",
+  "native_closure_checksums_verified": 12,
+  "native_returncode": 0,
+  "prior_owned_processes": [
+    {
+      "exists": false,
+      "pid": 56013
+    },
+    {
+      "exists": false,
+      "pid": 56077
+    }
+  ],
+  "protected_closure_checksums_verified": 6,
+  "protocol_hash": "ad632aa3f9a37765b62d237abb3782251bb54084e6bc6a8309399f873adfba07",
+  "quality_gold_or_scores_opened": false,
+  "recorded_utc": "2026-10-15T07:00:38.402183+00:00",
+  "scope": "Operational full-assignment closure/source checksum audit only; frozen scorer separately admits paid coverage before Gold access.",
+  "source_commit": "869b701f4d3d0c23a02a3fe36be66af298d924c4",
+  "source_files_verified": 26,
+  "wall_time_valid": false
+}
