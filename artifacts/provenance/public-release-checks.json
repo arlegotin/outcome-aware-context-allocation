@@ -1,0 +1,72 @@
+{
+  "verified_utc": "2026-10-15T09:24:46.069908+00:00",
+  "scope": "Publication software/metadata verification; no additional benchmark generation, scoring or scientific result",
+  "scientific_handoff_commit": "c61ed7d0447d29d78ae58a17bd3f2f756244b78d",
+  "tested_publication_commit": "a9f7682612f0b065bb6ac260b1c4e71104d3d89c",
+  "core_science_and_test_files_unchanged": true,
+  "public_history_audit": {
+    "audited_commit": "c61ed7d0447d29d78ae58a17bd3f2f756244b78d",
+    "commits": 74,
+    "unique_blobs": 533,
+    "historical_paths": 339,
+    "findings": "No concrete credential, private raw-payload or device-identity blocker found; bounded pattern/candidate review, not a proof of all possible formats",
+    "historical_paths_and_archive_routing_headers": "Retained and disclosed in docs/PUBLICATION.md"
+  },
+  "license": {
+    "software": "AGPL-3.0-only",
+    "original_writing_and_result_presentation": "CC-BY-4.0",
+    "reference_repository": "arlegotin/reasoning-allocation",
+    "reference_commit": "8e689dc17e018ff47f42373fc1da011453f12acc",
+    "agpl_text_sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+    "cc_by_text_sha256": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",
+    "exact_legal_text_final_blank_line": "Retained; all other introduced whitespace passed git diff --check"
+  },
+  "citation": {
+    "schema": "https://citation-file-format.github.io/1.2.0/schema.json",
+    "schema_sha256": "17bc7993c67b95eec988dadca78b65cb29cd489d1fceba71040a141dfb9791df",
+    "validation": "passed",
+    "validator": "jsonschema4.23.0 in isolated ignored validation directory; experiment environment unchanged",
+    "citation_version": "0.1.0",
+    "invented_doi_or_publication": false
+  },
+  "package": {
+    "utc": "2026-10-15T09:21:57.569033+00:00",
+    "wheel": "outcome_poc-0.1.0-py3-none-any.whl",
+    "sha256": "f4b819ddbce7335621a820e1deb0489babb0b5e50d8eba41a9aea1748ff48da6",
+    "metadata_readme_matches": true,
+    "license_expression": "AGPL-3.0-only AND CC-BY-4.0",
+    "all_five_license_and_notice_files_exact": true,
+    "private_assets_included": false,
+    "build": "native pinned setuptools, --no-index --no-deps --no-build-isolation; frozen environment unchanged"
+  },
+  "clean_checkout": {
+    "experimental_assets_absent_at_start": true,
+    "package_imported_from_clean_clone": true,
+    "existing_pinned_interpreter_and_dependencies_reused": true,
+    "python": "3.12.9",
+    "tests_passed": 802,
+    "tests_skipped": 0,
+    "pytest_seconds": 125.03,
+    "wrapper_seconds": 125.92671966698254,
+    "exit_code": 0,
+    "log_sha256": "4ac16c12217827474f6e1729bafeb27ed22655220096a9a08a9fb255e5722403"
+  },
+  "dependencies": {
+    "pip_check": "No broken requirements found.",
+    "setuptools": "84.0.0",
+    "experiment_lock_unchanged": true
+  },
+  "local_document_links_and_anchors": {
+    "before_receipt_addition": 32,
+    "validation": "passed"
+  },
+  "independent_publication_review": {
+    "verdict": "approved; no required edits or blockers",
+    "base": "c61ed7d0447d29d78ae58a17bd3f2f756244b78d",
+    "head": "a9f7682612f0b065bb6ac260b1c4e71104d3d89c",
+    "review_sha256": "67fad6e6128423351b2685ba25405707b1d85bc44a99e4fdf021526510c4679a"
+  },
+  "scientific_outcome": "inconclusive",
+  "known_native_lineage_defect": "Unfixed; retained external qualification and future correction prerequisite remain explicit",
+  "visibility_change": "User-authorized; performed only after this preparation and verification; GitHub state independently verified after mutation"
+}

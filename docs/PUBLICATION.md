@@ -68,6 +68,22 @@ independent confirmation or changes any primary score. Dataset-source
 equivalence, public-benchmark contamination and annotation limitations remain
 explicit in the report.
 
+## Publication verification
+
+At publication-preparation commit `a9f7682`, a clean local clone with no benchmark,
+model or retained-run assets passed **802 tests with zero skips** in 125.03 seconds.
+That check reused the pinned native Python/dependency environment; the imported
+project package came from the clean clone. It was software verification, not
+another benchmark run or a newly resolved environment.
+
+The citation passed the official CFF 1.2.0 schema. The package built without
+dependency resolution and retained its exact license/notice files and README.
+An independent review approved the publication changes. The bounded history scan
+covered the 74 locally reachable commits at the scientific handoff; the new
+publication files were reviewed separately. The [verification receipt](../artifacts/provenance/public-release-checks.json)
+records these checks. Scientific source, tests, tools, experiment configurations,
+the dependency lock and reported results remain unchanged.
+
 ## Rights and attribution
 
 [LICENSING.md](../LICENSING.md) applies AGPL-3.0-only to original software and
