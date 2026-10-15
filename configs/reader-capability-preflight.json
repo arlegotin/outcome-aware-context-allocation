@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "reader": {
+    "repo_id": "mlx-community/Qwen3-14B-4bit",
+    "revision": "a4d9b2df59d2c150bef02fcbe0d91046b7ca33a4",
+    "max_context_tokens": 8192,
+    "max_new_tokens": 256,
+    "timeout_seconds": 120,
+    "prefill_step_size": 512,
+    "enable_thinking": false,
+    "temperature": 0,
+    "batch_size": 1,
+    "cache_mode": "none",
+    "kv_cache": "default",
+    "result_reuse": false,
+    "repairs": 0,
+    "semantic_retries": 0
+  },
+  "original_reader": {
+    "repo_id": "Qwen/Qwen3-14B",
+    "revision": "40c069824f4251a91eefaf281ebe4c544efd3e18"
+  },
+  "startup_timeout_seconds": 120,
+  "license": "apache-2.0",
+  "conversion_source_revision_known": false,
+  "original_license_sha256": "832dd9e00a68dd83b3c3fb9f5588dad7dcf337a0db50f7d9483f310cd292e92e",
+  "architecture": {
+    "model_type": "qwen3",
+    "architectures": [
+      "Qwen3ForCausalLM"
+    ],
+    "installed_module": "mlx_lm/models/qwen3.py",
+    "installed_source_sha256": "7e29b7055d8e526a0ede6e2740a3038ad24d0cef6a1abb446c411d3fbd0efa2d"
+  },
+  "inventories": {
+    "reader": {
+      "README.md": {
+        "blobId": "c9a123bdbd0c701bc3c1a679c5877bb08a4883af",
+        "size": 865
+      },
+      "added_tokens.json": {
+        "blobId": "b54f9135e44c1e81047e8d05cb027af8bc039eed",
+        "size": 707
+      },
+      "config.json": {
+        "blobId": "38386939cee12ed747ace23c207f2d1f1ea111e5",
+        "size": 939
+      },
+      "merges.txt": {
+        "blobId": "31349551d90c7606f325fe0f11bbb8bd5fa0d7c7",
+        "size": 1671853
+      },
+      "model-00001-of-00002.safetensors": {
+        "blobId": "54b236919eb2cde8a5f23714fd02becd3b21ddb8",
+        "size": 5354381380,
+        "lfs": {
+          "sha256": "5795efcfc7c96fd273e600562e8b111bfcc427415de9001d0a07e70cd99cff19",
+          "size": 5354381380,
+          "pointerSize": 135
+        }
+      },
+      "model-00002-of-00002.safetensors": {
+        "blobId": "3355689e9dde1d6201e9dc260f6bc89131f322a9",
+        "size": 2953517134,
+        "lfs": {
+          "sha256": "2814562d654fe2d541fd4682804a0ccaa400e79701872c8e9f5998cf9481fdf8",
+          "size": 2953517134,
+          "pointerSize": 135
+        }
+      },
+      "model.safetensors.index.json": {
+        "blobId": "7ca9a1b8e12ec323d0c74fb3bc3cbf8269aaabdc",
+        "size": 86266
+      },
+      "special_tokens_map.json": {
+        "blobId": "ac23c0aaa2434523c494330aeb79c58395378103",
+        "size": 613
+      },
+      "tokenizer.json": {
+        "blobId": "cd71f61a15a522601badb3dc960d800d9cb3766c",
+        "size": 11422654,
+        "lfs": {
+          "sha256": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+          "size": 11422654,
+          "pointerSize": 133
+        }
+      },
+      "tokenizer_config.json": {
+        "blobId": "7345216a0785dc7086e8c245b2a9d3896ce2b756",
+        "size": 9706
+      },
+      "vocab.json": {
+        "blobId": "4783fe10ac3adce15ac8f358ef5462739852c569",
+        "size": 2776833
+      }
+    },
+    "original_reader": {
+      "LICENSE": {
+        "blobId": "6634c8cc3133b3848ec74b9f275acaaa1ea618ab",
+        "size": 11343
+      },
+      "README.md": {
+        "blobId": "3f1eaf4222cee3d84fdb3c6611afd7ff3a11dd8c",
+        "size": 16670
+      },
+      "config.json": {
+        "blobId": "37e7491082573462e8545299cdf6938e8b684e31",
+        "size": 728
+      }
+    }
+  }
+}
