@@ -20,7 +20,7 @@ def report(root):
     root=Path(root).resolve()
     plan=verify(root)
     result={'plan_hash':plan['plan_hash'],'planned_generations':688,'old_24h_window_applies':False,'stages':{}}
-    from .runtime import selected_jobs, completion, validate_closed_stage
+    from .runtime import selected_jobs, completion, validate_closed_stage, session_accounting
     from ..storage import read_jsonl
     def ledger(path):return list(read_jsonl(path)) if path.exists() else []
     def duration(row):return (row['stop_ns']-row['start_ns'])/1e9
@@ -28,7 +28,8 @@ def report(root):
     result['physical_costs']={'preparation_seconds':sum(duration(r) for r in setup if r['kind']=='preparation'),
         'index_setup_seconds':sum(duration(r) for r in setup if r['kind']=='index_setup'),
         'scoring_seconds':sum(duration(r) for r in ledger(root/'scoring-attempts.jsonl')),
-        'serving_session_seconds':0.,'summing_rule':'Only disjoint preparation, index setup, resident sessions and scoring; service/load/warmup are nested diagnostics.'}
+        'serving_session_seconds':0.,'serving_session_lower_seconds':0.,'serving_session_upper_seconds':0.,
+        'accounting_status':'complete','summing_rule':'Only disjoint preparation, index setup, resident sessions and scoring; service/load/warmup are nested diagnostics.'}
     for stage in STAGES:
         jobs=selected_jobs(root,stage)
         completed=sum(completion(root,plan,j) is not None for j in jobs)
@@ -47,23 +48,31 @@ def report(root):
                     raise ValueError('score prediction closure mismatch')
                 status.update(status='scored',summary=read(root/'scores'/stage/'summary.json'))
         stage_root=root/'stages'/stage
-        stage_setup=ledger(stage_root/'setup.jsonl')
-        status['session_seconds']=sum(duration(r) for r in stage_setup if r['kind']=='session_envelope')
-        result['physical_costs']['serving_session_seconds']+=status['session_seconds']
+        sessions=session_accounting(root,stage,plan)
+        status['session_accounting']=sessions
+        status['session_seconds']=sessions['exact_seconds']
+        physical=result['physical_costs']
+        physical['serving_session_lower_seconds']+=sessions['lower_seconds']
+        for key,value in (('serving_session_seconds',sessions['exact_seconds']),('serving_session_upper_seconds',sessions['upper_seconds'])):
+            physical[key]=physical[key]+value if physical[key] is not None and value is not None else None
+        if sessions['status']!='complete':physical['accounting_status']='unresolved'
         status['authored_warmup_calls']=len(list(stage_root.glob('warmup-*/paid.json')))
         samples=[r for p in stage_root.glob('resources-*.jsonl') for r in ledger(p)]
         status['resources']={key:max((r[key] for r in samples if r.get(key) is not None),default=None)
             for key in ('rss_parent_bytes','rss_children_bytes','peak_mlx_bytes','swap_used_bytes')}
         status['resources'].update(sampling_seconds=2.,interpretation='RSS and MLX overlap; maxima are separate observations')
         result['stages'][stage]=status
-    result['physical_costs']['total_seconds']=sum(result['physical_costs'][k] for k in
-        ('preparation_seconds','index_setup_seconds','scoring_seconds','serving_session_seconds'))
+    physical=result['physical_costs']
+    base=sum(physical[k] for k in ('preparation_seconds','index_setup_seconds','scoring_seconds'))
+    physical['total_seconds']=base+physical['serving_session_seconds'] if physical['accounting_status']=='complete' else None
+    physical['total_lower_seconds']=base+physical['serving_session_lower_seconds']
+    physical['total_upper_seconds']=base+physical['serving_session_upper_seconds'] if physical['serving_session_upper_seconds'] is not None else None
     decision=root/'headroom-decision.json'
     if decision.exists():
         result['headroom_decision']=read(decision)
         if result['headroom_decision']['decision']=='defer' and result['stages']['headroom']['terminal_observations']==0:
             result['stages']['headroom']['status']='deferred'
-    unstable=any(s.get('summary',{}).get('timing_health',{}).get('unstable',False) for s in result['stages'].values())
+    unstable=physical['accounting_status']!='complete' or any(s.get('summary',{}).get('timing_health',{}).get('unstable',False) for s in result['stages'].values())
     result['overall_timing_health']={'unstable':unstable,'cost_comparisons':'unresolved' if unstable else 'development descriptive only'}
     result['interpretation']='Three measured actions; support-doc oracle is annotation-assisted diagnosis. No deployable controller or quality-preservation claim.'
     return result

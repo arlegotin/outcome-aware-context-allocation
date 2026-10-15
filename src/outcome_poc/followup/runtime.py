@@ -49,6 +49,7 @@ class IsolatedReaderFactory:
     factory: object
     root: Path
     plan_hash: str
+    session_start: Path | None = None
 
     def __call__(self):
         verify_import_origins(self.root)
@@ -56,6 +57,14 @@ class IsolatedReaderFactory:
         plan=read(self.root/'plan.json')
         if plan['plan_hash']!=self.plan_hash:raise ValueError('reader worker plan mismatch')
         probe_denials(plan['freeze']['denied_probes'])
+        if self.session_start is not None:
+            import psutil
+            state=read(self.session_start)
+            publish(self.session_start.parent/f"session-worker-{state['session']}-{os.getpid()}.json",
+                {'session':state['session'],'plan_hash':self.plan_hash,'boot_id':state['boot_id'],
+                 'pid':os.getpid(),'created':psutil.Process().create_time(),'continuous_ns':continuous_ns()})
+            if os.getppid()!=state['parent_pid']:
+                raise RuntimeError('reader coordinator exited before model acquisition')
         return self.factory()
 
 def sandbox_profile(root, denied):
@@ -163,13 +172,16 @@ def close_stage(root, plan, stage):
         directory=root/'jobs'/j['job_id']
         for p in directory.rglob('*'):
             if p.is_file():files[str(p.relative_to(root))]=identity(p)
-    if stage=='headroom':files['headroom-decision.json']=identity(root/'headroom-decision.json')
+    if stage=='headroom':
+        files['headroom-decision.json']=identity(root/'headroom-decision.json')
+        files['headroom-admission.json']=identity(root/'headroom-admission.json')
     all_jobs={j['job_id'] for j in read(root/'schedule.json')}
     if (root/'jobs').exists() and any(p.name not in all_jobs for p in (root/'jobs').iterdir()):
         raise ValueError('unassigned job directory')
     for p in stage_dir.rglob('*'):
         if p.is_file() and p.name!='closed.json': files[str(p.relative_to(root))]=identity(p)
-    closure={'plan_hash':plan['plan_hash'],'stage':stage,'assigned_jobs':len(jobs),
+    sessions=session_accounting(root,stage,plan,require_closed=True)
+    closure={'session_accounting':sessions,'plan_hash':plan['plan_hash'],'stage':stage,'assigned_jobs':len(jobs),
              'assigned_unique_questions':len({j['task_id'] for j in jobs}),
              'job_ids_hash':content_hash(sorted(expected)),'files':files}
     publish(stage_dir/'closed.json',closure)
@@ -212,7 +224,7 @@ def _commit(root, plan, job, state, payload, *, clock=continuous_ns, active=time
 
 
 def execute_job(root, plan, job, task, documents, retrieval, backend, *, clock=continuous_ns,
-                active=time.perf_counter_ns):
+                active=time.perf_counter_ns, session=None):
     """Execute once, or terminalize an interrupted attempt without semantic retry."""
     root=Path(root); directory=root/'jobs'/job['job_id']
     if job not in read(root/'schedule.json'):raise ValueError('unassigned job')
@@ -238,7 +250,7 @@ def execute_job(root, plan, job, task, documents, retrieval, backend, *, clock=c
             'evidence_ids':[],'ranking':[],'prompt_hash':None,'interrupted':True},clock=clock,active=active)
     backend.synchronize() # resident startup/sync charged in stage setup/lifecycle, outside warm service
     state={'job_hash':content_hash(job),'plan_hash':plan['plan_hash'],'boot_id':boot_identity(),
-           'start_ns':clock(),'active_start_ns':active(),'started_utc':datetime.now(timezone.utc).isoformat()}
+           'start_ns':clock(),'active_start_ns':active(),'started_utc':datetime.now(timezone.utc).isoformat(),'session':session}
     publish(state_path,state)
     append_jsonl(directory/'attempts.jsonl',{'kind':'start',**state})
     calls=0; evidence=[]; ranking=[]; aliases={}; prompt_hash=None; cleanup=None; result=None; synchronization_error=None
@@ -355,6 +367,148 @@ def resource_check(values):
     return {**result,'bound_kind':'conservative overlapping parent+children RSS plus MLX peak'}
 
 
+def _last_session_observation(root,stage_dir,state):
+    """Only durable same-session continuous stamps contribute a lower bound."""
+    observations=[state['start_ns']]
+    resources=stage_dir/f"resources-{state['session']}.jsonl"
+    if resources.exists():observations.extend(r['continuous_ns'] for r in read_jsonl(resources))
+    observations.extend(read(p)['continuous_ns'] for p in stage_dir.glob(f"session-worker-{state['session']}-*.json"))
+    setup=stage_dir/'setup.jsonl'
+    if setup.exists():
+        observations.extend(r['stop_ns'] for r in read_jsonl(setup)
+            if r.get('session')==state['session'] and 'stop_ns' in r)
+    warmup=stage_dir/f"warmup-{state['session']}"
+    for name,key in (('started.json','start_ns'),('receipt.json','stop_ns')):
+        if (warmup/name).exists():observations.append(read(warmup/name)[key])
+    for path in (Path(root)/'jobs').glob('*/started.json'):
+        job=read(path)
+        if job.get('session')!=state['session']:continue
+        observations.append(job['start_ns'])
+        receipt=path.parent/'receipt.json'
+        if receipt.exists():observations.append(read(receipt)['stop_ns'])
+    return max(observations)
+
+
+def session_accounting(root,stage,plan,*,require_closed=False):
+    """Do not turn uncertain interrupted endpoints into an exact physical sum."""
+    root=Path(root);directory=root/'stages'/stage
+    starts=sorted((read(p) for p in directory.glob('session-start-*.json')),key=lambda r:r['start_ns'])
+    lower=upper=0.;exact=0.;open_count=interrupted=0;previous_upper=None
+    for state in starts:
+        if state['plan_hash']!=plan['plan_hash'] or state['boot_id']!=plan['freeze']['boot_id']:
+            raise ValueError('resident session plan/boot mismatch')
+        if previous_upper is not None and previous_upper>state['start_ns']:
+            raise ValueError('resident session accounting intervals overlap')
+        path=directory/f"session-accounting-{state['session']}.json"
+        if not path.exists():
+            open_count+=1;exact=None;upper=None;previous_upper=None
+            lower+=(_last_session_observation(root,directory,state)-state['start_ns'])/1e9
+            continue
+        receipt=read(path)
+        if (receipt['session']!=state['session'] or receipt['start_identity']!=identity(directory/f"session-start-{state['session']}.json") or
+                receipt['plan_hash']!=plan['plan_hash'] or receipt['boot_id']!=state['boot_id'] or
+                receipt['start_ns']!=state['start_ns'] or state['start_ns']>receipt['stop_lower_bound_ns'] or
+                (receipt['stop_upper_bound_ns'] is not None and receipt['stop_lower_bound_ns']>receipt['stop_upper_bound_ns'])):
+            raise ValueError('resident session accounting binding/bounds mismatch')
+        if receipt['stop_ns'] is None:
+            if receipt['timing_status']!='interrupted_stop_unknown':raise ValueError('invalid interrupted session accounting')
+            interrupted+=1;exact=None
+        else:
+            if (receipt['timing_status']!='exact' or receipt['stop_ns']!=receipt['stop_lower_bound_ns'] or
+                    receipt['stop_ns']!=receipt['stop_upper_bound_ns']):raise ValueError('invalid exact session accounting')
+            if exact is not None:exact+=(receipt['stop_ns']-state['start_ns'])/1e9
+        lower+=(receipt['stop_lower_bound_ns']-state['start_ns'])/1e9
+        if receipt['stop_upper_bound_ns'] is None:upper=None
+        elif upper is not None:upper+=(receipt['stop_upper_bound_ns']-state['start_ns'])/1e9
+        previous_upper=receipt['stop_upper_bound_ns']
+    if require_closed and open_count:raise ValueError('resident session lacks accountable closure')
+    return {'sessions':len(starts),'open_sessions':open_count,'interrupted_sessions':interrupted,
+        'status':'unresolved' if open_count or interrupted else 'complete',
+        'exact_seconds':exact,'lower_seconds':lower,'upper_seconds':upper,
+        'uncertainty':'hard interruption stop is unknown; bounds use last durable observation and pre-resume boundary' if open_count or interrupted else None}
+
+
+def reconcile_sessions(root,stage,plan):
+    """Called under the single-writer lock, before the next session begins."""
+    directory=Path(root)/'stages'/stage
+    for path in sorted(directory.glob('session-start-*.json')):
+        state=read(path)
+        receipt=directory/f"session-accounting-{state['session']}.json"
+        if receipt.exists():
+            if read(receipt)['stop_upper_bound_ns'] is None:
+                raise RuntimeError('resident worker identity remains unknown; automatic resume forbidden')
+            continue
+        if state['plan_hash']!=plan['plan_hash'] or state['boot_id']!=boot_identity():
+            raise ValueError('cannot reconcile resident session across plan/boot')
+        workers=list(directory.glob(f"session-worker-{state['session']}-*.json"))
+        identity_unknown=bool(state.get('reader_worker_expected')) and not workers
+        for worker_path in workers:
+            import psutil
+            worker=read(worker_path)
+            if worker['session']!=state['session'] or worker['plan_hash']!=plan['plan_hash'] or worker['boot_id']!=state['boot_id']:
+                raise ValueError('owned resident worker identity mismatch')
+            if type(worker.get('pid')) is not int or worker['pid']<=0 or type(worker.get('created')) not in (int,float):
+                identity_unknown=True
+                continue
+            try:
+                process=psutil.Process(worker['pid'])
+                if process.create_time()==worker['created'] and process.is_running() and process.status()!=psutil.STATUS_ZOMBIE:
+                    raise RuntimeError('owned orphan reader worker still alive; resume forbidden until it stops')
+            except psutil.NoSuchProcess:pass
+            except (psutil.AccessDenied,KeyError):identity_unknown=True
+        stop_upper=continuous_ns()
+        stop_lower=_last_session_observation(root,directory,state)
+        if stop_lower>stop_upper:raise ValueError('resident session observation follows resume boundary')
+        publish(receipt,{'session':state['session'],'plan_hash':plan['plan_hash'],'boot_id':state['boot_id'],
+            'start_identity':identity(path),'start_ns':state['start_ns'],'stop_ns':None,
+            'stop_lower_bound_ns':stop_lower,'stop_upper_bound_ns':None if identity_unknown else stop_upper,
+            'timing_status':'interrupted_stop_unknown','cleanup_status':'worker identity unknown' if identity_unknown else 'known owned workers no longer alive'})
+        if identity_unknown:raise RuntimeError('resident worker identity unknown; automatic resume forbidden')
+    return session_accounting(root,stage,plan,require_closed=True)
+
+
+def attest_headroom(root,plan):
+    """Privileged handoff: validate score bytes, publish only closure identities."""
+    root=Path(root).resolve()
+    validated,records=validate_closed_stage(root,'diagnosis')
+    if validated!=plan:raise ValueError('headroom launcher plan mismatch')
+    decision=read(root/'headroom-decision.json')
+    scores=root/'scores/diagnosis'
+    seal=read(scores/'closed.json')
+    if (decision.get('plan_hash')!=plan['plan_hash'] or decision.get('decision')!='admit' or
+            decision.get('diagnosis_scores')!=identity(scores/'closed.json') or
+            seal.get('plan_hash')!=plan['plan_hash'] or seal.get('stage')!='diagnosis' or
+            seal.get('assigned_observations')!=len(records) or
+            seal.get('prediction_closure')!=identity(root/'stages/diagnosis/closed.json') or
+            set(seal.get('files',{}))!={'scores.jsonl','summary.json'}):
+        raise ValueError('headroom admission/scorer closure mismatch')
+    verify_files({str(scores/name):value for name,value in seal['files'].items()})
+    attestation={'kind':'closed-diagnosis-headroom-admission-v1','plan_hash':plan['plan_hash'],
+        'boot_id':plan['freeze']['boot_id'],'decision':'admit',
+        'decision_identity':identity(root/'headroom-decision.json'),
+        'diagnosis_prediction_closure':identity(root/'stages/diagnosis/closed.json'),
+        'scorer_closure_identity':identity(scores/'closed.json')}
+    publish(root/'headroom-admission.json',attestation)
+    return identity(root/'headroom-admission.json')
+
+
+def validate_headroom_admission(root,plan,expected_sha256):
+    """Serving validates the launcher handoff without opening any score file."""
+    root=Path(root)
+    if not expected_sha256 or identity(root/'headroom-admission.json')['sha256']!=expected_sha256:
+        raise ValueError('missing or changed privileged headroom attestation')
+    attestation=read(root/'headroom-admission.json')
+    decision=read(root/'headroom-decision.json')
+    expected={'kind':'closed-diagnosis-headroom-admission-v1','plan_hash':plan['plan_hash'],
+        'boot_id':plan['freeze']['boot_id'],'decision':'admit',
+        'decision_identity':identity(root/'headroom-decision.json'),
+        'diagnosis_prediction_closure':identity(root/'stages/diagnosis/closed.json'),
+        'scorer_closure_identity':decision.get('diagnosis_scores')}
+    if (attestation!=expected or decision.get('plan_hash')!=plan['plan_hash'] or decision.get('decision')!='admit'):
+        raise ValueError('headroom attestation/decision binding mismatch')
+    return attestation
+
+
 def run_stage(root, stage, *, backend_factory=None, encoder_factory=None, max_jobs=None):
     """Native entry; injectable dependencies exercise exactly this transaction engine."""
     from ..retrieval import EncoderBackend, Retrieval
@@ -371,17 +525,19 @@ def run_stage(root, stage, *, backend_factory=None, encoder_factory=None, max_jo
     if stage=='diagnosis':validate_closed_stage(root,'calibration',privileged=False)
     if stage=='headroom':
         validate_closed_stage(root,'diagnosis',privileged=False)
-        decision=read(root/'headroom-decision.json')
-        if (decision['plan_hash']!=plan['plan_hash'] or decision['decision']!='admit' or
-                decision['diagnosis_scores']!=identity(root/'scores/diagnosis/closed.json')):
-            raise ValueError('headroom requires explicit admission')
+        validate_headroom_admission(root,plan,os.environ.get('OUTCOME_FOLLOWUP_ADMISSION_SHA256'))
     assets=read(root/'assets.json')['assets']
     stage_dir=root/'stages'/stage;stage_dir.mkdir(parents=True,exist_ok=True)
     session=uuid.uuid4().hex
-    setup_start=continuous_ns();active_start=time.perf_counter_ns()
     monitor=ResourceMonitor(stage_dir/f'resources-{session}.jsonl')
     backend=None;error=None
     with stage_lock(root):
+        reconcile_sessions(root,stage,plan)
+        setup_start=continuous_ns();active_start=time.perf_counter_ns()
+        session_start=stage_dir/f'session-start-{session}.json'
+        publish(session_start,{'session':session,'plan_hash':plan['plan_hash'],'boot_id':plan['freeze']['boot_id'],
+            'start_ns':setup_start,'active_start_ns':active_start,'parent_pid':os.getpid(),
+            'started_utc':datetime.now(timezone.utc).isoformat(),'reader_worker_expected':backend_factory is None})
         monitor.start()
         try:
             with offline_network():
@@ -395,7 +551,7 @@ def run_stage(root, stage, *, backend_factory=None, encoder_factory=None, max_jo
                 retrieval=Retrieval(root/'index-setup/index',docs,encoder)
                 reader_start=continuous_ns()
                 factory=IsolatedReaderFactory(NativeReaderFactory(Path(assets['reader']['local_path']),
-                    {**plan['freeze']['settings']['reader'],'asset':assets['reader']}),root,plan['plan_hash'])
+                    {**plan['freeze']['settings']['reader'],'asset':assets['reader']}),root,plan['plan_hash'],session_start)
                 backend=(backend_factory or ContinuousBackend)(factory)
                 monitor.backend=backend
                 append_jsonl(stage_dir/'setup.jsonl',{'session':session,'kind':'reader_load',
@@ -412,7 +568,7 @@ def run_stage(root, stage, *, backend_factory=None, encoder_factory=None, max_jo
                 for job in jobs:
                     if completion(root,plan,job):continue
                     backend.job_owner=job['job_id']
-                    execute_job(root,plan,job,tasks[job['task_id']],docs,retrieval,backend)
+                    execute_job(root,plan,job,tasks[job['task_id']],docs,retrieval,backend,session=session)
                     done+=1
                     if max_jobs is not None and done>=max_jobs:break
         except BaseException as caught:
@@ -428,8 +584,13 @@ def run_stage(root, stage, *, backend_factory=None, encoder_factory=None, max_jo
                     append_jsonl(stage_dir/'setup.jsonl',{'session':session,'kind':'cleanup_error','error':str(caught)})
                 for row in backend.lifecycle:append_jsonl(stage_dir/'lifecycle.jsonl',{'session':session,**row})
             monitor.stop()
+            session_stop=continuous_ns()
+            publish(stage_dir/f'session-accounting-{session}.json',{'session':session,'plan_hash':plan['plan_hash'],
+                'boot_id':plan['freeze']['boot_id'],'start_identity':identity(session_start),'start_ns':setup_start,
+                'stop_ns':session_stop,'stop_lower_bound_ns':session_stop,'stop_upper_bound_ns':session_stop,
+                'timing_status':'exact','status':'failed' if error else 'ok'})
             append_jsonl(stage_dir/'setup.jsonl',{'session':session,'kind':'session_envelope',
-                'start_ns':setup_start,'stop_ns':continuous_ns(),'shutdown_start_ns':close_start,
+                'start_ns':setup_start,'stop_ns':session_stop,'shutdown_start_ns':close_start,
                 'status':'failed' if error else 'ok','overlaps':'service, setup and lifecycle; never sum'})
     verify(root,privileged=False)
     if error:raise error
@@ -452,12 +613,15 @@ def native_entry(root,stage):
 
 def launch(root,stage):
     root=Path(root).resolve()
-    verify(root)
+    plan=verify(root)
+    admission=attest_headroom(root,plan) if stage=='headroom' else None
     env={**os.environ,'PYTHONPATH':str(root/'source/src'),'PYTHONDONTWRITEBYTECODE':'1',
          'HF_HUB_OFFLINE':'1','TRANSFORMERS_OFFLINE':'1','TOKENIZERS_PARALLELISM':'false',
          'OUTCOME_FOLLOWUP_SERVING':str(root)}
+    if admission:env['OUTCOME_FOLLOWUP_ADMISSION_SHA256']=admission['sha256']
     result=subprocess.run(['/usr/bin/sandbox-exec','-f',str(root/'native.sb'),sys.executable,'-B','-m',
                           'outcome_poc.followup','_serve','--root',str(root),'--stage',stage],env=env)
     verify(root)
+    if admission:verify_files({str(root/'headroom-admission.json'):admission})
     if result.returncode:raise RuntimeError(f'native stage failed: exit {result.returncode}')
     return {'stage':stage,'status':'native process exited successfully'}

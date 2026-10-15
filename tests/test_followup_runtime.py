@@ -219,10 +219,19 @@ from pathlib import Path
 from authored_guard import Probe
 from outcome_poc.followup.runtime import IsolatedReaderFactory
 from outcome_poc.followup.supervisor import ContinuousBackend
-with ContinuousBackend(IsolatedReaderFactory(Probe(),Path(sys.argv[1]),'authored'),startup_timeout=10.) as backend:
+from outcome_poc.followup.clock import boot_identity
+from outcome_poc.followup.study import publish,read
+import os
+root=Path(sys.argv[1])
+state=root/'session-start-authored-session.json'
+publish(state,{'session':'authored-session','parent_pid':os.getpid(),'boot_id':boot_identity()})
+with ContinuousBackend(IsolatedReaderFactory(Probe(),root,'authored',state),startup_timeout=10.) as backend:
     backend.synchronize()
     assert backend.worker_pid is not None
     assert backend.tokenizer.chat_template=='authored guarded reader'
+    workers=list(root.glob('session-worker-authored-session-*.json'))
+    assert len(workers)==1 and read(workers[0])['pid']==backend.worker_pid
+    assert read(workers[0])['created']>0
 '''
     result=subprocess.run(['/usr/bin/sandbox-exec','-f',str(profile),sys.executable,'-B','-c',code,str(root)],
         env={**os.environ,'PYTHONPATH':str(root/'source/src')},capture_output=True,text=True)
