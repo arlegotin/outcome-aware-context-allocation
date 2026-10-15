@@ -1,5 +1,7 @@
 """Native isolation and durable lifecycle for exactly three authored reader calls."""
+from contextlib import contextmanager
 from dataclasses import asdict, dataclass
+import fcntl
 import importlib
 import importlib.abc
 import os
@@ -22,6 +24,39 @@ from .profile import ProfileFactory
 from .study import verify, build_prompt, DENIED_MODULES, inventory
 
 STAGE = 'preflight'
+WRITER_FD = 'OUTCOME_READER_PROBE_WRITER_FD'
+
+
+@contextmanager
+def _launch_ownership(root):
+    """Keep launch logs and coordinator closure under the same writer lock."""
+    with (root/'writer.lock').open('a+b') as stream:
+        fcntl.flock(stream, fcntl.LOCK_EX)
+        try:
+            yield stream.fileno()
+        finally:
+            fcntl.flock(stream, fcntl.LOCK_UN)
+
+
+@contextmanager
+def _run_ownership(root):
+    inherited = os.environ.get(WRITER_FD)
+    if inherited is None:
+        with stage_lock(root):
+            yield
+        return
+    if os.environ.get('OUTCOME_READER_PROBE_SERVING') != str(root):
+        raise RuntimeError('inherited writer ownership belongs to another root')
+    descriptor = int(inherited)
+    actual, expected = os.fstat(descriptor), (root/'writer.lock').stat()
+    if (actual.st_dev, actual.st_ino) != (expected.st_dev, expected.st_ino):
+        raise RuntimeError('inherited writer descriptor is not the run lock')
+    # flock ownership follows the inherited open file description. This also
+    # rejects a different, unlocked descriptor while another writer owns it.
+    fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    yield
+    # Do not unlock here: the launcher owns this shared lock until child exit
+    # and stdout/stderr closure. Exiting the child closes only its descriptor.
 
 
 class ImportGuard(importlib.abc.MetaPathFinder):
@@ -216,7 +251,7 @@ def validate_closed(root, plan):
 
 def run(root: Path, *, backend_factory=None) -> dict:
     root = Path(root).resolve()
-    with stage_lock(root):
+    with _run_ownership(root):
         plan = verify(root)
         if (root/'closed.json').exists():
             return read(root/'closed.json')
@@ -342,22 +377,29 @@ def launch(root: Path) -> dict:
     plan = verify(root)
     if (root/'closed.json').exists():
         return read(root/'closed.json')
-    directory = root/'launches'/uuid.uuid4().hex
-    directory.mkdir(parents=True)
-    environment = {**os.environ, 'PYTHONPATH': str(root/'source/src'), 'PYTHONDONTWRITEBYTECODE': '1',
-        'HF_HUB_OFFLINE': '1', 'TRANSFORMERS_OFFLINE': '1', 'HF_DATASETS_OFFLINE': '1',
-        'OUTCOME_READER_PROBE_SERVING': str(root), 'OUTCOME_READER_PROBE_PLAN': plan['plan_hash']}
-    command = ['/usr/bin/sandbox-exec', '-f', str(root/'native.sb'), sys.executable,
-               '-B', '-m', 'outcome_poc.reader_probe', '_serve', '--root', str(root)]
-    publish(directory/'launch.json', {'plan_hash': plan['plan_hash'], 'profile': identity(root/'native.sb'),
-                                     'command': command, 'start_ns': continuous_ns()})
-    # Output remains durable even when the coordinator cannot publish a result.
-    with (directory/'stdout.txt').open('w') as stdout, (directory/'stderr.txt').open('w') as stderr:
-        completed = subprocess.run(command, cwd=root/'source', env=environment, stdout=stdout, stderr=stderr)
-    if (root/'closed.json').exists():
-        # stdout is deliberately silent on success, so it was final before sealing.
-        verify(root)
-        return read(root/'closed.json')
-    outcomes = sorted((root/'stages'/STAGE).glob('outcome-*.json'), key=lambda p:p.stat().st_mtime_ns)
-    return read(outcomes[-1]) if outcomes else {'status':'blocked', 'returncode':completed.returncode,
-                                               'launch':str(directory), 'plan_hash':plan['plan_hash']}
+    with _launch_ownership(root) as writer_fd:
+        # A concurrent coordinator may have sealed the root while we waited.
+        plan = verify(root)
+        if (root/'closed.json').exists():
+            return read(root/'closed.json')
+        directory = root/'launches'/uuid.uuid4().hex
+        directory.mkdir(parents=True)
+        environment = {**os.environ, 'PYTHONPATH': str(root/'source/src'), 'PYTHONDONTWRITEBYTECODE': '1',
+            'HF_HUB_OFFLINE': '1', 'TRANSFORMERS_OFFLINE': '1', 'HF_DATASETS_OFFLINE': '1',
+            'OUTCOME_READER_PROBE_SERVING': str(root), 'OUTCOME_READER_PROBE_PLAN': plan['plan_hash'],
+            WRITER_FD: str(writer_fd)}
+        command = ['/usr/bin/sandbox-exec', '-f', str(root/'native.sb'), sys.executable,
+                   '-B', '-m', 'outcome_poc.reader_probe', '_serve', '--root', str(root)]
+        publish(directory/'launch.json', {'plan_hash': plan['plan_hash'], 'profile': identity(root/'native.sb'),
+                                         'command': command, 'start_ns': continuous_ns()})
+        # Output remains durable even when the coordinator cannot publish a result.
+        with (directory/'stdout.txt').open('w') as stdout, (directory/'stderr.txt').open('w') as stderr:
+            completed = subprocess.run(command, cwd=root/'source', env=environment, stdout=stdout, stderr=stderr,
+                                       pass_fds=(writer_fd,))
+        if (root/'closed.json').exists():
+            # stdout is deliberately silent on success, so it was final before sealing.
+            verify(root)
+            return read(root/'closed.json')
+        outcomes = sorted((root/'stages'/STAGE).glob('outcome-*.json'), key=lambda p:p.stat().st_mtime_ns)
+        return read(outcomes[-1]) if outcomes else {'status':'blocked', 'returncode':completed.returncode,
+                                                   'launch':str(directory), 'plan_hash':plan['plan_hash']}
