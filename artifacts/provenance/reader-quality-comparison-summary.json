@@ -321,6 +321,14 @@
     "platform": "macOS-26.7.1-arm64-arm-64bit",
     "python": "3.12.9"
   },
+  "evaluator": {
+    "parity_method": "source-derived synthetic fixtures; external evaluator never executed",
+    "repository": "hotpotqa/hotpot",
+    "revision": "fa3a36370899e1d85822de61e58c85ea19993154",
+    "source_bytes": 4257,
+    "source_sha256": "d35fc91a6db21d791dbdda11daf3856e9359f5701d54e3eefba20d88fecc02c0",
+    "source_url": "https://raw.githubusercontent.com/hotpotqa/hotpot/fa3a36370899e1d85822de61e58c85ea19993154/hotpot_evaluate_v1.py"
+  },
   "evidence": {
     "aggregate-report.json": {
       "bytes": 11940,
@@ -542,6 +550,23 @@
     "unchanged": 8753,
     "unexpected_changes": 0
   },
+  "publication_software": {
+    "change_since_measurement": "one authored test fixture only; production source/config/results unchanged",
+    "exit_code": 0,
+    "guarded_preparation_file_skipped": 0,
+    "guarded_preparation_file_tests_passed": 30,
+    "log": {
+      "bytes": 1233,
+      "path": "artifacts/runs/reader-quality-recon/full-suite-publication.log",
+      "sha256": "bef3dbcdeb286f512cb283fecaf0dccf28c2e5f0a0da57848d6feb687484fa70"
+    },
+    "seconds": 326.02,
+    "source_head": "1be34ababbbcba6438d10c37ab64079f3a4728aa",
+    "tested_files_unchanged": 140,
+    "tests_passed": 1064,
+    "tests_skipped": 0
+  },
+  "publication_tested_source": "1be34ababbbcba6438d10c37ab64079f3a4728aa",
   "readers": {
     "qwen14b-nonthinking": {
       "factory": "ProfileFactory",

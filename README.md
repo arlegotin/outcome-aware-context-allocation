@@ -82,7 +82,7 @@ python -m outcome_poc.reader_probe --help
 python -m outcome_poc.reader_study --help
 ```
 
-The latest suite passed **1,064 tests with zero skips** at `0e90291`, including the paired-reader study. Earlier experiment source and results remain intact. The [reader-study software review](docs/superpowers/reviews/2026-10-15-reader-quality-software-review.md) records its checks and crash-recovery fix. Passing tests doesn't validate the original speed measurements or establish a research win. On non-macOS systems or inside an outer sandbox, the macOS denial-profile checks can skip.
+The latest suite passed **1,064 tests with zero skips** at `1be34ab`, including the paired-reader study. Earlier experiment source and results remain intact. The [reader-study software review](docs/superpowers/reviews/2026-10-15-reader-quality-software-review.md) records its checks and crash-recovery fix. The [final review](docs/superpowers/reviews/2026-10-15-reader-quality-final-review.md) also records the clean-clone test repair. Passing tests doesn't validate the original speed measurements or establish a research win. On non-macOS systems or inside an outer sandbox, the macOS denial-profile checks can skip.
 
 These commands don't start a benchmark experiment. For a new study, follow the [fresh-experiment guide](docs/fresh-experiment.md): use a separate checkout, fresh output roots and attempt-ledger parents, new development outputs, and a newly frozen protocol. Historical configurations record this experiment. Running mutable setup or indexing over the retained evidence can invalidate its bindings.
 

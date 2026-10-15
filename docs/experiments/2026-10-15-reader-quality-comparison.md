@@ -26,7 +26,7 @@ These are different April hybrid and July Instruct model lineages, not a control
 
 The pool retained all original 448, followup 224 and citation 320 reservations, including unexecuted questions, and duplicate-group closure. The fresh sorted-ID hash matched `340ac60b947956a03da43fa0a3bead3d1ceb60d39d648f658404bc8262f9fdc0`. Official development questions remained excluded. The reused 16 were already excluded from this population; N was not reduced again. All new 128 reservations must remain excluded from future fresh experiments, even though unexecuted.
 
-Admission required complete healthy execution, strictly more natural-ten joint exact matches for14B, and no lower answer exact-match counts at either natural budget. This is a conservative selection screen, not a noninferiority certificate. Strict success is official-compatible HotpotQA answer EM multiplied by exact support-set EM. It measures reference agreement, not truth certification or evidence use.
+Admission required complete healthy execution, strictly more natural-ten joint exact matches for14B, and no lower answer exact-match counts at either natural budget. This is a conservative selection screen, not a noninferiority certificate. Strict success is official-compatible HotpotQA answer EM multiplied by exact support-set EM. It measures reference agreement, not truth certification or evidence use. The 16 questions are reused official-training records; development is their role in this study, not the official HotpotQA development split. Public benchmark pretraining contamination and incomplete support annotations remain possible.
 
 ## All assigned results
 
@@ -77,7 +77,7 @@ RSS and MLX can overlap; do not add these peaks as physical memory. Global swap 
 
 ## Reproduction and decision
 
-Measured source: `e5ced9a9c906517fa0f5107b1c2b5ff8c3beb1e1`; tested source: `0e90291`, with 1,064 tests and zero skips. No source/test change followed those checks. [Software review](../superpowers/reviews/2026-10-15-reader-quality-software-review.md) records the crash-window defect fixed before real execution.
+Measured source: `e5ced9a9c906517fa0f5107b1c2b5ff8c3beb1e1`; tested source: `0e90291`, with 1,064 tests and zero skips. Reader source and configuration stayed unchanged. A publication-only test fixture was subsequently repaired to remove its private-archive dependency; the full suite at `1be34ab` again passed 1,064 tests with zero skips, and all 30 preparation-file checks passed with private paths hidden. [Software review](../superpowers/reviews/2026-10-15-reader-quality-software-review.md) records the crash-window defect fixed before real execution.
 
 The run's plan hash is `d59dce9dd50e14532b94d50280ea85fe9e816dae205854d5287141057051fc52`. The public summary binds plan, assets, sample/schedule, index, prediction closure, score closure and admission decision by bytes/SHA256. Raw tasks/Gold/predictions/model assets and detailed process files remain private under the [publication scope](../PUBLICATION.md). A clean clone can inspect findings and run authored checks; exact raw authentication requires the retained archive at its bound paths.
 
