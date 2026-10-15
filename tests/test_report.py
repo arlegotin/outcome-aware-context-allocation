@@ -56,7 +56,11 @@ def test_quality_preservation_requires_four_guards_and_no_regression(mutate,tmp_
     s=evidence();mutate(s)
     result=api().report(s,tmp_path/'final_report.md')
     assert result['claims']['quality_preserved'] is False
-    assert 'quality preservation remains unresolved' in (tmp_path/'final_report.md').read_text()
+    text=(tmp_path/'final_report.md').read_text()
+    if s['regressions'].get('latency_clear') is False:
+        assert 'latency regression' in text
+    else:
+        assert 'quality preservation remains unresolved' in text
 
 
 def test_valid_efficiency_with_unresolved_quality_is_explicitly_qualified(tmp_path):
@@ -182,3 +186,109 @@ def test_quality_table_and_unknown_method_fields_remain_explicit(tmp_path):
     assert 'infinity (zero successes)' in text and 'unavailable' in text
     assert 'primary_interval' in (tmp_path/'baseline-table.csv').read_text()
     assert result['methods'][0]['primary_interval'] is None
+
+
+@pytest.mark.parametrize('wall',[False,None,True])
+@pytest.mark.parametrize('economics',[None,{}, {'adaptation_seconds':100.,'mean_a':1.,'mean_b':3.}])
+def test_incomplete_or_invalid_cannot_retain_injected_break_even(tmp_path,wall,economics):
+    s={'execution_status':'incomplete','assigned_questions':480,'assigned_jobs':8640,'completed_jobs':100,
+       'wall_time_valid':wall,'break_even':{'queries':1.,'delta_t':100.,'reason':None}}
+    if economics is not None:s['economics']=economics
+    result=api().report(s,tmp_path/'report.md')
+    assert result['break_even']['queries'] is None
+    assert result['break_even']['delta_t'] is None
+    assert result['break_even']['reason'] in ('incomplete_results','wall_time_invalid_or_unverified')
+
+
+def economic_evidence():
+    s=evidence()
+    s['methods']=[{'scope':'primary','arm':arm,'config_id':config,'assigned_n':40,
+                   'repetitions':2,'mean_seconds':mean} for arm,config,mean in [('A','outcome',2.),('B','proxy',3.)]]
+    s['analysis']['primary'].update(arm_a={'mean_time':2.},arm_b={'mean_time':3.})
+    s['analysis']['assessment_binding']={'protocol_hash':'p','score_closure_hash':'closed'}
+    s['protocol']={'protocol_hash':'p'}
+    s['provenance']={'input_hashes':{'scores.jsonl.closed.json':'closed'}}
+    s['economics']={'adaptation_seconds':100.}
+    return s
+
+
+@pytest.mark.parametrize('wall',[False,None])
+def test_complete_invalid_wall_time_discards_injected_break_even_without_economics(tmp_path,wall):
+    s=economic_evidence();s['wall_time_valid']=wall;s.pop('economics')
+    s['break_even']={'queries':1.,'delta_t':100.,'reason':None}
+    result=api().report(s,tmp_path/'report.md')
+    assert result['break_even']=={'queries':None,'delta_t':None,'reason':'wall_time_invalid_or_unverified'}
+
+
+def test_break_even_derives_means_from_closed_selected_arms(tmp_path):
+    s=economic_evidence();s['break_even']={'queries':1.,'delta_t':100.,'reason':None}
+    assert api().report(s,tmp_path/'report.md')['break_even']=={'queries':100.,'delta_t':1.,'reason':None}
+    s['economics']['mean_a']=.001;s['economics']['mean_b']=100.
+    with pytest.raises(ValueError,match='mean|closed'):api().report(s,tmp_path/'bad.md')
+
+
+@pytest.mark.parametrize('change',[
+    lambda s:s.pop('methods'),
+    lambda s:s.pop('provenance'),
+    lambda s:s['analysis']['assessment_binding'].update(score_closure_hash='different'),
+    lambda s:s['methods'][0].update(config_id='retuned'),
+    lambda s:s['analysis']['primary'].pop('arm_a'),
+    lambda s:s['methods'][0].update(mean_seconds=None)])
+def test_missing_authoritative_metrics_withholds_break_even(tmp_path,change):
+    s=economic_evidence();change(s)
+    s['economics'].update(mean_a=1.,mean_b=3.)
+    result=api().report(s,tmp_path/'report.md')
+    assert result['break_even']['queries'] is None
+    assert result['break_even']['reason']=='missing_authoritative_metrics'
+
+
+def test_closed_means_cannot_disagree_with_primary_analysis(tmp_path):
+    s=economic_evidence();s['methods'][0]['mean_seconds']=.1
+    with pytest.raises(ValueError,match='mean|closed'):api().report(s,tmp_path/'bad.md')
+
+
+def test_bound_economics_keeps_unknown_adaptation_and_nonpositive_saving(tmp_path):
+    s=economic_evidence();s['economics']['adaptation_seconds']=None
+    assert api().report(s,tmp_path/'unknown.md')['break_even']['reason']=='unknown_adaptation_cost'
+    s['methods'][0]['mean_seconds']=4.;s['analysis']['primary']['arm_a']['mean_time']=4.
+    result=api().report(s,tmp_path/'slower.md')
+    assert result['break_even']=={'queries':None,'delta_t':-1.,'reason':'nonpositive_saving'}
+    assert 'infinity' in (tmp_path/'slower.md').read_text()
+
+
+def test_supported_quality_loss_names_affected_guard_next_to_efficiency(tmp_path):
+    s=evidence();s['analysis']['quality_guards'][0]['ci']=[-.2,-.1]
+    result=api().report(s,tmp_path/'report.md')
+    text=(tmp_path/'report.md').read_text()
+    assert result['outcome']=='efficiency/quality tradeoff'
+    assert 'supports lower joint EM versus frozen B*' in text
+    assert 'quality preservation remains unresolved' not in text
+
+
+@pytest.mark.parametrize('field,label',[('failure_clear','failure-rate regression'),('latency_clear','latency regression')])
+def test_explicit_regression_is_not_described_as_unknown(tmp_path,field,label):
+    s=evidence();s['regressions'][field]=False
+    api().report(s,tmp_path/'report.md');text=(tmp_path/'report.md').read_text()
+    assert label in text and 'quality preservation remains unresolved' not in text
+
+
+def test_nondeterministic_quality_does_not_establish_supported_loss(tmp_path):
+    s=evidence();s['analysis']['quality_outcomes_valid']=False
+    s['analysis']['quality_guards'][0]['ci']=[-.2,-.1]
+    result=api().report(s,tmp_path/'report.md')
+    assert result['claims']['quality_loss_supported'] is False
+
+
+def test_shared_origin_parents_resolve_before_nested_component_dedup():
+    rows=[]
+    for run in ('r1','r2'):
+        # Child precedes parent and its nested origin also repeats across runs.
+        rows.extend([{'physical_id':'encoding','parent_id':'index','original_physical_id':'shared-encoding',
+                      'run_identity':run,'seconds':2.,'category':'adaptation'},
+                     {'physical_id':'index','original_physical_id':'shared-index','run_identity':run,
+                      'seconds':3.,'category':'adaptation'},
+                     {'physical_id':'setup','run_identity':run,'seconds':4.,'category':'experiment'}])
+    result=api().cost_inventory(rows)
+    assert result['known_physical_seconds']==11.
+    assert result['sources']['origin:shared-encoding']['parent_id']=='origin:shared-index'
+    assert result['counted_physical_ids']==['origin:shared-index','r1:setup','r2:setup']
