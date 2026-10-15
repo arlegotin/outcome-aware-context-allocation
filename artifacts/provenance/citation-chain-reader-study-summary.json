@@ -738,6 +738,13 @@
     "eligible_training_representatives": 88907,
     "normalized_groups_disjoint": true
   },
+  "process_closure": {
+    "archived_files": 22,
+    "manifest_sha256": "0513d8f06e9b634b012623e6bdf0eb783ddc7ad2d773c595028f28db808a92c0",
+    "path": "artifacts/provenance/citation-study-workspace-closure.json",
+    "rulings_retained": 2,
+    "workspace_removed": true
+  },
   "proof_files": {
     "assets.json": {
       "bytes": 3820,

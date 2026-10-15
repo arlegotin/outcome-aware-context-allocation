@@ -1,0 +1,19 @@
+{
+  "all_archive_copies_match": true,
+  "archive": "artifacts/runs/process-archive/2026-10-15-citation-chain-reader-study/20261015T135656466513Z",
+  "archive_bytes_verified": 440225,
+  "archive_files_verified": 22,
+  "closure_commit_parent": "77086032fc6d94d20e7237b8900076aa3a2ef415",
+  "deletion_scope": "only this plan workspace after exact archive verification",
+  "final_test_source": "4eaf9402be328646ab11a300a47d1684341f6c2d",
+  "historical_files_verified_after_final_tests": 5834,
+  "live_protocol_workspace_references": 0,
+  "manifest_sha256": "0513d8f06e9b634b012623e6bdf0eb783ddc7ad2d773c595028f28db808a92c0",
+  "measured_source": "14544f6a6c1c88ce67d647fc616faaf8aef3b6c4",
+  "public_manifest": "artifacts/provenance/process-archive/2026-10-15-citation-chain-reader-study/20261015T135656466513Z/process-manifest.json",
+  "rulings_retained": 2,
+  "tests_passed": 899,
+  "tests_skipped": 0,
+  "workspace": ".superpowers/sdd/2026-10-15-citation-chain-reader-study",
+  "workspace_removed": true
+}

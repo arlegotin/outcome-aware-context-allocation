@@ -1,0 +1,102 @@
+{
+  "all_copies_match": true,
+  "created_utc": "2026-10-15T13:56:56.478529+00:00",
+  "file_count": 22,
+  "files": {
+    "archive-process.py": {
+      "bytes": 4314,
+      "sha256": "50f6f5ca8b99d78590429c7dcf45b3e22edffda762821dd7d72de4414f23ecee"
+    },
+    "final-fix-report.md": {
+      "bytes": 4699,
+      "sha256": "9f8f5dd6227ef1793383cf4e1b9d7ebe753e9f482c887482a4b662b12481ccc2"
+    },
+    "final-probe-sensitivity.py": {
+      "bytes": 634,
+      "sha256": "70caa2727c8a2343764fb8ca31dc5c76469dfd382642d93c2824bacb00444bc9"
+    },
+    "final-rereview.md": {
+      "bytes": 2618,
+      "sha256": "866b33ef167f768e3d5fab55083e85e1846b663ef1571858642c013e4b0af339"
+    },
+    "final-review.md": {
+      "bytes": 10937,
+      "sha256": "c181f4ba1f7a31724db7063c5cf94caace2a0feb13f1d4a34e9582b85beb3a1e"
+    },
+    "final-sensitivity.log": {
+      "bytes": 2918,
+      "sha256": "b2ca873fc11d1b1d43f3055adf26c7294d937d19d2d9dd64f542eee41427c0b4"
+    },
+    "final-suite.log": {
+      "bytes": 1072,
+      "sha256": "195377007f802affe1356c46708b8fac89436913b74079a25f998789fec9560e"
+    },
+    "global-constraints.md": {
+      "bytes": 2483,
+      "sha256": "378e9a716eb03bfb972ed57d3f85a51a43333b9b6f3959c55c8de3f28b74db27"
+    },
+    "plan-path": {
+      "bytes": 65,
+      "sha256": "4d367d2dcbdbd88c41aefa4e129e7818380ab9d6f353217b05d88985ce7414a3"
+    },
+    "progress.md": {
+      "bytes": 5543,
+      "sha256": "2eeca3a494db526744802ca1a24d5b2100d043e0ba878181acf7dd12e4e48620"
+    },
+    "review-0ca7b04..57d48bf.diff": {
+      "bytes": 195338,
+      "sha256": "59d9ee225f1c739ac5ec6fe81e1963ca075f6e32ccc0e5c4265f3f9e1f5bad00"
+    },
+    "review-0db12e1..bef34c9.diff": {
+      "bytes": 6314,
+      "sha256": "f58158f2b69823604f460d402acd2297efdaa1c2ba9af4bc22ed45bf50e27dce"
+    },
+    "review-57d48bf..7708603.diff": {
+      "bytes": 24938,
+      "sha256": "7abecc7dfb50dc0c1c3e54bac4bf568cf07746eac5db7cdd854c0375cae57c13"
+    },
+    "review-6217ab9..0db12e1.diff": {
+      "bytes": 77341,
+      "sha256": "63a4e33247727935aed34479dae1f858e93c78bd39e0a890f9c40a1091aefaf8"
+    },
+    "review-f3e8257..6217ab9.diff": {
+      "bytes": 42107,
+      "sha256": "477e97cf797b3337521fdd11c7ea5b8d3ef345ec2df83f8a9264d26c96a73bec"
+    },
+    "task-1-brief.md": {
+      "bytes": 5653,
+      "sha256": "909f23668d3db90933501abe269f59c00847d8dfb911bda52a9baa7b4a8e534c"
+    },
+    "task-1-report.md": {
+      "bytes": 12943,
+      "sha256": "6ec0346193500ab97befd254fcf80236cc3aa540c50dc49c7144c3494b81db0b"
+    },
+    "task-1-review.md": {
+      "bytes": 5030,
+      "sha256": "7b50df2a53a013bedb8908cecc3f1abf7acd368341546252ef8b389b916f1ccb"
+    },
+    "task-2-brief.md": {
+      "bytes": 7836,
+      "sha256": "f4370286da56ccae1ed35d18ad44f7b7a6b9a007f770f8f69cce7b5cb9f20973"
+    },
+    "task-2-report.md": {
+      "bytes": 17238,
+      "sha256": "750fbf0b7dc180285ec1eb4f5a64f8baca15fea1e64432bb119d5d068d532317"
+    },
+    "task-2-rereview.md": {
+      "bytes": 1560,
+      "sha256": "1d88439d6a1220ac765cbc533166840726d6c78a4b065525a8184e7829db7e3e"
+    },
+    "task-2-review.md": {
+      "bytes": 8644,
+      "sha256": "d13234b0add2d9552d510321a993961b05d20930179515d5101fee616f45a288"
+    }
+  },
+  "private_archive": "artifacts/runs/process-archive/2026-10-15-citation-chain-reader-study/20261015T135656466513Z",
+  "rulings": [
+    "- Ruling: Admission health excludes assigned infrastructure, timeout and context-overflow failures, but retains parser/citation/abstention/output-cap failures as measured semantics. All sessions must be exact and quiescent. If wrong, this gate may reject a useful prompt because of operational faults rather than efficacy.",
+    "- Ruling: An assigned infrastructure failure permanently ends this candidate stage; clean boundary pauses and startup failures before any assigned observation may resume untouched jobs only after quiescence. If wrong, a recoverable failure may waste a study reservation and leave an inconclusive result."
+  ],
+  "total_bytes": 440225,
+  "workspace": ".superpowers/sdd/2026-10-15-citation-chain-reader-study"
+}

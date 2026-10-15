@@ -95,4 +95,6 @@ Scoring appends its new attempt cost while reproducing unchanged score bytes. Do
 
 The one-sentence candidate has not earned a larger controller study. A useful continuation requires a better-supported reader/measurement design, followed by fresh allocation labels and strong tuned comparators with charged overhead. This result does not settle all citation approaches or the broader allocation idea. It does remove the justification for treating this reminder as a validated fix or collecting more outcome labels under it now.
 
+The [whole-branch review](../superpowers/reviews/2026-10-15-citation-chain-final-review.md) and [scoped final review](../superpowers/reviews/2026-10-15-citation-chain-final-rereview.md) are complete. The [process closure](../../artifacts/provenance/citation-study-workspace-closure.json) records the verified private archive, both ordered coordinator rulings, and removal of only this task's temporary workspace. All 5,834 historical files still match after final tests.
+
 **inconclusive**

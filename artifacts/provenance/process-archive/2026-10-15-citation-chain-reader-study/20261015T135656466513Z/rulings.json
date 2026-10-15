@@ -1,0 +1,6 @@
+{
+  "rulings_in_order": [
+    "- Ruling: Admission health excludes assigned infrastructure, timeout and context-overflow failures, but retains parser/citation/abstention/output-cap failures as measured semantics. All sessions must be exact and quiescent. If wrong, this gate may reject a useful prompt because of operational faults rather than efficacy.",
+    "- Ruling: An assigned infrastructure failure permanently ends this candidate stage; clean boundary pauses and startup failures before any assigned observation may resume untouched jobs only after quiescence. If wrong, a recoverable failure may waste a study reservation and leave an inconclusive result."
+  ]
+}
