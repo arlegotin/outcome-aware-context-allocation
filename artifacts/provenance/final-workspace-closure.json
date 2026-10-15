@@ -1,0 +1,27 @@
+{
+  "utc": "2026-10-15T08:59:07.775099+00:00",
+  "action": "Removed only this plan temporary workspace after byte-exact archival and committed public metadata verification",
+  "removed_workspace": ".superpowers/sdd/2026-10-14-outcome-aware-context-allocation",
+  "workspace_files_verified_before_removal": 180,
+  "archive_manifest": "artifacts/provenance/process-archive/2026-10-14/20261015T085343993361Z/process-manifest.json",
+  "archive_manifest_sha256": "325239f7ca3efbee027034e3e24824cfdd60057b7ca1ad2b0ad8008d79ea8adb",
+  "archive_metadata_committed_in": "ec47831266427eac7f973bac4c83a3d995563784",
+  "branch": "main",
+  "private_archive_root": "artifacts/runs/process-archive/2026-10-14/20261015T085343993361Z",
+  "restore_method": "Copy exact source_path records beginning with removed_workspace from private_archive_path back to repository-relative source_path; verify each archived sha256 first. No scientific inputs were relocated or rewritten.",
+  "raw_data_models_predictions_archives_preserved": [
+    "data",
+    "models",
+    "artifacts/runs/confirmation",
+    "artifacts/runs/task17-timing-replication",
+    "artifacts/runs/task15-transfer",
+    "artifacts/analysis/task18-a03",
+    "artifacts/runs/process-archive/2026-10-14/20261015T085343993361Z"
+  ],
+  "source_scientific_mutations": false,
+  "native_I1": "Important and unfixed; external mitigation and seventh-Ruling disposition retained",
+  "elapsed_seconds": 0.09393949998775497,
+  "all_child_writers_stopped_before_removal": true,
+  "prior_dependency_audit": "artifacts/provenance/task16-final/final-dependency-audit.json",
+  "outcome": "inconclusive"
+}
