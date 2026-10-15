@@ -361,7 +361,7 @@ def failure_analysis(scored_rows, predictions):
 
 def pooled_corpus_manifest(development_tasks, protected_population):
     """Pure full-population document union; no query selection or gold association."""
-    if not protected_population or any(t.split not in ('pilot','fit','tune') for t in development_tasks) or any(
+    if not protected_population or any(t.split not in ('pilot','pilot_reservation','fit','tune') for t in development_tasks) or any(
             t.split!='protected' for t in protected_population):
         raise ValueError('selected development and complete protected population required')
     development = _unique(development_tasks,lambda t:t.task_id,'development task')
