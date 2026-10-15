@@ -164,16 +164,30 @@ def test_backend_exception_keeps_paid_partial_tokens(tmp_path,documents10,monkey
 
 
 def test_admission_requires_every_native_session_probe(tmp_path,documents10,monkeypatch):
+    import os
     from outcome_poc.citation_study.scoring import execution_health
-    root,plan,encoder=ready(tmp_path,documents10,monkeypatch)
     from outcome_poc.citation_study import runtime
-    runtime.run_stage(root,'diagnosis',backend_factory=lambda _:Backend(),encoder_factory=encoder,max_jobs=1)
-    jobs=[j for j in runtime.read(root/'schedule.json') if j['stage']=='diagnosis']
-    records=[(jobs[0],*runtime.completion(root,plan,jobs[0]))]
-    assert not execution_health(root,plan,records)
+    from outcome_poc.storage import canonical_bytes
+    root,plan,encoder=ready(tmp_path,documents10,monkeypatch)
     launch=runtime.launch_binding(root,'diagnosis',plan)
-    runtime.publish(launch/'denial-probe.json',{'network_denied':True,'file_denials':2})
+    probe_path=launch/'denial-probe.json'
+    # Authored provenance fixture; actual kernel denial is covered by native tests.
+    probe={'binding':runtime.identity(launch/'binding.json'),
+        'profile':runtime.identity(launch/'native.sb'),'boot_id':plan['freeze']['boot_id'],
+        'pid':os.getpid(),'network_denied':True,'file_denials':2}
+    runtime.publish(probe_path,probe)
+    runtime.run_stage(root,'diagnosis',backend_factory=lambda _:Backend(),encoder_factory=encoder)
+    _,records=runtime.validate_closed_stage(root,'diagnosis',privileged=False)
+    assert len(records)==384
+    assert execution_health(root,plan,records)
+    original=probe_path.read_bytes()
+    probe_path.unlink()
     assert not execution_health(root,plan,records)
+    # A structurally valid probe belonging to another process cannot cover this session.
+    probe_path.write_bytes(canonical_bytes({**probe,'pid':probe['pid']+1}))
+    assert not execution_health(root,plan,records)
+    probe_path.write_bytes(original)
+    assert execution_health(root,plan,records)
 
 
 def test_spawn_rejects_session_binding_before_acquisition(tmp_path,documents10,monkeypatch):
