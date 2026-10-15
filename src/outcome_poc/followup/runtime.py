@@ -81,13 +81,19 @@ def sandbox_profile(root, denied):
            f'(allow file-write* (subpath {quote(os.environ.get("TMPDIR","/private/tmp"))}))',
            '(allow file-write* (literal "/dev/null"))']
     lines.append(f'(allow file-read* (subpath {quote(root)}))')
-    for path in sorted(set(str(Path(p).resolve()) for p in denied)):
+    denied_paths=sorted(set(str(Path(p).resolve()) for p in denied))
+    for path in denied_paths:
         if root.is_relative_to(Path(path)):
             lines.append(f'(deny file-read* (require-all (subpath {quote(path)}) (require-not (subpath {quote(root)}))))')
         else:
             lines.append(f'(deny file-read* (subpath {quote(path)}))')
     lines.append(f'(deny file-read* (subpath {quote(root / "scores")}))')
     lines.append('(deny file-read* (regex #"[.]gold[.]jsonl$"))')
+    # SQLite inspects ancestor metadata while canonicalizing its database path.
+    # Grant literal traversal metadata only; parent listings/content stay denied.
+    for parent in root.parents:
+        if any(parent.is_relative_to(Path(path)) for path in denied_paths):
+            lines.append(f'(allow file-read-metadata (literal {quote(parent)}))')
     return '\n'.join(lines)+'\n'
 
 
@@ -253,7 +259,7 @@ def execute_job(root, plan, job, task, documents, retrieval, backend, *, clock=c
            'start_ns':clock(),'active_start_ns':active(),'started_utc':datetime.now(timezone.utc).isoformat(),'session':session}
     publish(state_path,state)
     append_jsonl(directory/'attempts.jsonl',{'kind':'start',**state})
-    calls=0; evidence=[]; ranking=[]; aliases={}; prompt_hash=None; cleanup=None; result=None; synchronization_error=None
+    calls=0; evidence=[]; ranking=[]; aliases={}; prompt_hash=None; cleanup=None; result=None; synchronization_error=None; retrieval_pending=True; retrieval_error=None
     try:
         # No ranking or answer reuse: every assigned serving call performs this query encoding.
         ranking=retrieval.rank(task.question,task.candidate_ids)
@@ -261,6 +267,7 @@ def execute_job(root, plan, job, task, documents, retrieval, backend, *, clock=c
             raise ValueError('ranking does not cover all candidates')
         publish(root/'ranking-identities'/f'{content_hash(task.task_id)}.json',{'task_id':task.task_id,
             'ranking':[asdict(r) for r in ranking]})
+        retrieval_pending=False
         aliases=ranking_aliases(ranking)
         if job['arm']==ORACLE:
             support={r['task_id']:r['support_doc_ids'] for r in read_jsonl(root/'support-doc-ids.jsonl')}
@@ -288,12 +295,14 @@ def execute_job(root, plan, job, task, documents, retrieval, backend, *, clock=c
         raise # resume terminalizes the retained started attempt
     except Exception as error:
         reason=f'{type(error).__name__}: {error}'
+        if retrieval_pending:retrieval_error=reason
         if result is not None:synchronization_error=reason
         result=replace(result,status='infra_error',stop_reason=reason) if result is not None else _empty(reason)
     payload={'result':asdict(result),'calls':calls,'evidence_ids':[d.doc_id for d in evidence],
              'ranking':[asdict(r) for r in ranking],'aliases':aliases,'prompt_hash':prompt_hash,
-             'cleanup_error':cleanup,'synchronization_error':synchronization_error,'resources':getattr(backend,'last_resources',{})}
+             'cleanup_error':cleanup,'synchronization_error':synchronization_error,'retrieval_error':retrieval_error,'resources':getattr(backend,'last_resources',{})}
     committed=_commit(root,plan,job,state,payload,clock=clock,active=active)
+    if retrieval_error:raise RuntimeError(f'retrieval failed; terminal result preserved: {retrieval_error}')
     if cleanup:raise RuntimeError(f'cleanup failed; terminal result preserved: {cleanup}')
     if synchronization_error:raise RuntimeError(f'synchronization failed; terminal result preserved: {synchronization_error}')
     return committed
