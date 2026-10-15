@@ -1,0 +1,51 @@
+{
+  "a03_launch_authorized": false,
+  "amendment_id": "A04",
+  "amendment_sha256": "35619ce1cd67508e437f6d42c2d6974b1bae8552bd421abd98ee789b0dc64111",
+  "assigned_jobs": 8640,
+  "assigned_unique_tasks": 480,
+  "completed_jobs": 6510,
+  "gold_opened": false,
+  "incomplete_rule": "Retain full480questions/8640jobs, all attempts and unknown costs; no subset scoring. The next started attempt lacks ready/completion and remains uncertified.",
+  "native_finished_receipt": {
+    "path": "artifacts/runs/confirmation/launch-1.finished.json",
+    "sha256": "5639ccd0874884c6918ae097a8841bcaa847fe4b988b85369b092b3b9ae4df12"
+  },
+  "native_returncode": -2,
+  "next_gate": "Separate root approval after fresh awake, cost and concurrency preflight.",
+  "paid_call_active_at_signal": false,
+  "prior_owned_process_checks": [
+    {
+      "exists": false,
+      "pid": 19798
+    },
+    {
+      "exists": false,
+      "pid": 19799
+    },
+    {
+      "exists": false,
+      "pid": 20026
+    },
+    {
+      "exists": false,
+      "pid": 19838
+    },
+    {
+      "exists": false,
+      "pid": 53155
+    }
+  ],
+  "protocol_hash": "415c80344dc3609ee2600a20c63c2502e4fc100cf50c60daee73ebc8a721e100",
+  "quality_scored": false,
+  "recorded_utc": "2026-10-15T04:32:40.219497+00:00",
+  "signal_utc": "2026-10-15T04:30:00.253260+00:00",
+  "status": "incomplete",
+  "stop_receipt": {
+    "path": "artifacts/runs/confirmation/operational-observations/a04-stop-control.json",
+    "sha256": "3adc5c65bce994c65b460a5ff0f7e762f1e7e185033ade9cb4f5d899f3957ed9"
+  },
+  "supersession": "A04 external04:30UTC stop supersedes historical06:12:52UTC metadata only; original/A03 frozen files unchanged.",
+  "wall_time_reason": "Previously verified host suspension excluded by perf_counter; no timing repair.",
+  "wall_time_valid": false
+}

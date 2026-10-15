@@ -1,13 +1,13 @@
 # Execution checkpoint
 
-Recorded 2026-10-15T04:10:19.359115+00:00. This is an in-progress recovery checkpoint; the final deliverable remains `artifacts/final_report.md`.
+Recorded 2026-10-15T04:32:40.219497+00:00. This is an in-progress recovery checkpoint; the final deliverable remains `artifacts/final_report.md`.
 
 We are testing whether a cheap controller can choose how much evidence an AI reads before answering. The outcome-trained controller learns when extra evidence changes final answer-and-citation success. The main question is whether that training earns its cost compared with simpler alternatives.
 
 The practice comparison is complete on 128 development questions. The chosen outcome-trained controller achieved 10 strict answer-and-citation successes, versus 11 for the chosen simpler support-coverage proxy. Their estimated serving seconds per strict success were 19.11 and 14.66 respectively. These are tuning observations with sparse successes, not an untouched-test finding. The proxy, ridge, question-only and random-forest representatives all beat the proposed controller on the tuning efficiency objective. A small 128-versus-256 training check showed no stable progress, so no larger training collection is justified now.
 
 
-The protected protocol assigned 480 questions from a finite population of 7,344, with 8,640 physically separate pipeline jobs and two fresh paired timing repetitions of the main contenders. Collection started at 2026-10-14T22:09:27.535017UTC under reviewed immutable source. The latest operational receipt records 4,372/8,640 terminal pipelines at 2026-10-15T02:47:14.324469+00:00. This is progress, not a scored sample or a quality finding. Gold answers and protected scores remain unopened.
+The protected protocol assigned 480 questions from a finite population of 7,344, with 8,640 physically separate pipeline jobs and two fresh paired timing repetitions of the main contenders. Collection started at 2026-10-14T22:09:27.535017UTC under reviewed immutable source. A04 stopped the original collector safely at 2026-10-15T04:30:00.253260UTC after 6,510/8,640 terminal pipelines. The genuine native termination receipt records KeyboardInterrupt/return code −2, and the owned launcher, reader and control processes are gone. The original remains incomplete with all 480 assigned questions and 8,640 jobs; its next started attempt remains uncertified. No completed subset will be scored. This is progress, not a scored sample or a quality finding. Gold answers and protected scores remain unopened.
 
 Repeated host sleep/wake cycles caused a known measurement failure: one pipeline interval spanned 300.750162 seconds of UTC time while the high-resolution timer recorded only 2.446765125 seconds. Other affected intervals are retained too. The original run cannot support its intended wall-time efficiency claim. No elapsed value has been repaired, no affected question removed and no smaller confirmation sample substituted. This environmental failure does not establish evidence against the proposed mechanism.
 
@@ -17,7 +17,7 @@ The hardware is an M3 Max with 36 GiB RAM, native Python 3.12.9 and macOS 26.7.1
 
 The archived author-origin HotpotQA snapshot remains qualified by amendment A01. Development history retains the retrospective source/receipt qualifications, the failed numerical prefix-reuse check, original raw failures and all 246 tuning configurations. No historical completion-time guarantee is invented. The final report will distinguish known measured costs, unknown costs and nonadditive enclosing intervals.
 
-Remaining work: close the original collection or preserve its original-assignment incomplete record; execute the separately frozen timing replication only if operationally feasible, and decide the optional pooled diagnostic without reading outcomes first; reproduce valid saved scoring; write complete local tables, uncertainty or explicit unavailability, and the final report. No web-search savings, algorithmic novelty, commercial benefit or quality preservation has been established.
+Remaining work: retain the original-assignment incomplete record; execute the separately frozen timing replication only if operationally feasible, and decide the optional pooled diagnostic without reading outcomes first; reproduce valid saved scoring; write complete local tables, uncertainty or explicit unavailability, and the final report. No web-search savings, algorithmic novelty, commercial benefit or quality preservation has been established.
 
 The original 24-hour deadline remains 2026-10-15T12:12:52UTC.
 
