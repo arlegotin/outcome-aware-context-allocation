@@ -143,6 +143,22 @@ def admit(protocol_path):
         receipts[pred.job_id] = {'decision':_read(directory/'decision.json'),'paid':paid,'all_paid':all_paid}
     names = {*SCORE_FILES,*required,'job-evidence.json','scores.jsonl'}
     hashes = {str(root/name):file_hash(root/name) for name in names}
+    # Accounting binds jobs and shared costs, but operational evidence belongs to
+    # these separate existing closures. Retain their declared dependencies too.
+    operational_markers = ['protected-run.closed.json']
+    if not p['fixture'] or (root/'launch.completed.json').exists():
+        operational_markers.append('launch.completed.json')
+    for name in operational_markers:
+        operational = _read(root/name)
+        if name == 'launch.completed.json' and (operational['protocol_hash'] != p['protocol_hash'] or
+                                               operational['returncode'] != 0):
+            raise ValueError('native process has not completed')
+        hashes[str(root/name)] = file_hash(root/name)
+        for relative,digest in operational['hashes'].items():
+            dependency = root/relative
+            if not dependency.resolve().is_relative_to(root.resolve()) or file_hash(dependency) != digest:
+                raise ValueError('operational closure dependency path/checksum mismatch')
+            hashes[str(dependency)] = digest
     for item in (p,parent):
         hashes.update(item['source']['sha256']);hashes.update(item['artifact_sha256'])
         hashes.update({str(Path(item['output_dir'])/(n+'.json')):file_hash(Path(item['output_dir'])/(n+'.json'))

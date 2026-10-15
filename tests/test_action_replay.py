@@ -317,3 +317,50 @@ def test_legacy_family_validator_remains_incompatible(tmp_path):
     a=api().admit(Path(p['output_dir'])/'protocol.json')
     with pytest.raises(ValueError,match='incomplete frozen family roster'):
         ablate(p,a['scores'],a['events'])
+
+
+def native_completion_fixture(p):
+    """Native-shaped completion around a real synthetic producer's closed run.
+
+    No native process or model is launched; these are the exact completion fields
+    consumed by validate_run and the new adapter's operational binding capture.
+    """
+    root=Path(p['run_dir'])
+    atomic_json(root/'native-summary.json',{'protocol_hash':p['protocol_hash'],'status':'closed'})
+    atomic_json(root/'launch.completed.json',{'protocol_hash':p['protocol_hash'],'returncode':0,
+        'hashes':{name:protocol.file_hash(root/name)
+                  for name in ('protected-run.closed.json','native-summary.json')}})
+
+
+@pytest.mark.parametrize('changed',['resources.jsonl','launch.completed.json','native-summary.json'])
+def test_operational_closure_mutation_refuses_publication(tmp_path,changed):
+    p,_,runtime=fixture(tmp_path)
+    if changed!='resources.jsonl':native_completion_fixture(p)
+    module=api()
+    a=module.admit(Path(p['output_dir'])/'protocol.json')
+    result=module.reconstruct(a,runtime.retrieval,runtime.models)
+    root=Path(p['run_dir'])
+    with (root/changed).open('ab') as stream:stream.write(b'\n')
+    if changed=='resources.jsonl':
+        from outcome_poc.protected import validate_run
+        with pytest.raises(ValueError,match='protected closure checksum'):
+            validate_run(p,root)
+    output=tmp_path/'diagnostic'/'mutation.json'
+    with pytest.raises(ValueError,match='changed|checksum'):
+        module.seal(a,result,output)
+    assert not output.exists() and not output.with_suffix('.closed.json').exists()
+
+
+def test_analysis_digest_retains_all_operational_closure_bindings(tmp_path):
+    p,_,runtime=fixture(tmp_path)
+    native_completion_fixture(p)
+    module=api();root=Path(p['run_dir'])
+    a=module.admit(Path(p['output_dir'])/'protocol.json')
+    result=module.reconstruct(a,runtime.retrieval,runtime.models)
+    output=tmp_path/'diagnostic'/'operational.json'
+    module.seal(a,result,output)
+    closure=protocol._read(output.with_suffix('.closed.json'))
+    for marker_name in ('protected-run.closed.json','launch.completed.json'):
+        assert closure['input_hashes'][str(root/marker_name)]==protocol.file_hash(root/marker_name)
+        for name,digest in protocol._read(root/marker_name)['hashes'].items():
+            assert closure['input_hashes'][str(root/name)]==digest
