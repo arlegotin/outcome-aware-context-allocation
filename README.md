@@ -8,7 +8,9 @@ A fresh follow-up found real reading costs and room for better budget choices, b
 
 The next test added one sentence asking the reader to cite every link leading to the answer. On 64 fresh questions with ten paragraphs, strict successes rose from **4 to 6**, while correct answer strings fell from **43 to 42**. That failed the quality screen fixed before the run, so the larger comparison stayed unrun. It's a mixed development result. The project still has no demonstrated controller or efficiency advantage.
 
-[Original findings](artifacts/final_report.md) · [Reader/headroom study](docs/experiments/2026-10-15-reader-headroom-followup.md) · [Citation-chain test](docs/experiments/2026-10-15-citation-chain-reader-study.md) · [14B feasibility](docs/experiments/2026-10-15-reader-capability-preflight.md) · [Research and prior art](research_poc_plan.md) · [Publication scope](docs/PUBLICATION.md) · [Citation](CITATION.cff)
+Switching to a larger reader didn't clear the next screen either: on 16 reused questions with ten paragraphs, it produced **1 strict success versus 2** for the smaller reader. The larger independent comparison remains unrun. There is still no demonstrated saving.
+
+[Original findings](artifacts/final_report.md) · [Reader/headroom study](docs/experiments/2026-10-15-reader-headroom-followup.md) · [Citation-chain test](docs/experiments/2026-10-15-citation-chain-reader-study.md) · [14B feasibility](docs/experiments/2026-10-15-reader-capability-preflight.md) · [Reader comparison](docs/experiments/2026-10-15-reader-quality-comparison.md) · [Research and prior art](research_poc_plan.md) · [Publication scope](docs/PUBLICATION.md) · [Citation](CITATION.cff)
 
 ## The idea
 
@@ -50,7 +52,7 @@ The [citation-chain test](docs/experiments/2026-10-15-citation-chain-reader-stud
 
 The prerequisite remains citation reliability and a useful success target. With the reminder, only 2 of 64 questions had different strict outcomes at two versus ten paragraphs. More expensive controller labels haven't earned their place yet. A stronger reader or a validated measurement change needs its own fresh test before the allocation experiment grows.
 
-A pinned 14B reader has now passed a separate [feasibility check](docs/experiments/2026-10-15-reader-capability-preflight.md) on this 36 GiB Mac: a short authored question, an identical repetition, and a 7,803-token prompt. System-wide swap grew by about 6.44 GiB during the run. The model can execute this configuration; better answers and useful savings still need evidence. It has earned a small benchmark comparison.
+A larger reader passed its [local feasibility check](docs/experiments/2026-10-15-reader-capability-preflight.md), then failed the [16-question quality screen](docs/experiments/2026-10-15-reader-quality-comparison.md). With ten paragraphs it got **8 answer strings correct and 1 answer-plus-citation success**, versus **10 and 2** for the smaller reader. All 96 screening calls completed. The 128-question comparison stays unrun; its questions remain reserved. This small reused sample doesn't prove the larger reader is generally worse. It didn't earn more allocation-label collection in this setup.
 
 ## What you can reuse
 
@@ -77,9 +79,10 @@ python -m pip check
 python -m pytest -q
 python -m outcome_poc --help
 python -m outcome_poc.reader_probe --help
+python -m outcome_poc.reader_study --help
 ```
 
-The latest suite passed **988 tests with zero skips** at `24701dd`, including the new reader preflight. Earlier experiment source and results remain intact. The [preflight software review](docs/superpowers/reviews/2026-10-15-reader-capability-software-review.md) records its checks and fixes. Passing tests doesn't validate the original speed measurements or establish a research win. On non-macOS systems or inside an outer sandbox, the macOS denial-profile checks can skip.
+The latest suite passed **1,064 tests with zero skips** at `0e90291`, including the paired-reader study. Earlier experiment source and results remain intact. The [reader-study software review](docs/superpowers/reviews/2026-10-15-reader-quality-software-review.md) records its checks and crash-recovery fix. Passing tests doesn't validate the original speed measurements or establish a research win. On non-macOS systems or inside an outer sandbox, the macOS denial-profile checks can skip.
 
 These commands don't start a benchmark experiment. For a new study, follow the [fresh-experiment guide](docs/fresh-experiment.md): use a separate checkout, fresh output roots and attempt-ledger parents, new development outputs, and a newly frozen protocol. Historical configurations record this experiment. Running mutable setup or indexing over the retained evidence can invalidate its bindings.
 

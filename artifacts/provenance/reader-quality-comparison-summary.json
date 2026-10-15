@@ -1,0 +1,767 @@
+{
+  "acquisition_and_adaptation": {
+    "break_even": null,
+    "new_download_bytes": 0,
+    "reason": "No admitted policy or demonstrated per-query saving; existing pretrained asset acquisition is separately disclosed in Gate 1.",
+    "router_training_seconds": 0
+  },
+  "assets": {
+    "encoder": {
+      "repo_id": "BAAI/bge-small-en-v1.5",
+      "revision": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+      "snapshot_hash": "0883c9ca2b589beb4d2ad6150d9c96e7c9400d2f1eadf29ad9542af82601f54a"
+    },
+    "qwen14b-nonthinking": {
+      "repo_id": "mlx-community/Qwen3-14B-4bit",
+      "revision": "a4d9b2df59d2c150bef02fcbe0d91046b7ca33a4",
+      "snapshot_hash": "db6642cc8c8d481f64de506e02f1bef3ab75f07ecbd0ad0d20395bd36aa28414"
+    },
+    "qwen4b-instruct": {
+      "repo_id": "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+      "revision": "50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b",
+      "snapshot_hash": "ecf7edd130ec9663e80927112f50d4aab12143a43c4a1f4c532f99d0379e1660"
+    }
+  },
+  "cells": {
+    "qwen14b-nonthinking/10": {
+      "abstentions": 1,
+      "calls": 16,
+      "counts": {
+        "answer_em": 8,
+        "joint_em": 1,
+        "support_em": 6
+      },
+      "empty": 0,
+      "failures": 1,
+      "generated_tokens": 995,
+      "mean_seconds": 7.870367341125,
+      "means": {
+        "answer_em": 0.5,
+        "answer_f1": 0.5666666666666667,
+        "joint_em": 0.0625,
+        "joint_f1": 0.3414186507936508,
+        "support_em": 0.375,
+        "support_f1": 0.6358630952380953,
+        "support_precision": 0.73125,
+        "support_recall": 0.5885416666666666
+      },
+      "n": 16,
+      "p95_seconds": 9.91828562475,
+      "prompt_tokens": 25164,
+      "ratio_reason": null,
+      "seconds_per_strict_success": 125.925877458,
+      "statuses": {
+        "abstain": 1,
+        "ok": 15
+      },
+      "total_seconds": 125.925877458,
+      "truncated": 0
+    },
+    "qwen14b-nonthinking/2": {
+      "abstentions": 3,
+      "calls": 16,
+      "counts": {
+        "answer_em": 6,
+        "joint_em": 2,
+        "support_em": 4
+      },
+      "empty": 0,
+      "failures": 3,
+      "generated_tokens": 835,
+      "mean_seconds": 3.361966151,
+      "means": {
+        "answer_em": 0.375,
+        "answer_f1": 0.4449754901960784,
+        "joint_em": 0.125,
+        "joint_f1": 0.3534722222222222,
+        "support_em": 0.25,
+        "support_f1": 0.50625,
+        "support_precision": 0.6041666666666666,
+        "support_recall": 0.46874999999999994
+      },
+      "n": 16,
+      "p95_seconds": 4.43673281275,
+      "prompt_tokens": 6647,
+      "ratio_reason": null,
+      "seconds_per_strict_success": 26.895729208,
+      "statuses": {
+        "abstain": 3,
+        "ok": 13
+      },
+      "total_seconds": 53.791458416,
+      "truncated": 0
+    },
+    "qwen14b-nonthinking/support-documents": {
+      "abstentions": 1,
+      "calls": 16,
+      "counts": {
+        "answer_em": 10,
+        "joint_em": 3,
+        "support_em": 6
+      },
+      "empty": 0,
+      "failures": 1,
+      "generated_tokens": 882,
+      "mean_seconds": 3.3798289453125,
+      "means": {
+        "answer_em": 0.625,
+        "answer_f1": 0.6920343137254903,
+        "joint_em": 0.1875,
+        "joint_f1": 0.549142156862745,
+        "support_em": 0.375,
+        "support_f1": 0.7145833333333333,
+        "support_precision": 0.8541666666666666,
+        "support_recall": 0.65625
+      },
+      "n": 16,
+      "p95_seconds": 4.38012067725,
+      "prompt_tokens": 6334,
+      "ratio_reason": null,
+      "seconds_per_strict_success": 18.025754375,
+      "statuses": {
+        "abstain": 1,
+        "ok": 15
+      },
+      "total_seconds": 54.077263125,
+      "truncated": 0
+    },
+    "qwen4b-instruct/10": {
+      "abstentions": 0,
+      "calls": 16,
+      "counts": {
+        "answer_em": 10,
+        "joint_em": 2,
+        "support_em": 3
+      },
+      "empty": 0,
+      "failures": 0,
+      "generated_tokens": 1127,
+      "mean_seconds": 2.979992721375,
+      "means": {
+        "answer_em": 0.625,
+        "answer_f1": 0.6420558608058607,
+        "joint_em": 0.125,
+        "joint_f1": 0.39956979082162264,
+        "support_em": 0.1875,
+        "support_f1": 0.5402867965367966,
+        "support_precision": 0.601388888888889,
+        "support_recall": 0.5729166666666666
+      },
+      "n": 16,
+      "p95_seconds": 4.98120465625,
+      "prompt_tokens": 25100,
+      "ratio_reason": null,
+      "seconds_per_strict_success": 23.839941771,
+      "statuses": {
+        "ok": 16
+      },
+      "total_seconds": 47.679883542,
+      "truncated": 0
+    },
+    "qwen4b-instruct/2": {
+      "abstentions": 2,
+      "calls": 16,
+      "counts": {
+        "answer_em": 6,
+        "joint_em": 1,
+        "support_em": 3
+      },
+      "empty": 0,
+      "failures": 3,
+      "generated_tokens": 653,
+      "mean_seconds": 1.051370578125,
+      "means": {
+        "answer_em": 0.375,
+        "answer_f1": 0.4054487179487179,
+        "joint_em": 0.0625,
+        "joint_f1": 0.27796855921855923,
+        "support_em": 0.1875,
+        "support_f1": 0.45238095238095233,
+        "support_precision": 0.5520833333333333,
+        "support_recall": 0.40624999999999994
+      },
+      "n": 16,
+      "p95_seconds": 1.528914364,
+      "prompt_tokens": 6583,
+      "ratio_reason": null,
+      "seconds_per_strict_success": 16.82192925,
+      "statuses": {
+        "abstain": 2,
+        "ok": 13,
+        "parse_error": 1
+      },
+      "total_seconds": 16.82192925,
+      "truncated": 0
+    },
+    "qwen4b-instruct/support-documents": {
+      "abstentions": 1,
+      "calls": 16,
+      "counts": {
+        "answer_em": 9,
+        "joint_em": 1,
+        "support_em": 4
+      },
+      "empty": 0,
+      "failures": 2,
+      "generated_tokens": 673,
+      "mean_seconds": 1.0599351301875,
+      "means": {
+        "answer_em": 0.5625,
+        "answer_f1": 0.6121400151572565,
+        "joint_em": 0.0625,
+        "joint_f1": 0.42773513251454426,
+        "support_em": 0.25,
+        "support_f1": 0.6169642857142856,
+        "support_precision": 0.75,
+        "support_recall": 0.5625
+      },
+      "n": 16,
+      "p95_seconds": 1.5616299172499999,
+      "prompt_tokens": 6270,
+      "ratio_reason": null,
+      "seconds_per_strict_success": 16.958962083,
+      "statuses": {
+        "abstain": 1,
+        "ok": 14,
+        "parse_error": 1
+      },
+      "total_seconds": 16.958962083,
+      "truncated": 0
+    }
+  },
+  "claim_scope": "Reused-development reader-profile screen; no confirmed reader, allocation, efficiency, provider or business advantage.",
+  "decision": {
+    "decision": "defer",
+    "healthy": true,
+    "natural_counts": {
+      "qwen14b-nonthinking": {
+        "10": {
+          "answer_em": 8,
+          "joint_em": 1,
+          "support_em": 6
+        },
+        "2": {
+          "answer_em": 6,
+          "joint_em": 2,
+          "support_em": 4
+        }
+      },
+      "qwen4b-instruct": {
+        "10": {
+          "answer_em": 10,
+          "joint_em": 2,
+          "support_em": 3
+        },
+        "2": {
+          "answer_em": 6,
+          "joint_em": 1,
+          "support_em": 3
+        }
+      }
+    },
+    "nonlower_natural_answers": false,
+    "strict_natural10_joint_improvement": false
+  },
+  "environment": {
+    "machine": "arm64",
+    "packages": {
+      "Jinja2": "3.1.6",
+      "MarkupSafe": "3.0.4",
+      "PyYAML": "6.0.3",
+      "Pygments": "2.21.0",
+      "annotated-doc": "0.0.5",
+      "anyio": "4.15.1",
+      "certifi": "2026.7.22",
+      "click": "8.5.0",
+      "cloudpickle": "3.1.2",
+      "filelock": "4.1.1",
+      "fsspec": "2026.9.0",
+      "h11": "0.16.0",
+      "hf-xet": "1.7.0",
+      "httpcore": "1.0.9",
+      "httpx": "0.28.1",
+      "huggingface_hub": "1.33.0",
+      "idna": "3.20",
+      "iniconfig": "2.3.1",
+      "joblib": "1.6.0",
+      "markdown-it-py": "4.2.0",
+      "mdurl": "0.1.2",
+      "mlx": "0.32.3",
+      "mlx-lm": "0.32.0",
+      "mlx-metal": "0.32.3",
+      "mpmath": "1.3.0",
+      "narwhals": "2.27.1",
+      "networkx": "3.7",
+      "numpy": "2.5.4",
+      "outcome-poc": "0.1.0",
+      "packaging": "26.3",
+      "pip": "25.0",
+      "pluggy": "1.6.0",
+      "protobuf": "7.36.2",
+      "psutil": "7.2.2",
+      "pytest": "9.1.1",
+      "regex": "2026.9.29",
+      "rich": "15.0.0",
+      "safetensors": "0.8.0",
+      "scikit-learn": "1.9.1",
+      "scipy": "1.18.1",
+      "sentence-transformers": "6.1.0",
+      "sentencepiece": "0.2.2",
+      "setuptools": "84.0.0",
+      "shellingham": "1.5.4",
+      "sympy": "1.14.0",
+      "threadpoolctl": "3.7.0",
+      "tokenizers": "0.23.3",
+      "torch": "2.14.1",
+      "tqdm": "4.70.1",
+      "transformers": "5.19.0",
+      "typer": "0.27.3",
+      "typing_extensions": "4.16.0"
+    },
+    "platform": "macOS-26.7.1-arm64-arm-64bit",
+    "python": "3.12.9"
+  },
+  "evidence": {
+    "aggregate-report.json": {
+      "bytes": 11940,
+      "sha256": "accb3130168ad7dfc8e8268b99400031514218649f5154d17593f83ed09f445d"
+    },
+    "assets.json": {
+      "bytes": 7383,
+      "sha256": "6f5ea954e98261118fe131de551ea34a1b6f527758561d1a827b94296ccc648b"
+    },
+    "cohorts.json": {
+      "bytes": 3404939,
+      "sha256": "64542aa272b5b2913a8e822fa18fb904fea92a70abcb1c3bd906969458bf3c6c"
+    },
+    "confirmation-decision.json": {
+      "bytes": 950,
+      "sha256": "8af12d8410940321912cd48ec8e3e0534ddfd869dccd5283e4aaaa1f466273f2"
+    },
+    "development-score-attestation.json": {
+      "bytes": 1158,
+      "sha256": "d569f0d91cd027e6207ba629209b23b0bf339cfe8ab12d7606b3d6f686b10c1a"
+    },
+    "plan.json": {
+      "bytes": 64641,
+      "sha256": "effdd1abc215c38686a7381e755f3f7422d090a990103fcdef62b42ab3de443a"
+    },
+    "schedule.json": {
+      "bytes": 302355,
+      "sha256": "7a7aeaee5f77f7c7e8ef3b9190c66a74190e4d4d2122b473deab1ac8c5b231b8"
+    },
+    "scores/development/closed.json": {
+      "bytes": 1158,
+      "sha256": "d569f0d91cd027e6207ba629209b23b0bf339cfe8ab12d7606b3d6f686b10c1a"
+    },
+    "scores/development/scores.jsonl": {
+      "bytes": 55944,
+      "sha256": "b82ae21dae2fa81beefec8163d1edcb93275ff23e789dcde46b2ab84aa1d0480"
+    },
+    "scores/development/summary.json": {
+      "bytes": 8744,
+      "sha256": "e6cc9980b5bc9f715a61857dabd889783c57af8c7898a13c201e277fd42998a0"
+    },
+    "stages/development/closed.json": {
+      "bytes": 141718,
+      "sha256": "9652e4bdea7e3581d74767ba18dc0d7fbac918054b139c080804201f80fa32fd"
+    },
+    "stages/development/index-envelope.json": {
+      "bytes": 3144,
+      "sha256": "c64d6bfc3a49396b1971ab52eafaa8856fce63592a6aa0ea2f6aac9a8ed10e85"
+    },
+    "stages/development/index-setup/build/index-seal.json": {
+      "bytes": 694,
+      "sha256": "cc59cf06811e4a283a9b00186c420f66f06437cbc981cabebae7c9af15f1ef01"
+    }
+  },
+  "failures": {
+    "abstain": 8,
+    "assigned": 96,
+    "context_overflow": 0,
+    "infra_error": 0,
+    "ok": 86,
+    "parse_error": 2,
+    "terminal": 96,
+    "timeout": 0,
+    "truncation": 0,
+    "unreceipted": 0
+  },
+  "hardware": {
+    "chip": "Apple M3 Max",
+    "physical_memory_bytes": 38654705664
+  },
+  "measured_source": "e5ced9a9c906517fa0f5107b1c2b5ff8c3beb1e1",
+  "outcome": "inconclusive",
+  "paired_descriptive_counts": {
+    "10": {
+      "answer_em": {
+        "both_success": 7,
+        "difference": -0.125,
+        "difference_percentage_points": -12.5,
+        "harm_count": 3,
+        "n": 16,
+        "neither_success": 5,
+        "rescue_count": 1
+      },
+      "joint_em": {
+        "both_success": 0,
+        "difference": -0.0625,
+        "difference_percentage_points": -6.25,
+        "harm_count": 2,
+        "n": 16,
+        "neither_success": 13,
+        "rescue_count": 1
+      },
+      "support_em": {
+        "both_success": 3,
+        "difference": 0.1875,
+        "difference_percentage_points": 18.75,
+        "harm_count": 0,
+        "n": 16,
+        "neither_success": 10,
+        "rescue_count": 3
+      }
+    },
+    "2": {
+      "answer_em": {
+        "both_success": 4,
+        "difference": 0.0,
+        "difference_percentage_points": 0.0,
+        "harm_count": 2,
+        "n": 16,
+        "neither_success": 8,
+        "rescue_count": 2
+      },
+      "joint_em": {
+        "both_success": 0,
+        "difference": 0.0625,
+        "difference_percentage_points": 6.25,
+        "harm_count": 1,
+        "n": 16,
+        "neither_success": 13,
+        "rescue_count": 2
+      },
+      "support_em": {
+        "both_success": 3,
+        "difference": 0.0625,
+        "difference_percentage_points": 6.25,
+        "harm_count": 0,
+        "n": 16,
+        "neither_success": 12,
+        "rescue_count": 1
+      }
+    },
+    "support-documents": {
+      "answer_em": {
+        "both_success": 6,
+        "difference": 0.0625,
+        "difference_percentage_points": 6.25,
+        "harm_count": 3,
+        "n": 16,
+        "neither_success": 3,
+        "rescue_count": 4
+      },
+      "joint_em": {
+        "both_success": 0,
+        "difference": 0.125,
+        "difference_percentage_points": 12.5,
+        "harm_count": 1,
+        "n": 16,
+        "neither_success": 12,
+        "rescue_count": 3
+      },
+      "support_em": {
+        "both_success": 4,
+        "difference": 0.125,
+        "difference_percentage_points": 12.5,
+        "harm_count": 0,
+        "n": 16,
+        "neither_success": 10,
+        "rescue_count": 2
+      }
+    }
+  },
+  "physical_costs": {
+    "index_setup_seconds": 6.430589709,
+    "preparation_seconds": 33.850346916,
+    "scoring_seconds": 23.967202583,
+    "serving_exact_seconds": 353.72564950000003,
+    "serving_lower_seconds": 353.72564950000003,
+    "serving_upper_seconds": 353.72564950000003,
+    "summing_rule": "Only disjoint preparation, index, serving sessions and scoring. Jobs, warmup, acquisition and lifecycle are nested diagnostics.",
+    "total_exact_seconds": 417.97378870800003,
+    "total_lower_seconds": 417.97378870800003,
+    "total_upper_seconds": 417.97378870800003
+  },
+  "protocol": {
+    "admission_rule": {
+      "complete_healthy_development": true,
+      "natural10_answer_em": "14b-no-lower",
+      "natural10_joint_em": "14b-strictly-greater",
+      "natural2_answer_em": "14b-no-lower"
+    },
+    "config": {
+      "bytes": 3717,
+      "sha256": "237ef8d73eac58f7c2ab26475976b6f7c2c3511120462b8d2edc4881af596bc0"
+    },
+    "confirmation_calls_executed": 0,
+    "confirmation_calls_planned": 512,
+    "confirmation_n": 128,
+    "confirmation_population_N": 88587,
+    "development_calls": 96,
+    "development_n": 16,
+    "eligibility_hash": "340ac60b947956a03da43fa0a3bead3d1ceb60d39d648f658404bc8262f9fdc0",
+    "plan_hash": "d59dce9dd50e14532b94d50280ea85fe9e816dae205854d5287141057051fc52",
+    "reader_block_order": [
+      "qwen14b-nonthinking",
+      "qwen4b-instruct"
+    ],
+    "repetitions": 1,
+    "sample_hashes": {
+      "confirmation": "ec0f6deb076013c48991f3e99b155e7bc442608eac9356e0d9317d596d2d6c3a",
+      "development": "d1ba32dad013b151974600fe00862a5b1b8bd8fa6189452451d8a3ec8193d562"
+    },
+    "selection_seed": 271829
+  },
+  "publication_audit": {
+    "all_query_status_counts": {
+      "abstain": 8,
+      "ok": 86,
+      "parse_error": 2
+    },
+    "historical_files_checked": 8756,
+    "intentional_changes": [
+      "README.md",
+      "docs/superpowers/plans/2026-10-15-reader-quality-comparison.md",
+      "docs/superpowers/specs/2026-10-15-reader-quality-comparison-design.md"
+    ],
+    "original_final_report_unchanged": true,
+    "score_rows_checked": 96,
+    "tested_files_unchanged": 140,
+    "unchanged": 8753,
+    "unexpected_changes": 0
+  },
+  "readers": {
+    "qwen14b-nonthinking": {
+      "factory": "ProfileFactory",
+      "settings": {
+        "batch_size": 1,
+        "cache_mode": "none",
+        "enable_thinking": false,
+        "kv_cache": "default",
+        "max_context_tokens": 8192,
+        "max_new_tokens": 256,
+        "prefill_step_size": 512,
+        "repairs": 0,
+        "repo_id": "mlx-community/Qwen3-14B-4bit",
+        "result_reuse": false,
+        "revision": "a4d9b2df59d2c150bef02fcbe0d91046b7ca33a4",
+        "semantic_retries": 0,
+        "temperature": 0,
+        "timeout_seconds": 120
+      }
+    },
+    "qwen4b-instruct": {
+      "factory": "NativeReaderFactory",
+      "settings": {
+        "max_context_tokens": 8192,
+        "max_new_tokens": 256,
+        "prefill_step_size": 512,
+        "repo_id": "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+        "revision": "50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b",
+        "temperature": 0,
+        "timeout_seconds": 120
+      }
+    }
+  },
+  "reproduction": {
+    "additional_generations": 0,
+    "changed_files_after_rescoring": [
+      "aggregate-report.json",
+      "scoring-attempts.jsonl"
+    ],
+    "extra_run_files": [],
+    "score_files_byte_identical": true,
+    "scoring_attempts_retained": 2,
+    "verify_only_files_unchanged": 765
+  },
+  "requirements_lock": {
+    "bytes": 5009,
+    "sha256": "e1bd09c1dc51f39bd53e62df6ce79eb2d726b26fa30d486ac3d584f297c2d8c8"
+  },
+  "resources": {
+    "qwen14b-nonthinking": {
+      "all_gates_passed": true,
+      "gates": 100,
+      "peaks": {
+        "peak_mlx_bytes": 9126748248,
+        "rss_children_bytes": 2343354368,
+        "rss_parent_bytes": 694779904
+      },
+      "probes": {
+        "coordinator": {
+          "file_denials": 69,
+          "import_denials": [
+            "outcome_poc.data",
+            "outcome_poc.scoring",
+            "outcome_poc.followup.preparation",
+            "outcome_poc.followup.scoring",
+            "outcome_poc.citation_study.preparation",
+            "outcome_poc.citation_study.scoring",
+            "outcome_poc.reader_study.preparation",
+            "outcome_poc.reader_study.scoring"
+          ],
+          "network_denied": true,
+          "snapshot_origins": true
+        },
+        "worker": {
+          "file_denials": 69,
+          "import_denials": [
+            "outcome_poc.data",
+            "outcome_poc.scoring",
+            "outcome_poc.followup.preparation",
+            "outcome_poc.followup.scoring",
+            "outcome_poc.citation_study.preparation",
+            "outcome_poc.citation_study.scoring",
+            "outcome_poc.reader_study.preparation",
+            "outcome_poc.reader_study.scoring"
+          ],
+          "network_denied": true,
+          "snapshot_origins": true
+        }
+      },
+      "samples": 230,
+      "swap_start_bytes": 12454789120,
+      "swap_stop_bytes": 12438011904,
+      "system_available_min_bytes": 5993922560,
+      "warmups": [
+        {
+          "generated_tokens": 41,
+          "prompt_tokens": 174,
+          "status": "ok"
+        }
+      ]
+    },
+    "qwen4b-instruct": {
+      "all_gates_passed": true,
+      "gates": 100,
+      "peaks": {
+        "peak_mlx_bytes": 3186056364,
+        "rss_children_bytes": 2843230208,
+        "rss_parent_bytes": 604291072
+      },
+      "probes": {
+        "coordinator": {
+          "file_denials": 69,
+          "import_denials": [
+            "outcome_poc.data",
+            "outcome_poc.scoring",
+            "outcome_poc.followup.preparation",
+            "outcome_poc.followup.scoring",
+            "outcome_poc.citation_study.preparation",
+            "outcome_poc.citation_study.scoring",
+            "outcome_poc.reader_study.preparation",
+            "outcome_poc.reader_study.scoring"
+          ],
+          "network_denied": true,
+          "snapshot_origins": true
+        },
+        "worker": {
+          "file_denials": 69,
+          "import_denials": [
+            "outcome_poc.data",
+            "outcome_poc.scoring",
+            "outcome_poc.followup.preparation",
+            "outcome_poc.followup.scoring",
+            "outcome_poc.citation_study.preparation",
+            "outcome_poc.citation_study.scoring",
+            "outcome_poc.reader_study.preparation",
+            "outcome_poc.reader_study.scoring"
+          ],
+          "network_denied": true,
+          "snapshot_origins": true
+        }
+      },
+      "samples": 149,
+      "swap_start_bytes": 12438011904,
+      "swap_stop_bytes": 12438339584,
+      "system_available_min_bytes": 9768534016,
+      "warmups": [
+        {
+          "generated_tokens": 29,
+          "prompt_tokens": 170,
+          "status": "ok"
+        }
+      ]
+    }
+  },
+  "sessions": {
+    "qwen14b-nonthinking": {
+      "exact_seconds": 258.508878583,
+      "interrupted_sessions": 0,
+      "lower_seconds": 258.508878583,
+      "open_sessions": 0,
+      "sessions": 1,
+      "status": "complete",
+      "uncertainty": null,
+      "upper_seconds": 258.508878583
+    },
+    "qwen4b-instruct": {
+      "exact_seconds": 95.216770917,
+      "interrupted_sessions": 0,
+      "lower_seconds": 95.216770917,
+      "open_sessions": 0,
+      "sessions": 1,
+      "status": "complete",
+      "uncertainty": null,
+      "upper_seconds": 95.216770917
+    }
+  },
+  "software": {
+    "exit_code": 0,
+    "historical_files_checked": 8756,
+    "intentional_changes": [
+      "docs/superpowers/specs/2026-10-15-reader-quality-comparison-design.md"
+    ],
+    "log": {
+      "path": "artifacts/runs/reader-quality-recon/full-suite-final.log",
+      "sha256": "10a66116dee8ea7042b8d71a4a1db7185d6c6c85f1812a86452b0820a9ee480f"
+    },
+    "seconds": 319.49,
+    "source_head": "0e902910b0ce9f758f4b4becc3f2195ac3ac8f33",
+    "tested_files_unchanged": 140,
+    "tests_passed": 1064,
+    "tests_skipped": 0
+  },
+  "tested_source": "0e902910b0ce9f758f4b4becc3f2195ac3ac8f33",
+  "two_ten_oracle": {
+    "qwen14b-nonthinking": {
+      "both_success": 0,
+      "interpretation": "clairvoyant union; descriptive and unavailable to deployment",
+      "n": 16,
+      "neither_success": 13,
+      "ten_only": 1,
+      "two_only": 2,
+      "union_success": 3
+    },
+    "qwen4b-instruct": {
+      "both_success": 1,
+      "interpretation": "clairvoyant union; descriptive and unavailable to deployment",
+      "n": 16,
+      "neither_success": 14,
+      "ten_only": 1,
+      "two_only": 0,
+      "union_success": 2
+    }
+  },
+  "uncertainty": {
+    "development": "16 reused questions; observed differences only. No population confidence interval, noninferiority or quality preservation claim.",
+    "independent_primary_comparison": "not executed: development admission failed",
+    "timing": {
+      "interpretation": "descriptive only; sequential model blocks and cold/shape/swap effects; no efficiency interval",
+      "max_absolute_drift_seconds": 9.833e-06,
+      "repetitions": 1
+    }
+  }
+}
