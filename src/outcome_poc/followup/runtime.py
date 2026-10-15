@@ -389,6 +389,36 @@ def _last_session_observation(root,stage_dir,state):
     return max(observations)
 
 
+def _session_receipt(directory,state):
+    original=directory/f"session-accounting-{state['session']}.json"
+    reconciled=directory/f"session-reconciliation-{state['session']}.json"
+    if reconciled.exists():
+        if not original.exists() or read(reconciled)['prior_accounting_identity']!=identity(original):
+            raise ValueError('resident reconciliation prior receipt mismatch')
+        return reconciled
+    return original
+
+
+def _worker_identity_unknown(directory,state,plan,*,require_identity=False):
+    workers=list(directory.glob(f"session-worker-{state['session']}-*.json"))
+    unknown=(bool(state.get('reader_worker_expected')) or require_identity) and not workers
+    for path in workers:
+        import psutil
+        worker=read(path)
+        if worker['session']!=state['session'] or worker['plan_hash']!=plan['plan_hash'] or worker['boot_id']!=state['boot_id']:
+            raise ValueError('owned resident worker identity mismatch')
+        if type(worker.get('pid')) is not int or worker['pid']<=0 or type(worker.get('created')) not in (int,float):
+            unknown=True
+            continue
+        try:
+            process=psutil.Process(worker['pid'])
+            if process.create_time()==worker['created'] and process.is_running() and process.status()!=psutil.STATUS_ZOMBIE:
+                raise RuntimeError('owned orphan reader worker still alive; resume forbidden until it stops')
+        except psutil.NoSuchProcess:pass
+        except (psutil.AccessDenied,KeyError):unknown=True
+    return bool(unknown)
+
+
 def session_accounting(root,stage,plan,*,require_closed=False):
     """Do not turn uncertain interrupted endpoints into an exact physical sum."""
     root=Path(root);directory=root/'stages'/stage
@@ -399,7 +429,7 @@ def session_accounting(root,stage,plan,*,require_closed=False):
             raise ValueError('resident session plan/boot mismatch')
         if previous_upper is not None and previous_upper>state['start_ns']:
             raise ValueError('resident session accounting intervals overlap')
-        path=directory/f"session-accounting-{state['session']}.json"
+        path=_session_receipt(directory,state)
         if not path.exists():
             open_count+=1;exact=None;upper=None;previous_upper=None
             lower+=(_last_session_observation(root,directory,state)-state['start_ns'])/1e9
@@ -425,7 +455,7 @@ def session_accounting(root,stage,plan,*,require_closed=False):
     return {'sessions':len(starts),'open_sessions':open_count,'interrupted_sessions':interrupted,
         'status':'unresolved' if open_count or interrupted else 'complete',
         'exact_seconds':exact,'lower_seconds':lower,'upper_seconds':upper,
-        'uncertainty':'hard interruption stop is unknown; bounds use last durable observation and pre-resume boundary' if open_count or interrupted else None}
+        'uncertainty':'interruption or failed reader shutdown has an unknown stop; bounds use durable observations and verified quiescence' if open_count or interrupted else None}
 
 
 def reconcile_sessions(root,stage,plan):
@@ -433,37 +463,29 @@ def reconcile_sessions(root,stage,plan):
     directory=Path(root)/'stages'/stage
     for path in sorted(directory.glob('session-start-*.json')):
         state=read(path)
-        receipt=directory/f"session-accounting-{state['session']}.json"
-        if receipt.exists():
-            if read(receipt)['stop_upper_bound_ns'] is None:
-                raise RuntimeError('resident worker identity remains unknown; automatic resume forbidden')
-            continue
         if state['plan_hash']!=plan['plan_hash'] or state['boot_id']!=boot_identity():
             raise ValueError('cannot reconcile resident session across plan/boot')
-        workers=list(directory.glob(f"session-worker-{state['session']}-*.json"))
-        identity_unknown=bool(state.get('reader_worker_expected')) and not workers
-        for worker_path in workers:
-            import psutil
-            worker=read(worker_path)
-            if worker['session']!=state['session'] or worker['plan_hash']!=plan['plan_hash'] or worker['boot_id']!=state['boot_id']:
-                raise ValueError('owned resident worker identity mismatch')
-            if type(worker.get('pid')) is not int or worker['pid']<=0 or type(worker.get('created')) not in (int,float):
-                identity_unknown=True
-                continue
-            try:
-                process=psutil.Process(worker['pid'])
-                if process.create_time()==worker['created'] and process.is_running() and process.status()!=psutil.STATUS_ZOMBIE:
-                    raise RuntimeError('owned orphan reader worker still alive; resume forbidden until it stops')
-            except psutil.NoSuchProcess:pass
-            except (psutil.AccessDenied,KeyError):identity_unknown=True
+        receipt=_session_receipt(directory,state)
+        existing=read(receipt) if receipt.exists() else None
+        # Even a finite receipt cannot waive owned-worker quiescence checks.
+        unknown=_worker_identity_unknown(directory,state,plan,
+            require_identity=existing is not None and existing.get('cleanup_error') is not None)
+        if existing is not None:
+            if unknown:raise RuntimeError('resident worker identity remains unknown; automatic resume forbidden')
+            if existing['stop_upper_bound_ns'] is not None:continue
         stop_upper=continuous_ns()
         stop_lower=_last_session_observation(root,directory,state)
+        if existing is not None:stop_lower=max(stop_lower,existing['stop_lower_bound_ns'])
         if stop_lower>stop_upper:raise ValueError('resident session observation follows resume boundary')
-        publish(receipt,{'session':state['session'],'plan_hash':plan['plan_hash'],'boot_id':state['boot_id'],
+        accounting={'session':state['session'],'plan_hash':plan['plan_hash'],'boot_id':state['boot_id'],
             'start_identity':identity(path),'start_ns':state['start_ns'],'stop_ns':None,
-            'stop_lower_bound_ns':stop_lower,'stop_upper_bound_ns':None if identity_unknown else stop_upper,
-            'timing_status':'interrupted_stop_unknown','cleanup_status':'worker identity unknown' if identity_unknown else 'known owned workers no longer alive'})
-        if identity_unknown:raise RuntimeError('resident worker identity unknown; automatic resume forbidden')
+            'stop_lower_bound_ns':stop_lower,'stop_upper_bound_ns':None if unknown else stop_upper,
+            'timing_status':'interrupted_stop_unknown','cleanup_status':'worker identity unknown' if unknown else 'known owned workers no longer alive'}
+        if existing is not None:
+            accounting['prior_accounting_identity']=identity(receipt)
+            receipt=directory/f"session-reconciliation-{state['session']}.json"
+        publish(receipt,accounting)
+        if unknown:raise RuntimeError('resident worker identity unknown; automatic resume forbidden')
     return session_accounting(root,stage,plan,require_closed=True)
 
 
@@ -576,22 +598,25 @@ def run_stage(root, stage, *, backend_factory=None, encoder_factory=None, max_jo
             append_jsonl(stage_dir/'setup.jsonl',{'session':session,'kind':'stage_failure',
                 'start_ns':setup_start,'stop_ns':continuous_ns(),'status':'failed','error':f'{type(caught).__name__}: {caught}'})
         finally:
-            close_start=continuous_ns()
+            close_start=continuous_ns();cleanup_error=None
             if backend:
                 try:backend.close()
                 except BaseException as caught:
-                    error=error or caught
-                    append_jsonl(stage_dir/'setup.jsonl',{'session':session,'kind':'cleanup_error','error':str(caught)})
+                    error=error or caught;cleanup_error=f'{type(caught).__name__}: {caught}'
+                    append_jsonl(stage_dir/'setup.jsonl',{'session':session,'kind':'cleanup_error','error':cleanup_error})
                 for row in backend.lifecycle:append_jsonl(stage_dir/'lifecycle.jsonl',{'session':session,**row})
             monitor.stop()
             session_stop=continuous_ns()
             publish(stage_dir/f'session-accounting-{session}.json',{'session':session,'plan_hash':plan['plan_hash'],
                 'boot_id':plan['freeze']['boot_id'],'start_identity':identity(session_start),'start_ns':setup_start,
-                'stop_ns':session_stop,'stop_lower_bound_ns':session_stop,'stop_upper_bound_ns':session_stop,
-                'timing_status':'exact','status':'failed' if error else 'ok'})
+                'stop_ns':session_stop if cleanup_error is None else None,'stop_lower_bound_ns':session_stop,
+                'stop_upper_bound_ns':session_stop if cleanup_error is None else None,
+                'timing_status':'exact' if cleanup_error is None else 'interrupted_stop_unknown',
+                'cleanup_error':cleanup_error,'status':'failed' if error else 'ok'})
             append_jsonl(stage_dir/'setup.jsonl',{'session':session,'kind':'session_envelope',
                 'start_ns':setup_start,'stop_ns':session_stop,'shutdown_start_ns':close_start,
-                'status':'failed' if error else 'ok','overlaps':'service, setup and lifecycle; never sum'})
+                'status':'failed' if error else 'ok','timing_status':'parent-finalizer observation only' if cleanup_error else 'exact',
+                'overlaps':'service, setup and lifecycle; never sum'})
     verify(root,privileged=False)
     if error:raise error
     if all(completion(root,plan,j) for j in jobs):

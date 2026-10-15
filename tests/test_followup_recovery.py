@@ -139,3 +139,95 @@ def test_unknown_worker_identity_keeps_upper_bound_unknown_and_blocks_resume(tmp
     summary=report(root)
     assert summary['physical_costs']['total_seconds'] is None
     assert summary['physical_costs']['total_upper_seconds'] is None
+
+
+def test_failed_close_preserves_unknown_endpoint_and_guards_resume(tmp_path, documents10):
+    import psutil
+    from followup_helpers import root_fixture, Backend
+    from retrieval_helpers import Encoder
+    from outcome_poc.followup import runtime
+    from outcome_poc.followup.__main__ import report
+    from outcome_poc.followup.clock import continuous_ns
+    from outcome_poc.followup.study import publish, read
+    root,plan=root_fixture(tmp_path,documents10)
+    stage=root/'stages/calibration'
+    child=subprocess.Popen([sys.executable,'-B','-c','import sys; sys.stdin.read()'],stdin=subprocess.PIPE)
+    acquired=[]
+    class CannotClose(Backend):
+        def close(self):raise RuntimeError('authored reader cleanup failed')
+    def broken_factory(factory):
+        state=read(factory.session_start)
+        publish(stage/f"session-worker-{state['session']}-{child.pid}.json",{'session':state['session'],
+            'plan_hash':plan['plan_hash'],'boot_id':state['boot_id'],'pid':child.pid,
+            'created':psutil.Process(child.pid).create_time(),'continuous_ns':continuous_ns()})
+        return CannotClose()
+    def next_factory(_):acquired.append(True);return Backend()
+    try:
+        with pytest.raises(RuntimeError,match='cleanup failed'):
+            runtime.run_stage(root,'calibration',backend_factory=broken_factory,encoder_factory=lambda _:Encoder(),max_jobs=1)
+        original=list(stage.glob('session-accounting-*.json'))[0]
+        receipt=read(original)
+        assert receipt['stop_ns'] is None and receipt['stop_upper_bound_ns'] is None
+        before=report(root)
+        assert before['physical_costs']['total_seconds'] is None
+        assert before['physical_costs']['total_upper_seconds'] is None
+        with pytest.raises(RuntimeError,match='still alive'):
+            runtime.run_stage(root,'calibration',backend_factory=next_factory,encoder_factory=lambda _:Encoder())
+        assert not acquired and len(list(stage.glob('session-start-*.json')))==1
+        assert child.poll() is None
+    finally:
+        child.terminate();child.wait(timeout=5);child.stdin.close()
+    runtime.run_stage(root,'calibration',backend_factory=next_factory,encoder_factory=lambda _:Encoder())
+    assert acquired==[True]
+    assert read(original)==receipt # The uncertain original is never rewritten as exact.
+    recovered=list(stage.glob('session-reconciliation-*.json'))
+    assert len(recovered)==1 and read(recovered[0])['stop_ns'] is None
+    after=report(root)
+    assert after['stages']['calibration']['status']=='closed_unscored'
+    assert after['physical_costs']['total_seconds'] is None
+    assert after['stages']['calibration']['authored_warmup_calls']==2
+
+
+def test_finite_receipt_does_not_bypass_owned_worker_guard(tmp_path, documents10):
+    import psutil
+    from followup_helpers import root_fixture
+    from outcome_poc.followup import runtime
+    from outcome_poc.followup.clock import continuous_ns
+    from outcome_poc.followup.study import publish, identity
+    root,plan=root_fixture(tmp_path,documents10)
+    stage=root/'stages/calibration';stage.mkdir(parents=True)
+    start=continuous_ns();state={'session':'finite','plan_hash':plan['plan_hash'],
+        'boot_id':plan['freeze']['boot_id'],'start_ns':start,'reader_worker_expected':True}
+    path=stage/'session-start-finite.json';publish(path,state)
+    child=subprocess.Popen([sys.executable,'-B','-c','import sys; sys.stdin.read()'],stdin=subprocess.PIPE)
+    try:
+        publish(stage/f'session-worker-finite-{child.pid}.json',{'session':'finite','plan_hash':plan['plan_hash'],
+            'boot_id':state['boot_id'],'pid':child.pid,'created':psutil.Process(child.pid).create_time(),
+            'continuous_ns':continuous_ns()})
+        stop=continuous_ns()
+        publish(stage/'session-accounting-finite.json',{'session':'finite','plan_hash':plan['plan_hash'],
+            'boot_id':state['boot_id'],'start_identity':identity(path),'start_ns':start,'stop_ns':stop,
+            'stop_lower_bound_ns':stop,'stop_upper_bound_ns':stop,'timing_status':'exact','status':'failed'})
+        with pytest.raises(RuntimeError,match='still alive'):runtime.reconcile_sessions(root,'calibration',plan)
+        assert child.poll() is None
+    finally:
+        child.terminate();child.wait(timeout=5);child.stdin.close()
+
+
+def test_failed_job_with_successful_close_keeps_exact_session_cost(tmp_path, documents10):
+    from followup_helpers import root_fixture, Backend
+    from retrieval_helpers import Encoder
+    from outcome_poc.followup import runtime
+    from outcome_poc.followup.__main__ import report
+    from outcome_poc.followup.study import read
+    root,plan=root_fixture(tmp_path,documents10)
+    class JobFails(Backend):
+        def synchronize(self):
+            if self.calls>=2:raise RuntimeError('authored job synchronization failed')
+    with pytest.raises(RuntimeError,match='synchronization failed'):
+        runtime.run_stage(root,'calibration',backend_factory=lambda _:JobFails(),encoder_factory=lambda _:Encoder())
+    receipt=read(list((root/'stages/calibration').glob('session-accounting-*.json'))[0])
+    assert receipt['status']=='failed' and receipt['timing_status']=='exact'
+    assert receipt['stop_ns']==receipt['stop_lower_bound_ns']==receipt['stop_upper_bound_ns']
+    costs=report(root)['physical_costs']
+    assert costs['accounting_status']=='complete' and costs['total_seconds']>0
