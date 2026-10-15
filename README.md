@@ -4,9 +4,11 @@ Can a small controller learn how much evidence an AI reader needs **before the r
 
 **The experiment didn't establish an advantage.** On 480 questions, the controller trained on actual answer outcomes produced 14 fully correct, correctly cited answers. A controller trained on cheaper evidence-coverage labels produced 17. Sleep interruptions invalidated the speed measurements, so there's no demonstrated efficiency improvement either.
 
-A fresh follow-up found real reading costs and room for better budget choices, but also a reader/citation problem that more controller training won't resolve by itself. On 128 new development questions, reading 2, 5 and 10 paragraphs produced **5, 7 and 8 correct answers with the exact reference citations**. A chooser that knew every outcome in advance could reach 12. The next useful step is to study citation reliability and whether the strict benchmark target captures useful task success.
+A fresh follow-up found real reading costs and room for better budget choices, but also a reader/citation problem that more controller training won't resolve by itself. On 128 new development questions, reading 2, 5 and 10 paragraphs produced **5, 7 and 8 correct answers with the exact reference citations**. A chooser that knew every outcome in advance could reach 12.
 
-[Original findings](artifacts/final_report.md) · [Fresh reader/headroom study](docs/experiments/2026-10-15-reader-headroom-followup.md) · [Research and prior art](research_poc_plan.md) · [Publication scope](docs/PUBLICATION.md) · [Citation](CITATION.cff)
+The next test added one sentence asking the reader to cite every link leading to the answer. On 64 fresh questions with ten paragraphs, strict successes rose from **4 to 6**, while correct answer strings fell from **43 to 42**. That failed the quality screen fixed before the run, so the larger comparison stayed unrun. It's a mixed development result. The project still has no demonstrated controller or efficiency advantage.
+
+[Original findings](artifacts/final_report.md) · [Reader/headroom study](docs/experiments/2026-10-15-reader-headroom-followup.md) · [Citation-chain test](docs/experiments/2026-10-15-citation-chain-reader-study.md) · [Research and prior art](research_poc_plan.md) · [Publication scope](docs/PUBLICATION.md) · [Citation](CITATION.cff)
 
 ## The idea
 
@@ -44,7 +46,9 @@ The separate [reader/headroom study](docs/experiments/2026-10-15-reader-headroom
 
 The reader's evidence handling needs work. Even when given the known supporting documents in a separate 64-question diagnosis, it achieved only 3 exact answer-plus-citation successes. In an enriched eight-case review, an agent judged six citation sets to be missing a necessary relation and two to be plausible alternative sentence choices. That review leaves the primary scores unchanged; exact benchmark agreement and useful evidence support aren't interchangeable.
 
-There is a concrete continuation: make the reader's citations dependable and check the metric on fresh tasks, then measure whether a cheap controller can approach the available frontier against strong tuned baselines. More outcome labels come after that prerequisite.
+The [citation-chain test](docs/experiments/2026-10-15-citation-chain-reader-study.md) completed 384 answers across two prompts and three evidence conditions on 64 questions. Its one-sentence reminder didn't clear the development screen; the 256-question comparison remains deferred. At ten paragraphs it rescued two strict successes and lost none. Two previously matching answer strings stopped matching the reference, and one started matching it. The uncertainty is wide. This neither confirms the improvement nor establishes a real quality loss.
+
+The prerequisite remains citation reliability and a useful success target. With the reminder, only 2 of 64 questions had different strict outcomes at two versus ten paragraphs. More expensive controller labels haven't earned their place yet. A stronger reader or a validated measurement change needs its own fresh test before the allocation experiment grows.
 
 ## What you can reuse
 
