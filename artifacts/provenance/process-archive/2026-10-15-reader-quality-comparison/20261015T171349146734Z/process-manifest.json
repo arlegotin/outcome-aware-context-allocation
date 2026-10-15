@@ -1,0 +1,113 @@
+{
+  "all_copies_match": true,
+  "created_utc": "2026-10-15T17:13:49.166282+00:00",
+  "file_count": 25,
+  "files": {
+    "archive-process.py": {
+      "bytes": 4452,
+      "sha256": "b7aa73aa020fe4970a789970d6caf4c9effe7c586866088301a7391647fb04b5"
+    },
+    "final-fix-report.md": {
+      "bytes": 10634,
+      "sha256": "adefdc8bd2683e9c2b7b9282936d122fcd2181332905ad2257eab28ef3c664c5"
+    },
+    "final-fix-review.md": {
+      "bytes": 2795,
+      "sha256": "c4383475bfea5bfa9b4cd89901411f87379d991177e6da97bb9c59a67d76b938"
+    },
+    "final-review.md": {
+      "bytes": 8951,
+      "sha256": "fabc330ff53abc564278dae484e757c4ee4fe3e6e73b3eb6ad069081e1bd3ec4"
+    },
+    "global-constraints.md": {
+      "bytes": 4935,
+      "sha256": "418d3340a66f022e8c6e80292bc32991d8c4465b129ec36eacf1729b1b13a0b5"
+    },
+    "plan-path": {
+      "bytes": 63,
+      "sha256": "9964ad25d1d47d772e2b038b06dc16c431ce8e1084a4f984db47e678d57e264d"
+    },
+    "progress.md": {
+      "bytes": 9022,
+      "sha256": "263677040ed5a6a79c1d0aed20327a7eb5b81a9a0a6993e30e04c75aa628fc30"
+    },
+    "publication-fix-evidence/green-file-2.log": {
+      "bytes": 33196,
+      "sha256": "c7561e9bc6f6d890381c758ee1136e84af1d16b25b4b8854c3d704e257850535"
+    },
+    "publication-fix-evidence/green-file-unsandboxed.log": {
+      "bytes": 100,
+      "sha256": "850d8f123e5abe0bd5c65b68ca101b5e60b27a75c469fa69bd63e3097e7e3c72"
+    },
+    "publication-fix-evidence/green-file.log": {
+      "bytes": 7116,
+      "sha256": "7e3504a98e7ed88429fc33698ce89a5e2db370e9c9e66d1a1fcfd945fd687d93"
+    },
+    "publication-fix-evidence/green-target.log": {
+      "bytes": 98,
+      "sha256": "4237eb8d30ab4e25d028ca343d50bfba364b7f76a907b73390b9601a16e46fe1"
+    },
+    "publication-fix-evidence/red.log": {
+      "bytes": 961,
+      "sha256": "5bfb0177d8a10ee920b3bf16fde22ec582fea3338085f722e4a173d5fb06baae"
+    },
+    "publication-fix-evidence/without_private_archive.py": {
+      "bytes": 1169,
+      "sha256": "ef65d443d4eecddf92e955ea1ef48b289de03eaae9921e20ab9407fe16ba4ade"
+    },
+    "review-0dcdd46..51ec2ee.diff": {
+      "bytes": 66696,
+      "sha256": "e99cdac0a2d246906ba805a1e16636d62f78489c89b214c18672ff0ccc997bf3"
+    },
+    "review-0dcdd46..5762f51.diff": {
+      "bytes": 218901,
+      "sha256": "00e268c1c2e4d4cc0e2399c10597f07c378c7ec1f412def7217b929dd23184a4"
+    },
+    "review-4a1ee11..0e90291.diff": {
+      "bytes": 9671,
+      "sha256": "16890ebb35d40a207bbab23484e46fb5baf334e5902435f4be8d7037f06bcaad"
+    },
+    "review-51ec2ee..4a1ee11.diff": {
+      "bytes": 75258,
+      "sha256": "10145bf340d86a68ae108e8c7c6dc39154f56f8678a7033ebf99a73590dcb27c"
+    },
+    "review-5762f51..1be34ab.diff": {
+      "bytes": 2987,
+      "sha256": "93bd47107808cf677e3f0092c06bfeb742edf7fd65b2896431f56675a92ddba3"
+    },
+    "task-1-brief.md": {
+      "bytes": 4249,
+      "sha256": "706160170240812fe3f2a5d327b119723deb0c6d941a7cf544eb13ec4f5649b8"
+    },
+    "task-1-report.md": {
+      "bytes": 13462,
+      "sha256": "46b83f989e8978c23b978c72fc548dbba30ae63face8f3e850188c4e6bc671f2"
+    },
+    "task-1-review.md": {
+      "bytes": 4673,
+      "sha256": "b6e098f0cdf8ad23cef1e6982af3f3fb6a094eaa30386ef45e9c60d4061abff7"
+    },
+    "task-2-brief.md": {
+      "bytes": 6201,
+      "sha256": "6480040049ec4e2ffd49c5ee17aaee33e0172ca4caa121d62e0ec9773073ebc5"
+    },
+    "task-2-fix1-review.md": {
+      "bytes": 2866,
+      "sha256": "6c87112ee0acddf367f9042f13a780df56dcd498a5bc07bb3f660088ddf5a403"
+    },
+    "task-2-report.md": {
+      "bytes": 15981,
+      "sha256": "08414b4d61fd064521bed7bb35bf34a40531336ae946da6b8f001b2a6eacb8e0"
+    },
+    "task-2-review.md": {
+      "bytes": 8210,
+      "sha256": "2f2a33547d73867fb96130887b870894d7f9515d32bbdaa3dd4ddbe8918b3c57"
+    }
+  },
+  "private_archive": "artifacts/runs/process-archive/2026-10-15-reader-quality-comparison/20261015T171349146734Z",
+  "rulings": [
+    "Ruling: Permit admission after a narrowly verified startup-only failure before any assigned paid call or authored warmup, with exact retained endpoints, proven identity/quiescence and expected reached-boundary probes; reject unknown stops, failed warmups, post-acquisition gate failures and assigned failures \u2014 honors the spec's operational repair permission without semantic retries \u2014 if wrong, the screen could understate startup fragility; all failed costs remain visible. Prospective spec clarified before any real data selection/generation."
+  ],
+  "total_bytes": 512647,
+  "workspace": ".superpowers/sdd/2026-10-15-reader-quality-comparison"
+}

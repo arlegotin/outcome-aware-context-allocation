@@ -1,0 +1,18 @@
+{
+  "all_archive_copies_match": true,
+  "archive": "artifacts/runs/process-archive/2026-10-15-reader-quality-comparison/20261015T171349146734Z",
+  "archive_bytes_verified": 512647,
+  "archive_files_verified": 25,
+  "closure_commit_parent": "c9397682f7ea2f4038125d90a4a4677678eaffce",
+  "deletion_scope": "only this plan workspace after exact archive verification",
+  "final_test_source": "1be34ababbbcba6438d10c37ab64079f3a4728aa",
+  "live_protocol_workspace_references": 0,
+  "manifest_sha256": "bd20cdd3f9b539e95be046bec428a61edf26bcf6d29e7372da67f188d709a4f8",
+  "measured_source": "e5ced9a9c906517fa0f5107b1c2b5ff8c3beb1e1",
+  "public_manifest": "artifacts/provenance/process-archive/2026-10-15-reader-quality-comparison/20261015T171349146734Z/process-manifest.json",
+  "rulings_retained": 1,
+  "tests_passed": 1064,
+  "tests_skipped": 0,
+  "workspace": ".superpowers/sdd/2026-10-15-reader-quality-comparison",
+  "workspace_removed": true
+}

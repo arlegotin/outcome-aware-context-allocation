@@ -1,0 +1,5 @@
+{
+  "rulings_in_order": [
+    "Ruling: Permit admission after a narrowly verified startup-only failure before any assigned paid call or authored warmup, with exact retained endpoints, proven identity/quiescence and expected reached-boundary probes; reject unknown stops, failed warmups, post-acquisition gate failures and assigned failures \u2014 honors the spec's operational repair permission without semantic retries \u2014 if wrong, the screen could understate startup fragility; all failed costs remain visible. Prospective spec clarified before any real data selection/generation."
+  ]
+}
