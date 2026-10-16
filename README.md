@@ -1,82 +1,36 @@
 # Outcome-aware context allocation
 
-Can a small controller learn how much evidence an AI reader needs **before the reader answers**? This project tests that question with a local language model, a fixed packet of retrieved paragraphs, and a choice between reading two paragraphs or all ten.
+A local research harness for testing **how much context a RAG reader needs before it answers**. Train a small controller on paired reader outcomes, compare it with fixed budgets and cheaper controls, and measure **seconds per successful task**, including retrieval, routing, generation and failures.
 
-**The latest independent reader trial passed its benchmark quality gate.** With the same model and ten paragraphs, the unchanged evidence-first prompt produced **103/512 strict successes versus27/512** and **344/512 correct answer strings versus260/512**. Invalid/runtime failures decreased17→7. Mean complete request time increased from2.80 to2.89seconds. This is a reader improvement; **useful context allocation and operational savings remain unproven**. See the [independent reader report](experiments/allocation-continuous-v3/report.md) and the [two/five/ten action report](experiments/allocation-action-v4/report.md). The complete [held-out routing study](experiments/allocation-learning-v5/report.md) then failed its prespecified continuation screen: the outcome controller produced **66/256 strict successes and181/256 answer matches**, versus **66 and182** for fixed-ten, with only **2.13% lower reconstructed R**. Simpler controls matched or beat it. Further label expansion under this hypothesis has stopped; no allocation-efficiency or operational benefit is established.
+The controller chooses between two and ten retrieved paragraphs using the question and retrieval metadata. It makes that choice before generation, without an extra language-model judging call.
 
-**The original allocation experiment didn't establish an advantage.** On 480 questions, the controller trained on actual answer outcomes produced 14 fully correct, correctly cited answers. A controller trained on cheaper evidence-coverage labels produced 17. Sleep interruptions invalidated the speed measurements, so there's no demonstrated efficiency improvement either.
+## Results
 
-A fresh follow-up found real reading costs and room for better budget choices, but also a reader/citation problem that more controller training won't resolve by itself. On 128 new development questions, reading 2, 5 and 10 paragraphs produced **5, 7 and 8 correct answers with the exact reference citations**. A chooser that knew every outcome in advance could reach 12.
+**An evidence-first prompt nearly quadrupled strict benchmark successes** on 512 fresh HotpotQA questions. Both prompts used the same pinned Qwen3-4B-Instruct-2507 reader, BGE-small-en-v1.5 retrieval and ten-paragraph evidence packets.
 
-The next test added one sentence asking the reader to cite every link leading to the answer. On 64 fresh questions with ten paragraphs, strict successes rose from **4 to 6**, while correct answer strings fell from **43 to 42**. That failed the quality screen fixed before the run, so the larger comparison stayed unrun. It's a mixed development result. The project still has no demonstrated controller or efficiency advantage.
-
-Switching to a larger reader didn't clear the next screen either: on 16 reused questions with ten paragraphs, it produced **1 strict success versus 2** for the smaller reader. The larger independent comparison remains unrun. There is still no demonstrated saving.
-
-A new [32-question diagnosis](docs/experiments/2026-10-15-reader-recovery.md) completed all 160 assigned calls. Two, five and ten natural paragraphs produced **0, 1 and 0 strict successes**, despite **19, 20 and 22 correct answer strings**. Known-support documents and sentences each produced 3 strict successes. This strengthens the case for investigating citation generation and annotation validity before buying more routing labels. It does not establish a reader or controller improvement.
-
-One authored evidence-first prompt then produced a [positive strict endpoint on 64 untouched validation questions](docs/experiments/2026-10-15-evidence-first-validation.md): **19 strict successes versus 6**, and **44 correct answer strings versus 33**, at **2.72 versus 2.59 seconds/query**. The registered strict interval is above zero; the answer-preservation guard still crosses zero, so the full admission gate failed. This is encouraging reader evidence. No new router was trained and no allocation-efficiency advantage is demonstrated.
-
-[Original findings](artifacts/final_report.md) · [Reader/headroom study](docs/experiments/2026-10-15-reader-headroom-followup.md) · [Citation-chain test](docs/experiments/2026-10-15-citation-chain-reader-study.md) · [14B feasibility](docs/experiments/2026-10-15-reader-capability-preflight.md) · [Reader comparison](docs/experiments/2026-10-15-reader-quality-comparison.md) · [Research and prior art](research_poc_plan.md) · [Publication scope](docs/PUBLICATION.md) · [Citation](CITATION.cff)
-
-The earlier [preparation-only v2 continuation](experiments/allocation-recovery-v2/README.md) preserved the failed64-question result. The separately versioned [v3 native path](experiments/allocation-continuous-v3/README.md) then connected immutable reader recipes and complete continuous timing to the actual allocation runner, passed independent512-question reader admission, and enabled the bounded [v4 action-value study](experiments/allocation-action-v4/README.md). Historical ledgers and completed protocols remain unchanged.
-
-See the [v0.3.0 research release notes](docs/releases/v0.3.0.md) for publication scope and release verification.
-
-## The idea
-
-A retrieval-augmented answering system often gives its reader a fixed amount of evidence. Some questions need less; others need more. Reading everything costs time, but stopping early can lose the sentence that connects the answer.
-
-The proposed controller learns from that difference. During training, the same reader answers each question twice: once with two paragraphs, once with ten. The label is the change in task success. A small gradient-boosted regressor then predicts that change from the question and retrieval metadata. It chooses the budget before any answer is generated; it doesn't get a draft answer or a language-model judging call for free.
-
-The intended objective is **seconds per successful task**, including retrieval, routing, generation, parsing and failed work. Fewer input tokens alone wouldn't settle it. All ten candidate paragraphs are already available in this experiment, so selecting two doesn't save a web search.
-
-Adaptive retrieval and outcome-based routing have substantial prior art. The [research handoff](research_poc_plan.md) explains the overlap. The question here is whether this particular cheap controller earns its overhead against tuned alternatives on one frozen local system.
-
-## What happened
-
-The completed comparison used **480 questions from HotpotQA's distractor development set**, a pinned Qwen3-4B-Instruct-2507 reader running through MLX, and BGE-small-en-v1.5 retrieval. A strict success requires both the reference answer and exactly the annotated supporting sentences. That measures benchmark agreement; it doesn't certify truth or prove the reader used its citations.
-
-Every row has the same 480-question denominator, including abstentions and failures. The two learned controllers each had two timing repetitions, producing identical answers; repetitions don't add independent questions.
-
-| Policy | Correct answers | Correct answers **and** exact supporting citations |
+| Metric | Baseline prompt | Evidence-first prompt |
 | --- | ---: | ---: |
-| Outcome-trained controller | 150 / 480 | 14 / 480 |
-| Cheaper coverage-label controller | 155 / 480 | 17 / 480 |
-| Always read ten paragraphs | 173 / 480 | 11 / 480 |
-| Always read two paragraphs | 143 / 480 | 16 / 480 |
-| Random two/ten mixture | 149 / 480 | 16 / 480 |
+| Correct answer + exact supporting citations | 27 / 512 | **103 / 512** |
+| Correct answer string | 260 / 512 | **344 / 512** |
+| Invalid outputs / runtime failures | 17 | **7** |
+| Mean complete request time | 2.80 s | 2.89 s |
 
-The differences don't establish quality preservation or a supported quality loss. Strict successes were too sparse for the prespecified primary efficiency interval, independently of the broken timing. The original, larger baseline run remains incomplete and unscored. Its partial results weren't turned into a smaller test set. The completed run contains 3,360 jobs on the same 480 questions.
+The [prompt](src/outcome_poc/reader_recipes.py) asks the reader to select the sentences supporting the complete answer path, then answer. All prespecified benchmark quality guards passed. Strict success requires the reference answer and exactly the annotated supporting sentences; it measures benchmark agreement. See the [independent reader report](experiments/allocation-continuous-v3/report.md).
 
-There is a useful limit hiding in these numbers. Even a chooser that knew both outcomes in advance would get only **20 strict successes**, versus 16 for the better of the two fixed budgets. Answer-only outcomes have more room: that oracle gets 205, versus 173 for always-ten. A better budget choice cannot fix most failures under this strict target. Citation/reader reliability and the usefulness of the training target deserve attention before collecting more expensive outcome labels.
-
-A pooled-corpus diagnostic gave 4 versus 3 strict successes on 32 queries drawn from the main 480: exploratory evidence, not independent confirmation. The [report](artifacts/final_report.md) retains that diagnostic, quality intervals, citation review, baseline replay, failures and costs.
-
-## What the follow-up clarified
-
-The separate [reader/headroom study](docs/experiments/2026-10-15-reader-headroom-followup.md) kept the same model and prompt, fixed new questions before outcomes, and used a continuous clock that includes sleep. All 688 assigned generations completed. Timings were stable: on its 128-question headroom set, two paragraphs averaged 1.00 second and ten averaged 2.78 seconds. No new controller was trained, so these timings establish reading costs, not a learned speed improvement.
-
-The reader's evidence handling needs work. Even when given the known supporting documents in a separate 64-question diagnosis, it achieved only 3 exact answer-plus-citation successes. In an enriched eight-case review, an agent judged six citation sets to be missing a necessary relation and two to be plausible alternative sentence choices. That review leaves the primary scores unchanged; exact benchmark agreement and useful evidence support aren't interchangeable.
-
-The [citation-chain test](docs/experiments/2026-10-15-citation-chain-reader-study.md) completed 384 answers across two prompts and three evidence conditions on 64 questions. Its one-sentence reminder didn't clear the development screen; the 256-question comparison remains deferred. At ten paragraphs it rescued two strict successes and lost none. Two previously matching answer strings stopped matching the reference, and one started matching it. The uncertainty is wide. This neither confirms the improvement nor establishes a real quality loss.
-
-The prerequisite remains citation reliability and a useful success target. With the reminder, only 2 of 64 questions had different strict outcomes at two versus ten paragraphs. More expensive controller labels haven't earned their place yet. A stronger reader or a validated measurement change needs its own fresh test before the allocation experiment grows.
-
-A larger reader passed its [local feasibility check](docs/experiments/2026-10-15-reader-capability-preflight.md), then failed the [16-question quality screen](docs/experiments/2026-10-15-reader-quality-comparison.md). With ten paragraphs it got **8 answer strings correct and 1 answer-plus-citation success**, versus **10 and 2** for the smaller reader. All 96 screening calls completed. The 128-question comparison stays unrun; its questions remain reserved. This small reused sample doesn't prove the larger reader is generally worse. It didn't earn more allocation-label collection in this setup.
+**Learned allocation hasn't established a saving.** On 256 held-out questions, the outcome-trained controller matched fixed-ten's 66 strict successes, lost one answer match and reduced reconstructed seconds per strict success by only 2.13%. It failed the registered continuation screen, and further label collection under that hypothesis stopped. The [routing report](experiments/allocation-learning-v5/report.md) contains all controls and learning curves.
 
 ## What you can reuse
 
-You can use the harness to collect paired answers, compare fixed and learned budgets, score sentence-level citations, and account for every paid action. It separates annotations from serving inputs, freezes selection before evaluation, and preserves interrupted work. That gives the next allocation policy a concrete test, with its overhead included.
+- **Paired budget evaluation.** Run the same reader at different context sizes and learn from the change in answer and citation success.
+- **Held-out policy comparisons.** Select models and thresholds on fit data, then evaluate locked rules against fixed budgets and simpler learners.
+- **Complete request accounting.** Include routing overhead, parsing and durable response storage; retain failed attempts in the record.
+- **Bound experiments to their inputs.** Freeze source, prompts, assets and cohorts, keep reference annotations out of serving inputs, and verify index ancestry.
 
-The audited baseline already contained the shared recursive index-ancestry validator used by `protected.py` and `transfer_runtime.py`; this continuation preserves it unchanged. Real-producer tests cover chains, shared ancestors, failed-attempt costs, corruption and frozen ledger prefixes. Historical source and seals remain unchanged; legacy seals are not silently rebound. The new diagnosis deliberately reused no embeddings. Full adaptation cost and deployment break-even remain unknown. See the [new evidence and review](docs/experiments/2026-10-15-reader-recovery.md) and the historical [review disposition](docs/superpowers/reviews/2026-10-15-final-review-disposition.md).
-
-The follow-up has a separate runner with continuous deadlines and a fresh index that reuses no embeddings. It also includes a native regression for a sandbox/SQLite failure discovered during execution. The failed attempt remains recorded separately; none of the original results were repaired or overwritten.
-
-This checkout includes source, tests, configuration, reports and selected provenance. Raw benchmark text, predictions, fitted models, downloaded assets and detailed archives stay external. A clone can run software checks and inspect the findings. Raw follow-up authentication requires the recorded `9ddc4ae` checkout at its bound original paths and the retained research assets; later hardening intentionally fails that run's source binding. A separate read-only archive audit checks retained hashes. See [follow-up reproduction](docs/experiments/2026-10-15-reader-headroom-followup.md#provenance-and-reproduction) and [publication scope](docs/PUBLICATION.md).
+Source, tests, configs, aggregate reports and selected provenance are included. Model weights, raw benchmark data, per-question outputs and fitted models remain external. Full result authentication requires the retained research assets; see [publication scope](docs/PUBLICATION.md).
 
 ## Run the checks
 
-The measured machine was an Apple M3 Max with 36 GiB RAM, macOS 26.7.1 and native Python 3.12.9. The hash lock targets that Python/macOS ARM64 environment. Other platforms need their own dependency resolution and verification.
+The hash lock targets **Python 3.12 on macOS ARM64**. Other platforms need separate dependency resolution and verification.
 
 ```sh
 git clone https://github.com/arlegotin/outcome-aware-context-allocation.git
@@ -88,19 +42,13 @@ python -m pip install --no-deps --no-build-isolation -e .
 python -m pip check
 python -m pytest -q
 python -m outcome_poc --help
-python -m outcome_poc.reader_probe --help
-python -m outcome_poc.reader_study --help
 python -m outcome_poc.reader_recovery --help
 ```
 
-The historical suite passed **1,064 tests with zero skips** at `1be34ab`. The audited prior source passed **1,119 native tests with zero skips**; the [continuation review](docs/superpowers/reviews/2026-10-15-evidence-first-review.md) binds that source separately from measured snapshots. The [diagnosis report](docs/experiments/2026-10-15-reader-recovery.md) records the lineage and recovery checks, including authenticated official-evaluator parity. The measured v4 source passed **1,179 native tests with zero skips**. The v5 frozen source passed **1,194 native tests with zero skips**; the final delivery plus administrative-wrapper fixtures passed **1,198 native tests with zero skips** on macOS ARM64/Python3.12.9. Its [check manifest](experiments/allocation-learning-v5/evidence/checks.json) records exact evidence. The seven external-evaluator cases require `HOTPOT_EVALUATOR_PATH`; without that local source they explicitly skip. Earlier experiment source and results remain intact. The [reader-study software review](docs/superpowers/reviews/2026-10-15-reader-quality-software-review.md) and [final review](docs/superpowers/reviews/2026-10-15-reader-quality-final-review.md) retain their original checks. Passing tests doesn't validate the original speed measurements or establish an allocation win. On non-macOS systems or inside an outer sandbox, native denial-profile checks may be unavailable.
+These checks need no model weights or benchmark downloads. Seven official-evaluator parity cases require `HOTPOT_EVALUATOR_PATH`; native sandbox checks may skip where unavailable.
 
-These commands don't start a benchmark experiment. For a new study, follow the [fresh-experiment guide](docs/fresh-experiment.md): use a separate checkout, fresh output roots and attempt-ledger parents, new development outputs, and a newly frozen protocol. Historical configurations record this experiment. Running mutable setup or indexing over the retained evidence can invalidate its bindings.
-
-The [implementation specification](docs/superpowers/specs/2026-10-14-outcome-aware-context-allocation-design.md), [execution plan](docs/superpowers/plans/2026-10-14-outcome-aware-context-allocation.md) and [pinned asset manifest](artifacts/provenance/asset-manifest.json) retain the detailed contracts. For raw-score reproduction with the private archive present, use the command in the [final report](artifacts/final_report.md#reproduction-evidence-and-next-steps).
+For a new experiment, follow the [fresh-experiment guide](docs/fresh-experiment.md) with separate output roots and a newly frozen protocol. The [release notes](docs/releases/v0.3.0.md) and [original findings](artifacts/final_report.md) retain the detailed results and history.
 
 ## License and citation
 
-Copyright © 2026 Artem Legotin. Original software is **AGPL-3.0-only**; original writing and result presentation are **CC BY 4.0**. [Licensing](LICENSING.md) defines that split. HotpotQA, Qwen, BGE and installed dependencies retain their own terms; see [third-party notices](THIRD_PARTY_NOTICES.md).
-
-Please cite [CITATION.cff](CITATION.cff) and record the commit you used. Citation is requested separately from the licenses' conditions. Implementation, experiment execution and documentation used AI assistance under the project owner's direction.
+Copyright © 2026 Artem Legotin. Original software: **AGPL-3.0-only**. Original writing and result presentation: **CC BY 4.0**. See [licensing](LICENSING.md), [third-party notices](THIRD_PARTY_NOTICES.md) and [citation](CITATION.cff). Implementation, experiments and documentation used AI assistance under the project owner's direction.
