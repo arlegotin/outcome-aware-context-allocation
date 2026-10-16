@@ -20,6 +20,8 @@ One authored evidence-first prompt then produced a [positive strict endpoint on 
 
 The earlier [preparation-only v2 continuation](experiments/allocation-recovery-v2/README.md) preserved the failed64-question result. The separately versioned [v3 native path](experiments/allocation-continuous-v3/README.md) then connected immutable reader recipes and complete continuous timing to the actual allocation runner, passed independent512-question reader admission, and enabled the bounded [v4 action-value study](experiments/allocation-action-v4/README.md). Historical ledgers and completed protocols remain unchanged.
 
+See the [v0.3.0 research release notes](docs/releases/v0.3.0.md) for publication scope and release verification.
+
 ## The idea
 
 A retrieval-augmented answering system often gives its reader a fixed amount of evidence. Some questions need less; others need more. Reading everything costs time, but stopping early can lose the sentence that connects the answer.

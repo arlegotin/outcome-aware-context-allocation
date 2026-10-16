@@ -5,30 +5,31 @@ title: "Outcome-aware context allocation: a local experiment in pre-answer evide
 authors:
   - family-names: Legotin
     given-names: Artem
-version: 0.2.0
-date-released: "2026-10-15"
+version: 0.3.0
+date-released: "2026-10-16"
 repository-code: "https://github.com/arlegotin/outcome-aware-context-allocation"
 url: "https://github.com/arlegotin/outcome-aware-context-allocation"
 license:
   - AGPL-3.0-only
   - CC-BY-4.0
 abstract: >-
-  Research software for selecting two or ten retrieved paragraphs before a
-  local language model answers. A small controller learns the difference in
-  strict answer-and-support success between paired evidence budgets. On 480
-  protected HotpotQA distractor questions, the outcome-trained controller had
-  14 strict successes and a controller trained on cheaper support-coverage labels
-  had 17. Sparse
-  strict outcomes and invalid wall-time measurements leave the efficiency
-  comparison inconclusive. The original full-family assignment is incomplete
-  and unscored. A separately frozen 64-question reader validation found 19
-  strict successes with an authored evidence-first prompt versus 6 with the
-  unchanged reader prompt, at 2.72 versus 2.59 seconds per query. Its strict
-  endpoint interval was positive, but the full reader admission gate failed
-  the answer-preservation guard. No new allocation advantage is established.
-  The repository provides the evaluation harness, frozen
-  configuration, aggregate findings and qualified provenance; full raw-result
-  authentication requires retained research assets outside the public release.
+  Research software for selecting two or ten already-available paragraphs before
+  a local citation-producing reader answers. An independent 512-question paired
+  trial of the same pinned reader with ten paragraphs passed the unchanged
+  reader-admission gate: strict benchmark successes increased from 27 to 103 and
+  answer exact matches from 260 to 344. A separately registered action study
+  found optimistic oracle headroom. A subsequent 512-fit/256-holdout routing
+  probe failed its prespecified continuation screen: the outcome-trained
+  controller and fixed-ten each had 66 strict successes, with 181 versus 182
+  answer matches and only 2.13 percent lower reconstructed seconds per strict
+  success. Simpler controls matched or beat the controller under the development
+  screen. Further allocation-label expansion under that hypothesis stopped.
+  Reader improvement is distinct from useful allocation: no eligible final
+  allocation-efficiency interval or operational benefit is demonstrated. The
+  release provides isolated protocols, complete continuous request accounting,
+  held-out evaluation, aggregate findings and provenance. Raw-result
+  authentication requires retained private data, outputs and assets. Historical
+  failed/inconclusive results and source bindings remain unchanged.
 keywords:
   - retrieval-augmented generation
   - context allocation

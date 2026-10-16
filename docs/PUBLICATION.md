@@ -25,6 +25,22 @@ established. The [validation report](experiments/2026-10-15-evidence-first-valid
 separates the measured frozen source from later reservation guards and release
 metadata; none of the historical source bindings or seals were rebound.
 
+The [0.3.0 research release](releases/v0.3.0.md) adds separately frozen fresh
+native studies and actual allocation-runner recipe/continuous-timing integration.
+Independent reader admission passed on512 new questions (103 versus27 strict
+successes;344 versus260 answer matches). The subsequent bounded routing probe
+failed its registered continuation screen on256 held-out questions:66 versus66
+strict successes and181 versus182 answer matches, with only2.13% lower
+reconstructed R. Label expansion under that hypothesis stopped. No eligible
+final allocation interval or operational benefit is established. The
+[reader report](../experiments/allocation-continuous-v3/report.md),
+[routing report](../experiments/allocation-learning-v5/report.md) and
+[delivery manifest](../experiments/allocation-learning-v5/evidence/delivery-manifest.json)
+identify measured dirty-source inventories independently of the release commit.
+Human semantic review, controlled suspension and operational requirements remain
+unresolved. New public evidence contains aggregates and hashes; task text, Gold,
+cohorts, per-question decisions, fitted models and raw archives remain private.
+
 ## What a clone contains
 
 The public tree includes original source, authored software fixtures, executable

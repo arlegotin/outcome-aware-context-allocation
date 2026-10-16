@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "outcome-poc"
-version = "0.2.0"
+version = "0.3.0"
 description = "Local outcome-aware context allocation experiment"
 readme = "README.md"
 authors = [{name = "Artem Legotin"}]
@@ -15,7 +15,7 @@ dependencies = []
 
 [project.urls]
 Repository = "https://github.com/arlegotin/outcome-aware-context-allocation"
-Report = "https://github.com/arlegotin/outcome-aware-context-allocation/blob/main/artifacts/final_report.md"
+Report = "https://github.com/arlegotin/outcome-aware-context-allocation/blob/main/experiments/allocation-learning-v5/report.md"
 Citation = "https://github.com/arlegotin/outcome-aware-context-allocation/blob/main/CITATION.cff"
 
 [tool.setuptools.packages.find]
