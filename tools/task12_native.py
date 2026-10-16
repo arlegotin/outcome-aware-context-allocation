@@ -30,6 +30,8 @@ def main():
     for name,digest in binding['snapshot_sha256'].items():
         if _digest(snapshot/name)!=digest: raise ValueError('executed snapshot changed: '+name)
     config=json.loads(Path(plan['config']).read_text())
+    from outcome_poc.reader_recipes import require_native_allocation_support, recipe_settings
+    require_native_allocation_support(config['reader'])
     root=Path(plan['run_dir']);root.mkdir(parents=True,exist_ok=False)
     if datetime.now(timezone.utc)>=datetime.fromisoformat(plan['deadline_utc']): raise TimeoutError('deadline')
     probe="import errno,json,socket,sys\nr={}\nfor i,p in enumerate(sys.argv[1:]):\n try: open(p,'rb').read(1)\n except PermissionError: r[str(i)]=True\n else: r[str(i)]=False\ns=socket.socket();s.settimeout(.1)\ntry: s.connect(('1.1.1.1',443))\nexcept OSError as e: r['network']=e.errno in (errno.EPERM,errno.EACCES)\nelse: r['network']=False\nprint(json.dumps(r))"
@@ -76,7 +78,8 @@ def main():
                 'decoding_hash':content_hash({**config['reader'],'temperature':0,'draft_model':None,'max_kv_size':None,'kv_bits':None}),
                 **{k:config['reader'][k] for k in ('max_context_tokens','max_new_tokens','timeout_seconds')},
                 'backend':'persistent-supervised-native-mlx-task12','prompt_version':1,
-                'source_binding':plan['source_binding_hash'],'index_manifest_hash':content_hash(retrieval.manifest)}
+                'source_binding':plan['source_binding_hash'],'index_manifest_hash':content_hash(retrieval.manifest),
+                **recipe_settings(config['reader'])}
             runtime=Runtime(retrieval,documents,Reader(backend),settings)
             result=tune({'tasks':tasks,'assigned_ids':ids,'run_dir':str(root),'models':models,
                         'setup_interval':[start,time.perf_counter_ns()],'deadline_utc':plan['deadline_utc'],

@@ -1,0 +1,25 @@
+"""Post-outcome read-only descriptive timing/resource aggregates; no policy selection."""
+from pathlib import Path
+from collections import Counter
+import hashlib,json,math
+root=Path('/private/tmp/oaca-allocation-routing-signal-20261016-fit512-hold256-v5')
+output=Path('/private/tmp/oaca-v5-resource-diagnostics-01')
+assert not output.exists()
+def read(p):return json.loads(p.read_text())
+def rows(p):return [json.loads(line) for line in p.read_text().splitlines() if line]
+def identity(p):return {'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()}
+def quantile(v,p):
+ v=sorted(v);x=(len(v)-1)*p;i=int(x);j=min(i+1,len(v)-1)
+ return v[i]+(v[j]-v[i])*(x-i)
+scores={r['job_id']:r for r in rows(root/'scores/scores.jsonl')}
+schedule=read(root/'schedule.json');report={'scope':'post-outcome descriptive diagnostics only; not a prespecified test, final R interval or policy selection','arms':{}}
+for arm in ('2','10'):
+ values=[scores[j['job_id']] for j in schedule if j['arm']==arm];t=[v['seconds'] for v in values];n=len(t)
+ report['arms'][arm]={'n':n,'S':sum(v['joint_em'] for v in values),'E':sum(v['answer_em'] for v in values),'statuses':dict(Counter(v['status'] for v in values)), 'total_T':math.fsum(t),'mean_T':math.fsum(t)/n,'p50_T':quantile(t,.5),'p95_T':quantile(t,.95),'p99_T':quantile(t,.99),'maximum_T':max(t),'first_half_mean_T':math.fsum(t[:n//2])/(n//2),'second_half_mean_T':math.fsum(t[n//2:])/(n-n//2)}
+resource=rows(root/'stages/natural/resources.jsonl')
+report['resources']={k:{'min':min(r[k] for r in resource if r.get(k) is not None),'max':max(r[k] for r in resource if r.get(k) is not None)} for k in ('rss_parent_bytes','rss_children_bytes','swap_used_bytes') if any(r.get(k) is not None for r in resource)}
+report['resources']['samples']=len(resource)
+report['identities']={p:identity(root/p) for p in ('scores/scores.jsonl','scores/closed.json','schedule.json','stages/natural/resources.jsonl')}
+report['script_identity']=identity(Path(__file__))
+output.mkdir(mode=0o700);(output/'analysis.json').write_text(json.dumps(report,sort_keys=True,indent=2)+'\n')
+print(json.dumps(report,sort_keys=True))

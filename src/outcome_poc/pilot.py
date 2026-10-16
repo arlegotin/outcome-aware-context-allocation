@@ -139,7 +139,7 @@ def run_pilot(config: dict, runtime: object) -> dict:
             aliases = ranking_aliases(ranking)
             for k in range(11):
                 prompt = render_prompt(task.question, [runtime.documents.get(row.doc_id) for row in ranking[:k]],
-                                       aliases, runtime.reader.backend.tokenizer)
+                                       aliases, runtime.reader.backend.tokenizer,recipe=runtime.config.get('reader_recipe','baseline-v1'))
                 lengths.append({'task_id': task.task_id, 'k': k,
                                 'prompt_tokens': len(runtime.reader.backend.tokenizer.encode(prompt))})
         warmups = []
@@ -255,6 +255,8 @@ def main(args) -> int:
     import threading
     main_start = time.perf_counter_ns()
     config = json.loads(Path(args.config).read_text())
+    from outcome_poc.reader_recipes import require_native_allocation_support, recipe_settings
+    require_native_allocation_support(config['reader'])
     window = json.loads(Path('artifacts/provenance/execution-window.json').read_text())
     if (datetime.fromisoformat(window['deadline_utc'])-datetime.now(timezone.utc)).total_seconds() <= 3600:
         raise TimeoutError('project execution deadline reserve exhausted')
@@ -306,7 +308,8 @@ def main(args) -> int:
                                                            'draft_model': None, 'max_kv_size': None, 'kv_bits': None}),
                             **{name: config['reader'][name] for name in ('max_context_tokens', 'max_new_tokens', 'timeout_seconds')},
                             'backend': 'persistent-supervised-native-mlx', 'prompt_version': 1,
-                            'index_manifest_hash': content_hash(retrieval.manifest)}
+                            'index_manifest_hash': content_hash(retrieval.manifest),
+                            **recipe_settings(config['reader'])}
                 runtime = Runtime(retrieval, documents, Reader(backend), settings)
                 if collecting:
                     from .collection import collect_raw_pairs

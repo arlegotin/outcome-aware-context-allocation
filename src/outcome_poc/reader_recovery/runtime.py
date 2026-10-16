@@ -22,15 +22,20 @@ from ..followup.supervisor import ContinuousBackend, CleanupFailure
 from ..followup.runtime import (_commit, completion, ResourceMonitor, resource_check, stage_lock,
     sandbox_profile, probe_denials, _worker_identity_unknown, session_accounting, warmup)
 from ..followup.study import verify_index
-from .study import verify, read, identity, publish, jobs,group_arms
+from .study import verify, read, identity, publish, jobs,group_arms,is_fresh_validation,is_validation
 from .evidence import render_view, parse_view
 from .prompts import render_condition
+from .action_study_v4 import is_action
+from .learning_study_v5 import is_learning
 
 DENIED_MODULES = ('outcome_poc.data','outcome_poc.scoring','outcome_poc.followup.scoring',
     'outcome_poc.citation_study.preparation','outcome_poc.citation_study.scoring',
     'outcome_poc.reader_study.preparation','outcome_poc.reader_study.scoring',
     'outcome_poc.reader_recovery.preparation','outcome_poc.reader_recovery.scoring',
-    'outcome_poc.reader_recovery.validation')
+    'outcome_poc.reader_recovery.validation','outcome_poc.reader_recovery.fresh',
+    'outcome_poc.reader_recovery.preparation_v3','outcome_poc.reader_recovery.precision',
+    'outcome_poc.reader_recovery.action_preparation_v4','outcome_poc.reader_recovery.action_analysis_v4',
+    'outcome_poc.reader_recovery.learning_preparation_v5','outcome_poc.heldout')
 
 
 def remaining_window(plan, required_seconds):
@@ -57,6 +62,9 @@ class WindowedBackend:
         # The request and following synchronization each have independent
         # continuous bounds; leave a further ten seconds for normal cleanup.
         remaining_window(self._plan,request.timeout_seconds+getattr(self._backend,'startup_timeout',120.)+10.)
+        budget_deadline=getattr(self,'_budget_deadline',None)
+        if budget_deadline is not None and continuous_ns()+int((request.timeout_seconds+getattr(self._backend,'startup_timeout',120.)+10.)*1e9)>budget_deadline:
+            raise TimeoutError('frozen continuous native study compute budget exhausted')
         if self._admission is not None:
             self._admission()
         return self._backend.generate(prompt,request,**kwargs)
@@ -112,7 +120,10 @@ def forecast_prompts(roster,tasks,documents,retrieval,tokenizer,max_context,max_
         task = tasks[job['task_id']]
         ranking = retrieval.rank(task['question'],task['candidate_ids'])
         aliases = ranking_aliases(ranking)
-        evidence = [documents.get(r.doc_id) for r in ranking]
+        budget = job.get('budget',len(ranking))
+        if type(budget) is not int or not 0 < budget <= len(ranking):
+            raise ValueError('forecast budget outside available packet')
+        evidence = [documents.get(r.doc_id) for r in ranking[:budget]]
         view = {d.doc_id:list(range(len(d.sentences))) for d in evidence}
         prompt = render_condition(task['question'],evidence,aliases,tokenizer,view,job['reader_condition'])
         tokens = len(tokenizer.encode(prompt,add_special_tokens=False))
@@ -124,6 +135,10 @@ def forecast_prompts(roster,tasks,documents,retrieval,tokenizer,max_context,max_
 
 
 def execute(root,plan,job,task,documents,retrieval,backend,session, *, clock=continuous_ns,admission=None):
+    from .study_v3 import is_scientific
+    if is_scientific(plan['config']) or is_action(plan['config']) or is_learning(plan['config']):
+        from .allocation_study import execute as allocation_execute
+        return allocation_execute(root,plan,job,task,documents,retrieval,backend,session,clock=clock,admission=admission)
     request_start,active_start = clock(),time.perf_counter_ns()
     if job not in jobs(root,job['group']) or task['task_id']!=job['task_id']:
         raise ValueError('unassigned recovery job')
@@ -208,7 +223,11 @@ def execute(root,plan,job,task,documents,retrieval,backend,session, *, clock=con
 def run_group(root,group):
     from ..retrieval import EncoderBackend, Retrieval
     root = Path(root).resolve()
+    if is_fresh_validation(verify(root,group=group)['config']):
+        raise ValueError('fresh v2 is preparation-only; scientific execution disabled')
     plan,probes = isolation(root,group)
+    from .index_budget import validate_index_budget
+    validate_index_budget(root,plan)
     roster = jobs(root,group)
     remaining_window(plan,250.)
     verify_index(root/'index-setup')
@@ -240,6 +259,8 @@ def run_group(root,group):
                     {**plan['config']['reader'],'asset':assets['reader']}),root,group,state_path)
                 remaining_window(plan,250.)
                 backend = WindowedBackend(ContinuousBackend(factory,clock=continuous_ns),plan)
+                if plan['config'].get('schema_version') in (3,4,5):
+                    object.__setattr__(backend,'_budget_deadline',state['start_ns']+int(plan['config']['native_budget_seconds']*1e9))
                 monitor.backend = backend
                 def paid_admission():
                     gate = resource_check(monitor.sample())
@@ -256,7 +277,7 @@ def run_group(root,group):
                 remaining_window(plan,130.)
                 warmup(root,plan,backend,directory/'warmup')
                 tasks = {t['task_id']:t for t in read_jsonl(root/'tasks.jsonl')}
-                validation = plan['config']['protocol_id']=='reader-evidence-first-v1'
+                validation = is_validation(plan['config']) or is_action(plan['config']) or is_learning(plan['config'])
                 if validation:
                     settings = plan['config']['reader']
                     forecast_start = continuous_ns()
@@ -313,7 +334,11 @@ def run_group(root,group):
 
 def launch(root,group):
     root = Path(root).resolve()
+    if is_fresh_validation(verify(root)['config']):
+        raise ValueError('fresh v2 is preparation-only; scientific execution disabled')
     plan = verify(root)
+    from .index_budget import validate_index_budget
+    validate_index_budget(root,plan)
     remaining_window(plan,250.)
     if group not in group_arms(plan['config']):
         raise ValueError('group is not assigned by this protocol')
@@ -333,12 +358,18 @@ def launch(root,group):
     if not path.exists():path.write_text(text)
     env = {**os.environ,'PYTHONPATH':str(root/'source/src'),'PYTHONDONTWRITEBYTECODE':'1',
            'HF_HUB_OFFLINE':'1','TRANSFORMERS_OFFLINE':'1','TOKENIZERS_PARALLELISM':'false'}
-    command = ['/usr/bin/sandbox-exec','-f',str(path),sys.executable,'-B','-m','outcome_poc.reader_recovery',
+    interpreter=plan['config'].get('native_interpreter',sys.executable)
+    command = ['/usr/bin/sandbox-exec','-f',str(path),interpreter,'-B','-m','outcome_poc.reader_recovery',
                '_serve','--root',str(root),'--group',group]
     start = continuous_ns()
-    process = subprocess.run(command,env=env)
+    if plan['config'].get('schema_version') in (3,4,5):
+        from .allocation_study import run_bounded_process
+        process=run_bounded_process(command,env,root,plan['config']['native_budget_seconds']+30.,
+            binding={'plan_hash':plan['plan_hash'],'group':group,'boot_id':plan['freeze']['boot_id'],'clock':plan['freeze']['clock']})
+    else:process = subprocess.run(command,env=env)
     append_jsonl(root/'launches.jsonl',{'group':group,'command':command,'profile':identity(path),
-        'start_ns':start,'stop_ns':continuous_ns(),'returncode':process.returncode,'clock_domain':'mach_continuous_time'})
+        'start_ns':start,'stop_ns':continuous_ns(),'returncode':process.returncode,'clock_domain':'mach_continuous_time',
+        **({'parent_closure':identity(root/'native-parent-closure.json')} if plan['config'].get('schema_version') in (3,4,5) else {})})
     if process.returncode:
         raise RuntimeError(f'native recovery group failed: exit {process.returncode}')
     return {'status':'native group exited','group':group}

@@ -1,0 +1,1565 @@
+{
+  "research_target": [
+    {
+      "n": 256,
+      "N": 88235,
+      "draws": 5000,
+      "seed": 20261016,
+      "joint_admission_probability": 0.3608,
+      "monte_carlo_95_interval": [
+        0.3476004212357468,
+        0.3742133069857572
+      ],
+      "strict_guard_probability": 0.3838,
+      "answer_guard_probability": 0.7624,
+      "failure_guard_probability": 0.9682,
+      "lower_bound_diagnostics": {
+        "strict": {
+          "minimum_lower_bound": -0.1126650422168074,
+          "median_lower_bound": -0.008579361931206439,
+          "p10_lower_bound": -0.04287414291380971
+        },
+        "answer": {
+          "minimum_lower_bound": -0.05845752819176064,
+          "median_lower_bound": 0.014948716495721659,
+          "p10_lower_bound": -0.011673372244574147
+        }
+      },
+      "finite_frame_cells": [
+        39706,
+        17647,
+        8824,
+        10588,
+        3529,
+        1765,
+        3529,
+        1765,
+        441,
+        441
+      ],
+      "cells": [
+        {
+          "baseline": [
+            0,
+            0,
+            0
+          ],
+          "candidate": [
+            0,
+            0,
+            0
+          ],
+          "probability": 0.45
+        },
+        {
+          "baseline": [
+            1,
+            0,
+            0
+          ],
+          "candidate": [
+            1,
+            0,
+            0
+          ],
+          "probability": 0.2
+        },
+        {
+          "baseline": [
+            1,
+            1,
+            0
+          ],
+          "candidate": [
+            1,
+            1,
+            0
+          ],
+          "probability": 0.1
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            0
+          ],
+          "candidate": [
+            1,
+            1,
+            0
+          ],
+          "probability": 0.12
+        },
+        {
+          "baseline": [
+            1,
+            0,
+            0
+          ],
+          "candidate": [
+            1,
+            1,
+            0
+          ],
+          "probability": 0.04
+        },
+        {
+          "baseline": [
+            1,
+            1,
+            0
+          ],
+          "candidate": [
+            0,
+            0,
+            0
+          ],
+          "probability": 0.02
+        },
+        {
+          "baseline": [
+            1,
+            1,
+            0
+          ],
+          "candidate": [
+            1,
+            0,
+            0
+          ],
+          "probability": 0.04
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            1
+          ],
+          "candidate": [
+            0,
+            0,
+            0
+          ],
+          "probability": 0.02
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            1
+          ],
+          "candidate": [
+            0,
+            0,
+            1
+          ],
+          "probability": 0.005
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            0
+          ],
+          "candidate": [
+            0,
+            0,
+            1
+          ],
+          "probability": 0.005
+        }
+      ],
+      "tail_alpha": 0.003125,
+      "comparator": "baseline-ten is both selected and fixed-ten; duplicate guards remain unchanged",
+      "assumptions": "Explicit hypothetical paired E/S/failure finite frame; not estimated power guaranteed by observed development rates"
+    },
+    {
+      "n": 512,
+      "N": 88235,
+      "draws": 5000,
+      "seed": 20261016,
+      "joint_admission_probability": 0.8746,
+      "monte_carlo_95_interval": [
+        0.8651319890733773,
+        0.883492848629386
+      ],
+      "strict_guard_probability": 0.881,
+      "answer_guard_probability": 0.9976,
+      "failure_guard_probability": 0.9922,
+      "lower_bound_diagnostics": {
+        "strict": {
+          "minimum_lower_bound": -0.046534821782739266,
+          "median_lower_bound": 0.02429874766249221,
+          "p10_lower_bound": -0.0018020060066867016
+        },
+        "answer": {
+          "minimum_lower_bound": -0.013804046013486712,
+          "median_lower_bound": 0.040890802969343235,
+          "p10_lower_bound": 0.02136340454468181
+        }
+      },
+      "finite_frame_cells": [
+        39706,
+        17647,
+        8824,
+        10588,
+        3529,
+        1765,
+        3529,
+        1765,
+        441,
+        441
+      ],
+      "cells": [
+        {
+          "baseline": [
+            0,
+            0,
+            0
+          ],
+          "candidate": [
+            0,
+            0,
+            0
+          ],
+          "probability": 0.45
+        },
+        {
+          "baseline": [
+            1,
+            0,
+            0
+          ],
+          "candidate": [
+            1,
+            0,
+            0
+          ],
+          "probability": 0.2
+        },
+        {
+          "baseline": [
+            1,
+            1,
+            0
+          ],
+          "candidate": [
+            1,
+            1,
+            0
+          ],
+          "probability": 0.1
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            0
+          ],
+          "candidate": [
+            1,
+            1,
+            0
+          ],
+          "probability": 0.12
+        },
+        {
+          "baseline": [
+            1,
+            0,
+            0
+          ],
+          "candidate": [
+            1,
+            1,
+            0
+          ],
+          "probability": 0.04
+        },
+        {
+          "baseline": [
+            1,
+            1,
+            0
+          ],
+          "candidate": [
+            0,
+            0,
+            0
+          ],
+          "probability": 0.02
+        },
+        {
+          "baseline": [
+            1,
+            1,
+            0
+          ],
+          "candidate": [
+            1,
+            0,
+            0
+          ],
+          "probability": 0.04
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            1
+          ],
+          "candidate": [
+            0,
+            0,
+            0
+          ],
+          "probability": 0.02
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            1
+          ],
+          "candidate": [
+            0,
+            0,
+            1
+          ],
+          "probability": 0.005
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            0
+          ],
+          "candidate": [
+            0,
+            0,
+            1
+          ],
+          "probability": 0.005
+        }
+      ],
+      "tail_alpha": 0.003125,
+      "comparator": "baseline-ten is both selected and fixed-ten; duplicate guards remain unchanged",
+      "assumptions": "Explicit hypothetical paired E/S/failure finite frame; not estimated power guaranteed by observed development rates"
+    },
+    {
+      "n": 1024,
+      "N": 88235,
+      "draws": 5000,
+      "seed": 20261016,
+      "joint_admission_probability": 0.9988,
+      "monte_carlo_95_interval": [
+        0.9973842237073702,
+        0.9994499168322408
+      ],
+      "strict_guard_probability": 0.9994,
+      "answer_guard_probability": 1.0,
+      "failure_guard_probability": 0.9994,
+      "lower_bound_diagnostics": {
+        "strict": {
+          "minimum_lower_bound": -0.004998016660055532,
+          "median_lower_bound": 0.04758882529608431,
+          "p10_lower_bound": 0.02887742959143197
+        },
+        "answer": {
+          "minimum_lower_bound": 0.019323397744659146,
+          "median_lower_bound": 0.05880886269620899,
+          "p10_lower_bound": 0.044936816456054844
+        }
+      },
+      "finite_frame_cells": [
+        39706,
+        17647,
+        8824,
+        10588,
+        3529,
+        1765,
+        3529,
+        1765,
+        441,
+        441
+      ],
+      "cells": [
+        {
+          "baseline": [
+            0,
+            0,
+            0
+          ],
+          "candidate": [
+            0,
+            0,
+            0
+          ],
+          "probability": 0.45
+        },
+        {
+          "baseline": [
+            1,
+            0,
+            0
+          ],
+          "candidate": [
+            1,
+            0,
+            0
+          ],
+          "probability": 0.2
+        },
+        {
+          "baseline": [
+            1,
+            1,
+            0
+          ],
+          "candidate": [
+            1,
+            1,
+            0
+          ],
+          "probability": 0.1
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            0
+          ],
+          "candidate": [
+            1,
+            1,
+            0
+          ],
+          "probability": 0.12
+        },
+        {
+          "baseline": [
+            1,
+            0,
+            0
+          ],
+          "candidate": [
+            1,
+            1,
+            0
+          ],
+          "probability": 0.04
+        },
+        {
+          "baseline": [
+            1,
+            1,
+            0
+          ],
+          "candidate": [
+            0,
+            0,
+            0
+          ],
+          "probability": 0.02
+        },
+        {
+          "baseline": [
+            1,
+            1,
+            0
+          ],
+          "candidate": [
+            1,
+            0,
+            0
+          ],
+          "probability": 0.04
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            1
+          ],
+          "candidate": [
+            0,
+            0,
+            0
+          ],
+          "probability": 0.02
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            1
+          ],
+          "candidate": [
+            0,
+            0,
+            1
+          ],
+          "probability": 0.005
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            0
+          ],
+          "candidate": [
+            0,
+            0,
+            1
+          ],
+          "probability": 0.005
+        }
+      ],
+      "tail_alpha": 0.003125,
+      "comparator": "baseline-ten is both selected and fixed-ten; duplicate guards remain unchanged",
+      "assumptions": "Explicit hypothetical paired E/S/failure finite frame; not estimated power guaranteed by observed development rates"
+    }
+  ],
+  "half_effect_stress": [
+    {
+      "n": 256,
+      "N": 88235,
+      "draws": 5000,
+      "seed": 20261016,
+      "joint_admission_probability": 0.0222,
+      "monte_carlo_95_interval": [
+        0.018468128073239217,
+        0.02666548790545738
+      ],
+      "strict_guard_probability": 0.0314,
+      "answer_guard_probability": 0.1106,
+      "failure_guard_probability": 0.9664,
+      "lower_bound_diagnostics": {
+        "strict": {
+          "minimum_lower_bound": -0.13902646342154473,
+          "median_lower_bound": -0.04773615912053039,
+          "p10_lower_bound": -0.08024140080466934
+        },
+        "answer": {
+          "minimum_lower_bound": -0.08577095256984191,
+          "median_lower_bound": -0.022836742789142633,
+          "p10_lower_bound": -0.04490281634272114
+        }
+      },
+      "finite_frame_cells": [
+        44118,
+        17647,
+        8824,
+        6176,
+        3529,
+        1765,
+        3529,
+        1765,
+        441,
+        441
+      ],
+      "cells": [
+        {
+          "baseline": [
+            0,
+            0,
+            0
+          ],
+          "candidate": [
+            0,
+            0,
+            0
+          ],
+          "probability": 0.5
+        },
+        {
+          "baseline": [
+            1,
+            0,
+            0
+          ],
+          "candidate": [
+            1,
+            0,
+            0
+          ],
+          "probability": 0.2
+        },
+        {
+          "baseline": [
+            1,
+            1,
+            0
+          ],
+          "candidate": [
+            1,
+            1,
+            0
+          ],
+          "probability": 0.1
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            0
+          ],
+          "candidate": [
+            1,
+            1,
+            0
+          ],
+          "probability": 0.07
+        },
+        {
+          "baseline": [
+            1,
+            0,
+            0
+          ],
+          "candidate": [
+            1,
+            1,
+            0
+          ],
+          "probability": 0.04
+        },
+        {
+          "baseline": [
+            1,
+            1,
+            0
+          ],
+          "candidate": [
+            0,
+            0,
+            0
+          ],
+          "probability": 0.02
+        },
+        {
+          "baseline": [
+            1,
+            1,
+            0
+          ],
+          "candidate": [
+            1,
+            0,
+            0
+          ],
+          "probability": 0.04
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            1
+          ],
+          "candidate": [
+            0,
+            0,
+            0
+          ],
+          "probability": 0.02
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            1
+          ],
+          "candidate": [
+            0,
+            0,
+            1
+          ],
+          "probability": 0.005
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            0
+          ],
+          "candidate": [
+            0,
+            0,
+            1
+          ],
+          "probability": 0.005
+        }
+      ],
+      "tail_alpha": 0.003125,
+      "comparator": "baseline-ten is both selected and fixed-ten; duplicate guards remain unchanged",
+      "assumptions": "Explicit hypothetical paired E/S/failure finite frame; not estimated power guaranteed by observed development rates"
+    },
+    {
+      "n": 512,
+      "N": 88235,
+      "draws": 5000,
+      "seed": 20261016,
+      "joint_admission_probability": 0.1342,
+      "monte_carlo_95_interval": [
+        0.12503209909447566,
+        0.14392955164852822
+      ],
+      "strict_guard_probability": 0.1462,
+      "answer_guard_probability": 0.4858,
+      "failure_guard_probability": 0.9944,
+      "lower_bound_diagnostics": {
+        "strict": {
+          "minimum_lower_bound": -0.09159630532101773,
+          "median_lower_bound": -0.01859806199353997,
+          "p10_lower_bound": -0.041616138720462395
+        },
+        "answer": {
+          "minimum_lower_bound": -0.04730549101830339,
+          "median_lower_bound": -0.00039666798889329696,
+          "p10_lower_bound": -0.016174987249957497
+        }
+      },
+      "finite_frame_cells": [
+        44118,
+        17647,
+        8824,
+        6176,
+        3529,
+        1765,
+        3529,
+        1765,
+        441,
+        441
+      ],
+      "cells": [
+        {
+          "baseline": [
+            0,
+            0,
+            0
+          ],
+          "candidate": [
+            0,
+            0,
+            0
+          ],
+          "probability": 0.5
+        },
+        {
+          "baseline": [
+            1,
+            0,
+            0
+          ],
+          "candidate": [
+            1,
+            0,
+            0
+          ],
+          "probability": 0.2
+        },
+        {
+          "baseline": [
+            1,
+            1,
+            0
+          ],
+          "candidate": [
+            1,
+            1,
+            0
+          ],
+          "probability": 0.1
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            0
+          ],
+          "candidate": [
+            1,
+            1,
+            0
+          ],
+          "probability": 0.07
+        },
+        {
+          "baseline": [
+            1,
+            0,
+            0
+          ],
+          "candidate": [
+            1,
+            1,
+            0
+          ],
+          "probability": 0.04
+        },
+        {
+          "baseline": [
+            1,
+            1,
+            0
+          ],
+          "candidate": [
+            0,
+            0,
+            0
+          ],
+          "probability": 0.02
+        },
+        {
+          "baseline": [
+            1,
+            1,
+            0
+          ],
+          "candidate": [
+            1,
+            0,
+            0
+          ],
+          "probability": 0.04
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            1
+          ],
+          "candidate": [
+            0,
+            0,
+            0
+          ],
+          "probability": 0.02
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            1
+          ],
+          "candidate": [
+            0,
+            0,
+            1
+          ],
+          "probability": 0.005
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            0
+          ],
+          "candidate": [
+            0,
+            0,
+            1
+          ],
+          "probability": 0.005
+        }
+      ],
+      "tail_alpha": 0.003125,
+      "comparator": "baseline-ten is both selected and fixed-ten; duplicate guards remain unchanged",
+      "assumptions": "Explicit hypothetical paired E/S/failure finite frame; not estimated power guaranteed by observed development rates"
+    },
+    {
+      "n": 1024,
+      "N": 88235,
+      "draws": 5000,
+      "seed": 20261016,
+      "joint_admission_probability": 0.5588,
+      "monte_carlo_95_interval": [
+        0.5449971979672105,
+        0.5725125202840508
+      ],
+      "strict_guard_probability": 0.5604,
+      "answer_guard_probability": 0.9608,
+      "failure_guard_probability": 0.9996,
+      "lower_bound_diagnostics": {
+        "strict": {
+          "minimum_lower_bound": -0.04596815322717743,
+          "median_lower_bound": 0.0019266730889102857,
+          "p10_lower_bound": -0.014302714342381145
+        },
+        "answer": {
+          "minimum_lower_bound": -0.017453391511305035,
+          "median_lower_bound": 0.015107383691278967,
+          "p10_lower_bound": 0.003921346404488012
+        }
+      },
+      "finite_frame_cells": [
+        44118,
+        17647,
+        8824,
+        6176,
+        3529,
+        1765,
+        3529,
+        1765,
+        441,
+        441
+      ],
+      "cells": [
+        {
+          "baseline": [
+            0,
+            0,
+            0
+          ],
+          "candidate": [
+            0,
+            0,
+            0
+          ],
+          "probability": 0.5
+        },
+        {
+          "baseline": [
+            1,
+            0,
+            0
+          ],
+          "candidate": [
+            1,
+            0,
+            0
+          ],
+          "probability": 0.2
+        },
+        {
+          "baseline": [
+            1,
+            1,
+            0
+          ],
+          "candidate": [
+            1,
+            1,
+            0
+          ],
+          "probability": 0.1
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            0
+          ],
+          "candidate": [
+            1,
+            1,
+            0
+          ],
+          "probability": 0.07
+        },
+        {
+          "baseline": [
+            1,
+            0,
+            0
+          ],
+          "candidate": [
+            1,
+            1,
+            0
+          ],
+          "probability": 0.04
+        },
+        {
+          "baseline": [
+            1,
+            1,
+            0
+          ],
+          "candidate": [
+            0,
+            0,
+            0
+          ],
+          "probability": 0.02
+        },
+        {
+          "baseline": [
+            1,
+            1,
+            0
+          ],
+          "candidate": [
+            1,
+            0,
+            0
+          ],
+          "probability": 0.04
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            1
+          ],
+          "candidate": [
+            0,
+            0,
+            0
+          ],
+          "probability": 0.02
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            1
+          ],
+          "candidate": [
+            0,
+            0,
+            1
+          ],
+          "probability": 0.005
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            0
+          ],
+          "candidate": [
+            0,
+            0,
+            1
+          ],
+          "probability": 0.005
+        }
+      ],
+      "tail_alpha": 0.003125,
+      "comparator": "baseline-ten is both selected and fixed-ten; duplicate guards remain unchanged",
+      "assumptions": "Explicit hypothetical paired E/S/failure finite frame; not estimated power guaranteed by observed development rates"
+    }
+  ],
+  "equal_discordant_failures_stress": [
+    {
+      "n": 256,
+      "N": 88235,
+      "draws": 5000,
+      "seed": 20261016,
+      "joint_admission_probability": 0.1954,
+      "monte_carlo_95_interval": [
+        0.18464512546527756,
+        0.20662255855965128
+      ],
+      "strict_guard_probability": 0.3694,
+      "answer_guard_probability": 0.7464,
+      "failure_guard_probability": 0.5684,
+      "lower_bound_diagnostics": {
+        "strict": {
+          "minimum_lower_bound": -0.11146370487901627,
+          "median_lower_bound": -0.00980903269677566,
+          "p10_lower_bound": -0.0445798152660509
+        },
+        "answer": {
+          "minimum_lower_bound": -0.06870289567631893,
+          "median_lower_bound": 0.012506375021250064,
+          "p10_lower_bound": -0.014506715022383411
+        }
+      },
+      "finite_frame_cells": [
+        39706,
+        17647,
+        8823,
+        10588,
+        3529,
+        1765,
+        3529,
+        1324,
+        0,
+        1324
+      ],
+      "cells": [
+        {
+          "baseline": [
+            0,
+            0,
+            0
+          ],
+          "candidate": [
+            0,
+            0,
+            0
+          ],
+          "probability": 0.45
+        },
+        {
+          "baseline": [
+            1,
+            0,
+            0
+          ],
+          "candidate": [
+            1,
+            0,
+            0
+          ],
+          "probability": 0.2
+        },
+        {
+          "baseline": [
+            1,
+            1,
+            0
+          ],
+          "candidate": [
+            1,
+            1,
+            0
+          ],
+          "probability": 0.1
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            0
+          ],
+          "candidate": [
+            1,
+            1,
+            0
+          ],
+          "probability": 0.12
+        },
+        {
+          "baseline": [
+            1,
+            0,
+            0
+          ],
+          "candidate": [
+            1,
+            1,
+            0
+          ],
+          "probability": 0.04
+        },
+        {
+          "baseline": [
+            1,
+            1,
+            0
+          ],
+          "candidate": [
+            0,
+            0,
+            0
+          ],
+          "probability": 0.02
+        },
+        {
+          "baseline": [
+            1,
+            1,
+            0
+          ],
+          "candidate": [
+            1,
+            0,
+            0
+          ],
+          "probability": 0.04
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            1
+          ],
+          "candidate": [
+            0,
+            0,
+            0
+          ],
+          "probability": 0.015
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            1
+          ],
+          "candidate": [
+            0,
+            0,
+            1
+          ],
+          "probability": 0.0
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            0
+          ],
+          "candidate": [
+            0,
+            0,
+            1
+          ],
+          "probability": 0.015
+        }
+      ],
+      "tail_alpha": 0.003125,
+      "comparator": "baseline-ten is both selected and fixed-ten; duplicate guards remain unchanged",
+      "assumptions": "Explicit hypothetical paired E/S/failure finite frame; not estimated power guaranteed by observed development rates"
+    },
+    {
+      "n": 512,
+      "N": 88235,
+      "draws": 5000,
+      "seed": 20261016,
+      "joint_admission_probability": 0.4938,
+      "monte_carlo_95_interval": [
+        0.4799521066322866,
+        0.5076574128718323
+      ],
+      "strict_guard_probability": 0.892,
+      "answer_guard_probability": 0.9968,
+      "failure_guard_probability": 0.5476,
+      "lower_bound_diagnostics": {
+        "strict": {
+          "minimum_lower_bound": -0.051963506545021826,
+          "median_lower_bound": 0.02463874879582932,
+          "p10_lower_bound": -0.0010426701422338175
+        },
+        "answer": {
+          "minimum_lower_bound": -0.013894712982376614,
+          "median_lower_bound": 0.04098146993823312,
+          "p10_lower_bound": 0.021624072080240274
+        }
+      },
+      "finite_frame_cells": [
+        39706,
+        17647,
+        8823,
+        10588,
+        3529,
+        1765,
+        3529,
+        1324,
+        0,
+        1324
+      ],
+      "cells": [
+        {
+          "baseline": [
+            0,
+            0,
+            0
+          ],
+          "candidate": [
+            0,
+            0,
+            0
+          ],
+          "probability": 0.45
+        },
+        {
+          "baseline": [
+            1,
+            0,
+            0
+          ],
+          "candidate": [
+            1,
+            0,
+            0
+          ],
+          "probability": 0.2
+        },
+        {
+          "baseline": [
+            1,
+            1,
+            0
+          ],
+          "candidate": [
+            1,
+            1,
+            0
+          ],
+          "probability": 0.1
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            0
+          ],
+          "candidate": [
+            1,
+            1,
+            0
+          ],
+          "probability": 0.12
+        },
+        {
+          "baseline": [
+            1,
+            0,
+            0
+          ],
+          "candidate": [
+            1,
+            1,
+            0
+          ],
+          "probability": 0.04
+        },
+        {
+          "baseline": [
+            1,
+            1,
+            0
+          ],
+          "candidate": [
+            0,
+            0,
+            0
+          ],
+          "probability": 0.02
+        },
+        {
+          "baseline": [
+            1,
+            1,
+            0
+          ],
+          "candidate": [
+            1,
+            0,
+            0
+          ],
+          "probability": 0.04
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            1
+          ],
+          "candidate": [
+            0,
+            0,
+            0
+          ],
+          "probability": 0.015
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            1
+          ],
+          "candidate": [
+            0,
+            0,
+            1
+          ],
+          "probability": 0.0
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            0
+          ],
+          "candidate": [
+            0,
+            0,
+            1
+          ],
+          "probability": 0.015
+        }
+      ],
+      "tail_alpha": 0.003125,
+      "comparator": "baseline-ten is both selected and fixed-ten; duplicate guards remain unchanged",
+      "assumptions": "Explicit hypothetical paired E/S/failure finite frame; not estimated power guaranteed by observed development rates"
+    },
+    {
+      "n": 1024,
+      "N": 88235,
+      "draws": 5000,
+      "seed": 20261016,
+      "joint_admission_probability": 0.5312,
+      "monte_carlo_95_interval": [
+        0.5173493073677831,
+        0.5450027880308455
+      ],
+      "strict_guard_probability": 0.9998,
+      "answer_guard_probability": 1.0,
+      "failure_guard_probability": 0.5314,
+      "lower_bound_diagnostics": {
+        "strict": {
+          "minimum_lower_bound": -0.004567348557828518,
+          "median_lower_bound": 0.047611492038306794,
+          "p10_lower_bound": 0.029489431631438773
+        },
+        "answer": {
+          "minimum_lower_bound": 0.0215447384824616,
+          "median_lower_bound": 0.058967529891766304,
+          "p10_lower_bound": 0.04500821669405564
+        }
+      },
+      "finite_frame_cells": [
+        39706,
+        17647,
+        8823,
+        10588,
+        3529,
+        1765,
+        3529,
+        1324,
+        0,
+        1324
+      ],
+      "cells": [
+        {
+          "baseline": [
+            0,
+            0,
+            0
+          ],
+          "candidate": [
+            0,
+            0,
+            0
+          ],
+          "probability": 0.45
+        },
+        {
+          "baseline": [
+            1,
+            0,
+            0
+          ],
+          "candidate": [
+            1,
+            0,
+            0
+          ],
+          "probability": 0.2
+        },
+        {
+          "baseline": [
+            1,
+            1,
+            0
+          ],
+          "candidate": [
+            1,
+            1,
+            0
+          ],
+          "probability": 0.1
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            0
+          ],
+          "candidate": [
+            1,
+            1,
+            0
+          ],
+          "probability": 0.12
+        },
+        {
+          "baseline": [
+            1,
+            0,
+            0
+          ],
+          "candidate": [
+            1,
+            1,
+            0
+          ],
+          "probability": 0.04
+        },
+        {
+          "baseline": [
+            1,
+            1,
+            0
+          ],
+          "candidate": [
+            0,
+            0,
+            0
+          ],
+          "probability": 0.02
+        },
+        {
+          "baseline": [
+            1,
+            1,
+            0
+          ],
+          "candidate": [
+            1,
+            0,
+            0
+          ],
+          "probability": 0.04
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            1
+          ],
+          "candidate": [
+            0,
+            0,
+            0
+          ],
+          "probability": 0.015
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            1
+          ],
+          "candidate": [
+            0,
+            0,
+            1
+          ],
+          "probability": 0.0
+        },
+        {
+          "baseline": [
+            0,
+            0,
+            0
+          ],
+          "candidate": [
+            0,
+            0,
+            1
+          ],
+          "probability": 0.015
+        }
+      ],
+      "tail_alpha": 0.003125,
+      "comparator": "baseline-ten is both selected and fixed-ten; duplicate guards remain unchanged",
+      "assumptions": "Explicit hypothetical paired E/S/failure finite frame; not estimated power guaranteed by observed development rates"
+    }
+  ]
+}

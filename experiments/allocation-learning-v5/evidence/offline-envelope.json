@@ -1,0 +1,1 @@
+{"cap_seconds":600,"includes_durable_receipt":true,"receipt":{"bytes":486,"sha256":"5f05eb5ab3a5b84dfb39ce3481db831b5d3ede5aa5bc2a9ffeaba8a135f42052"},"scope":"offline validation, fitting, held-out evaluation and durable receipt; not native serving","seconds":49.61007325,"start_ns":432199735791291,"stop_ns":432249345864541,"within_cap":true}

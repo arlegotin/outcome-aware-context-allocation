@@ -1,0 +1,276 @@
+[
+  {
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation",
+    "exit_code": 0,
+    "result": "ae1706bb1739c1c0a4e724b33feaa8b01289d292"
+  },
+  {
+    "argv": [
+      "git",
+      "status",
+      "--short",
+      "--branch"
+    ],
+    "cwd": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation",
+    "exit_code": 0,
+    "result": "clean main, four commits behind origin/main"
+  },
+  {
+    "argv": [
+      "git",
+      "diff",
+      "--stat"
+    ],
+    "cwd": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation",
+    "exit_code": 0,
+    "result": "empty"
+  },
+  {
+    "argv": [
+      "python3.12",
+      "-m",
+      "venv",
+      ".venv"
+    ],
+    "cwd": "/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation",
+    "exit_code": 0
+  },
+  {
+    "argv": [
+      "/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation/.venv/bin/python",
+      "-m",
+      "pip",
+      "install",
+      "--no-index",
+      "--find-links",
+      "/private/tmp/pch-task8-wheels",
+      "--require-hashes",
+      "-r",
+      "requirements.lock"
+    ],
+    "cwd": "/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation",
+    "exit_code": 1,
+    "result": "certifi==2026.7.22 absent from offline cache; transcript retains exact failure"
+  },
+  {
+    "argv": [
+      "/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation/.venv/bin/python",
+      "-m",
+      "pip",
+      "install",
+      "--require-hashes",
+      "-r",
+      "requirements.lock"
+    ],
+    "cwd": "/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation",
+    "exit_code": 0,
+    "log": {
+      "bytes": 10374,
+      "path": "/private/tmp/oaca-v2-install-online.log",
+      "sha256": "2d115dfe67645d6ea8a29ef78d6d0c96021bc7ca30a32ed16669739ecb35ec2c"
+    }
+  },
+  {
+    "argv": [
+      "/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation/.venv/bin/python",
+      "-m",
+      "pip",
+      "install",
+      "--no-deps",
+      "--no-build-isolation",
+      "-e",
+      "."
+    ],
+    "cwd": "/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation",
+    "exit_code": 0,
+    "log": {
+      "bytes": 1236,
+      "path": "/private/tmp/oaca-v2-editable-install.log",
+      "sha256": "d233ae1a2642c0e2a5c78042d3408534e4be91f1816d6fa19a46571321748c55"
+    }
+  },
+  {
+    "argv": [
+      "/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation/.venv/bin/python",
+      "-m",
+      "pip",
+      "check"
+    ],
+    "cwd": "/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation",
+    "exit_code": 0,
+    "result": "No broken requirements found."
+  },
+  {
+    "argv": [
+      "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/.venv/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-rs",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "cwd": "/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation",
+    "environment": {
+      "HOTPOT_EVALUATOR_PATH": "/private/tmp/oaca-recovery-evidence/hotpot_evaluate_v1.py",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONPATH": "src"
+    },
+    "exit_code": 0,
+    "log": {
+      "bytes": 1313,
+      "sha256": "3cd6067afde18efa263d02247b9ddb013a3f868f86e98c1b1f0ef40c6b4a4f68"
+    },
+    "passed": 1119,
+    "seconds": 324.93,
+    "skipped": 0
+  },
+  {
+    "argv": [
+      "/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation/.venv/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-rs",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "cwd": "/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation",
+    "environment": {
+      "HOTPOT_EVALUATOR_PATH": "/private/tmp/oaca-recovery-evidence/hotpot_evaluate_v1.py",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONPATH": "src"
+    },
+    "exit_code": 1,
+    "failed": 1,
+    "failure": "tests/test_cli.py::test_tune_closed_analysis_refuses_unfinished_native_acquisition",
+    "log": {
+      "bytes": 2982,
+      "path": "/private/tmp/oaca-v2-final-pytest.log",
+      "sha256": "8bc28e94ad76b86cb7aa7555a0f88f2d515b5b267dab50482263bcc90145ab65"
+    },
+    "passed": 1142,
+    "seconds": 327.81
+  },
+  {
+    "argv": [
+      "/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation/.venv/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-rs",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "cwd": "/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation",
+    "environment": {
+      "HOTPOT_EVALUATOR_PATH": "/private/tmp/oaca-recovery-evidence/hotpot_evaluate_v1.py",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "exit_code": 0,
+    "log": {
+      "bytes": 1313,
+      "sha256": "2685aee74682489bdc4007c1c6c3a96da49bf25b3f8976e0807a0e553704382d"
+    },
+    "passed": 1143,
+    "seconds": 326.2,
+    "skipped": 0
+  },
+  {
+    "argv": [
+      "/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation/.venv/bin/python",
+      "-m",
+      "outcome_poc",
+      "--help"
+    ],
+    "cwd": "/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation",
+    "exit_code": 0,
+    "log": {
+      "bytes": 1479,
+      "sha256": "a1f97cf50a333c19a5aece694e253956349aaf76c6a66cbf71fcabd220f13211"
+    }
+  },
+  {
+    "argv": [
+      "/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation/.venv/bin/python",
+      "-m",
+      "outcome_poc.reader_recovery",
+      "--help"
+    ],
+    "cwd": "/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation",
+    "exit_code": 0,
+    "log": {
+      "bytes": 1012,
+      "sha256": "fd675aab992e2f3625bc6d42f868a30f28af17354b5b581ea45aa89b060682fa"
+    }
+  },
+  {
+    "argv": [
+      "/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation/.venv/bin/python",
+      "tools/audit_recovery_run.py",
+      "--root",
+      "/private/tmp/oaca-reader-evidence-first-v1",
+      "--output",
+      "/private/tmp/oaca-v2-rescore-validation-02"
+    ],
+    "cwd": "/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation",
+    "environment": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONPATH": "/private/tmp/oaca-reader-evidence-first-v1/source/src"
+    },
+    "exit_code": 0
+  },
+  {
+    "argv": [
+      "/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation/.venv/bin/python",
+      "tools/audit_recovery_run.py",
+      "--root",
+      "/private/tmp/oaca-reader-evidence-first-v1",
+      "--output",
+      "/private/tmp/oaca-v2-rescore-validation-03"
+    ],
+    "cwd": "/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation",
+    "environment": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONPATH": "/private/tmp/oaca-reader-evidence-first-v1/source/src"
+    },
+    "exit_code": 0
+  },
+  {
+    "argv": [
+      "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/.venv/bin/python",
+      "tools/audit_recovery_run.py",
+      "--root",
+      "/private/tmp/oaca-reader-recovery-v1-attempt4",
+      "--output",
+      "/private/tmp/oaca-v2-rescore-diagnosis-01"
+    ],
+    "cwd": "/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation",
+    "environment": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONPATH": "/private/tmp/oaca-reader-recovery-v1-attempt4/source/src"
+    },
+    "exit_code": 0
+  },
+  {
+    "argv": [
+      "/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation/.venv/bin/python",
+      "tools/audit_recovery_run.py",
+      "--root",
+      "/private/tmp/oaca-reader-recovery-v1-attempt4",
+      "--output",
+      "/private/tmp/oaca-v2-rescore-diagnosis-02"
+    ],
+    "cwd": "/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation",
+    "environment": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONPATH": "/private/tmp/oaca-reader-recovery-v1-attempt4/source/src"
+    },
+    "exit_code": 0
+  }
+]

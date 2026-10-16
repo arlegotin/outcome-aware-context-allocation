@@ -473,6 +473,8 @@ def main(args):
     config=json.loads(Path(args.config).read_text())
     root=Path(config['tuning']['run_dir'])
     if getattr(args,'analyze_closed',False): return finish_closed_tuning(config,args.config)
+    from outcome_poc.reader_recipes import require_native_allocation_support
+    require_native_allocation_support(config['reader'])
     if root.exists(): raise ValueError('tune run already exists; preserve original acquisition')
     if not (Path(config['tuning']['index_dir'])/'manifest.json').exists():
         raise ValueError('completed tune index prerequisite; run index --split tune first')

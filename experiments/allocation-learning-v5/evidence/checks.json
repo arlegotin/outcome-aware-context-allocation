@@ -1,0 +1,51 @@
+{
+  "final_independent_reporting_review": "review_v2: no material issue in fit-only provenance, failed screen, timing closure or report; static review only",
+  "final_native_suite": {
+    "exit_code": 0,
+    "includes_separately_registered_offline_wrapper_fixtures": true,
+    "log_identity": {
+      "bytes": 1393,
+      "sha256": "3ba881af0a129aa91e0eb2adad1ef5ca0a4409f49e7e851619811d467b3469be"
+    },
+    "passed": 1198,
+    "platform": "macOS26.7.1 ARM64/Python3.12.9",
+    "seconds": 365.12,
+    "skipped": 0,
+    "source_hold": "no source/test/tool edits during final run"
+  },
+  "heldout_focused": {
+    "passed": 101,
+    "report_identity": {
+      "bytes": 7701,
+      "sha256": "ec53ca096fbd331f0a22eca18064a496b1a5fe99c666d4a01f0c395283f97f67"
+    }
+  },
+  "independent_review": "review_v2: final authored22passed; no material issue found; no actual Gold/outcomes/native calls inspected",
+  "native_full_suite": {
+    "log_identity": {
+      "bytes": 1393,
+      "sha256": "d5da512662328ea48db75d736ceb275555f70335fd73ede92e9aa7f97b00c29a"
+    },
+    "passed": 1194,
+    "seconds": 375.36,
+    "skipped": 0
+  },
+  "official_evaluator": {
+    "bytes": 4257,
+    "sha256": "d35fc91a6db21d791dbdda11daf3856e9359f5701d54e3eefba20d88fecc02c0"
+  },
+  "root_integration_focused": {
+    "log_identity": {
+      "bytes": 99,
+      "sha256": "8b382652d94bdcddfb70f841033f0847004ba38c47d290643e64ed4b384d71ff"
+    },
+    "passed": 66
+  },
+  "unperformed": [
+    "controlled suspension",
+    "human semantic adjudication",
+    "original A03 full raw authentication/rescore",
+    "powered direct final allocation comparison",
+    "operational requirements/workload validation"
+  ]
+}

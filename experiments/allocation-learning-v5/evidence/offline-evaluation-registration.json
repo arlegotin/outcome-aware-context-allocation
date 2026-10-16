@@ -1,0 +1,45 @@
+{
+  "fixtures": {
+    "passed": 4,
+    "scope": "explicit success/timeout/unknown-cleanup/retained-code-output fixtures, not native observations",
+    "seconds": 0.02,
+    "skipped": 0
+  },
+  "identities": {
+    "evaluator": {
+      "bytes": 9393,
+      "path": "/private/tmp/oaca-routing-evaluation-tools-20261016/tools/evaluate_routing_signal.py",
+      "sha256": "e364c9f4a7160a17849f41273d00bb1db1521e4c8976aa1c5fc0a439677f1bd2"
+    },
+    "evaluator_frozen_before_outcomes": {
+      "bytes": 9393,
+      "path": "/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation/tools/evaluate_routing_signal.py",
+      "sha256": "e364c9f4a7160a17849f41273d00bb1db1521e4c8976aa1c5fc0a439677f1bd2"
+    },
+    "fixture_log": {
+      "bytes": 98,
+      "path": "/private/tmp/oaca-v5-offline-wrapper-pytest.log",
+      "sha256": "99cef98de12a8b8a90abbcb2033d076bfc563ea7951d4da90263da27288d16f6"
+    },
+    "fixtures": {
+      "bytes": 4545,
+      "path": "/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation/tests/test_routing_evaluation_wrapper.py",
+      "sha256": "9474cdbba7926dd2a17edc834944af6fa1460bfd9ffb5d8f2abc74909fef5a02"
+    },
+    "wrapper": {
+      "bytes": 4833,
+      "path": "/private/tmp/oaca-run-routing-evaluation-bounded.py",
+      "sha256": "95c4b550a6834d75279695301e0f1414747b8fbeacd12218bef04ea2976b0846"
+    },
+    "wrapper_public_copy": {
+      "bytes": 4833,
+      "path": "/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation/tools/run_routing_evaluation_bounded.py",
+      "sha256": "95c4b550a6834d75279695301e0f1414747b8fbeacd12218bef04ea2976b0846"
+    }
+  },
+  "note": "All85 frozen serving/build files remain byte-identical. The unchanged evaluator was copied into a separately protected private tool bundle; wrapper records its identity and owns offline child process group.",
+  "prepared_before_v5_gold_scoring": true,
+  "registered_complete_seconds_cap": 600,
+  "review": "review_v2: two wrapper defects found and repaired; static re-review found no further material defect; no actual outcomes/Gold accessed",
+  "separate_from_native_serving_source": true
+}

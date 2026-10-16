@@ -38,3 +38,6 @@ artifacts/provenance/task15-transfer-diagnostics/private-percase.json
 artifacts/provenance/hub-metadata.json
 artifacts/provenance/pip-install-report.json
 artifacts/provenance/prerequisite-probe.json
+
+# Process-local advisory lock; reservation records remain versioned.
+/experiments/.reservation-catalog.lock

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "purpose": "NEW nonexecuting research status; not a prepare/run config",
+  "prospective_protocol_id": "allocation-recovery-v2-reader-admission-20261015-01",
+  "scientific_execution_enabled": false,
+  "new_benchmark_questions_sampled": 0,
+  "new_native_generation_calls": 0,
+  "current_phase_native_generation_budget_calls": 0,
+  "future_reader_trial": {
+    "proposed_research_target_strict_gain": 0.10,
+    "proposed_research_target_answer_gain": 0.10,
+    "proposed_joint_admission_probability": 0.80,
+    "status": "planning assumptions only; scenarios, n, repetitions and compute budget not registered",
+    "n": null,
+    "compute_budget": null,
+    "zero_margin_contract_unchanged": true
+  },
+  "stakeholder_requirements": {
+    "service_quality_floor": null,
+    "worthwhile_serving_saving": null,
+    "latency_limits": null,
+    "failure_limits": null,
+    "representative_workload": null,
+    "deployment_horizon": null
+  },
+  "reader_admitted": false,
+  "allocation_effectiveness_demonstrated": false,
+  "operational_usefulness_demonstrated": false
+}
