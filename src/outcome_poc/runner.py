@@ -17,6 +17,7 @@ from .generation import ANSWER_SYSTEM, Reader, render_prompt, prompt_identity, r
 from .schemas import CostEvent, GenerationRequest, PaidDraft, Prediction, ReaderResult, validate_record
 from .storage import append_jsonl, atomic_json, canonical_bytes, content_hash, read_jsonl
 from .timing import TimingLedger
+from .reader_recipes import reader_recipe, recipe_settings
 
 
 @dataclass
@@ -35,11 +36,16 @@ class Runtime:
         backend=self.reader.backend
         if not allow_reload and hasattr(backend,'worker_pid') and backend.worker_pid is None:
             return
-        backend.synchronize()
+        try:backend.synchronize()
+        except BaseException as error:
+            if self.config.get('request_timing')=='complete-continuous-v3':
+                self.unknown_cleanup=f'synchronization closure unverified: {type(error).__name__}: {error}'
+            raise
 
 
 def action_signature(task: Task, config: dict, evidence_ids: list[str], role: str, cache_mode: str) -> str:
     validate_record(task)
+    config={**config,**recipe_settings(config)}
     return content_hash({'task':task,'config':config,'evidence_ids':evidence_ids,
                          'role':role,'cache_mode':cache_mode})
 
@@ -92,7 +98,10 @@ def serve(task: Task, policy: object, runtime: object, job: dict) -> Prediction:
     this paid result inside the same query, while ten pays a second answer.
     """
     validate_record(task)
-    if task.split not in {'pilot','fit','tune'}:
+    if getattr(runtime,'_fresh_execution',None) is not None:
+        from .allocation_authorization import authorize_job
+        authorize_job(task,policy,runtime,job)
+    elif task.split not in {'pilot','fit','tune'}:
         from .protected import authorize_job
         authorize_job(task,policy,runtime,job)
     if job.get('cache_mode','none') not in {'none','within_query_prefix','development_replay'}:
@@ -129,7 +138,8 @@ def serve(task: Task, policy: object, runtime: object, job: dict) -> Prediction:
             evidence = [runtime.documents.get(row.doc_id) for row in ranked[:budget]]
         with ledger.component('prompt:'+role):
             prompt = render_prompt(task.question,evidence,aliases,runtime.reader.backend.tokenizer,
-                                   'judge' if role == 'judge' else 'answer')
+                                   'judge' if role == 'judge' else 'answer',
+                                   recipe=config.get('reader_recipe','baseline-v1'))
             prompt_hash = prompt_identity(prompt,runtime.reader.backend.tokenizer)
             request = GenerationRequest(config['model_revision'],config['model_hash'],prompt_hash,
                 config['decoding_hash'],'judge' if role == 'judge' else 'answer',config['max_context_tokens'],
@@ -159,7 +169,14 @@ def serve(task: Task, policy: object, runtime: object, job: dict) -> Prediction:
             result = backend.generate(prompt,request,rendered=True,**cache_args)
             validate_record(result)
         except Exception as error:
-            result = ReaderResult(last_partial['text'],None,[],'infra_error',
+            from .followup.supervisor import CleanupFailure
+            if isinstance(error,CleanupFailure) and config.get('request_timing')=='complete-continuous-v3':
+                runtime.unknown_cleanup=str(error.cleanup_error)
+                result=error.result
+            else:
+                if config.get('request_timing')=='complete-continuous-v3':
+                    runtime.unknown_cleanup=f'paid supervision closure unverified: {type(error).__name__}: {error}'
+                result = ReaderResult(last_partial['text'],None,[],'infra_error',
                 len(last_partial['prompt_ids']),len(last_partial['token_ids']),last_partial['prompt_ids'],
                 last_partial['token_ids'],f'{type(error).__name__}:{error}')
         finally:
@@ -191,7 +208,8 @@ def serve(task: Task, policy: object, runtime: object, job: dict) -> Prediction:
             with ledger.component('prefix_target'):
                 full_evidence = [runtime.documents.get(row.doc_id) for row in ranked]
                 prefix = {'scope':content_hash([task,job['job_id'],job.get('attempt',1)]),
-                          'target_prompt':render_prompt(task.question,full_evidence,aliases,backend.tokenizer),
+                          'target_prompt':render_prompt(task.question,full_evidence,aliases,backend.tokenizer,
+                                                       recipe=config.get('reader_recipe','baseline-v1')),
                           'source_prompt_hash':None}
         draft, judge = None, None
         if getattr(policy,'requires_judge',False):
@@ -353,7 +371,7 @@ def _commit(directory,attempt_dir,prediction):
 
 def _job_identity(job,runtime):
     policy=job['policy']
-    return content_hash({'task':job['task'],'config':runtime.config,'policy_id':_policy_id(policy),
+    return content_hash({'task':job['task'],'config':{**runtime.config,**recipe_settings(runtime.config)},'policy_id':_policy_id(policy),
         'installed_chat_template_hash':content_hash(runtime.reader.backend.tokenizer.chat_template),
         'policy_config':getattr(policy,'config',None),'k':getattr(policy,'k',None),
         'buffer':getattr(policy,'buffer',None),'requires_draft':getattr(policy,'requires_draft',False),'requires_judge':getattr(policy,'requires_judge',False),
@@ -363,6 +381,13 @@ def _job_identity(job,runtime):
 
 
 def execute_job(job: dict, runtime: object, run_dir: Path) -> Prediction:
+    if runtime.config.get('request_timing')=='complete-continuous-v3':
+        from .continuous_serving import execute
+        return execute(job,runtime,run_dir,_execute_job)
+    return _execute_job(job,runtime,run_dir)
+
+
+def _execute_job(job: dict, runtime: object, run_dir: Path) -> Prediction:
     """Resume a verified commit, recover a finished transaction, or rerun infra explicitly."""
     if type(job['job_id'])!=str or not job['job_id'] or Path(job['job_id']).name!=job['job_id'] or job['job_id'] in {'.','..'}:
         raise ValueError('job identity must be a safe path component')
@@ -542,6 +567,12 @@ def _accounting_local(run_dir, prediction, shared_amounts):
     if not final_seen: raise ValueError('missing final attempt event ledger')
     for amount in shared_amounts:
         experiment+=amount
+    if (Path(run_dir)/'request-timing.json').exists():
+        from .continuous_serving import totals,outside_request_cost
+        complete=totals(run_dir,prediction)
+        # All inner events, initial sync and durable writes are nested in this
+        # request. Shared offline/cold costs stay outside and count exactly once.
+        return {'total_serving_seconds':complete,'total_experiment_seconds':complete+sum(shared_amounts)+outside_request_cost(run_dir,prediction)}
     return {'total_serving_seconds':serving,'total_experiment_seconds':experiment}
 
 
@@ -929,7 +960,7 @@ print(json.dumps(checks))
 
 def _bound_action_signature(task,runtime,evidence_ids,cache_mode='none'):
     config={**runtime.config,'installed_chat_template_hash':content_hash(runtime.reader.backend.tokenizer.chat_template),
-            'prompt_system_hash':content_hash(ANSWER_SYSTEM)}
+            'prompt_system_hash':content_hash(reader_recipe(runtime.config.get('reader_recipe','baseline-v1')).system)}
     return action_signature(task,config,evidence_ids,'answer',cache_mode)
 
 
@@ -1031,6 +1062,8 @@ def _supplement_hashes(run_dir):
     names=('recovery-pending.json','observed-failure.json','observed-failure.closed.json')
     paths=[p for p in Path(run_dir).glob('jobs/*/attempt-*/*') if p.is_file() and p.name in names]
     paths+=list(Path(run_dir).glob('jobs/*/attempt-*/reloads/*.json'))
+    paths+=list(Path(run_dir).glob('continuous-requests/*/attempt-*/*.json'))
+    if (Path(run_dir)/'request-timing.json').exists():paths.append(Path(run_dir)/'request-timing.json')
     return {str(p.relative_to(run_dir)):_digest(p) for p in sorted(paths)}
 
 

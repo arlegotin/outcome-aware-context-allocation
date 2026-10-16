@@ -1,0 +1,385 @@
+[
+  {
+    "arms": {
+      "baseline": {
+        "E": 33,
+        "Q": 0.09375,
+        "R": 27.647437896166668,
+        "S": 6,
+        "mean_T": 2.5919473027656252,
+        "n": 64,
+        "total_T": 165.88462737700002
+      },
+      "evidence-first": {
+        "E": 44,
+        "Q": 0.296875,
+        "R": 9.161970736842104,
+        "S": 19,
+        "mean_T": 2.7199600624999998,
+        "n": 64,
+        "total_T": 174.07744399999999
+      }
+    },
+    "assigned_jobs": 128,
+    "assigned_questions": 64,
+    "bindings": {
+      "assets.json": {
+        "bytes": 3820,
+        "sha256": "3fbcec56574524522c0d3196621ec6482d4fa2c998915ae89d1aa37ddb058341"
+      },
+      "cohorts.json": {
+        "bytes": 6291,
+        "sha256": "6c5a0dc5f3a2005c9fb3f4c4bb61d8dc3951db103381fda919bae995dd98c992"
+      },
+      "config.json": {
+        "bytes": 1797,
+        "sha256": "d260577ef2def201cb335bfabb67627e817b17cb8555346ec2b12bd07b368ac6"
+      },
+      "documents.jsonl": {
+        "bytes": 434296,
+        "sha256": "2618038a70ebc67a6e1ad155ff2ac97d7c0debd421e583513ef9f01bf20785d8"
+      },
+      "plan.json": {
+        "bytes": 20180,
+        "sha256": "c7afc59d978174baeb4671d885dbf4ced9a6794e6ed96c0960bebbc301360e52"
+      },
+      "schedule.json": {
+        "bytes": 32531,
+        "sha256": "4322cba9741fdeae930026aba9e87bccfa90f3debfbf863107eca61e26bf0a53"
+      },
+      "scores/closed.json": {
+        "bytes": 559,
+        "sha256": "afe5024084c04fd2339a861faad0c51b5dff7817f11bfbcb95fac3c313da1f6a"
+      },
+      "scores/scores.jsonl": {
+        "bytes": 102411,
+        "sha256": "ed1544b85b4b99c57b27036ed8e2b06974ce20c325284880e296d3bda7d8304c"
+      },
+      "scores/summary.json": {
+        "bytes": 4579,
+        "sha256": "008c3b98f77de4f9c39f89e2462a0084dfa52692eb0d851805cb00dd2881bab4"
+      },
+      "source.diff": {
+        "bytes": 18912,
+        "sha256": "c9f6e95a5d380f37c6ef7eba72685103b2aa02a0d9682cb11cc8bec88b419750"
+      },
+      "tasks.jsonl": {
+        "bytes": 55533,
+        "sha256": "eeb5f1fe6e009a22952e02b83851a067de7b2d227b4345a58fa4960aff2592df"
+      }
+    },
+    "fresh_recomputations": [
+      {
+        "audit": {
+          "bytes": 4421,
+          "sha256": "8a30cadbbd6ffa000923dc23b249d61e23de35657f218bb674ddb35ce31ba7cb"
+        },
+        "exit_code": 0,
+        "path": "/private/tmp/oaca-v2-rescore-validation-02",
+        "scores": {
+          "bytes": 49485,
+          "sha256": "a0d1a64f1710bf2ebe3ab7bb0fbf7055e2d7cc254d93407a2c065f010b90a7f4"
+        }
+      },
+      {
+        "audit": {
+          "bytes": 4421,
+          "sha256": "8a30cadbbd6ffa000923dc23b249d61e23de35657f218bb674ddb35ce31ba7cb"
+        },
+        "exit_code": 0,
+        "path": "/private/tmp/oaca-v2-rescore-validation-03",
+        "scores": {
+          "bytes": 49485,
+          "sha256": "a0d1a64f1710bf2ebe3ab7bb0fbf7055e2d7cc254d93407a2c065f010b90a7f4"
+        }
+      }
+    ],
+    "gold_input": {
+      "identity": {
+        "bytes": 13989662,
+        "sha256": "6aae94d71c463b77f90d5ca164402c0fac9ebae05c7550496b5947b03865ba49"
+      },
+      "path": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/prepared/gold/gold.jsonl"
+    },
+    "input_inventory_hash": "e35ff3072f5366466688544fcb2a116e57faeb080991eb865588e5b6f3bc2e06",
+    "phase": "validation",
+    "plan_hash": "2c130a656badd6f8c696f1e05b171cf33b8cb57d027ab5754a465ff68af733cf",
+    "reader_validation": {
+      "admitted": false,
+      "comparator": "unchanged natural-ten; selected and fixed-ten alias",
+      "cost_acceptability": null,
+      "efficiency_claim": false,
+      "invalid_or_runtime_failures": {
+        "baseline": 2,
+        "evidence-first": 1
+      },
+      "quality_guards": [
+        {
+          "N": 88427,
+          "ci": [
+            0.0009386273423275665,
+            0.369909642982347
+          ],
+          "comparator": "selected",
+          "difference": 0.203125,
+          "harm_bounds": [
+            0.0,
+            0.08615015775724609
+          ],
+          "harm_count": 0,
+          "metric": "joint_em",
+          "n": 64,
+          "preserved": true,
+          "rescue_bounds": [
+            0.08708878509957366,
+            0.369909642982347
+          ],
+          "rescue_count": 13,
+          "sampling_variance": 0.002567429883438626,
+          "sparse": true,
+          "tail_alpha": 0.003125,
+          "variance_reason": null
+        },
+        {
+          "N": 88427,
+          "ci": [
+            -0.057674692118922954,
+            0.3686204439820417
+          ],
+          "comparator": "selected",
+          "difference": 0.171875,
+          "harm_bounds": [
+            0.0012891990003053367,
+            0.1447634772184966
+          ],
+          "harm_count": 2,
+          "metric": "answer_em",
+          "n": 64,
+          "preserved": false,
+          "rescue_bounds": [
+            0.08708878509957366,
+            0.369909642982347
+          ],
+          "rescue_count": 13,
+          "sampling_variance": 0.003248979897745109,
+          "sparse": true,
+          "tail_alpha": 0.003125,
+          "variance_reason": null
+        },
+        {
+          "N": 88427,
+          "ci": [
+            0.0009386273423275665,
+            0.369909642982347
+          ],
+          "comparator": "fixed_ten",
+          "difference": 0.203125,
+          "harm_bounds": [
+            0.0,
+            0.08615015775724609
+          ],
+          "harm_count": 0,
+          "metric": "joint_em",
+          "n": 64,
+          "preserved": true,
+          "rescue_bounds": [
+            0.08708878509957366,
+            0.369909642982347
+          ],
+          "rescue_count": 13,
+          "sampling_variance": 0.002567429883438626,
+          "sparse": true,
+          "tail_alpha": 0.003125,
+          "variance_reason": null
+        },
+        {
+          "N": 88427,
+          "ci": [
+            -0.057674692118922954,
+            0.3686204439820417
+          ],
+          "comparator": "fixed_ten",
+          "difference": 0.171875,
+          "harm_bounds": [
+            0.0012891990003053367,
+            0.1447634772184966
+          ],
+          "harm_count": 2,
+          "metric": "answer_em",
+          "n": 64,
+          "preserved": false,
+          "rescue_bounds": [
+            0.08708878509957366,
+            0.369909642982347
+          ],
+          "rescue_count": 13,
+          "sampling_variance": 0.003248979897745109,
+          "sparse": true,
+          "tail_alpha": 0.003125,
+          "variance_reason": null
+        }
+      ],
+      "reader_improvement_claim": false,
+      "semantic_validity": "unresolved; strict benchmark admission is not semantic/operational certification",
+      "strict_benchmark_quality_improvement": false,
+      "strict_lower_bound": 0.0009386273423275665
+    },
+    "retained_inputs_unchanged": true,
+    "root": "/private/tmp/oaca-reader-evidence-first-v1",
+    "source_commit": "ae1706bb1739c1c0a4e724b33feaa8b01289d292",
+    "source_inventory_hash": "2c8c94a030b1e8799fe402b784f86b0cbe442eef6f534a982cebd1bd86f24088",
+    "stage_closures": {
+      "stages/natural/closed.json": {
+        "bytes": 114146,
+        "sha256": "5cab51ec07a354bede6c36aa5b8d2a378eedceb63d4bc1983b73be4bdbe59c0d"
+      }
+    }
+  },
+  {
+    "arms": {
+      "10": {
+        "E": 22,
+        "Q": 0.0,
+        "R": null,
+        "S": 0,
+        "mean_T": 2.4819538489375,
+        "n": 32,
+        "total_T": 79.422523166
+      },
+      "2": {
+        "E": 19,
+        "Q": 0.0,
+        "R": null,
+        "S": 0,
+        "mean_T": 0.8702596471875,
+        "n": 32,
+        "total_T": 27.84830871
+      },
+      "5": {
+        "E": 20,
+        "Q": 0.03125,
+        "R": 45.572558209,
+        "S": 1,
+        "mean_T": 1.42414244403125,
+        "n": 32,
+        "total_T": 45.572558209
+      },
+      "support-documents": {
+        "E": 25,
+        "Q": 0.09375,
+        "R": 10.087799457666668,
+        "S": 3,
+        "mean_T": 0.94573119915625,
+        "n": 32,
+        "total_T": 30.263398373
+      },
+      "support-sentences": {
+        "E": 23,
+        "Q": 0.09375,
+        "R": 8.287366015,
+        "S": 3,
+        "mean_T": 0.77694056390625,
+        "n": 32,
+        "total_T": 24.862098045
+      }
+    },
+    "assigned_jobs": 160,
+    "assigned_questions": 32,
+    "bindings": {
+      "assets.json": {
+        "bytes": 3820,
+        "sha256": "3fbcec56574524522c0d3196621ec6482d4fa2c998915ae89d1aa37ddb058341"
+      },
+      "cohorts.json": {
+        "bytes": 6490,
+        "sha256": "98e6ee5bce459d95bfab4e7ac25ff4841e04b5b890df51d2d534703254017ca7"
+      },
+      "config.json": {
+        "bytes": 1794,
+        "sha256": "5fdd4d20364b77405096eb98fa7525dcf0885b5e4c865fef38805a53860ce3c5"
+      },
+      "documents.jsonl": {
+        "bytes": 232044,
+        "sha256": "8f5113c646969f636e48f1ea496c928aae87e06effce8741a9b5e7bf69f4b06a"
+      },
+      "plan.json": {
+        "bytes": 16194,
+        "sha256": "7150bd52a421eab679a1be9125cb3875fa70ab5d40533793a58a815feb671f10"
+      },
+      "schedule.json": {
+        "bytes": 31219,
+        "sha256": "3e151e36a956cf7940c047bebc09f82eb8f80b6ddfb487b2e5f677f38b06bd7c"
+      },
+      "scores/closed.json": {
+        "bytes": 659,
+        "sha256": "a801aa224cfccd9778c2e05e922a2d86e4aba6246868cd3adbf3c8941d629659"
+      },
+      "scores/scores.jsonl": {
+        "bytes": 126572,
+        "sha256": "b45987dd3973f43dbb58696aeedd0526b99bde7752621d0a342aedd0d572bbb4"
+      },
+      "scores/summary.json": {
+        "bytes": 6077,
+        "sha256": "0a10a389c1f106b2c7e3e8f58f3bc5ea3eef87d97d182f98035806803ac6daa8"
+      },
+      "source.diff": {
+        "bytes": 11715,
+        "sha256": "57afd25dad08683046a4b76810250136dcd9747e969989ec86d5ed0beebdbe84"
+      },
+      "tasks.jsonl": {
+        "bytes": 28486,
+        "sha256": "7841ba024068c9356a64fb462262484cc9cbdfdb314dd133a830c984f2b1903d"
+      }
+    },
+    "fresh_recomputations": [
+      {
+        "audit": {
+          "bytes": 2680,
+          "sha256": "92b5ab393ff21a431ac618b69a20c7b4087b66e0660d964163c3f2bd8a64ffa5"
+        },
+        "exit_code": 0,
+        "path": "/private/tmp/oaca-v2-rescore-diagnosis-01",
+        "scores": {
+          "bytes": 60851,
+          "sha256": "32069d6642eec6568ead125d4a6778fe3eadd45c2a0c42910d0b5530450226df"
+        }
+      },
+      {
+        "audit": {
+          "bytes": 2680,
+          "sha256": "9d09f7a18f55a9d743e90b90bb9cf86d0f83159a28ec5aa96c8fd4ad70004f27"
+        },
+        "exit_code": 0,
+        "path": "/private/tmp/oaca-v2-rescore-diagnosis-02",
+        "scores": {
+          "bytes": 60851,
+          "sha256": "32069d6642eec6568ead125d4a6778fe3eadd45c2a0c42910d0b5530450226df"
+        }
+      }
+    ],
+    "gold_input": {
+      "identity": {
+        "bytes": 13989662,
+        "sha256": "6aae94d71c463b77f90d5ca164402c0fac9ebae05c7550496b5947b03865ba49"
+      },
+      "path": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/prepared/gold/gold.jsonl"
+    },
+    "input_inventory_hash": "660cb12e73bd2e5527972542893aa74b05e5be22223d786ec88303b51d3616eb",
+    "phase": "diagnosis",
+    "plan_hash": "90c8f71bcc4deaafb78d57641b73c75306d99faa05f6d8fb810b1f1e04ac1e1d",
+    "retained_inputs_unchanged": true,
+    "root": "/private/tmp/oaca-reader-recovery-v1-attempt4",
+    "source_commit": "ae1706bb1739c1c0a4e724b33feaa8b01289d292",
+    "source_inventory_hash": "4d358b77276a53abb651c4d2ca88d5dc36074e1717198c9328639ac0f134fd8f",
+    "stage_closures": {
+      "stages/natural/closed.json": {
+        "bytes": 85807,
+        "sha256": "60b5c2cb7827a386ca1a04e40f80876e4c05f8972eed0e5eb3e1dd34a3fcaebe"
+      },
+      "stages/oracle/closed.json": {
+        "bytes": 57786,
+        "sha256": "82b16848d6512d95c6e6f728a46855b76938313138ce66155aca5fabf378f4d5"
+      }
+    }
+  }
+]

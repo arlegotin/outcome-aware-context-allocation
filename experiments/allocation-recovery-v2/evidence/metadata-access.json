@@ -1,0 +1,52 @@
+{
+  "additional_identities": {
+    "/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation/experiments/reservation-manifests.json": {
+      "bytes": 1119,
+      "sha256": "cc29ecebf020418858216f23faffc9833952e94c88ef9057a722ca9e7cd97d14"
+    },
+    "/private/tmp/oaca-reader-evidence-first-v1/cohorts.json": {
+      "bytes": 6291,
+      "sha256": "6c5a0dc5f3a2005c9fb3f4c4bb61d8dc3951db103381fda919bae995dd98c992"
+    },
+    "/private/tmp/oaca-reader-recovery-v1-attempt4/cohorts.json": {
+      "bytes": 6490,
+      "sha256": "98e6ee5bce459d95bfab4e7ac25ff4841e04b5b890df51d2d534703254017ca7"
+    }
+  },
+  "additional_unique": 224,
+  "asset_manifest": {
+    "bytes": 12928,
+    "sha256": "c6cc18a8c2510a5e0d8109768fc5ac14090fb9c93e0365b1fedcca8f5f064152"
+  },
+  "eligible_N": 88235,
+  "eligible_ids_hash": "1c1f40d2fcc313d20036641f58dead933b51f2c4b4647e2e159137f13d7e2975",
+  "historical_counts": {
+    "citation": 320,
+    "followup": 224,
+    "original": 448,
+    "reader": 128
+  },
+  "interpretation": "current metadata identities/counts and authenticated additional catalog; older-family independent raw closure not authenticated here",
+  "prepared_inputs": {
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/prepared/development-reservations.json": {
+      "bytes": 8563452,
+      "sha256": "505aef32b0eb68da85eaec2aeba66dd5e43752694d53378d6308711e1b9583bf"
+    },
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/prepared/documents.jsonl": {
+      "bytes": 324547371,
+      "sha256": "032079542ef8692f7272ff3692dc44b4cfa9ce41f376daa2abf1b5508a2c08bd"
+    },
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/prepared/duplicate-membership.jsonl": {
+      "bytes": 21017819,
+      "sha256": "a48fa4823f404436b21d353e6dec85dca81b6df08c49901d49ed4bf30ffccad8"
+    },
+    "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/data/prepared/tasks.jsonl": {
+      "bytes": 84337859,
+      "sha256": "45d9baf5b5a05de38d3aa37494b952247c04c04e24ac0dc7454f328573a11fc2"
+    }
+  },
+  "prepared_manifest": {
+    "bytes": 8567338,
+    "sha256": "4fbb765ce3c6656a3ce2fd7004ad3a837ff96cdca6366e7e90cc3267329904f2"
+  }
+}

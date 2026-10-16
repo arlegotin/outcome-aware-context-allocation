@@ -1,0 +1,30 @@
+usage: __main__.py [-h]
+                   {prepare,prepare-fresh-validation,prepare-learning-study,prepare-action-study,prepare-scientific,prepare-validation,index,index-bounded,verify,score,run,_serve}
+                   ...
+
+Reader recovery v1: bounded diagnosis, no automatic selection/confirmation
+
+positional arguments:
+  {prepare,prepare-fresh-validation,prepare-learning-study,prepare-action-study,prepare-scientific,prepare-validation,index,index-bounded,verify,score,run,_serve}
+    prepare             reserve fresh IDs and project diagnostic evidence
+                        before outcomes
+    prepare-fresh-validation
+                        NEW v2: independent metadata preparation only;
+                        scientific execution disabled
+    prepare-learning-study
+                        NEW v5: frozen fit and untouched learning-holdout
+                        acquisition
+    prepare-action-study
+                        NEW v4: admitted-reader independent 2/5/10 development
+                        action screen
+    prepare-scientific  NEW v3: single-use frozen native reader trial through
+                        actual allocation runner
+    prepare-validation  freeze the single authored candidate on the prior
+                        untouched64 IDs; no resampling
+    run                 native diagnostic group; single attempt, no semantic
+                        retry
+    _serve              native diagnostic group; single attempt, no semantic
+                        retry
+
+options:
+  -h, --help            show this help message and exit

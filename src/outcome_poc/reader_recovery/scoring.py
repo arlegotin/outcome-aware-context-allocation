@@ -15,12 +15,21 @@ from ..followup.runtime import completion, session_accounting
 from ..followup.study import verify_index
 from ..reader_probe.study import inventory
 from .analysis import summarize,validation_admission
-from .study import verify, read, identity, publish, verify_files, GROUP_ARMS, jobs,group_arms
+from .action_study_v4 import is_action
+from .learning_study_v5 import is_learning
+from .study import verify, read, identity, publish, verify_files, GROUP_ARMS, jobs,group_arms,is_validation
 
 
 def closed_records(root):
     root = Path(root).resolve()
     plan = verify(root)
+    from .index_budget import validate_index_budget
+    validate_index_budget(root,plan)
+    if (root/'native-stage-timeout.json').exists():
+        raise ValueError('native parent deadline/cleanup failure; incomplete assignment cannot score')
+    if plan['config'].get('schema_version') in (3,4,5):
+        from .allocation_study import validate_parent
+        validate_parent(root,plan)
     # Gold-enabled recomputation may run from a live checkout only when every
     # loaded project module has exactly the frozen source bytes.
     for name,module in list(sys.modules.items()):
@@ -46,7 +55,7 @@ def closed_records(root):
                 closure['session_accounting']['status']!='complete' or closure['session_accounting']['sessions']!=1):
             raise ValueError('diagnosis closure/accounting mismatch')
         forecast = None
-        if plan['config']['protocol_id']=='reader-evidence-first-v1':
+        if is_validation(plan['config']) or is_action(plan['config']) or is_learning(plan['config']):
             forecast = read(root/'stages'/group/'render-forecast.json')
             settings = plan['config']['reader']
             if (set(forecast['jobs'])!={j['job_id'] for j in roster} or
@@ -75,6 +84,10 @@ def closed_records(root):
                 raise ValueError('complete durable request boundary mismatch')
             records.append((job,*value))
     verify_index(root/'index-setup')
+    if plan['config'].get('schema_version') in (4,5):
+        count=sum(payload['calls'] for _,payload,_ in records)+1
+        if count!=plan['config']['native_generation_budget_calls']:
+            raise ValueError('complete native paid-call cap/assignment mismatch')
     return plan,records
 
 
@@ -134,9 +147,10 @@ def score(root):
         cohorts = read(root/'cohorts.json')
         by_cell = {(r['task_id'],r['arm']):r for r in rows}
         summary['paired_diagnostics'] = {}
-        validation = plan['config']['protocol_id']=='reader-evidence-first-v1'
-        active = cohorts['validation' if validation else 'diagnosis']
-        contrasts = (('evidence-first','baseline'),) if validation else (
+        validation = is_validation(plan['config'])
+        action=is_action(plan['config']);learning=is_learning(plan['config'])
+        active = cohorts['fit']+cohorts['learning_holdout'] if learning else cohorts['development' if action else 'validation' if validation else 'diagnosis']
+        contrasts = (('evidence-first','baseline'),) if validation else (('10','2'),) if learning else (('10','2'),('5','10')) if action else (
             ('support-sentences','support-documents'),('support-documents','10'),('10','2'),('5','10'))
         for a,b in contrasts:
             summary['paired_diagnostics'][a+'-minus-'+b] = {
@@ -156,10 +170,13 @@ def score(root):
                         full_status=by_cell[i,'10']['status']) for i in active]
             summary['clairvoyant_headroom'] = headroom(paired)
             summary['clairvoyant_headroom']['answer_guard'] = 'not enforced by frontier; no deployable/quality-preserving allocation claim'
+            if action:
+                from .action_analysis_v4 import action_value_screen
+                summary['action_value_screen']=action_value_screen(paired,summary['arms'],plan['config']['research_screen'])
         summary.update(plan_hash=plan['plan_hash'],assigned_jobs=len(rows),assigned_questions=len(assigned),
             population=cohorts['eligibility_count'],evaluator=EVALUATOR_PROVENANCE,
             source_commit=plan['source_commit'],source_snapshot_hash=content_hash(inventory(root/'source')),
-            reserved_validation=0 if validation else len(cohorts['validation_reserved']),reserved_evaluation=len(cohorts['evaluation_reserved']))
+            reserved_validation=0 if validation or action or learning else len(cohorts['validation_reserved']),reserved_evaluation=len(cohorts.get('evaluation_reserved',[])))
         # Disjoint setup and resident envelopes; nested service/lifecycle/warmup
         # are disclosed separately, never added a second time.
         summary['costs'] = {'resident_session_seconds':sum(session_accounting(root,g,plan,require_closed=True)['exact_seconds'] for g in group_arms(plan['config'])),

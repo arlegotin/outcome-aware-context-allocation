@@ -1,0 +1,46 @@
+{
+  "schema_version": 3,
+  "study_kind": "allocation-reader-admission-v3",
+  "execution_mode": "frozen-native",
+  "reader": {
+    "repo_id": "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+    "revision": "50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b",
+    "max_context_tokens": 8192,
+    "max_new_tokens": 256,
+    "timeout_seconds": 120,
+    "prefill_step_size": 512,
+    "temperature": 0
+  },
+  "seed": 20261016,
+  "arms": [
+    "baseline",
+    "evidence-first"
+  ],
+  "repetitions": 1,
+  "cache_mode": "none",
+  "semantic_retries": 0,
+  "reuse_indexes": [],
+  "request_timing": "complete-continuous-v3",
+  "historical_checkout": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation",
+  "asset_authority": {
+    "root": "/private/tmp/oaca-reader-recovery-v1-attempt4",
+    "plan_hash": "90c8f71bcc4deaafb78d57641b73c75306d99faa05f6d8fb810b1f1e04ac1e1d"
+  },
+  "reservation_catalog_identity": {
+    "sha256": "cc29ecebf020418858216f23faffc9833952e94c88ef9057a722ca9e7cd97d14",
+    "bytes": 1119
+  },
+  "retained_roots": [
+    "/private/tmp/oaca-v2-preparation-delivery-source-20261016",
+    "/private/tmp/oaca-allocation-native-smoke-20261016-v3"
+  ],
+  "started_utc": "2026-10-16T07:34:02+00:00",
+  "deadline_utc": "2026-10-16T18:00:00+00:00",
+  "reporting_reserve_seconds": 900,
+  "native_interpreter": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/.venv/bin/python",
+  "protocol_id": "allocation-native-smoke-20261016-v3b",
+  "purpose": "authored-native-smoke",
+  "validation_n": 2,
+  "native_generation_budget_calls": 5,
+  "native_budget_seconds": 600
+}

@@ -1,0 +1,111 @@
+{
+  "curves": [
+    {
+      "fit_random_probability": 0.3671875,
+      "fit_size": 128,
+      "model_artifact_hashes": {
+        "PRE-LINEAR-0.1": "84cf855173069554f2afd5e15dc248266664064bbf99d3b1e0a7542895a3f425",
+        "PRE-LINEAR-1": "4ce7f3e037a3c386977581f66c35cbcad6e7ce84c6db8468aee10d3e41412515",
+        "PRE-LINEAR-10": "091d4d3f51c2b01f71b1fb55ac735c4a49da0478cd976829f71b90fc1b53f52d",
+        "PRE-LINEAR-100": "346a2d43f4743239b74fe902e9692d07acd613809e9b3fdd86aeabfafc8e85a4",
+        "PRE-OUTCOME-GBM": "e14cf46a93c6f4d7bddaabdd787f2cd92c3495e520afadcee6a25a94a1ff4681",
+        "PRE-RF": "55ef20babd56aea67fc62ac9bf2dbb6937a66d3f0bfbcaf4a6f58e2572da9f23",
+        "PROXY-LABEL": "5222c7105dcde74140600f5ff4e6fda3fcd53aea4c1cedb464f13337fddfcd9d",
+        "QUERY-ONLY": "0141c703753c624e8dbcc83ecf379828b812f8c24e03117ea500ec762355b4df",
+        "SHUFFLED-LABEL-GBM": "37254499bfd91abe00b42d435d38db66f998f1b0af68e944bff9c639951fb759"
+      },
+      "selected_A": {
+        "config_id": "PRE-OUTCOME-GBM:q090",
+        "family": "PRE-OUTCOME-GBM",
+        "model_name": "PRE-OUTCOME-GBM",
+        "quantile_level": 0.9,
+        "threshold_mode": "numeric"
+      },
+      "selected_B": {
+        "config_id": "PRE-LINEAR-10:q085",
+        "family": "PRE-LINEAR",
+        "model_name": "PRE-LINEAR-10",
+        "quantile_level": 0.85,
+        "threshold_mode": "numeric"
+      }
+    },
+    {
+      "fit_random_probability": 0.59375,
+      "fit_size": 256,
+      "model_artifact_hashes": {
+        "PRE-LINEAR-0.1": "2d1cf9065087d63f59d73e39affb8e1c4d30b27fef91637bcdfe2b4ec209cc0c",
+        "PRE-LINEAR-1": "f4136de5a9343918b0678f0868dc19ac439095bac71df1164e80d7561618e674",
+        "PRE-LINEAR-10": "7055b4045ec9c2962bd1cbb245e21b5a1a9bedf83c7f10a0d3c886b186d08331",
+        "PRE-LINEAR-100": "6a8ce91b8b46cbb60d444c323963b776400352161c972db29f8e2873a58c3a72",
+        "PRE-OUTCOME-GBM": "58af97310f606cb85100a254a89e00042f3fc15903db50cd75ba317691e51519",
+        "PRE-RF": "f27a2f79db8c56c11c28e9a6a5c0854b3d9b522aef8fd7a2bf84c9c80adac10c",
+        "PROXY-LABEL": "bb2affa29d86d8590464e4c5694a5ec45fd5565ed65bbc4bd3b3213b8b09e418",
+        "QUERY-ONLY": "d605b67767bf5c64bec92d74e65033f332805af8bdfd9f122682a10694d75e5a",
+        "SHUFFLED-LABEL-GBM": "8ca2abe5be94ee82431988ddc87c05caec6a889a4999a47129534daebd83612c"
+      },
+      "selected_A": {
+        "config_id": "PRE-OUTCOME-GBM:q030",
+        "family": "PRE-OUTCOME-GBM",
+        "model_name": "PRE-OUTCOME-GBM",
+        "quantile_level": 0.3,
+        "threshold_mode": "numeric"
+      },
+      "selected_B": {
+        "config_id": "PRE-LINEAR-1:q020",
+        "family": "PRE-LINEAR",
+        "model_name": "PRE-LINEAR-1",
+        "quantile_level": 0.2,
+        "threshold_mode": "numeric"
+      }
+    },
+    {
+      "fit_random_probability": 0.95703125,
+      "fit_size": 512,
+      "model_artifact_hashes": {
+        "PRE-LINEAR-0.1": "89ef1ddcbb5ec66f398e770e4907da05c6b91f29077d6f561d00149a589ef1d9",
+        "PRE-LINEAR-1": "7bab2d7637c0275e01eef5f909440eaa3f314b7e0d1570126d2d091fddf2a5fc",
+        "PRE-LINEAR-10": "d1a2ceebb5a331dd6f0304daa9fa2fed31961d7cff60b4ad19def2cd109a805e",
+        "PRE-LINEAR-100": "a41662a365e0bca11a50dc12fbf2b14c5431b79b84a1b5d0f9183d3763b1e55b",
+        "PRE-OUTCOME-GBM": "4b9452edc94a3bf67b1908844cae9e49341060c77fdaaa87658348010a5a06ae",
+        "PRE-RF": "33683bf3fbe34bed2dfefef89c520c11f4305f177ca2c8c7318169e807c5743c",
+        "PROXY-LABEL": "b1ffb39244b3b69bf08a5576070d59fb953f9329e9e4c8db58ee52709bbba08f",
+        "QUERY-ONLY": "2e73cb42b3e75ecf2906f521b466f16a99cca5a454ee6e60d27f4f3bca875413",
+        "SHUFFLED-LABEL-GBM": "a5b3c312f52bea6bd50ed7aee3114132db441035eff5ef3cbb06a30500e7216c"
+      },
+      "selected_A": {
+        "config_id": "PRE-OUTCOME-GBM:q005",
+        "family": "PRE-OUTCOME-GBM",
+        "model_name": "PRE-OUTCOME-GBM",
+        "quantile_level": 0.05,
+        "threshold_mode": "numeric"
+      },
+      "selected_B": {
+        "config_id": "PROXY-LABEL:q025",
+        "family": "PROXY-LABEL",
+        "model_name": "PROXY-LABEL",
+        "quantile_level": 0.25,
+        "threshold_mode": "numeric"
+      }
+    }
+  ],
+  "identities": {
+    "private/fit-only-state.json": {
+      "bytes": 383424,
+      "sha256": "489439f0bf9776e73d8e176969409bdb335bb9822ebf081e97e919ab4f6b41ce"
+    },
+    "private/heldout-decisions.jsonl": {
+      "bytes": 5029808,
+      "sha256": "d0a78e220faabc14fe36e2988ca41873ac4c36715a51064f9e1bb4f0358fa20c"
+    },
+    "private/memberships.json": {
+      "bytes": 434623,
+      "sha256": "ff15cf88beee3539cd784c4a05d2b45dbd8ff301bdff276639badc0ea2097b04"
+    },
+    "public-summary.json": {
+      "bytes": 25622,
+      "sha256": "92726a43720550fe14229c52df810b00b1b096ff39c12da179684f0357aae615"
+    }
+  },
+  "independent_review": "review_v2: fit-only state/configs and screen agree; no reporting inconsistency found; no tests/inference or task-text access",
+  "scope": "private artifact identities only; no task IDs, texts, folds or question-level decisions published"
+}

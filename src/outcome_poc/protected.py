@@ -385,6 +385,8 @@ def native_main(plan_path, launch_attempt):
     from .runner import Runtime, record_shared_cost
     start=time.perf_counter_ns();plan=json.loads(Path(plan_path).read_text())
     protocol=json.loads(Path(plan['protocol_path']).read_text());root=Path(protocol['run_dir'])
+    from outcome_poc.reader_recipes import require_native_allocation_support
+    require_native_allocation_support(protocol['methods']['reader'])
     stop=threading.Event();observer=None;charged_until=start;assigned=[j['job_id'] for j in protocol['schedule']['jobs']]
     setup_finished=False;startup_receipt={}
     def charge(role,begin,end,label):

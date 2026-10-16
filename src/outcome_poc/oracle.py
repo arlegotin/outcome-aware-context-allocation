@@ -232,3 +232,62 @@ def analyze_pilot(run_dir, scores_path, output_dir, remaining_seconds, *, planne
     atomic_json(output/'capacity_forecast.json', forecast)
     atomic_json(output/'wp3-gate.json', summary)
     return summary
+
+
+def two_endpoint_frontier(rows: list[PairedActionRow], *, minimum_strict_successes: int,
+                          minimum_answer_successes: int) -> dict:
+    """NEW exact empirical T/S/E frontier with both supplied anchor constraints.
+
+    This privileged optimistic diagnostic assumes zero routing overhead. It is
+    neither a policy nor a population bound. The existing strict-only frontier
+    retains its historical meaning. Unknown service requirements stay unknown.
+    """
+    import math
+    _validate(rows)
+    n=len(rows)
+    for floor in (minimum_strict_successes,minimum_answer_successes):
+        if type(floor) is not int or not 0<=floor<=n:
+            raise ValueError('explicit empirical endpoint anchor counts required')
+    for r in rows:
+        if (r.small_joint_em>r.small_answer_em or r.full_joint_em>r.full_answer_em or
+                any(not math.isfinite(t) or t<0 for t in (r.small_cost_seconds,r.full_cost_seconds))):
+            raise ValueError('incoherent strict/answer outcomes or action costs')
+    # At each exact (S,E) total, retain the minimum cost and a reconstructible
+    # witness. Outcomes, not features, create these choices: never serve them.
+    layers=[{(0,0):(0.,None,None)}]
+    for r in rows:
+        layer={}
+        actions=((2,r.small_joint_em,r.small_answer_em,r.small_cost_seconds),
+                 (10,r.full_joint_em,r.full_answer_em,r.full_cost_seconds))
+        for previous,(cost,_,_) in layers[-1].items():
+            for action,s,e,t in actions:
+                state=(previous[0]+s,previous[1]+e);proposed=cost+t
+                if state not in layer or proposed<layer[state][0]:layer[state]=(proposed,previous,action)
+        layers.append(layer)
+    # Descending S then E: a prefix-min tree over descending E detects every
+    # previously visited point at least as correct on both endpoints.
+    tree=[math.inf]*(n+2)
+    states=[]
+    for state in sorted(layers[-1],reverse=True):
+        s,e=state;cost=layers[-1][state][0];index=n-e+1;cursor=index;best=math.inf
+        while cursor:
+            best=min(best,tree[cursor]);cursor-=cursor&-cursor
+        if best>cost:states.append(state)
+        while index<len(tree):
+            tree[index]=min(tree[index],cost);index+=index&-index
+    frontier=[]
+    for s,e in sorted(states,key=lambda x:(layers[-1][x][0],x)):
+        cost=layers[-1][s,e][0];state=(s,e);choices=[]
+        for layer in reversed(layers[1:]):
+            _,state,action=layer[state];choices.append(action)
+        choices.reverse()
+        frontier.append({'n':n,'S':s,'E':e,'Q':s/n,'answer_rate':e/n,'total_T':cost,
+                         'R':cost/s if s else None,'choices':choices,
+                         'two_actions':choices.count(2),'ten_actions':choices.count(10)})
+    feasible=[p for p in frontier if p['S']>=minimum_strict_successes and p['E']>=minimum_answer_successes and p['S']>0]
+    best=min(feasible,key=lambda p:(p['R'],p['total_T'],-p['S'],-p['E'])) if feasible else None
+    return {'n':n,'frontier':frontier,'minimum_R':best,
+            'reason':None if best else 'no_nonzero_strict_feasible_schedule',
+            'minimum_strict_successes':minimum_strict_successes,'minimum_answer_successes':minimum_answer_successes,
+            'service_quality_floor':None,'routing_overhead_seconds':0.,'allocation_claim':False,
+            'scope':'clairvoyant empirical diagnostic with supplied anchor counts; no deployment, population guarantee or service-floor claim'}

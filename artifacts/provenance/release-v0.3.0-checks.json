@@ -1,0 +1,161 @@
+{
+  "citation": {
+    "PyYAML": "6.0.3",
+    "jsonschema": "4.26.0",
+    "schema_sha256": "0b8d22140da702d766df318dcff3a91af2f39521298dcf36d76315fd99cc169b",
+    "schema_url": "https://citation-file-format.github.io/1.2.0/schema.json",
+    "scope": "separate system validation environment; native research environment unchanged",
+    "valid": true,
+    "version": "0.3.0"
+  },
+  "clean_clone": {
+    "benchmark_model_retained_run_assets_absent": true,
+    "command": "HOTPOT_EVALUATOR_PATH=/private/tmp/oaca-recovery-evidence/hotpot_evaluate_v1.py PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src /Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation/.venv/bin/python -B -m pytest -q -ra -p no:cacheprovider --basetemp=/private/tmp/oaca-v0.3.0-pytest-20261016",
+    "evaluator_source_sha256": "d35fc91a6db21d791dbdda11daf3856e9359f5701d54e3eefba20d88fecc02c0",
+    "existing_pinned_native_environment_reused": true,
+    "official_evaluator_parity_cases_executed": 7,
+    "platform": "macOS26.7.1 ARM64, Apple M3Max",
+    "project_imported_from_clone": true,
+    "pytest_seconds": 356.23,
+    "python": "3.12.9",
+    "test_log_sha256": "16d3e75e6c8ac540860d5a2f1bc0c7aa8ba246917fa1df2044a75f853115ef9d",
+    "tests_passed": 1198,
+    "tests_skipped": 0
+  },
+  "dependencies": {
+    "lock_sha256": "e1bd09c1dc51f39bd53e62df6ce79eb2d726b26fa30d486ac3d584f297c2d8c8",
+    "pip_check_exit": 0,
+    "pip_check_result": "No broken requirements found.",
+    "scientific_environment_modified": false
+  },
+  "historical_checkpoint_preserved": "ae1706bb1739c1c0a4e724b33feaa8b01289d292",
+  "implementation_commit": "36c38d61971df2e764b0f9a821cd3c37dfe6539a",
+  "independent_publication_review": {
+    "critical_findings": 0,
+    "important_findings": 0,
+    "new_json_files_reviewed": 52,
+    "private_raw_assets_inspected": false,
+    "relative_links_resolve": 64,
+    "reviewer": "independent software agent review_v2, not human semantic adjudication",
+    "scope": "versions, claims, source identities, publication/privacy qualifications, report links and bounded credential patterns"
+  },
+  "installed_wheel_cli_help": {
+    "commands": {
+      "-m outcome_poc --help": {
+        "exit_code": 0,
+        "usage": "usage: __main__.py [-h]"
+      },
+      "-m outcome_poc.reader_probe --help": {
+        "exit_code": 0,
+        "usage": "usage: __main__.py [-h] {assets,prepare,verify,run,_serve} ..."
+      },
+      "-m outcome_poc.reader_recovery --help": {
+        "exit_code": 0,
+        "usage": "usage: __main__.py [-h]"
+      },
+      "-m outcome_poc.reader_recovery index-bounded --help": {
+        "exit_code": 0,
+        "usage": "usage: __main__.py index-bounded [-h] --root ROOT"
+      },
+      "-m outcome_poc.reader_recovery prepare-learning-study --help": {
+        "exit_code": 0,
+        "usage": "usage: __main__.py prepare-learning-study [-h] --config CONFIG --root ROOT"
+      },
+      "-m outcome_poc.reader_study --help": {
+        "exit_code": 0,
+        "usage": "usage: __main__.py [-h]"
+      }
+    },
+    "module_path": "/private/tmp/oaca-v0.3.0-wheel-target/outcome_poc/__init__.py",
+    "project_imported_from_wheel": true
+  },
+  "package": {
+    "artifacts": [
+      {
+        "bytes": 374119,
+        "name": "outcome_poc-0.3.0-py3-none-any.whl",
+        "sha256": "3014605a6326a562c00cbe830c4de56c124eee677d40ce393a7b51a318b50c36"
+      },
+      {
+        "bytes": 506494,
+        "name": "outcome_poc-0.3.0.tar.gz",
+        "sha256": "294f3b63a987e8a36ccfe8e595a1e8387b6680a7b9c35ad7cb8e3fee07c37d0e"
+      }
+    ],
+    "environment": "unchanged pinned Python3.12/macOS ARM64; setuptools build_meta, no dependency resolution",
+    "initial_check_correction": "Setuptools canonically reorders Requires-Python from >=3.11,<3.13 to <3.13,>=3.11. Replaced invalid order-sensitive string assertion with SpecifierSet equality and explicit accept3.11/3.12/reject3.10/3.13 checks. Package/source bytes unchanged; initial failure log retained privately.",
+    "sdist": {
+      "five_license_notice_files_exact": true,
+      "links": false,
+      "members": 192,
+      "raw_or_model_files": false,
+      "readme_exact": true,
+      "source_modules_exact": 83
+    },
+    "version": "0.3.0",
+    "wheel": {
+      "files": 92,
+      "five_license_notice_files_exact": true,
+      "raw_or_model_files": false,
+      "readme_exact": true,
+      "source_modules_exact": 83,
+      "version_and_python_license_metadata_exact": true
+    }
+  },
+  "public_scope": {
+    "all_new_files_text": true,
+    "base": "bb0de32cfbc5488d8563fd73ef0b3d38d04d020e",
+    "bounded_credential_patterns_no_matches": true,
+    "new_public_files": 119,
+    "no_new_case_text_id_choice_fields_in_json": true,
+    "no_new_raw_model_archive_files": true,
+    "not_a_universal_secret_guarantee": true,
+    "reviewed_head": "daa95500cbcb7b7f97f7e7224a8c4d6aaca832f2"
+  },
+  "release_receipt_followup": "Only this verification receipt and the release-notes verification paragraph follow the tested candidate. Source, tests, tools, lock, package metadata, citation and README retain tested Git identities. Merge/tag must preserve those identities.",
+  "release_version": "0.3.0",
+  "research_status": {
+    "GBM_fixed10_reconstructed_R_fraction_saving": 0.02132356569470306,
+    "allocation_advantage_demonstrated": false,
+    "baseline_candidate_answer": [
+      260,
+      344
+    ],
+    "baseline_candidate_strict": [
+      27,
+      103
+    ],
+    "bounded_routing_continuation_passed": false,
+    "controlled_suspension": "unperformed",
+    "eligible_final_efficiency_interval_obtained": false,
+    "fit_n": 512,
+    "further_label_expansion_stopped": true,
+    "historical_final128_consumed": false,
+    "human_semantic_review": "unavailable",
+    "independent_reader_admission_passed": true,
+    "learning_holdout_n": 256,
+    "operational_requirements": null,
+    "operational_success_demonstrated": false,
+    "primary_GBM_fixed10_answer": [
+      181,
+      182
+    ],
+    "primary_GBM_fixed10_strict": [
+      66,
+      66
+    ],
+    "reader_n": 512
+  },
+  "scope": "Research software/publication verification; no new benchmark observations or relaxed scientific gates",
+  "tested_clean_clone_commit": "daa95500cbcb7b7f97f7e7224a8c4d6aaca832f2",
+  "tested_git_object_identities": {
+    "CITATION.cff": "44085b8be44af546c75cd0ec3128381da2f40b41",
+    "README.md": "3a64f11242804493b1aecde09bb2a3be678478c3",
+    "pyproject.toml": "e5a24ef0698c66dd469da5a4c6824275deefb893",
+    "requirements.lock": "03b25a678824fb9d5c2727de540f5823b37e153a",
+    "src": "0d99f8e087091d3c5bf52d2c73eb8e08cc519f99",
+    "tests": "2793bcdafb32cc2470d07136ffda1d1108d4f533",
+    "tools": "bd43813af5179adb6ce18b342bbc7de0c3cae70a"
+  },
+  "verified_utc": "2026-10-16T12:21:34.500175+00:00"
+}

@@ -636,6 +636,8 @@ def native_main(manifest_path,phase):
     from .train import load_gate
     from .assets import verify_assets
     m=_read(Path(manifest_path));root=Path(m['root']);started=time.perf_counter()
+    from .reader_recipes import require_native_allocation_support
+    require_native_allocation_support(m['reader'])
     if m['fixture']:raise ValueError('fixture cannot initialize native assets')
     snapshot=Path(os.environ.get('TASK15_TRANSFER_SNAPSHOT','/nonexistent')).resolve()
     if not Path(__file__).resolve().is_relative_to(snapshot):raise ValueError('diagnostic worker requires immutable snapshot imports')

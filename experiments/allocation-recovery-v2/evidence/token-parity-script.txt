@@ -1,0 +1,26 @@
+import argparse,json,pathlib
+from outcome_poc.generation import render_prompt,prompt_identity,offline_network
+from outcome_poc.schemas import Document
+from outcome_poc.storage import content_hash
+from outcome_poc.assets import file_identity
+from outcome_poc.reader_recovery.prompts import render_condition
+parser=argparse.ArgumentParser();parser.add_argument('--current',action='store_true');parser.add_argument('--output',required=True);args=parser.parse_args()
+manifest=pathlib.Path('/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/provenance/asset-manifest.json')
+asset=json.loads(manifest.read_bytes())['assets']['reader']
+with offline_network():
+ from transformers import AutoTokenizer
+ tokenizer=AutoTokenizer.from_pretrained(asset['local_path'],local_files_only=True,trust_remote_code=False)
+ docs=[]
+ for i in range(10):
+  title=f'Authored parity lantern {i}';sentences=[f'Lantern {i} rests beside a violet cabinet.',f'This invented lantern carries number {i}.']
+  docs.append(Document(content_hash([title,sentences]),title,sentences,sum(map(len,sentences))))
+ aliases={f'D{i}':d.doc_id for i,d in enumerate(docs)};cells={}
+ for k in (2,5,10):
+  evidence=docs[:k];view={d.doc_id:[0,1] for d in evidence}
+  for condition in ('baseline','evidence-first'):
+   prompt=render_prompt('Which cabinet is beside lantern zero?',evidence,aliases,tokenizer,recipe=condition+'-v1') if args.current else render_condition('Which cabinet is beside lantern zero?',evidence,aliases,tokenizer,view,condition)
+   tokens=tokenizer.encode(prompt,add_special_tokens=False)
+   cells[f'{condition}:{k}']={'prompt_hash':prompt_identity(prompt,tokenizer),'token_ids_hash':content_hash(tokens),'input_tokens':len(tokens),'plus_output_tokens':len(tokens)+256}
+ report={'reader_revision':asset['revision'],'asset_manifest':file_identity(manifest),'chat_template_hash':content_hash(tokenizer.chat_template),'cells':cells,'generation_calls':0}
+ pathlib.Path(args.output).write_text(json.dumps(report,indent=2)+'\n')
+ print(json.dumps({'cells':cells,'generation_calls':0}))

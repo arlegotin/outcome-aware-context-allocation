@@ -1,0 +1,324 @@
+{
+  "administrative_incident": "One documentation-copy approval was rejected because9c9b was mistaken for the retained original. Read-only realpath/git-worktree checks proved distinct roots; retry with explicit path assertions was approved. No original source or measured evidence was written.",
+  "assets": {
+    "actual_bytes_authenticated": true,
+    "authority": {
+      "bytes": 12928,
+      "path": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/provenance/asset-manifest.json",
+      "sha256": "c6cc18a8c2510a5e0d8109768fc5ac14090fb9c93e0365b1fedcca8f5f064152"
+    },
+    "encoder": {
+      "local_path": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/models/pinned/encoder/5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+      "repo_id": "BAAI/bge-small-en-v1.5",
+      "revision": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+      "snapshot_hash": "0883c9ca2b589beb4d2ad6150d9c96e7c9400d2f1eadf29ad9542af82601f54a"
+    },
+    "reader": {
+      "local_path": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/models/pinned/reader/50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b",
+      "repo_id": "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+      "revision": "50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b",
+      "snapshot_hash": "ecf7edd130ec9663e80927112f50d4aab12143a43c4a1f4c532f99d0379e1660"
+    },
+    "tokenizer_template_bytes": "bound actual per-run assets.json and rendered prompt/token identities in private receipts"
+  },
+  "captured_utc": "2026-10-16T12:03:25.239686+00:00",
+  "delivery_source": {
+    "base_commit": "bb0de32cfbc5488d8563fd73ef0b3d38d04d020e",
+    "branch": "research/allocation-recovery-20261016",
+    "code_test_tool_files": 189,
+    "complete_code_patch": {
+      "bytes": 289020,
+      "sha256": "7dae7d54688c759c000bc9042827c3108b719556bf37449558f6c65eb627a299"
+    },
+    "inventory": {
+      "bytes": 27294,
+      "sha256": "1b5c90eca853104e90057bfd60d5c73606372a5a358b6c2ab80e0b86bfe19f18"
+    },
+    "inventory_hash": "22f1375ca57dfe97147397955132ee95208f69662843b11a0d7967759f8af39c",
+    "measured_source_is_separately_identified": true,
+    "state_at_capture": "verified code staged; release/report manifest captured before final local commit"
+  },
+  "demonstrated": {
+    "action_value_optimistic_screen_passed": true,
+    "allocation_efficiency_acceptance_passed": false,
+    "heldout_routing_continuation_passed": false,
+    "operational_or_commercial_benefit_demonstrated": false,
+    "reader_admission_passed": true,
+    "reader_answer_baseline_candidate": [
+      260,
+      344
+    ],
+    "reader_n": 512,
+    "reader_strict_baseline_candidate": [
+      27,
+      103
+    ]
+  },
+  "format_version": 1,
+  "operational_requirements": {
+    "deployment_horizon": null,
+    "failure_limits": null,
+    "latency_limits": null,
+    "representative_workload": null,
+    "service_quality_floor": null,
+    "worthwhile_saving": null
+  },
+  "primary_heldout": {
+    "GBM": {
+      "E": 181,
+      "R_reconstructed": 13.053159299924243,
+      "S": 66
+    },
+    "decision": "stop allocation-label expansion under this hypothesis; retain admitted fixed-ten research anchor; no tuning to consumed holdout",
+    "fit_n": 512,
+    "fit_selected_B_proxy": {
+      "E": 182,
+      "R_reconstructed": 11.587662575121213,
+      "S": 66
+    },
+    "fixed_ten": {
+      "E": 182,
+      "R_reconstructed": 13.337563716030303,
+      "S": 66
+    },
+    "holdout_n": 256
+  },
+  "privacy": "Only aggregates and byte identities are public. Raw/Gold text, cohorts/IDs, per-question decisions, fitted models and archives remain private. A public clone cannot authenticate inaccessible private predictions. Future native protocols must inventory and deny every newly retained archive/input root before generation.",
+  "reservations": {
+    "catalog": {
+      "bytes": 1849,
+      "sha256": "d94e4837bfaad6f6d3eb232462a9b3f28be33502e2a07560a4e4cbe974d8f360"
+    },
+    "future_eligible_frame_must_be_recomputed": true,
+    "historical_consumed64_remain_excluded": true,
+    "historical_reserved128_unexecuted_and_excluded": true,
+    "new_consumed_benchmark_groups": 1408
+  },
+  "retained_original": {
+    "head": "ae1706bb1739c1c0a4e724b33feaa8b01289d292",
+    "path": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation",
+    "source_and_historical_evidence_unchanged": true,
+    "status_porcelain": ""
+  },
+  "retention": {
+    "administrative_and_restricted_input_archives": {
+      "bytes": 948,
+      "sha256": "5c47ad71a28b28dce3184c860eada37e4f506a0fdb2324e3557c1c5dd60caccb"
+    },
+    "all_archived_input_inventories_unchanged": true,
+    "archives_are_retention_not_relocation_or_inference_proof": true,
+    "assets_and_pinned_environments_remain_at_authenticated_original_paths": true,
+    "historical_archives": {
+      "reader-evidence-first-v1": {
+        "identity": {
+          "bytes": 2845371,
+          "sha256": "80ace70579c7898f9235151187cd810977c79461d3fd1d19327bc0bf88b6116d"
+        },
+        "path": "/Users/artemlegotin/.codex-s/worktrees/a840/outcome-aware-context-allocation/artifacts/runs/reader-evidence-first-v1-private-archive.tar.gz",
+        "retention_receipt": {
+          "bytes": 1053,
+          "sha256": "2f32013f25797b633d160adddf5ac454f4eb277fcdeba36d0a8348af4b8621aa"
+        }
+      },
+      "reader-recovery-v1": {
+        "identity": {
+          "bytes": 4594278,
+          "sha256": "f5e06da473a73cf528cba125f2e21dd3b91e31de27455f3121a54e66fe57756f"
+        },
+        "path": "/Users/artemlegotin/.codex-s/worktrees/a840/outcome-aware-context-allocation/artifacts/runs/reader-recovery-v1-private-archive.tar.gz",
+        "retention_receipt": {
+          "bytes": 1126,
+          "sha256": "6270869fb9d70f22bc926bde4eafb2f4011cdb4def2688d864d864d860858550"
+        }
+      }
+    },
+    "private_roots": [
+      "/private/tmp/oaca-allocation-evidence-20261016-archives",
+      "/private/tmp/oaca-allocation-evidence-20261016-admin-archives",
+      "/private/tmp/oaca-allocation-administration-20261016"
+    ],
+    "run_and_score_archives": {
+      "bytes": 7312,
+      "sha256": "91cf96d32dd86fb2fde9e6fa90dc3803cb5ad25dc109d2ae1e64c0d34052b1eb"
+    }
+  },
+  "scope": "Completed bounded fresh native reader/action/learning research with the registered v5 stop rule; full-roster common tuning and final allocation acceptance were not reached.",
+  "studies": {
+    "action_headroom": {
+      "identities": {
+        "assets.json": {
+          "bytes": 3820,
+          "sha256": "3fbcec56574524522c0d3196621ec6482d4fa2c998915ae89d1aa37ddb058341"
+        },
+        "cohorts.json": {
+          "bytes": 3791,
+          "sha256": "7ebb236f6fbded86ebfbce3b354b0735631c62fef9683d834447c7ef714e7eee"
+        },
+        "native-parent-closure.json": {
+          "bytes": 649,
+          "sha256": "7d2dc0edbc42971870352515c292c62a5bb139cf57bd267d7e0f39d2773ba59e"
+        },
+        "plan.json": {
+          "bytes": 7841473,
+          "sha256": "7ed4f4466b33e77d74957a957fe04a3080c00b78768d9ece9334d3b9773afd39"
+        },
+        "schedule.json": {
+          "bytes": 95523,
+          "sha256": "f74575148172c9a191b70498ef5938bb36091529f1c3b45990c6696140701a0b"
+        },
+        "scores/closed.json": {
+          "bytes": 562,
+          "sha256": "d21f318bcc37d320347d08470911e6ccc5ee0884884fab030d27488f8cb3e2f1"
+        },
+        "scores/scores.jsonl": {
+          "bytes": 305656,
+          "sha256": "e564ca898d300c114eff96f0e6af9034699f253aafd9cddaf60095e04f6a54e5"
+        },
+        "source.diff": {
+          "bytes": 58855,
+          "sha256": "e65e6c96535678a224de51702f63bc62edd6ff39f5f732e4c29f0c3a0c3ad617"
+        },
+        "stages/natural/closed.json": {
+          "bytes": 1563296,
+          "sha256": "f38389070d772c25da2d5c4b1b81b8fd35576e1bd2b87a27823ab7ef070ee509"
+        }
+      },
+      "plan_hash": "697b3620b9fe90c9efb60e80a4499ccf940588590914998cfb1374be0fbb68de",
+      "root": "/private/tmp/oaca-allocation-action-headroom-20261016-n128-v4",
+      "source_base_commit": "bb0de32cfbc5488d8563fd73ef0b3d38d04d020e",
+      "source_snapshot_hash": "24098ad734f2bfc40e5c318673315c6d0042091d6f151ebe4a25e20daf4c421b"
+    },
+    "reader_admission": {
+      "identities": {
+        "assets.json": {
+          "bytes": 3820,
+          "sha256": "3fbcec56574524522c0d3196621ec6482d4fa2c998915ae89d1aa37ddb058341"
+        },
+        "cohorts.json": {
+          "bytes": 14158,
+          "sha256": "715543651f893cedf0bceb7d20d7690f678958b347c0696c12069617269b3eff"
+        },
+        "native-parent-closure.json": {
+          "bytes": 649,
+          "sha256": "531fee7f4e67a0c8e9aa9ccec855b8c581925a94f865c07bac0fcdb7cc3d8933"
+        },
+        "plan.json": {
+          "bytes": 36268,
+          "sha256": "10e53b857e2c494d642fa71a45827655978366b6f8375295b39f9f804a24c7f3"
+        },
+        "schedule.json": {
+          "bytes": 261899,
+          "sha256": "4419c0f0f02b4a9a7bc2d89dad51330aa631782fe4ebc61c8b6af37d5cb44a6b"
+        },
+        "scores/closed.json": {
+          "bytes": 561,
+          "sha256": "335fa193756b51a7895bb4676caf54509538d16f610498273b49152097bccd18"
+        },
+        "scores/scores.jsonl": {
+          "bytes": 841789,
+          "sha256": "6514755f209ccdc322c287d14c14469f170cdc772c388a08d8b119bdc47d86d7"
+        },
+        "source.diff": {
+          "bytes": 50430,
+          "sha256": "9fabcfc04328aa89f17d81abb7ae5990119de9ac2164f76cae2017eda076405f"
+        },
+        "stages/natural/closed.json": {
+          "bytes": 4167387,
+          "sha256": "8a02ff035055f1d585f669d5f07cceff62f5fd886b517d0571d0279b8c077a8f"
+        }
+      },
+      "plan_hash": "216909fd9d58a2785fdea3fb0e50b03b08d6fe0cdbdfb0bc402561a5c7bc1517",
+      "root": "/private/tmp/oaca-allocation-reader-admission-20261016-n512-v3",
+      "source_base_commit": "bb0de32cfbc5488d8563fd73ef0b3d38d04d020e",
+      "source_snapshot_hash": "b7396d6e6ae6481d3b1006f8ea0fc5c7cbd98e253e650a98d9d4fbc9383b5c8f"
+    },
+    "routing_signal": {
+      "identities": {
+        "assets.json": {
+          "bytes": 3820,
+          "sha256": "3fbcec56574524522c0d3196621ec6482d4fa2c998915ae89d1aa37ddb058341"
+        },
+        "cohorts.json": {
+          "bytes": 21084,
+          "sha256": "fc4ff6dc7519b6847a03ef937bca025a3a0ba06ef509c42087f03b0b7917bd5c"
+        },
+        "native-parent-closure.json": {
+          "bytes": 649,
+          "sha256": "1f935efbcb8963307de707e28ac4f5a693343240c445837c5fd7e33270f6fd47"
+        },
+        "plan.json": {
+          "bytes": 10734470,
+          "sha256": "94afd22d79be651a78c33019d4d168c46018ca81fe379b5944aa9f323379d1d4"
+        },
+        "schedule.json": {
+          "bytes": 379147,
+          "sha256": "04f0d8b2a2c963257860f53a0f20fa511d5149a6e7acc407ea0e31dbf09289ea"
+        },
+        "scores/closed.json": {
+          "bytes": 563,
+          "sha256": "6a066470ad30e7e05585852208864ffebdff9f53e33b0d6f1741c63addd7813d"
+        },
+        "scores/scores.jsonl": {
+          "bytes": 1238385,
+          "sha256": "9c1b488d934cd2a900b20483a42880ba722e60f66f1b8c210326639461986c5c"
+        },
+        "source.diff": {
+          "bytes": 69089,
+          "sha256": "b390b12b79dce8b7f1da7af9a39d3413995522177febb1492115437720ff5ab3"
+        },
+        "stages/natural/closed.json": {
+          "bytes": 6245863,
+          "sha256": "3ef847d93d51c3e78ded2773d79c2c10539055b4ad77d5141a623edb9041d88d"
+        }
+      },
+      "plan_hash": "3f6124b579d6b27f8b91f7aa7fe4a6fc1ac16c39b69fd96a86f2bdb843291c6b",
+      "root": "/private/tmp/oaca-allocation-routing-signal-20261016-fit512-hold256-v5",
+      "source_base_commit": "bb0de32cfbc5488d8563fd73ef0b3d38d04d020e",
+      "source_snapshot_hash": "bb780df89e33e6059781779f3b5360d25a250f589b5166d5da4cdc9734836b97"
+    }
+  },
+  "unperformed": [
+    "qualified independent human semantic/reference adjudication",
+    "controlled host suspension",
+    "full original A03 raw/source/exact-assignment authentication and rescore",
+    "all-method common native tuning including paid POST/LLM-SUFFICIENCY and Adaptive-k",
+    "powered frozen direct protected final allocation comparison and eligible R interval",
+    "repeat-output determinism and final stationarity/latency/failure acceptance",
+    "complete attributable engineering/adaptation cost and operational break-even",
+    "operational requirements/workload validation"
+  ],
+  "verification": {
+    "actual_trial_rescoring": "fresh project Scorer through each bound frozen source, not a cached return or an assertion of official-script raw rescoring",
+    "independent_review": "review_v2: no remaining material issue in final fit-only provenance, screen, offline wrapper or reporting; software review, not human semantic adjudication",
+    "locked_dependencies_51_pins_preserved": true,
+    "main_cli_help_exit": 0,
+    "native_full_suite": {
+      "exit_code": 0,
+      "log": {
+        "bytes": 1393,
+        "sha256": "3ba881af0a129aa91e0eb2adad1ef5ca0a4409f49e7e851619811d467b3469be"
+      },
+      "passed": 1198,
+      "seconds": 365.12,
+      "skipped": 0
+    },
+    "official_evaluator": {
+      "bytes": 4257,
+      "path": "/private/tmp/oaca-recovery-evidence/hotpot_evaluate_v1.py",
+      "sha256": "d35fc91a6db21d791dbdda11daf3856e9359f5701d54e3eefba20d88fecc02c0"
+    },
+    "official_source_executed_in_parity_fixtures": true,
+    "pip_check_exit": 0,
+    "platform": "macOS26.7.1 ARM64 Apple M3Max36GiB/Python3.12.9",
+    "recovery_cli_help_exit": 0
+  },
+  "work_package_disposition": {
+    "WP0": "native baseline/assets/private access and recovery32/validation64 rescoring verified; original A03 raw/source authentication remains unperformed",
+    "WP1": "separately versioned isolated v3/v4/v5 native protocols and fail-closed reservations completed; completed-v1 restrictions preserved",
+    "WP2": "actual fresh fit/headroom allocation paid paths use immutable recipes and complete continuous receipt intervals; legacy native protected/tune/transfer settings reject unsupported new flags rather than claim migration",
+    "WP3": "unchanged-benchmark independent reader admission passed; qualified human semantic review unavailable",
+    "WP4": "new finite two-endpoint oracle diagnostic and action screen passed; privileged optimism only",
+    "WP5": "bounded group-aware heldout probe completed and failed continuation; full declared common tuning roster was not reached",
+    "WP6": "not run: no final frozen A*/B*, powered direct final comparison, eligible R interval or final acceptance; stopped per registered v5 rule"
+  }
+}

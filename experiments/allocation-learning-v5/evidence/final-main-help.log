@@ -1,0 +1,31 @@
+usage: __main__.py [-h]
+                   {discover,assets,smoke,prepare,index,audit-data,reader,validate-harness,pilot,collect,fit,tune,freeze,plan,run,score,ablate,transfer,reproduce,report}
+                   ...
+
+Local outcome-aware context allocation experiment
+
+positional arguments:
+  {discover,assets,smoke,prepare,index,audit-data,reader,validate-harness,pilot,collect,fit,tune,freeze,plan,run,score,ablate,transfer,reproduce,report}
+    discover            discover experiment stage
+    assets              assets experiment stage
+    smoke               smoke experiment stage
+    prepare             prepare experiment stage
+    index               index experiment stage
+    audit-data          audit-data experiment stage
+    reader              reader experiment stage
+    validate-harness    validate-harness experiment stage
+    pilot               pilot experiment stage
+    collect             collect experiment stage
+    fit                 fit experiment stage
+    tune                tune experiment stage
+    freeze              freeze experiment stage
+    plan                plan experiment stage
+    run                 run experiment stage
+    score               score experiment stage
+    ablate              ablate experiment stage
+    transfer            transfer experiment stage
+    reproduce           reproduce experiment stage
+    report              report experiment stage
+
+options:
+  -h, --help            show this help message and exit

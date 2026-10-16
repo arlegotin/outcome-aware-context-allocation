@@ -1,0 +1,194 @@
+........................................................................ [  6%]
+...............................................................F........ [ 12%]
+........................................................................ [ 18%]
+........................................................................ [ 24%]
+........................................................................ [ 31%]
+F....................................................................... [ 37%]
+........................................................................ [ 43%]
+........................................................................ [ 49%]
+........................................................................ [ 55%]
+..................................................E..................... [ 62%]
+........................................................................ [ 68%]
+........................................................................ [ 74%]
+........................................................................ [ 80%]
+........................................................................ [ 86%]
+........................................................................ [ 93%]
+........................................................................ [ 99%]
+.......                                                                  [100%]
+==================================== ERRORS ====================================
+______ ERROR at setup of test_current_checkout_import_origin_is_rejected _______
+
+tmp_path = PosixPath('/private/var/folders/q3/tm7kkng56417wgzydc4q8p8r0000gn/T/pytest-of-artemlegotin/pytest-3075/test_current_checkout_import_o0')
+documents10 = [Document(doc_id='46db19b3da3aeaf78202db43da300d91654e573324f954fb8231b4079ae7f349', title='Invented lantern 0', sente...bc3ab3567c5', title='Invented lantern 5', sentences=['Lantern 5 rests.', 'Lantern 5 glows.'], character_count=32), ...]
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10f567fe0>
+
+    @pytest.fixture
+    def native_ready(tmp_path,documents10,monkeypatch):
+        from outcome_poc.reader_study import preparation
+        from retrieval_helpers import Encoder
+        config,path,prepared=fixture_config(tmp_path,documents10)
+        raw=tmp_path/'relocated-raw/authored.json';raw.parent.mkdir();raw.write_text('authored raw fixture')
+        history=tmp_path/'history/outcome.json';history.parent.mkdir();history.write_text('authored historical fixture')
+        monkeypatch.setattr(preparation,'EXPECTED_ELIGIBLE_COUNT',130)
+        monkeypatch.setattr(preparation,'EXPECTED_ELIGIBLE_HASH',content_hash([f't-{i:04}' for i in range(992,1122)]))
+        monkeypatch.setattr(preparation,'EXPECTED_PREPARED_FINGERPRINT','authored')
+        monkeypatch.setattr(preparation,'validate_metadata_inventory',lambda c:None)
+        monkeypatch.setattr(preparation,'verify_strong_manifest',lambda *args:None)
+        monkeypatch.setattr(preparation,'discover_denial_locations',lambda r:{'version':1,'registries':[],
+            'conventional_denied':[str(prepared),str(history.parent)],'raw_locations':[str(raw.parent)],
+            'declared_raw_files':[str(raw)],'raw_probes':[str(raw)],'gold_probes':[str(prepared/'gold/gold.jsonl')]})
+>       root=tmp_path/'run';preparation.prepare(root,path)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_reader_study_native.py:27: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/outcome_poc/reader_study/preparation.py:226: in prepare
+    with stage_lock(root):return _prepare(root,config_path)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/outcome_poc/reader_study/preparation.py:219: in _prepare
+    return verify(root,privileged=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/private/var/folders/q3/tm7kkng56417wgzydc4q8p8r0000gn/T/pytest-of-artemlegotin/pytest-3075/test_current_checkout_import_o0/run')
+privileged = True, stage = None
+
+    def verify(root,*,privileged=False,stage=None):
+        root=Path(root).resolve();plan=read(root/'plan.json');_checksum(plan)
+        if plan['root']!=str(root):raise ValueError('sealed run moved')
+        _files(root,plan['files'])
+        freeze=plan['freeze'];bindings=freeze['bindings']
+        validate_protocol(freeze['settings'])
+        if read(root/'config.json')!=freeze['settings']:
+            raise ValueError('frozen config/settings mismatch')
+        if (content_hash(bindings)!=freeze['bindings_hash'] or bindings['settings']!=freeze['settings'] or
+                read(root/'selection-frozen.json')!=freeze):
+            raise ValueError('settings/execution binding mismatch')
+        # Import the annotation-free validators only: preparation is serving-denied.
+        if content_hash(freeze['settings']['readers'])!=content_hash(READERS) or freeze['settings']['encoder']!=ENCODER:
+            raise ValueError('reader profiles changed')
+        profiles={r:{**freeze['settings']['readers'][r],
+            'asset':read(root/'assets.json')['assets'][r],
+            'enable_thinking':False if r=='qwen14b-nonthinking' else None} for r in READER_IDS}
+        if bindings['reader_profiles']!=profiles or bindings['assets']!=read(root/'assets.json'):
+            raise ValueError('asset/reader profile binding mismatch')
+        verify_assets(bindings['assets'])
+        for role,asset in bindings['assets']['assets'].items():
+            expected=ENCODER if role=='encoder' else READERS[role]['settings']
+            if any(asset[k]!=expected[k] for k in ('repo_id','revision')):
+                raise ValueError('asset/profile pin mismatch')
+            if asset['snapshot_hash']!=content_hash(asset['files']):raise ValueError('asset snapshot identity mismatch')
+        if inventory(root/'source')!=bindings['source_snapshot']:
+            raise ValueError('sealed source inventory changed')
+        if environment_identity()!=freeze['environment']:
+            raise ValueError('sealed environment changed')
+        cohorts=read(root/'cohorts.json');schedule=read(root/'schedule.json')
+        if (content_hash(cohorts)!=freeze['cohorts_hash'] or bindings['cohorts_hash']!=freeze['cohorts_hash'] or
+                content_hash(schedule)!=freeze['schedule_hash'] or schedule!=make_schedule(cohorts,freeze['bindings_hash'])):
+            raise ValueError('cohort/schedule binding mismatch')
+        if read(root/'prompts.json')!=registry() or bindings['prompts']!=registry():
+            raise ValueError('baseline prompt registry mismatch')
+        natural={s:{n:v for n,v in fs.items() if not n.endswith('/support-doc-ids.jsonl')} for s,fs in plan['stage_files'].items()}
+        if (set(plan['stage_files'])!=set(STAGES) or set(plan['leaves'])!=set(STAGES) or
+                any(set(plan['leaves'][s])!=set(READER_IDS) for s in STAGES) or
+                plan['future_index_sentinel']!=bindings['future_index_sentinel'] or
+                natural!=bindings['stage_files']):
+            raise ValueError('natural stage input binding mismatch')
+        locations=read(root/'denial-locations.json')
+        if (freeze['denial_locations_hash']!=content_hash(locations) or
+                not set(denial_paths(locations))<=set(freeze['denied_paths']) or
+                freeze['denied_modules']!=list(DENIED_MODULES)):
+            raise ValueError('denial projection mismatch')
+        if stage is not None:
+            verify_stage(root,stage,plan)
+            for reader in READER_IDS:_verify_leaf(root,stage,reader,plan)
+        if privileged:
+            for path,expected in freeze['privileged_inputs'].items():
+                if identity(path)!=expected:raise ValueError('privileged input changed')
+            for path,expected in freeze['source_files'].items():
+>               if identity(path)!=expected:raise ValueError('source changed since preparation')
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               ValueError: source changed since preparation
+
+src/outcome_poc/reader_study/study.py:331: ValueError
+=================================== FAILURES ===================================
+____________ test_spawn_rejects_session_binding_before_acquisition _____________
+
+tmp_path = PosixPath('/private/var/folders/q3/tm7kkng56417wgzydc4q8p8r0000gn/T/pytest-of-artemlegotin/pytest-3075/test_spawn_rejects_session_bin0')
+documents10 = [Document(doc_id='46db19b3da3aeaf78202db43da300d91654e573324f954fb8231b4079ae7f349', title='Invented lantern 0', sente...bc3ab3567c5', title='Invented lantern 5', sentences=['Lantern 5 rests.', 'Lantern 5 glows.'], character_count=32), ...]
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10fe90d70>
+
+    def test_spawn_rejects_session_binding_before_acquisition(tmp_path,documents10,monkeypatch):
+        from outcome_poc.citation_study import runtime
+>       root,plan,_=ready(tmp_path,documents10,monkeypatch)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_citation_runtime.py:195: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_citation_runtime.py:15: in ready
+    root,plan,_=prepare_fixture(tmp_path,documents10,monkeypatch)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_citation_study.py:105: in prepare_fixture
+    plan=preparation.prepare(root,path)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/outcome_poc/citation_study/preparation.py:191: in prepare
+    return _prepare(root,config_path)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/outcome_poc/citation_study/preparation.py:181: in _prepare
+    verify(root,privileged=True)
+src/outcome_poc/citation_study/study.py:154: in verify
+    verify_files(freeze['source_files'])
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+bindings = {'/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation/pyproject.toml': {'bytes': 854, 'sha256...e_poc/__main__.py': {'bytes': 3920, 'sha256': '24ead4009facd23ae679a65757ea5ca1f51b36e868f122fe6416975280e410b3'}, ...}
+
+    def verify_files(bindings):
+        for path, expected in bindings.items():
+            if identity(Path(path)) != expected:
+>               raise ValueError(f'sealed file changed: {path}')
+E               ValueError: sealed file changed: /Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation/src/outcome_poc/reader_recovery/runtime.py
+
+src/outcome_poc/followup/study.py:39: ValueError
+_______ test_serving_import_closure_has_no_scorer_or_preparation_module ________
+
+    def test_serving_import_closure_has_no_scorer_or_preparation_module():
+        root = Path(__file__).parents[1] / 'src' / 'outcome_poc'
+        pending = [name for name in ('collection', 'pilot', 'runner', 'generation', 'retrieval', 'features', 'policies', 'data_runtime')
+                   if (root / f'{name}.py').exists()]
+        visited = set()
+        while pending:
+            name = pending.pop()
+            if name in visited: continue
+            visited.add(name)
+            assert name not in {'scoring', 'data'}, f'serving imported {name}'
+>           tree = ast.parse((root / f'{name}.py').read_text())
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_no_gold_access.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Cellar/python@3.12/3.12.9/Frameworks/Python.framework/Versions/3.12/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation/src/outcome_poc/followup.py')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation/src/outcome_poc/followup.py'
+
+/opt/homebrew/Cellar/python@3.12/3.12.9/Frameworks/Python.framework/Versions/3.12/lib/python3.12/pathlib.py:1013: FileNotFoundError
+=========================== short test summary info ============================
+ERROR tests/test_reader_study_native.py::test_current_checkout_import_origin_is_rejected
+FAILED tests/test_citation_runtime.py::test_spawn_rejects_session_binding_before_acquisition
+FAILED tests/test_no_gold_access.py::test_serving_import_closure_has_no_scorer_or_preparation_module
+2 failed, 1156 passed, 1 error in 345.23s (0:05:45)

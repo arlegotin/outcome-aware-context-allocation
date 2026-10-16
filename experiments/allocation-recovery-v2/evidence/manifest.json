@@ -1,0 +1,174 @@
+{
+  "archive_authentication": {
+    "reader-evidence-first-v1": {
+      "identity": {
+        "bytes": 2845371,
+        "sha256": "80ace70579c7898f9235151187cd810977c79461d3fd1d19327bc0bf88b6116d"
+      },
+      "path": "/Users/artemlegotin/.codex-s/worktrees/a840/outcome-aware-context-allocation/artifacts/runs/reader-evidence-first-v1-private-archive.tar.gz",
+      "retention_receipt": {
+        "bytes": 1053,
+        "sha256": "2f32013f25797b633d160adddf5ac454f4eb277fcdeba36d0a8348af4b8621aa"
+      }
+    },
+    "reader-recovery-v1": {
+      "identity": {
+        "bytes": 4594278,
+        "sha256": "f5e06da473a73cf528cba125f2e21dd3b91e31de27455f3121a54e66fe57756f"
+      },
+      "path": "/Users/artemlegotin/.codex-s/worktrees/a840/outcome-aware-context-allocation/artifacts/runs/reader-recovery-v1-private-archive.tar.gz",
+      "retention_receipt": {
+        "bytes": 1126,
+        "sha256": "6270869fb9d70f22bc926bde4eafb2f4011cdb4def2688d864d864d860858550"
+      }
+    }
+  },
+  "assets": {
+    "actual_bytes_authenticated": true,
+    "manifest": {
+      "bytes": 12928,
+      "path": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/artifacts/provenance/asset-manifest.json",
+      "sha256": "c6cc18a8c2510a5e0d8109768fc5ac14090fb9c93e0365b1fedcca8f5f064152"
+    },
+    "pinned_models": {
+      "encoder": {
+        "local_path": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/models/pinned/encoder/5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+        "repo_id": "BAAI/bge-small-en-v1.5",
+        "revision": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+        "snapshot_hash": "0883c9ca2b589beb4d2ad6150d9c96e7c9400d2f1eadf29ad9542af82601f54a"
+      },
+      "original_reader": {
+        "local_path": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/models/pinned/original_reader/cdbee75f17c01a7cc42f958dc650907174af0554",
+        "repo_id": "Qwen/Qwen3-4B-Instruct-2507",
+        "revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+        "snapshot_hash": "f088f01763eb5345cd191e687372617d8d52ddb6fa9671ed883e2c6953abc9c9"
+      },
+      "reader": {
+        "local_path": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation/models/pinned/reader/50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b",
+        "repo_id": "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+        "revision": "50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b",
+        "snapshot_hash": "ecf7edd130ec9663e80927112f50d4aab12143a43c4a1f4c532f99d0379e1660"
+      }
+    }
+  },
+  "claims": {
+    "allocation_efficiency_demonstrated": false,
+    "full_work_packages_completed": false,
+    "implementation_preparation_increment_completed": true,
+    "operational_usefulness_demonstrated": false,
+    "reader_admitted": false
+  },
+  "commands": {
+    "bytes": 8145,
+    "sha256": "ff2626704800be4b46517ba4713c8e71c2f14ab8f85d4e1b8eac87b29a0cca98"
+  },
+  "environment": {
+    "all_51_locked_versions_match": true,
+    "identity": {
+      "bytes": 1680,
+      "sha256": "12acae2d8e17b323f5af0b13cff6235ba8a5ed433bad1000cbf1410e2f4b0890"
+    },
+    "pip_check_exit": 0
+  },
+  "format_version": 1,
+  "generated_utc": "2026-10-15T21:48:31.144378+00:00",
+  "historical_rescores": {
+    "bytes": 11791,
+    "sha256": "b889fbf85d4d42177242fb9fc829db4d4325054155021fec60dad971a5ec4c10"
+  },
+  "metadata_frame": {
+    "N": 88235,
+    "eligible_ids_hash": "1c1f40d2fcc313d20036641f58dead933b51f2c4b4647e2e159137f13d7e2975",
+    "inventory": {
+      "bytes": 2253,
+      "sha256": "cf59592ccc8a871aca92d4a362ba99044e1d8278d274eb2328f67d710e0909b2"
+    },
+    "new_benchmark_questions_sampled": 0,
+    "older_current_identity_inventory": {
+      "bytes": 6758,
+      "sha256": "887597c622cab37c74647d2c3de44989aa7af1234835a61808b83a7b0a70e036"
+    }
+  },
+  "official_evaluator": {
+    "bytes": 4257,
+    "path": "/private/tmp/oaca-recovery-evidence/hotpot_evaluate_v1.py",
+    "sha256": "d35fc91a6db21d791dbdda11daf3856e9359f5701d54e3eefba20d88fecc02c0"
+  },
+  "privacy": "Only aggregate results, code/environment and file identities published. Raw/Gold text, task IDs, per-question rows and private archives remain external.",
+  "prospective_protocol": {
+    "bytes": 8669,
+    "sha256": "33f3e7ff0e013456c78cac0e37396f7b210095c70fc62545f3957db31062bd99"
+  },
+  "report": {
+    "bytes": 11572,
+    "sha256": "a4759550edef6d5917cadf27522321f14efb9b3726d90152daa673f0a3e7dd59"
+  },
+  "research_status": {
+    "bytes": 1088,
+    "sha256": "21690cfde75db30bbc1d334b93fad84cca0c2d726ebbbccdeb7dbd00f7442aa9"
+  },
+  "retained_checkout": {
+    "commit": "ae1706bb1739c1c0a4e724b33feaa8b01289d292",
+    "path": "/Users/artemlegotin/Documents/git_alter/outcome-aware-context-allocation",
+    "status_porcelain": ""
+  },
+  "scope": "preparation-only P0 software plus read-only historical recovery reproduction; full WP1/WP2 scientific readiness and WP3-WP6 not complete",
+  "source": {
+    "base_commit": "bb0de32cfbc5488d8563fd73ef0b3d38d04d020e",
+    "code_files": 161,
+    "held_tested_code_unchanged": true,
+    "inventory": {
+      "bytes": 23101,
+      "sha256": "b1b56a1a9a4273248d519ef3fc3d15bb9cc43c1f0c36c6674555f213a4af0db1"
+    },
+    "no_commits_merges_pushes_or_publication": true,
+    "tracked_code_diff": {
+      "bytes": 25699,
+      "sha256": "9c85ebd0ac9e99358cd0c01860a8175082ec19cad1f86bf6a7c10b72e44bf73a"
+    },
+    "uncommitted": true,
+    "untracked_code_files": [
+      "src/outcome_poc/reader_recipes.py",
+      "src/outcome_poc/reader_recovery/fresh.py",
+      "tests/test_allocation_recovery_v2.py",
+      "tools/audit_recovery_run.py"
+    ],
+    "worktree": "/Users/artemlegotin/.codex-s/worktrees/9c9b/outcome-aware-context-allocation"
+  },
+  "unperformed_or_incomplete": [
+    "full continuous request-through-receipt accounting in actual allocation workflows",
+    "exact fresh fit/tune/protected cohort authorization",
+    "new-path authenticated native known-answer smoke",
+    "new-study coordinator/child denial proof",
+    "actual controlled suspension",
+    "older non-recovery raw historical rescoring/closure authentication",
+    "prospective joint effect/precision and native compute-budget registration",
+    "fresh independent reader inference/admission",
+    "qualified independent human adjudication",
+    "new action labels and two-endpoint frontier",
+    "held-out routing signal and frozen A*/B*",
+    "final independent allocation evaluation",
+    "full adaptation cost and operational requirements"
+  ],
+  "verification": {
+    "actual_controlled_suspension_tested": false,
+    "baseline_passed": 1119,
+    "baseline_skipped": 0,
+    "external_actual_source_parity_executed": true,
+    "final_passed": 1143,
+    "final_seconds": 326.2,
+    "final_skipped": 0,
+    "independent_agent_review": "no outstanding material findings; 33 CLI/v2 checks passed",
+    "native_denial_fixtures_executed": true,
+    "native_platform": "macOS-26.7.1-arm64-arm-64bit",
+    "tokenizer_generation_calls": 0,
+    "tokenizer_parity": {
+      "bytes": 1952,
+      "sha256": "0540205e487083285bcaffd69411ba85c321a70f881c6620b307cb5f9558bc92"
+    },
+    "tokenizer_script": {
+      "bytes": 2084,
+      "sha256": "619cbee8eff9a6c74ffb8826762ba504cbe3d80f75ef923013d64632a99a5703"
+    }
+  }
+}

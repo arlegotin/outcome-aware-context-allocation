@@ -1,0 +1,78 @@
+{
+  "arms": {
+    "10": {
+      "E": 528,
+      "S": 170,
+      "first_half_mean_T": 3.1668542086536458,
+      "maximum_T": 9.90234775,
+      "mean_T": 3.467442821127604,
+      "n": 768,
+      "p50_T": 3.0814382085,
+      "p95_T": 6.632747054599999,
+      "p99_T": 8.093143132500002,
+      "second_half_mean_T": 3.7680314336015623,
+      "statuses": {
+        "abstain": 4,
+        "invalid_citation": 7,
+        "ok": 757
+      },
+      "total_T": 2662.996086626
+    },
+    "2": {
+      "E": 446,
+      "S": 134,
+      "first_half_mean_T": 1.3726134061406252,
+      "maximum_T": 5.398951208,
+      "mean_T": 1.562456395716146,
+      "n": 768,
+      "p50_T": 1.3368671465,
+      "p95_T": 3.5571875398999993,
+      "p99_T": 4.583855598640001,
+      "second_half_mean_T": 1.7522993852916666,
+      "statuses": {
+        "abstain": 58,
+        "invalid_citation": 5,
+        "ok": 705
+      },
+      "total_T": 1199.96651191
+    }
+  },
+  "identities": {
+    "schedule.json": {
+      "bytes": 379147,
+      "sha256": "04f0d8b2a2c963257860f53a0f20fa511d5149a6e7acc407ea0e31dbf09289ea"
+    },
+    "scores/closed.json": {
+      "bytes": 563,
+      "sha256": "6a066470ad30e7e05585852208864ffebdff9f53e33b0d6f1741c63addd7813d"
+    },
+    "scores/scores.jsonl": {
+      "bytes": 1238385,
+      "sha256": "9c1b488d934cd2a900b20483a42880ba722e60f66f1b8c210326639461986c5c"
+    },
+    "stages/natural/resources.jsonl": {
+      "bytes": 1017210,
+      "sha256": "81d5498059dae2d2fa02b1c7b8abb6765650096cb6f84a2b6dcde4d05053938c"
+    }
+  },
+  "resources": {
+    "rss_children_bytes": {
+      "max": 2980495360,
+      "min": 0
+    },
+    "rss_parent_bytes": {
+      "max": 838451200,
+      "min": 117325824
+    },
+    "samples": 5009,
+    "swap_used_bytes": {
+      "max": 7410941952,
+      "min": 2997420032
+    }
+  },
+  "scope": "post-outcome descriptive diagnostics only; not a prespecified test, final R interval or policy selection",
+  "script_identity": {
+    "bytes": 2147,
+    "sha256": "e09e565543529fe747f6b5b2eaefbd8b6d7774b04994bcfe6056cdfa863e68ab"
+  }
+}
